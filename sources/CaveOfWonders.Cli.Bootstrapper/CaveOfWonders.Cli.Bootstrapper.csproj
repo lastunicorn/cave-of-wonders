@@ -1,0 +1,43 @@
+﻿<!--
+Cave of Wonders
+Copyright (C) 2023 Dust in the Wind
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <AssemblyName>cow</AssemblyName>
+        <RootNamespace>DustInTheWind.CaveOfWonders.Cli.Bootstrapper</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="ConsoleTools.Commando" Version="2.0.0-beta.3" />
+        <PackageReference Include="ConsoleTools.Commando.Setup.Autofac" Version="2.0.0-beta.3" />
+        <PackageReference Include="MediatR" Version="12.0.1" />
+        <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" Version="11.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\CaveOfWonders.Cli.Application\CaveOfWonders.Cli.Application.csproj" />
+        <ProjectReference Include="..\CaveOfWonders.Cli.Presentation\CaveOfWonders.Cli.Presentation.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CaveOfWonders.DataAccess\CaveOfWonders.DataAccess.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj" PrivateAssets="All" />
+    </ItemGroup>
+
+</Project>
