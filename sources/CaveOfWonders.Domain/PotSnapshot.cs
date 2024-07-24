@@ -22,7 +22,3 @@ public class PotSnapshot
 
     public Gem Gem { get; set; }
 }
-
-public class CaveSnapshot
-{
-}

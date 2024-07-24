@@ -24,14 +24,14 @@ public class ConversionRate
 
     public DateTime Date { get; set; }
 
-    public float Value { get; set; }
+    public double Value { get; set; }
 
-    public float Convert(float value)
+    public double Convert(double value)
     {
         return value * Value;
     }
 
-    public float ConvertBack(float value)
+    public double ConvertBack(double value)
     {
         return value == 0
             ? 0

@@ -22,6 +22,9 @@ internal static class CurrencyValueExtensions
 {
     public static string ToDisplayString(this CurrencyValue currencyValue)
     {
+        if (currencyValue == null)
+            return string.Empty;
+
         return $"{currencyValue.Value:N4} {currencyValue.Currency}";
     }
 }

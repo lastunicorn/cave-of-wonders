@@ -26,7 +26,7 @@ public class ConversionRateInfo
 
     public DateTime Date { get; }
 
-    public float Value { get; }
+    public double Value { get; }
 
     internal ConversionRateInfo(ConversionRate conversionRate)
     {

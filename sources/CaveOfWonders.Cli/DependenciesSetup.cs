@@ -16,8 +16,10 @@
 
 using Autofac;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess;
+using DustInTheWind.CaveOfWonders.Adapters.SystemAccess;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR.Extensions.Autofac.DependencyInjection;
 using MediatR.Extensions.Autofac.DependencyInjection.Builder;
 
@@ -37,5 +39,7 @@ internal class DependenciesSetup
         containerBuilder.RegisterType<Database>().AsSelf();
         containerBuilder.RegisterType<PotRepository>().As<IPotRepository>();
         containerBuilder.RegisterType<ConversionRateRepository>().As<IConversionRateRepository>();
+        
+        containerBuilder.RegisterType<SystemClock>().As<ISystemClock>();
     }
 }

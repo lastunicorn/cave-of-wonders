@@ -18,7 +18,7 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application;
 
 public class CurrencyValue
 {
-    public float Value { get; set; }
+    public double Value { get; set; }
 
     public string Currency { get; set; }
 }

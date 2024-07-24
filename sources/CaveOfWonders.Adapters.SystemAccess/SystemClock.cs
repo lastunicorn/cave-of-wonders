@@ -14,33 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 
-public class Pot
+namespace DustInTheWind.CaveOfWonders.Adapters.SystemAccess;
+
+public class SystemClock : ISystemClock
 {
-    public string Name { get; set; }
+    public DateTime Now => DateTime.Now;
 
-    public string Description { get; set; }
-
-    public DateTime StartDate { get; set; }
-
-    public DateTime? EndDate { get; set; }
-
-    public string Currency { get; set; }
-
-    public List<Gem> Gems { get; } = new();
-
-    public bool IsActive(DateTime date)
-    {
-        return date >= StartDate && (EndDate == null || date <= EndDate);
-    }
-
-    public Gem GetLastGem()
-    {
-        bool hasGems = Gems.Count > 0;
-
-        return hasGems
-            ? Gems.Last()
-            : null;
-    }
+    public DateTime Today => DateTime.Today;
 }

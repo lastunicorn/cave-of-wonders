@@ -16,6 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
@@ -24,16 +25,18 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
 {
     private readonly IPotRepository potRepository;
     private readonly IConversionRateRepository conversionRateRepository;
+    private readonly ISystemClock systemClock;
 
-    public PresentStateUseCase(IPotRepository potRepository, IConversionRateRepository conversionRateRepository)
+    public PresentStateUseCase(IPotRepository potRepository, IConversionRateRepository conversionRateRepository, ISystemClock systemClock)
     {
         this.potRepository = potRepository ?? throw new ArgumentNullException(nameof(potRepository));
         this.conversionRateRepository = conversionRateRepository ?? throw new ArgumentNullException(nameof(conversionRateRepository));
+        this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
     }
 
     public async Task<PresentStateResponse> Handle(PresentStateRequest request, CancellationToken cancellationToken)
     {
-        DateTime date = request.Date ?? DateTime.Today;
+        DateTime date = request.Date ?? systemClock.Today;
         string currency = request.Currency ?? "RON";
 
         List<ConversionRate> conversionRates = await RetrieveConversionRates(date);

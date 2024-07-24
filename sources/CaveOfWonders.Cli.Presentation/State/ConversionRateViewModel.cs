@@ -26,7 +26,7 @@ public class ConversionRateViewModel
 
     public DateTime Date { get; }
 
-    public float Value { get; }
+    public double Value { get; }
 
     public ConversionRateViewModel(ConversionRateInfo conversionRateInfo)
     {

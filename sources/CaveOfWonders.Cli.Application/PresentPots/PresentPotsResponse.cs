@@ -14,33 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Domain;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 
-public class Pot
+public class PresentPotsResponse
 {
-    public string Name { get; set; }
+    public DateTime Date { get; set; }
 
-    public string Description { get; set; }
-
-    public DateTime StartDate { get; set; }
-
-    public DateTime? EndDate { get; set; }
-
-    public string Currency { get; set; }
-
-    public List<Gem> Gems { get; } = new();
-
-    public bool IsActive(DateTime date)
-    {
-        return date >= StartDate && (EndDate == null || date <= EndDate);
-    }
-
-    public Gem GetLastGem()
-    {
-        bool hasGems = Gems.Count > 0;
-
-        return hasGems
-            ? Gems.Last()
-            : null;
-    }
+    public List<PotInfo> Pots { get; set; }
 }

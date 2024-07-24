@@ -21,6 +21,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Adapters", "Adapters", "{DE
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App.Cli", "App.Cli", "{7D68841E-86F8-4A32-B6E3-30ABB5DB9FB2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaveOfWonders.Ports.SystemAccess", "CaveOfWonders.Ports.SystemAccess\CaveOfWonders.Ports.SystemAccess.csproj", "{91F1E976-C0AE-4749-A62D-9EAEB0086B7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaveOfWonders.Adapters.SystemAccess", "CaveOfWonders.Adapters.SystemAccess\CaveOfWonders.Adapters.SystemAccess.csproj", "{83432918-6455-4B38-97FC-FFCBF15ED3F2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,14 @@ Global
 		{8ACA7B8C-2188-48B2-B539-C94880F7E7E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8ACA7B8C-2188-48B2-B539-C94880F7E7E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8ACA7B8C-2188-48B2-B539-C94880F7E7E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91F1E976-C0AE-4749-A62D-9EAEB0086B7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91F1E976-C0AE-4749-A62D-9EAEB0086B7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91F1E976-C0AE-4749-A62D-9EAEB0086B7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91F1E976-C0AE-4749-A62D-9EAEB0086B7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83432918-6455-4B38-97FC-FFCBF15ED3F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83432918-6455-4B38-97FC-FFCBF15ED3F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83432918-6455-4B38-97FC-FFCBF15ED3F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83432918-6455-4B38-97FC-FFCBF15ED3F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,6 +73,8 @@ Global
 		{B78F0D30-1178-4D26-80A9-5B51FAC25E9E} = {C43414A4-F3BF-4EAE-9A52-370952C6109F}
 		{E3C75DF0-D668-417B-B37F-BCC778A061E7} = {DE84EDBF-40C3-4AAD-BED4-2C868C177515}
 		{8ACA7B8C-2188-48B2-B539-C94880F7E7E0} = {7D68841E-86F8-4A32-B6E3-30ABB5DB9FB2}
+		{91F1E976-C0AE-4749-A62D-9EAEB0086B7B} = {C43414A4-F3BF-4EAE-9A52-370952C6109F}
+		{83432918-6455-4B38-97FC-FFCBF15ED3F2} = {DE84EDBF-40C3-4AAD-BED4-2C868C177515}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28F94200-205A-4A69-84A9-427B804D252F}
