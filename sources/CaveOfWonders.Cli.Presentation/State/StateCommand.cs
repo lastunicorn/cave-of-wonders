@@ -31,7 +31,7 @@ public class StateCommand : IConsoleCommand<StateViewModel>
     [NamedParameter("currency", ShortName = 'c', IsOptional = true)]
     public string Currency { get; set; }
 
-    public StateCommand(EnhancedConsole console, IMediator mediator)
+    public StateCommand(IMediator mediator)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }

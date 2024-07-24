@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.ConsoleTools.Controls;
 using DustInTheWind.ConsoleTools.Controls.Tables;
@@ -58,7 +57,7 @@ internal class StateView : IView<StateViewModel>
             .Select(x =>
             {
                 string name = x.Name;
-                string value = x.Value?.ToDisplayString();
+                string value = x.OriginalValue?.ToDisplayString();
                 string normalizedValue = x.ConvertedValue?.ToDisplayString();
 
                 return new ContentRow(name, value, normalizedValue);
@@ -75,13 +74,8 @@ internal class StateView : IView<StateViewModel>
     {
         Console.WriteLine();
         Console.WriteLine("Conversion Rates:");
-        foreach (ConversionRate conversionRate in stateViewModel.ConversionRates)
-        {
-            string sourceCurrency = conversionRate.SourceCurrency;
-            float conversionValue = conversionRate.Value;
-            string destinationCurrency = conversionRate.DestinationCurrency;
 
-            Console.WriteLine($"\t1 {sourceCurrency} = {conversionValue} {destinationCurrency}");
-        }
+        foreach (ConversionRateViewModel conversionRate in stateViewModel.ConversionRates)
+            Console.WriteLine($"\t{conversionRate}");
     }
 }

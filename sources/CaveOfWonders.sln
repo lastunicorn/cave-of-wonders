@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Domain", "Cav
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Ports.DataAccess", "CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj", "{B78F0D30-1178-4D26-80A9-5B51FAC25E9E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.DataAccess", "CaveOfWonders.DataAccess\CaveOfWonders.DataAccess.csproj", "{E3C75DF0-D668-417B-B37F-BCC778A061E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Adapters.DataAccess", "CaveOfWonders.DataAccess\CaveOfWonders.Adapters.DataAccess.csproj", "{E3C75DF0-D668-417B-B37F-BCC778A061E7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Cli.Presentation", "CaveOfWonders.Cli.Presentation\CaveOfWonders.Cli.Presentation.csproj", "{8ACA7B8C-2188-48B2-B539-C94880F7E7E0}"
 EndProject

@@ -14,28 +14,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.State;
 
-public class StateViewModel
+public class ConversionRateViewModel
 {
-    public DateTime Date { get; set; }
+    public string SourceCurrency { get; }
 
-    public List<PotInstance> Values { get; set; }
+    public string DestinationCurrency { get; }
 
-    public List<ConversionRateViewModel> ConversionRates { get; set; }
+    public DateTime Date { get; }
 
-    public CurrencyValue Total { get; set; }
+    public float Value { get; }
 
-    public StateViewModel(PresentStateResponse presentStateResponse)
+    public ConversionRateViewModel(ConversionRateInfo conversionRateInfo)
     {
-        Date = presentStateResponse.Date;
-        Values = presentStateResponse.Values;
-        ConversionRates = presentStateResponse.ConversionRates
-            .Select(x => new ConversionRateViewModel(x))
-            .ToList();
-        Total = presentStateResponse.Total;
+        SourceCurrency = conversionRateInfo.SourceCurrency;
+        DestinationCurrency = conversionRateInfo.DestinationCurrency;
+        Date = conversionRateInfo.Date;
+        Value = conversionRateInfo.Value;
+    }
+
+    public override string ToString()
+    {
+        return $"1 {SourceCurrency} = {Value} {DestinationCurrency}";
     }
 }

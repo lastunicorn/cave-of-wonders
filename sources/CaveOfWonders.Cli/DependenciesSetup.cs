@@ -15,8 +15,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using Autofac;
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
-using DustInTheWind.CaveOfWonders.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using MediatR.Extensions.Autofac.DependencyInjection;
 using MediatR.Extensions.Autofac.DependencyInjection.Builder;
@@ -34,6 +34,7 @@ internal class DependenciesSetup
 
         containerBuilder.RegisterMediatR(mediatRConfiguration);
 
+        containerBuilder.RegisterType<Database>().AsSelf();
         containerBuilder.RegisterType<PotRepository>().As<IPotRepository>();
         containerBuilder.RegisterType<ConversionRateRepository>().As<IConversionRateRepository>();
     }

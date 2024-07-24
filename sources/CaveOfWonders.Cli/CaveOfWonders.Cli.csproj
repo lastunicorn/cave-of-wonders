@@ -36,7 +36,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <ItemGroup>
         <ProjectReference Include="..\CaveOfWonders.Cli.Application\CaveOfWonders.Cli.Application.csproj" />
         <ProjectReference Include="..\CaveOfWonders.Cli.Presentation\CaveOfWonders.Cli.Presentation.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CaveOfWonders.DataAccess\CaveOfWonders.DataAccess.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CaveOfWonders.DataAccess\CaveOfWonders.Adapters.DataAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj" PrivateAssets="All" />
     </ItemGroup>
 

@@ -14,15 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Domain;
 
-public class PotSnapshot
+namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
+
+public class ConversionRateInfo
 {
-    public Pot Pot { get; set; }
+    public string SourceCurrency { get; }
 
-    public Gem Gem { get; set; }
-}
+    public string DestinationCurrency { get; }
 
-public class CaveSnapshot
-{
+    public DateTime Date { get; }
+
+    public float Value { get; }
+
+    internal ConversionRateInfo(ConversionRate conversionRate)
+    {
+        SourceCurrency = conversionRate.SourceCurrency;
+        DestinationCurrency = conversionRate.DestinationCurrency;
+        Date = conversionRate.Date;
+        Value = conversionRate.Value;
+    }
 }

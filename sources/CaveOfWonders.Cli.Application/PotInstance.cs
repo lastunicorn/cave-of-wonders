@@ -6,7 +6,7 @@ public class PotInstance
 {
     public string Name { get; set; }
 
-    public CurrencyValue Value { get; set; }
+    public CurrencyValue OriginalValue { get; set; }
 
     public CurrencyValue ConvertedValue { get; set; }
 
@@ -16,7 +16,7 @@ public class PotInstance
 
         if (potSnapshot.Gem != null)
         {
-            Value = new CurrencyValue
+            OriginalValue = new CurrencyValue
             {
                 Currency = potSnapshot.Pot.Currency,
                 Value = potSnapshot.Gem.Value

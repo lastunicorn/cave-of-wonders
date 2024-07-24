@@ -17,44 +17,22 @@
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
-namespace DustInTheWind.CaveOfWonders.DataAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess;
 
 public class ConversionRateRepository : IConversionRateRepository
 {
+    private readonly Database database;
+
+    public ConversionRateRepository(Database database)
+    {
+        this.database = database ?? throw new ArgumentNullException(nameof(database));
+    }
+
     public Task<IEnumerable<ConversionRate>> GetAll(DateTime date)
     {
-        IEnumerable<ConversionRate> conversionRates = new List<ConversionRate>
-        {
-            new()
-            {
-                SourceCurrency = "EUR",
-                DestinationCurrency = "RON",
-                Date = new DateTime(2023, 05, 12),
-                Value = 4.9294f
-            },
-            new()
-            {
-                SourceCurrency = "EUR",
-                DestinationCurrency = "RON",
-                Date = new DateTime(2023, 04, 13),
-                Value = 4.9432f
-            },
-            new()
-            {
-                SourceCurrency = "XAU",
-                DestinationCurrency = "RON",
-                Date = new DateTime(2023, 05, 12),
-                Value = 291.1368f
-            },
-            new()
-            {
-                SourceCurrency = "XAU",
-                DestinationCurrency = "RON",
-                Date = new DateTime(2023, 04, 13),
-                Value = 292.1414f
-            }
-        };
+        IEnumerable<ConversionRate> conversionRates = database.ConversionRates
+            .Where(x => x.Date == date);
 
-        return Task.FromResult(conversionRates.Where(x => x.Date == date));
+        return Task.FromResult(conversionRates);
     }
 }
