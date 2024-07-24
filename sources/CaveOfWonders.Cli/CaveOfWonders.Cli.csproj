@@ -21,16 +21,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
-        <AssemblyName>cow</AssemblyName>
-        <RootNamespace>DustInTheWind.CaveOfWonders.Cli.Bootstrapper</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
+        <AssemblyName>cave</AssemblyName>
+        <RootNamespace>DustInTheWind.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ConsoleTools.Commando" Version="2.0.0-beta.3" />
-        <PackageReference Include="ConsoleTools.Commando.Setup.Autofac" Version="2.0.0-beta.3" />
-        <PackageReference Include="MediatR" Version="12.0.1" />
-        <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" Version="11.0.0" />
+        <PackageReference Include="ConsoleTools.Commando" Version="2.0.0" />
+        <PackageReference Include="ConsoleTools.Commando.Setup.Autofac" Version="2.0.0" />
+        <PackageReference Include="MediatR" Version="12.4.0" />
+        <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" Version="12.1.0" />
     </ItemGroup>
 
     <ItemGroup>

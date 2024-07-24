@@ -1,7 +1,6 @@
-﻿using DustInTheWind.CaveOfWonders.Cli.Application;
-using DustInTheWind.CaveOfWonders.Domain;
+﻿using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation;
+namespace DustInTheWind.CaveOfWonders.Cli.Application;
 
 public class PotInstance
 {

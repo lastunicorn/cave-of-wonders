@@ -21,9 +21,4 @@ public class CurrencyValue
     public float Value { get; set; }
 
     public string Currency { get; set; }
-
-    public override string ToString()
-    {
-        return $"{Value} {Currency}";
-    }
 }

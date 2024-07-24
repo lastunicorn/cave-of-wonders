@@ -14,11 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Cli.Application;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.ConsoleTools.Commando;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.State;
 
-public class PresentStateResponse
+public class StateViewModel
 {
     public DateTime Date { get; set; }
 
@@ -27,4 +30,12 @@ public class PresentStateResponse
     public List<ConversionRate> ConversionRates { get; set; }
 
     public CurrencyValue Total { get; set; }
+
+    public StateViewModel(PresentStateResponse presentStateResponse)
+    {
+        Date = presentStateResponse.Date;
+        Values = presentStateResponse.Values;
+        ConversionRates = presentStateResponse.ConversionRates;
+        Total = presentStateResponse.Total;
+    }
 }

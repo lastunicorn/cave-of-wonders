@@ -3,17 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Cli.Bootstrapper", "CaveOfWonders.Cli.Bootstrapper\CaveOfWonders.Cli.Bootstrapper.csproj", "{DF5E514A-724F-4E13-A630-14011BBBB61C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Cli", "CaveOfWonders.Cli\CaveOfWonders.Cli.csproj", "{DF5E514A-724F-4E13-A630-14011BBBB61C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaveOfWonders.Cli.Application", "CaveOfWonders.Cli.Application\CaveOfWonders.Cli.Application.csproj", "{7A19A9F9-FAA4-4413-AD13-DF7111CBD2B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Cli.Application", "CaveOfWonders.Cli.Application\CaveOfWonders.Cli.Application.csproj", "{7A19A9F9-FAA4-4413-AD13-DF7111CBD2B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaveOfWonders.Domain", "CaveOfWonders.Domain\CaveOfWonders.Domain.csproj", "{9429BBFA-02C2-45FF-B8EA-5E9F195EA15C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Domain", "CaveOfWonders.Domain\CaveOfWonders.Domain.csproj", "{9429BBFA-02C2-45FF-B8EA-5E9F195EA15C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaveOfWonders.Ports.DataAccess", "CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj", "{B78F0D30-1178-4D26-80A9-5B51FAC25E9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Ports.DataAccess", "CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj", "{B78F0D30-1178-4D26-80A9-5B51FAC25E9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaveOfWonders.DataAccess", "CaveOfWonders.DataAccess\CaveOfWonders.DataAccess.csproj", "{E3C75DF0-D668-417B-B37F-BCC778A061E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.DataAccess", "CaveOfWonders.DataAccess\CaveOfWonders.DataAccess.csproj", "{E3C75DF0-D668-417B-B37F-BCC778A061E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaveOfWonders.Cli.Presentation", "CaveOfWonders.Cli.Presentation\CaveOfWonders.Cli.Presentation.csproj", "{8ACA7B8C-2188-48B2-B539-C94880F7E7E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Cli.Presentation", "CaveOfWonders.Cli.Presentation\CaveOfWonders.Cli.Presentation.csproj", "{8ACA7B8C-2188-48B2-B539-C94880F7E7E0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ports", "Ports", "{C43414A4-F3BF-4EAE-9A52-370952C6109F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Adapters", "Adapters", "{DE84EDBF-40C3-4AAD-BED4-2C868C177515}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App.Cli", "App.Cli", "{7D68841E-86F8-4A32-B6E3-30ABB5DB9FB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +54,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DF5E514A-724F-4E13-A630-14011BBBB61C} = {7D68841E-86F8-4A32-B6E3-30ABB5DB9FB2}
+		{7A19A9F9-FAA4-4413-AD13-DF7111CBD2B7} = {7D68841E-86F8-4A32-B6E3-30ABB5DB9FB2}
+		{B78F0D30-1178-4D26-80A9-5B51FAC25E9E} = {C43414A4-F3BF-4EAE-9A52-370952C6109F}
+		{E3C75DF0-D668-417B-B37F-BCC778A061E7} = {DE84EDBF-40C3-4AAD-BED4-2C868C177515}
+		{8ACA7B8C-2188-48B2-B539-C94880F7E7E0} = {7D68841E-86F8-4A32-B6E3-30ABB5DB9FB2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28F94200-205A-4A69-84A9-427B804D252F}

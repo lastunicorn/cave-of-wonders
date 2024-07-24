@@ -14,27 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application;
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
-using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.ConsoleTools.Commando;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.Chart;
 
-public class CaveViewModel
+[NamedCommand("chart", Description = "Displays a chart with the evolution of the wonders in the cave over the time.")]
+public class ChartCommand : IConsoleCommand
 {
-    public DateTime Date { get; set; }
-
-    public List<PotInstance> Values { get; set; }
-
-    public List<ConversionRate> ConversionRates { get; set; }
-
-    public CurrencyValue Total { get; set; }
-
-    public CaveViewModel(PresentStateResponse presentStateResponse)
+    public ChartCommand(EnhancedConsole console)
     {
-        Date = presentStateResponse.Date;
-        Values = presentStateResponse.Values;
-        ConversionRates = presentStateResponse.ConversionRates;
-        Total = presentStateResponse.Total;
+    }
+
+    public Task Execute()
+    {
+        Console.WriteLine("Ha ha");
+
+        return Task.CompletedTask;
     }
 }

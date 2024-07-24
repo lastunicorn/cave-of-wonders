@@ -16,32 +16,16 @@
 
 using Autofac;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
-using DustInTheWind.CaveOfWonders.Cli.Presentation;
 using DustInTheWind.CaveOfWonders.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.ConsoleTools.Commando.Setup.Autofac;
 using MediatR.Extensions.Autofac.DependencyInjection;
 using MediatR.Extensions.Autofac.DependencyInjection.Builder;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Bootstrapper;
+namespace DustInTheWind.CaveOfWonders.Cli;
 
-internal class Program
+internal class DependenciesSetup
 {
-    public static async Task Main(string[] args)
-    {
-        ConsoleTools.Commando.Application application = ApplicationBuilder.Create()
-            .RegisterCommandsFrom(typeof(StateCommand).Assembly)
-            .ConfigureServices(ConfigureServices)
-            .HandleExceptions((o, e) =>
-            {
-                Console.WriteLine(e.Exception);
-            })
-            .Build();
-
-        await application.RunAsync(args);
-    }
-
-    private static void ConfigureServices(ContainerBuilder containerBuilder)
+    public static void Configure(ContainerBuilder containerBuilder)
     {
         MediatRConfiguration mediatRConfiguration = MediatRConfigurationBuilder
             .Create(typeof(PresentStateRequest).Assembly)

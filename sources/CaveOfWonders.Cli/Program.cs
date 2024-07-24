@@ -14,22 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Cli.Presentation.State;
+using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
+using DustInTheWind.ConsoleTools.Commando.Setup.Autofac;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation;
+namespace DustInTheWind.CaveOfWonders.Cli;
 
-[NamedCommand("chart", Description = "Displays a chart with the evolution of the wonders in the cave over the time.")]
-public class ChartCommand : CommandBase
+internal class Program
 {
-    public ChartCommand(EnhancedConsole console)
-        : base(console)
+    public static async Task Main(string[] args)
     {
+        ConsoleTools.Commando.Application application = ApplicationBuilder.Create()
+            .RegisterCommandsFrom(typeof(StateCommand).Assembly)
+            .ConfigureServices(DependenciesSetup.Configure)
+            .HandleExceptions(HandlerApplicationException)
+            .Build();
+
+        await application.RunAsync(args);
     }
 
-    public override Task Execute()
+    private static void HandlerApplicationException(object o, UnhandledApplicationExceptionEventArgs e)
     {
-        Console.WriteInfo("Ha ha");
-
-        return Task.CompletedTask;
+        CustomConsole.WriteError(e.Exception);
     }
 }
