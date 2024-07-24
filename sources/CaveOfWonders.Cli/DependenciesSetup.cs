@@ -37,6 +37,9 @@ internal class DependenciesSetup
         containerBuilder.RegisterMediatR(mediatRConfiguration);
 
         containerBuilder.RegisterType<Database>().AsSelf();
+        containerBuilder
+            .Register(context => new Database(@"c:\Projects.pet\CaveOfWonders\db"))
+            .AsSelf();
         containerBuilder.RegisterType<PotRepository>().As<IPotRepository>();
         containerBuilder.RegisterType<ConversionRateRepository>().As<IConversionRateRepository>();
         

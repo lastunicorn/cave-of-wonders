@@ -21,12 +21,16 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess;
 
 public class Database
 {
+    private string DatabaseDirectoryPath;
+
     public List<Pot> Pots { get; private set; }
 
     public List<ConversionRate> ConversionRates { get; private set; }
-
-    public Database()
+    
+    public Database(string location)
     {
+        DatabaseDirectoryPath = location ?? throw new ArgumentNullException(nameof(location));
+
         LoadConversionRates();
         LoadPots();
 
@@ -238,8 +242,6 @@ public class Database
         //File.WriteAllText(filePath, json);
     }
 
-    private const string DatabaseDirectoryPath = @"c:\Projects.pet\CaveOfWonders\db";
-
     private void LoadConversionRates()
     {
         string fileName = "conversion-rates.json";
@@ -259,7 +261,7 @@ public class Database
 
     private void LoadPots()
     {
-        string directoryName = @"c:\Projects.pet\CaveOfWonders\db\pots";
+        string directoryName = "pots";
         string directoryPath = Path.Combine(DatabaseDirectoryPath, directoryName);
 
         string[] potFilePaths = Directory.GetFiles(directoryPath);
