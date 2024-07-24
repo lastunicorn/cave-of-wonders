@@ -3,7 +3,7 @@
     "CaveOfWonders.Cli.Bootstrapper": {
       "commandName": "Project",
       //"commandLineArgs": "state -d 2023-05-12 -c EUR"
-      "commandLineArgs": "pots"
+      "commandLineArgs": "state"
     }
   }
 }

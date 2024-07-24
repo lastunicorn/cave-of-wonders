@@ -48,6 +48,7 @@ internal class PotsCommand : IConsoleCommand<PresentPotsViewModel>
             Pots = response.Pots
                 .Select(x => new PotViewModel
                 {
+                    Id = x.Id,
                     Name = x.Name,
                     Value = x.Value,
                     IsActive = x.IsActive,

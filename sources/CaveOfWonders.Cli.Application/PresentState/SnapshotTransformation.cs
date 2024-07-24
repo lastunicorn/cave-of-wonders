@@ -37,10 +37,12 @@ internal class SnapshotTransformation
     {
         PotInstance potInstance = new(potSnapshot);
 
-        string originalCurrency = potInstance.OriginalValue.Currency;
-        if (originalCurrency != DestinationCurrency)
+        if (potInstance.OriginalValue != null)
         {
-            potInstance.ConvertedValue = TryConvert(potInstance.OriginalValue, DestinationCurrency);
+            string originalCurrency = potInstance.OriginalValue.Currency;
+            
+            if (originalCurrency != DestinationCurrency) 
+                potInstance.ConvertedValue = TryConvert(potInstance.OriginalValue, DestinationCurrency);
         }
 
         return potInstance;

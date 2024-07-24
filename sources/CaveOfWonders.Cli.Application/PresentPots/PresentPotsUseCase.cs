@@ -73,6 +73,7 @@ internal class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentP
 
         return new PotInfo
         {
+            Id = pot.Id,
             Name = pot.Name,
             Value = value,
             IsActive = isActive

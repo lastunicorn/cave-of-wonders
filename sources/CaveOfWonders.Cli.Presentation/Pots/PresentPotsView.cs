@@ -37,6 +37,7 @@ internal class PresentPotsView : IView<PresentPotsViewModel>
             }
         };
 
+        dataGrid.Columns.Add(new Column("Id"));
         dataGrid.Columns.Add(new Column("Name"));
         dataGrid.Columns.Add(new Column("Value")
         {
@@ -46,10 +47,11 @@ internal class PresentPotsView : IView<PresentPotsViewModel>
         IEnumerable<ContentRow> rows = viewModel.Pots
             .Select(x =>
             {
+                string id = x.Id.ToString("D")[..8];
                 string name = x.Name;
                 string value = x.Value.ToDisplayString();
 
-                ContentRow contentRow = new ContentRow(name, value);
+                ContentRow contentRow = new(id, name, value);
 
                 if (!x.IsActive)
                     contentRow.ForegroundColor = ConsoleColor.DarkGray;

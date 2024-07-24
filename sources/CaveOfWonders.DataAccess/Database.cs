@@ -26,7 +26,7 @@ public class Database
     public List<Pot> Pots { get; private set; }
 
     public List<ConversionRate> ConversionRates { get; private set; }
-    
+
     public Database(string location)
     {
         DatabaseDirectoryPath = location ?? throw new ArgumentNullException(nameof(location));
@@ -273,8 +273,12 @@ public class Database
             string json = File.ReadAllText(potFilePath);
             JPot jPot = JsonConvert.DeserializeObject<JPot>(json);
 
+            string idAsString = Path.GetFileNameWithoutExtension(potFilePath);
+            Guid id = Guid.Parse(idAsString);
+
             Pot pot = new()
             {
+                Id = id,
                 Name = jPot.Name,
                 Description = jPot.Description,
                 StartDate = jPot.StartDate,

@@ -20,6 +20,8 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 
 public class PotInfo
 {
+    public Guid Id { get; set; }
+
     public string Name { get; set; }
 
     public CurrencyValue Value { get; set; }
