@@ -15,8 +15,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.ConsoleTools.Commando;
-using DustInTheWind.ConsoleTools.Controls;
-using DustInTheWind.ConsoleTools.Controls.Tables;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.State;
 
@@ -30,44 +28,14 @@ internal class StateView : IView<StateViewModel>
 
     private void DisplayCaveInstances(StateViewModel stateViewModel)
     {
-        DataGrid dataGrid = new()
+        PotSnapshotControl potSnapshotControl = new()
         {
-            TitleRow =
-            {
-                TitleCell =
-                {
-                    Content = $"{stateViewModel.Date:d} ({stateViewModel.Total.Currency})"
-                },
-                BackgroundColor = ConsoleColor.DarkGray,
-                ForegroundColor = ConsoleColor.Black
-            }
+            Date = stateViewModel.Date,
+            Values = stateViewModel.Values,
+            Total = stateViewModel.Total
         };
 
-        dataGrid.Columns.Add("Name");
-        dataGrid.Columns.Add(new Column("Value")
-        {
-            CellHorizontalAlignment = HorizontalAlignment.Right
-        });
-        dataGrid.Columns.Add(new Column("Normalized Value")
-        {
-            CellHorizontalAlignment = HorizontalAlignment.Right
-        });
-
-        IEnumerable<ContentRow> rows = stateViewModel.Values
-            .Select(x =>
-            {
-                string name = x.Name;
-                string value = x.OriginalValue?.ToDisplayString();
-                string normalizedValue = x.ConvertedValue?.ToDisplayString();
-
-                return new ContentRow(name, value, normalizedValue);
-            });
-
-        dataGrid.Rows.AddRange(rows);
-
-        dataGrid.FooterRow.FooterCell.Content = $"Total: {stateViewModel.Total.ToDisplayString()}";
-
-        dataGrid.Display();
+        potSnapshotControl.Display();
     }
 
     private void DisplayConversionRates(StateViewModel stateViewModel)
