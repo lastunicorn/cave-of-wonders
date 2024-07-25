@@ -16,13 +16,15 @@
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
 
-public class PresentStateResponse
+public class PotInstanceInfo
 {
+    public Guid Id { get; set; }
+
+    public string Name { get; set; }
+
+    public CurrencyValue OriginalValue { get; set; }
+
+    public CurrencyValue NormalizedValue { get; set; }
+
     public DateTime Date { get; set; }
-
-    public List<PotInstanceInfo> PotInstances { get; set; }
-
-    public List<ConversionRateInfo> ConversionRates { get; set; }
-
-    public CurrencyValue Total { get; set; }
 }

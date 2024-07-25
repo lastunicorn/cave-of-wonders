@@ -40,18 +40,18 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
         string currency = request.Currency ?? "RON";
 
         List<ConversionRate> conversionRates = await RetrieveConversionRates(date);
-        List<PotInstance> potInstances = await RetrievePotSnapshots(date, currency, conversionRates);
+        List<PotInstanceInfo> potInstances = await RetrievePotInstances(date, currency, conversionRates);
 
         return new PresentStateResponse
         {
             Date = date,
-            Values = potInstances,
+            PotInstances = potInstances,
             ConversionRates = conversionRates
                 .Select(x => new ConversionRateInfo(x))
                 .ToList(),
             Total = new CurrencyValue
             {
-                Value = potInstances.Sum(x => x.ConvertedValue?.Value ?? x.OriginalValue?.Value ?? 0),
+                Value = potInstances.Sum(x => x.NormalizedValue?.Value ?? x.OriginalValue?.Value ?? 0),
                 Currency = currency
             }
         };
@@ -63,17 +63,17 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
         return conversionRates.ToList();
     }
 
-    private async Task<List<PotInstance>> RetrievePotSnapshots(DateTime date, string currency, List<ConversionRate> conversionRates)
+    private async Task<List<PotInstanceInfo>> RetrievePotInstances(DateTime date, string currency, List<ConversionRate> conversionRates)
     {
-        IEnumerable<PotSnapshot> potSnapshots = await potRepository.GetSnapshot(date);
+        IEnumerable<PotInstance> potInstances = await potRepository.GetInstances(date, DateMatchingMode.LastAvailable);
 
-        SnapshotTransformation snapshotTransformation = new()
+        PotInstanceTransformation potInstanceTransformation = new()
         {
-            Snapshots = potSnapshots.ToList(),
+            Instances = potInstances.ToList(),
             DestinationCurrency = currency,
             ConversionRates = conversionRates
         };
 
-        return snapshotTransformation.Transform().ToList();
+        return potInstanceTransformation.Transform().ToList();
     }
 }

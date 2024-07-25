@@ -14,38 +14,54 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Xml.Linq;
 using DustInTheWind.CaveOfWonders.Domain;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
 
-internal class SnapshotTransformation
+internal class PotInstanceTransformation
 {
-    public List<PotSnapshot> Snapshots { get; set; }
+    public List<PotInstance> Instances { get; set; }
 
     public string DestinationCurrency { get; set; }
 
     public List<ConversionRate> ConversionRates { get; set; }
 
-    public IEnumerable<PotInstance> Transform()
+    public IEnumerable<PotInstanceInfo> Transform()
     {
-        return Snapshots
+        return Instances
             .Select(ToPotInstance)
             .ToList();
     }
 
-    private PotInstance ToPotInstance(PotSnapshot potSnapshot)
+    private PotInstanceInfo ToPotInstance(PotInstance potInstance)
     {
-        PotInstance potInstance = new(potSnapshot);
-
-        if (potInstance.OriginalValue != null)
+        PotInstanceInfo potInstanceInfo = new()
         {
-            string originalCurrency = potInstance.OriginalValue.Currency;
-            
-            if (originalCurrency != DestinationCurrency) 
-                potInstance.ConvertedValue = TryConvert(potInstance.OriginalValue, DestinationCurrency);
+            Id = potInstance.Pot.Id,
+            Name = potInstance.Pot.Name
+        };
+
+        if (potInstance.Gem != null)
+        {
+            potInstanceInfo.OriginalValue = new CurrencyValue
+            {
+                Currency = potInstance.Pot.Currency,
+                Value = potInstance.Gem.Value
+            };
+
+            potInstanceInfo.Date = potInstance.Gem.Date;
         }
 
-        return potInstance;
+        if (potInstanceInfo.OriginalValue != null)
+        {
+            string originalCurrency = potInstanceInfo.OriginalValue.Currency;
+            
+            if (originalCurrency != DestinationCurrency) 
+                potInstanceInfo.NormalizedValue = TryConvert(potInstanceInfo.OriginalValue, DestinationCurrency);
+        }
+
+        return potInstanceInfo;
     }
 
     private CurrencyValue TryConvert(CurrencyValue originalValue, string destinationCurrency)

@@ -15,28 +15,21 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess;
 
-public class PotInstance
+internal static class PotExtensions
 {
-    public string Name { get; set; }
-
-    public CurrencyValue OriginalValue { get; set; }
-
-    public CurrencyValue ConvertedValue { get; set; }
-
-    public PotInstance(PotSnapshot potSnapshot)
+    public static Gem GetGem(this Pot pot, DateTime date, DateMatchingMode dateMatchingMode)
     {
-        Name = potSnapshot.Pot.Name;
-
-        if (potSnapshot.Gem != null)
+        return dateMatchingMode switch
         {
-            OriginalValue = new CurrencyValue
-            {
-                Currency = potSnapshot.Pot.Currency,
-                Value = potSnapshot.Gem.Value
-            };
-        }
+            DateMatchingMode.Exact => pot.Gems.FirstOrDefault(z => z.Date == date),
+            DateMatchingMode.LastAvailable => pot.Gems
+                .Where(z => z.Date <= date)
+                .MaxBy(z => z.Date),
+            _ => throw new ArgumentOutOfRangeException(nameof(dateMatchingMode))
+        };
     }
 }

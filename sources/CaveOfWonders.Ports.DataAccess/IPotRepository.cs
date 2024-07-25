@@ -22,7 +22,7 @@ public interface IPotRepository
 {
     Task<IEnumerable<Pot>> GetAll();
 
-    Task<IEnumerable<PotSnapshot>> GetSnapshot(DateTime date);
+    Task<IEnumerable<PotInstance>> GetInstances(DateTime date, DateMatchingMode dateMatchingMode);
 
     Task<IEnumerable<Pot>> Get(string potName);
 

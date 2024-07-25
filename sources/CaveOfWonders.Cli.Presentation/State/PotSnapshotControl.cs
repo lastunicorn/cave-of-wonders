@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Cli.Application;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
 using DustInTheWind.ConsoleTools.Controls;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 
@@ -24,7 +25,7 @@ internal class PotSnapshotControl
 {
     public DateTime Date { get; set; }
 
-    public List<PotInstance> Values { get; set; }
+    public List<PotInstanceInfo> Values { get; set; }
 
     public CurrencyValue Total { get; set; }
 
@@ -41,11 +42,21 @@ internal class PotSnapshotControl
         dataGrid.Display();
     }
 
-    private void AddColumns(DataGrid dataGrid)
+    private static void AddColumns(DataGrid dataGrid)
     {
+        dataGrid.Columns.Add(new Column("Id")
+        {
+            ForegroundColor = ConsoleColor.DarkGray
+        });
+
         dataGrid.Columns.Add("Name");
 
         dataGrid.Columns.Add(new Column("Value")
+        {
+            CellHorizontalAlignment = HorizontalAlignment.Right
+        });
+
+        dataGrid.Columns.Add(new Column("Date")
         {
             CellHorizontalAlignment = HorizontalAlignment.Right
         });
@@ -61,13 +72,34 @@ internal class PotSnapshotControl
         IEnumerable<ContentRow> rows = Values
             .Select(x =>
             {
+                string id = x.Id.ToString("D")[..8];
                 string name = x.Name;
                 string value = x.OriginalValue?.ToDisplayString();
-                string normalizedValue = x.ConvertedValue?.ToDisplayString();
+                string date = x.Date.ToString("d");
+                string normalizedValue = x.NormalizedValue?.ToDisplayString();
 
-                return new ContentRow(name, value, normalizedValue);
+                ContentRow row = new(id, name, value, date, normalizedValue);
+
+                bool valueIsActual = x.Date == Date;
+
+                if (!valueIsActual)
+                {
+                    row[2].ForegroundColor = ConsoleColor.DarkYellow;
+                    row[3].ForegroundColor = ConsoleColor.DarkYellow;
+                }
+
+                if (normalizedValue != null)
+                {
+                    row[2].ForegroundColor = ConsoleColor.DarkGray;
+                }
+
+                return row;
             });
 
         dataGrid.Rows.AddRange(rows);
+
+        //bool dateColumnHasContent = dataGrid.Rows.Any(x => x[3].Content != null);
+        //if (!dateColumnHasContent)
+        //    dataGrid.Columns[3].
     }
 }

@@ -23,7 +23,7 @@ public class StateViewModel
 {
     public DateTime Date { get; set; }
 
-    public List<PotInstance> Values { get; set; }
+    public List<PotInstanceInfo> Values { get; set; }
 
     public List<ConversionRateViewModel> ConversionRates { get; set; }
 
@@ -32,7 +32,7 @@ public class StateViewModel
     public StateViewModel(PresentStateResponse presentStateResponse)
     {
         Date = presentStateResponse.Date;
-        Values = presentStateResponse.Values;
+        Values = presentStateResponse.PotInstances;
         ConversionRates = presentStateResponse.ConversionRates
             .Select(x => new ConversionRateViewModel(x))
             .ToList();

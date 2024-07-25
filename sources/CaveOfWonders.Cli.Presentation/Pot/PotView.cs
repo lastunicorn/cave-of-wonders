@@ -38,24 +38,6 @@ internal class PotView : ViewBase<PotCommandViewModel>
 
     private void DisplayPotDetails(PotDetailsViewModel potDetailsViewModel)
     {
-        //DataGrid dataGrid = DataGridBuilder.Create()
-        //    .Title(potDetailsViewModel.Name)
-        //    .Enabled(potDetailsViewModel.IsActive)
-        //    .Rows(() =>
-        //    {
-        //        return new[]
-        //        {
-        //            new ContentRow("Id", potDetailsViewModel.Id),
-        //            new ContentRow("Description", potDetailsViewModel.Description),
-        //            new ContentRow("StartDate", potDetailsViewModel.StartDate.ToString("d")),
-        //            new ContentRow("EndDate", potDetailsViewModel.EndDate?.ToString("d") ?? string.Empty),
-        //            new ContentRow("Currency", potDetailsViewModel.Currency),
-        //            new ContentRow("Gem Count", potDetailsViewModel.GemCount),
-        //            new ContentRow("Last Gem", potDetailsViewModel.LastGemDate?.ToString("d"))
-        //        };
-        //    })
-        //    .Build();
-
         DataGrid dataGrid = DataGridTemplate.CreateNew();
         dataGrid.Title = potDetailsViewModel.Name;
 

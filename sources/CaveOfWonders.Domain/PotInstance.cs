@@ -14,15 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
+namespace DustInTheWind.CaveOfWonders.Domain;
 
-public class PresentStateResponse
+public class PotInstance
 {
-    public DateTime Date { get; set; }
+    public Pot Pot { get; set; }
 
-    public List<PotInstanceInfo> PotInstances { get; set; }
-
-    public List<ConversionRateInfo> ConversionRates { get; set; }
-
-    public CurrencyValue Total { get; set; }
+    public Gem Gem { get; set; }
 }

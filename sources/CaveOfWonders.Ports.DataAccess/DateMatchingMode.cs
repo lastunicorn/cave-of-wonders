@@ -14,11 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Domain;
+namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
-public class PotSnapshot
+public enum DateMatchingMode
 {
-    public Pot Pot { get; set; }
-
-    public Gem Gem { get; set; }
+    Exact,
+    LastAvailable
 }

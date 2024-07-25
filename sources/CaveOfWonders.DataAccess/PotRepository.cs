@@ -34,20 +34,16 @@ public class PotRepository : IPotRepository
         return Task.FromResult(result);
     }
 
-    public Task<IEnumerable<PotSnapshot>> GetSnapshot(DateTime date)
+    public Task<IEnumerable<PotInstance>> GetInstances(DateTime date, DateMatchingMode dateMatchingMode)
     {
-        IEnumerable<PotSnapshot> potSnapshots = database.Pots
+        IEnumerable<PotInstance> potSnapshots = database.Pots
             .Where(x => x.IsActive(date))
-            .Select(x =>
+            .Select(x => new PotInstance
             {
-                Gem gem = x.Gems.FirstOrDefault(z => z.Date == date);
-
-                return new PotSnapshot
-                {
-                    Pot = x,
-                    Gem = gem
-                };
+                Pot = x,
+                Gem = x.GetGem(date, dateMatchingMode)
             });
+
         return Task.FromResult(potSnapshots);
     }
 
