@@ -32,7 +32,7 @@ internal class PresentPotsView : IView<PresentPotsViewModel>
                 {
                     Content = $"Pots ({viewModel.Date:d})"
                 },
-                BackgroundColor = ConsoleColor.DarkGray,
+                BackgroundColor = ConsoleColor.Gray,
                 ForegroundColor = ConsoleColor.Black
             }
         };

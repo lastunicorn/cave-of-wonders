@@ -14,19 +14,29 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Cli.Application;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 
-namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.Pots;
 
-public interface IPotRepository
+internal class PotInfoViewModel
 {
-    Task<IEnumerable<Pot>> GetAll();
+    public Guid Id { get; }
 
-    Task<IEnumerable<PotSnapshot>> GetSnapshot(DateTime date);
+    public string Name { get; }
 
-    Task<IEnumerable<Pot>> Get(string potName);
+    public CurrencyValue Value { get; }
 
-    Task<Pot> GetById(Guid potId);
+    public bool IsActive { get; }
 
-    Task<IEnumerable<Pot>> GetByPartialId(string partialPotId);
+    public PotInfoViewModel(PotInfo x)
+    {
+        if (x == null)
+            return;
+
+        Id = x.Id;
+        Name = x.Name;
+        Value = x.Value;
+        IsActive = x.IsActive;
+    }
 }

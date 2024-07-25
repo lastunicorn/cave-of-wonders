@@ -20,6 +20,6 @@ internal class PresentPotsViewModel
 {
     public DateTime Date { get; set; }
 
-    public List<PotViewModel> Pots { get; set; }
+    public List<PotInfoViewModel> Pots { get; set; }
 
 }

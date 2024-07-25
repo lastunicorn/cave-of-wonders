@@ -16,17 +16,35 @@
 
 using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 
-public interface IPotRepository
+public class PotDetails
 {
-    Task<IEnumerable<Pot>> GetAll();
+    public Guid Id { get; }
 
-    Task<IEnumerable<PotSnapshot>> GetSnapshot(DateTime date);
+    public string Name { get; }
 
-    Task<IEnumerable<Pot>> Get(string potName);
+    public string Description { get; }
 
-    Task<Pot> GetById(Guid potId);
+    public DateTime StartDate { get; }
 
-    Task<IEnumerable<Pot>> GetByPartialId(string partialPotId);
+    public DateTime? EndDate { get; }
+
+    public string Currency { get; }
+
+    public int GemCount { get; }
+
+    public DateTime? LastGemDate { get; set; }
+
+    internal PotDetails(Pot pot)
+    {
+        Id = pot.Id;
+        Name = pot.Name;
+        Description = pot.Description;
+        StartDate = pot.StartDate;
+        EndDate = pot.EndDate;
+        Currency = pot.Currency;
+        GemCount = pot.Gems.Count;
+        LastGemDate = pot.Gems.Last()?.Date;
+    }
 }

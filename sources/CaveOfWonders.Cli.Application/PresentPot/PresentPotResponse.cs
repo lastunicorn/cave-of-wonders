@@ -14,17 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.Pots;
-
-internal class PotViewModel
+public class PresentPotResponse
 {
-    public Guid Id { get; set; }
-
-    public string Name { get; set; }
-
-    public CurrencyValue Value { get; set; }
-
-    public bool IsActive { get; set; }
+    public List<PotDetails> Pots { get; set; }
 }

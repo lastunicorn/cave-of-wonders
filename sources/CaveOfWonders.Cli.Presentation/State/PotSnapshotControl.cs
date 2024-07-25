@@ -50,7 +50,7 @@ internal class PotSnapshotControl
                 {
                     Content = $"{Date:d} ({Total.Currency})"
                 },
-                BackgroundColor = ConsoleColor.DarkGray,
+                BackgroundColor = ConsoleColor.Gray,
                 ForegroundColor = ConsoleColor.Black
             }
         };
