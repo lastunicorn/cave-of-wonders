@@ -30,46 +30,35 @@ internal class PotSnapshotControl
 
     public void Display()
     {
-        DataGrid dataGrid = CreateDataGrid();
+        DataGrid dataGrid = DataGridTemplate.CreateNew();
+        dataGrid.Title = $"{Date:d} ({Total.Currency})";
 
-        IEnumerable<ContentRow> rows = CreateRows();
-        dataGrid.Rows.AddRange(rows);
+        AddColumns(dataGrid);
+        AddRows(dataGrid);
 
         dataGrid.FooterRow.FooterCell.Content = $"Total: {Total.ToDisplayString()}";
 
         dataGrid.Display();
     }
 
-    private DataGrid CreateDataGrid()
+    private void AddColumns(DataGrid dataGrid)
     {
-        DataGrid dataGrid = new()
-        {
-            TitleRow =
-            {
-                TitleCell =
-                {
-                    Content = $"{Date:d} ({Total.Currency})"
-                },
-                BackgroundColor = ConsoleColor.Gray,
-                ForegroundColor = ConsoleColor.Black
-            }
-        };
-
         dataGrid.Columns.Add("Name");
+
         dataGrid.Columns.Add(new Column("Value")
         {
             CellHorizontalAlignment = HorizontalAlignment.Right
         });
+
         dataGrid.Columns.Add(new Column("Normalized Value")
         {
             CellHorizontalAlignment = HorizontalAlignment.Right
         });
-        return dataGrid;
     }
 
-    private IEnumerable<ContentRow> CreateRows()
+    private void AddRows(DataGrid dataGrid)
     {
-        return Values
+        IEnumerable<ContentRow> rows = Values
             .Select(x =>
             {
                 string name = x.Name;
@@ -78,5 +67,7 @@ internal class PotSnapshotControl
 
                 return new ContentRow(name, value, normalizedValue);
             });
+
+        dataGrid.Rows.AddRange(rows);
     }
 }
