@@ -66,6 +66,7 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
     private async Task<List<PotInstanceInfo>> RetrievePotInstances(DateTime date, string currency, List<ConversionRate> conversionRates)
     {
         IEnumerable<PotInstance> potInstances = await potRepository.GetInstances(date, DateMatchingMode.LastAvailable);
+        potInstances = potInstances.OrderBy(x => x.Pot.DisplayOrder);
 
         PotInstanceTransformation potInstanceTransformation = new()
         {

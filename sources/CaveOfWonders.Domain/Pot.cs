@@ -24,6 +24,8 @@ public class Pot
 
     public string Description { get; set; }
 
+    public uint DisplayOrder { get; set; }
+
     public DateTime StartDate { get; set; }
 
     public DateTime? EndDate { get; set; }

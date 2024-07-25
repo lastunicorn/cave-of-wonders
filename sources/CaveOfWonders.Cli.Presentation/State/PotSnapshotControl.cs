@@ -97,9 +97,5 @@ internal class PotSnapshotControl
             });
 
         dataGrid.Rows.AddRange(rows);
-
-        //bool dateColumnHasContent = dataGrid.Rows.Any(x => x[3].Content != null);
-        //if (!dateColumnHasContent)
-        //    dataGrid.Columns[3].
     }
 }
