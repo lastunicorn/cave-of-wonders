@@ -14,9 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CsvParser.Application.ImportBcr;
+using DustInTheWind.CsvParser.Application.Importing;
 
-public class ImportIngResponse
+namespace DustInTheWind.CsvParser.Application.UseCases.ImportBcr;
+
+public class ImportBcrResponse
 {
     public ImportReport Report { get; set; }
 }

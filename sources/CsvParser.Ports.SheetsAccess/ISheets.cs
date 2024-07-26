@@ -18,7 +18,5 @@ namespace DustInTheWind.CsvParser.Ports.SheetsAccess;
 
 public interface ISheets
 {
-    IEnumerable<BcrRecord> GetBcrRecords(string location);
-
     IEnumerable<SheetRecord> GetRecords(string location, SheetType sheetType);
 }

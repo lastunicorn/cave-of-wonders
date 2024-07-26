@@ -15,10 +15,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CsvParser.Application.ImportIng;
 using DustInTheWind.CsvParser.Ports.SheetsAccess;
 
-namespace DustInTheWind.CsvParser.Application;
+namespace DustInTheWind.CsvParser.Application.Importing;
 
 internal class GemImport
 {

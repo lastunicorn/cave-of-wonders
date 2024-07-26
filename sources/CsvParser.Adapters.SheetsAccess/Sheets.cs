@@ -20,14 +20,6 @@ namespace DustInTheWind.CsvParser.Adapters.SheetsAccess;
 
 public class Sheets : ISheets
 {
-    public IEnumerable<BcrRecord> GetBcrRecords(string location)
-    {
-        if (location == null) throw new ArgumentNullException(nameof(location));
-
-        BcrSheetCsvFile bcrSheetCsvFile = new(location);
-        return bcrSheetCsvFile.ParseBcrSheetCsv();
-    }
-
     public IEnumerable<SheetRecord> GetRecords(string location, SheetType sheetType)
     {
         if (location == null) throw new ArgumentNullException(nameof(location));

@@ -16,10 +16,10 @@
 
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CsvParser.Application.ImportBcr;
+using DustInTheWind.CsvParser.Application.Importing;
 using DustInTheWind.CsvParser.Ports.SheetsAccess;
 
-namespace DustInTheWind.CsvParser.Application.ImportIng;
+namespace DustInTheWind.CsvParser.Application.UseCases.ImportIng;
 
 public class ImportIngGemsUseCase
 {

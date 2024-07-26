@@ -15,9 +15,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using Autofac;
-using DustInTheWind.CsvParser.Application;
-using DustInTheWind.CsvParser.Application.ImportBcr;
-using DustInTheWind.CsvParser.Application.ImportIng;
+using DustInTheWind.CsvParser.Application.Importing;
+using DustInTheWind.CsvParser.Application.UseCases.ImportBcr;
+using DustInTheWind.CsvParser.Application.UseCases.ImportIng;
 
 namespace DustInTheWind.CsvParser;
 
@@ -29,6 +29,7 @@ internal class Program
         {
             IContainer container = ConfigureContainer();
 
+            await ImportBcrSheet(container);
             await ImportIngSheet(container);
         }
         catch (Exception ex)

@@ -27,7 +27,7 @@ internal class BcrSheetCsvFile
         this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
     }
 
-    public IEnumerable<BcrRecord> ParseBcrSheetCsv()
+    public IEnumerable<SheetRecord> Read()
     {
         IEnumerable<string> lines = File.ReadLines(filePath)
             .Skip(1);
@@ -36,21 +36,59 @@ internal class BcrSheetCsvFile
         {
             string[] cells = line.Split(';');
 
-            yield return new BcrRecord
+            yield return new SheetRecord
             {
                 Date = cells[0].ParseDate().Value,
-                TotalLei = cells[1].ParseCurrencyLei().Value,
-                CurrentAccountLei = cells[2].ParseCurrencyLei(),
-                SavingsAccountLei = cells[3].ParseCurrencyLei(),
-                DepositAccountLei = cells[4].ParseCurrencyLei(),
-                CurrentAccountEuro = cells[5].ParseCurrencyEuro(),
-                CurrentAccountEuroConvertedInLei = cells[6].ParseCurrencyEuro()
+                Values = ParseCells(cells)
+                    .ToList()
             };
         }
     }
 
-    public IEnumerable<SheetRecord> Read()
+    private static IEnumerable<SheetValue> ParseCells(IReadOnlyList<string> cells)
     {
-        return Enumerable.Empty<SheetRecord>();
+        decimal? currentAccountValue = cells[2].ParseCurrencyLei();
+
+        if (currentAccountValue.HasValue)
+        {
+            yield return new SheetValue
+            {
+                Name = "current-account",
+                Value = currentAccountValue.Value
+            };
+        }
+
+        decimal? savingsAccountValue = cells[3].ParseCurrencyLei();
+
+        if (savingsAccountValue.HasValue)
+        {
+            yield return new SheetValue
+            {
+                Name = "savings-account",
+                Value = savingsAccountValue.Value
+            };
+        }
+
+        decimal? depositAccountValue = cells[4].ParseCurrencyLei();
+
+        if (depositAccountValue.HasValue)
+        {
+            yield return new SheetValue
+            {
+                Name = "deposit-account",
+                Value = depositAccountValue.Value
+            };
+        }
+
+        decimal? currentAccountEuroValue = cells[5].ParseCurrencyEuro();
+
+        if (currentAccountEuroValue.HasValue)
+        {
+            yield return new SheetValue
+            {
+                Name = "current-account-euro",
+                Value = currentAccountEuroValue.Value
+            };
+        }
     }
 }
