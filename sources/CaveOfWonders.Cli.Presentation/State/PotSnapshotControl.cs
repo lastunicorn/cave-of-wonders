@@ -74,23 +74,32 @@ internal class PotSnapshotControl
             {
                 string id = x.Id.ToString("D")[..8];
                 string name = x.Name;
-                string value = x.OriginalValue?.ToDisplayString();
-                string date = x.Date.ToString("d");
+                string value = x.IsActive
+                    ? x.OriginalValue?.ToDisplayString()
+                    : string.Empty;
+                string date = x.IsActive
+                    ? x.Date.ToString("d")
+                    : string.Empty;
                 string normalizedValue = x.NormalizedValue?.ToDisplayString();
 
                 ContentRow row = new(id, name, value, date, normalizedValue);
 
                 bool valueIsActual = x.Date == Date;
 
-                if (!valueIsActual)
+                if (x.IsActive)
                 {
-                    row[2].ForegroundColor = ConsoleColor.DarkYellow;
-                    row[3].ForegroundColor = ConsoleColor.DarkYellow;
-                }
+                    if (!valueIsActual)
+                    {
+                        row[2].ForegroundColor = ConsoleColor.DarkYellow;
+                        row[3].ForegroundColor = ConsoleColor.DarkYellow;
+                    }
 
-                if (normalizedValue != null)
+                    if (normalizedValue != null)
+                        row[2].ForegroundColor = ConsoleColor.DarkGray;
+                }
+                else
                 {
-                    row[2].ForegroundColor = ConsoleColor.DarkGray;
+                    row.ForegroundColor = ConsoleColor.DarkGray;
                 }
 
                 return row;

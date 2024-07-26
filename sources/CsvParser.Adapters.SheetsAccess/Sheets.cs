@@ -32,7 +32,53 @@ public class Sheets : ISheets
     {
         if (location == null) throw new ArgumentNullException(nameof(location));
 
-        BcrSheetCsvFile bcrSheetCsvFile = new(location);
-        return bcrSheetCsvFile.Read();
+        switch (sheetType)
+        {
+            case SheetType.Bcr:
+                BcrSheetCsvFile bcrSheetCsvFile = new(location);
+                return bcrSheetCsvFile.Read();
+
+            case SheetType.Ing:
+                IngSheetCsvFile ingSheetCsvFile = new(location);
+                return ingSheetCsvFile.Read();
+
+            case SheetType.Brd:
+                break;
+
+            case SheetType.Bt:
+                break;
+
+            case SheetType.Revolut:
+                break;
+
+            case SheetType.Cash:
+                break;
+
+            case SheetType.Gold:
+                break;
+
+            case SheetType.TeleTrade:
+                break;
+
+            case SheetType.Quanloop:
+                break;
+
+            case SheetType.Mintos:
+                break;
+
+            case SheetType.PeerBerry:
+                break;
+
+            case SheetType.Xtb:
+                break;
+
+            case SheetType.Bonds:
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(sheetType), sheetType, null);
+        }
+
+        return Enumerable.Empty<SheetRecord>();
     }
 }

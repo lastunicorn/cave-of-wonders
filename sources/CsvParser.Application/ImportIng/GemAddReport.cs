@@ -14,19 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
+using DustInTheWind.CaveOfWonders.Domain;
 
-public class PotInstanceInfo
+namespace DustInTheWind.CsvParser.Application.ImportIng;
+
+internal class GemAddReport
 {
-    public Guid Id { get; set; }
+    public GemAddStatus AddStatus { get; set; }
 
-    public string Name { get; set; }
+    public string Key { get; set; }
 
-    public CurrencyValue OriginalValue { get; set; }
-
-    public CurrencyValue NormalizedValue { get; set; }
-
-    public DateTime Date { get; set; }
-
-    public bool IsActive { get; set; }
+    public Pot Pot { get; set; }
+    
+    public Gem Gem { get; set; }
 }

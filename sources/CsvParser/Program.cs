@@ -17,6 +17,7 @@
 using Autofac;
 using DustInTheWind.CsvParser.Application;
 using DustInTheWind.CsvParser.Application.ImportBcr;
+using DustInTheWind.CsvParser.Application.ImportIng;
 
 namespace DustInTheWind.CsvParser;
 
@@ -24,9 +25,16 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
-        IContainer container = ConfigureContainer();
+        try
+        {
+            IContainer container = ConfigureContainer();
 
-        await ImportBcrSheet(container);
+            await ImportIngSheet(container);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
     private static IContainer ConfigureContainer()
@@ -47,6 +55,19 @@ internal class Program
         useCase.Overwrite = true;
 
         ImportBcrResponse response = await useCase.Execute();
+        DisplayReports(response.Report);
+    }
+
+    private static async Task ImportIngSheet(IContainer container)
+    {
+        await using ILifetimeScope lifetimeScope = container.BeginLifetimeScope();
+
+        ImportIngGemsUseCase useCase = lifetimeScope.Resolve<ImportIngGemsUseCase>();
+
+        useCase.SourceFilePath = @"c:\Users\alexandruiuga\OneDrive - Nagarro\Desktop\ing.csv";
+        useCase.Overwrite = true;
+
+        ImportIngResponse response = await useCase.Execute();
         DisplayReports(response.Report);
     }
 

@@ -25,7 +25,7 @@ internal class PotsCommand : IConsoleCommand<PresentPotsViewModel>
 {
     private readonly IMediator mediator;
 
-    [NamedParameter("all", ShortName = 'a', IsOptional = true, Description = "Display all port, including the inactive ones. Default = false.")]
+    [NamedParameter("all", ShortName = 'a', IsOptional = true, Description = "Display all pots, including the inactive ones. Default = false.")]
     public bool IncludeInactivePots { get; set; }
 
     public PotsCommand(IMediator mediator)

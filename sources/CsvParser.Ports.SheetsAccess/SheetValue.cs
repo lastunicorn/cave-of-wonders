@@ -14,19 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
+namespace DustInTheWind.CsvParser.Ports.SheetsAccess;
 
-public class PotInstanceInfo
+public class SheetValue
 {
-    public Guid Id { get; set; }
-
     public string Name { get; set; }
 
-    public CurrencyValue OriginalValue { get; set; }
-
-    public CurrencyValue NormalizedValue { get; set; }
-
-    public DateTime Date { get; set; }
-
-    public bool IsActive { get; set; }
+    public decimal Value { get; set; }
 }

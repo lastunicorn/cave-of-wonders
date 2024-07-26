@@ -14,13 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Xml.Linq;
 using DustInTheWind.CaveOfWonders.Domain;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
 
 internal class PotInstanceTransformation
 {
+    public DateTime Date { get; set; }
+
     public List<PotInstance> Instances { get; set; }
 
     public string DestinationCurrency { get; set; }
@@ -39,7 +40,8 @@ internal class PotInstanceTransformation
         PotInstanceInfo potInstanceInfo = new()
         {
             Id = potInstance.Pot.Id,
-            Name = potInstance.Pot.Name
+            Name = potInstance.Pot.Name,
+            IsActive = potInstance.Pot.IsActive(Date)
         };
 
         if (potInstance.Gem != null)
@@ -56,8 +58,8 @@ internal class PotInstanceTransformation
         if (potInstanceInfo.OriginalValue != null)
         {
             string originalCurrency = potInstanceInfo.OriginalValue.Currency;
-            
-            if (originalCurrency != DestinationCurrency) 
+
+            if (originalCurrency != DestinationCurrency)
                 potInstanceInfo.NormalizedValue = TryConvert(potInstanceInfo.OriginalValue, DestinationCurrency);
         }
 

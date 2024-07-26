@@ -23,4 +23,6 @@ public class PresentStateRequest : IRequest<PresentStateResponse>
     public DateTime? Date { get; set; }
 
     public string Currency { get; set; }
+
+    public bool IncludeInactive { get; set; }
 }

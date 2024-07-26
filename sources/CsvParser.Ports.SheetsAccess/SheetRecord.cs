@@ -20,5 +20,5 @@ public class SheetRecord
 {
     public DateTime Date { get; set; }
 
-    public List<decimal?> Values { get; set; }
+    public List<SheetValue> Values { get; set; }
 }

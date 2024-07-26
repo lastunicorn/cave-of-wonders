@@ -51,26 +51,6 @@ internal class BcrSheetCsvFile
 
     public IEnumerable<SheetRecord> Read()
     {
-        IEnumerable<string> lines = File.ReadLines(filePath)
-            .Skip(1);
-
-        foreach (string line in lines)
-        {
-            string[] cells = line.Split(';');
-
-            yield return new SheetRecord()
-            {
-                Date = cells[0].ParseDate().Value,
-                Values = new List<decimal?>()
-                {
-                    cells[1].ParseCurrencyLei().Value,
-                    cells[2].ParseCurrencyLei(),
-                    cells[3].ParseCurrencyLei(),
-                    cells[4].ParseCurrencyLei(),
-                     cells[5].ParseCurrencyEuro(),
-                    cells[6].ParseCurrencyEuro()
-                }
-            };
-        }
+        return Enumerable.Empty<SheetRecord>();
     }
 }

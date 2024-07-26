@@ -38,7 +38,7 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
         string currency = request.Currency ?? "RON";
 
         List<ConversionRate> conversionRates = await RetrieveConversionRates(date);
-        List<PotInstanceInfo> potInstances = await RetrievePotInstances(date, currency, conversionRates);
+        List<PotInstanceInfo> potInstances = await RetrievePotInstances(date, currency, conversionRates, request.IncludeInactive);
 
         return new PresentStateResponse
         {
@@ -61,13 +61,14 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
         return conversionRates.ToList();
     }
 
-    private async Task<List<PotInstanceInfo>> RetrievePotInstances(DateTime date, string currency, List<ConversionRate> conversionRates)
+    private async Task<List<PotInstanceInfo>> RetrievePotInstances(DateTime date, string currency, List<ConversionRate> conversionRates, bool includeInactive)
     {
-        IEnumerable<PotInstance> potInstances = await unitOfWork.PotRepository.GetInstances(date, DateMatchingMode.LastAvailable);
+        IEnumerable<PotInstance> potInstances = await unitOfWork.PotRepository.GetInstances(date, DateMatchingMode.LastAvailable, includeInactive);
         potInstances = potInstances.OrderBy(x => x.Pot.DisplayOrder);
 
         PotInstanceTransformation potInstanceTransformation = new()
         {
+            Date = date,
             Instances = potInstances.ToList(),
             DestinationCurrency = currency,
             ConversionRates = conversionRates

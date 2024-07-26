@@ -31,6 +31,9 @@ public class StateCommand : IConsoleCommand<StateViewModel>
     [NamedParameter("currency", ShortName = 'c', IsOptional = true)]
     public string Currency { get; set; }
 
+    [NamedParameter("all", ShortName = 'a', IsOptional = true, Description = "Display all pots, including the inactive ones. Default = false.")]
+    public bool IncludeInactivePots { get; set; }
+
     public StateCommand(IMediator mediator)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -41,7 +44,8 @@ public class StateCommand : IConsoleCommand<StateViewModel>
         PresentStateRequest request = new()
         {
             Date = Date,
-            Currency = Currency
+            Currency = Currency,
+            IncludeInactive = IncludeInactivePots
         };
 
         PresentStateResponse response = await mediator.Send(request);

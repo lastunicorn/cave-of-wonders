@@ -34,10 +34,10 @@ public class PotRepository : IPotRepository
         return Task.FromResult(result);
     }
 
-    public Task<IEnumerable<PotInstance>> GetInstances(DateTime date, DateMatchingMode dateMatchingMode)
+    public Task<IEnumerable<PotInstance>> GetInstances(DateTime date, DateMatchingMode dateMatchingMode, bool includeInactive)
     {
         IEnumerable<PotInstance> potSnapshots = database.Pots
-            .Where(x => x.IsActive(date))
+            .Where(x => includeInactive || x.IsActive(date))
             .Select(x => new PotInstance
             {
                 Pot = x,
