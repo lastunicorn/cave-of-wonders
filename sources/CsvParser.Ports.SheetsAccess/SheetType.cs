@@ -14,19 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Domain;
+namespace DustInTheWind.CsvParser.Ports.SheetsAccess;
 
-namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
-
-public interface IPotRepository
+public enum SheetType
 {
-    Task<IEnumerable<Pot>> GetAll();
-
-    Task<IEnumerable<PotInstance>> GetInstances(DateTime date, DateMatchingMode dateMatchingMode);
-
-    Task<IEnumerable<Pot>> GetByName(string potName);
-
-    Task<Pot> GetById(Guid potId);
-
-    Task<IEnumerable<Pot>> GetByPartialId(string partialPotId);
+    Bcr,
+    Ing,
+    Brd,
+    Bt,
+    Revolut,
+    Cash,
+    Gold,
+    TeleTrade,
+    Quanloop,
+    Mintos,
+    PeerBerry,
+    Xtb,
+    Bonds
 }

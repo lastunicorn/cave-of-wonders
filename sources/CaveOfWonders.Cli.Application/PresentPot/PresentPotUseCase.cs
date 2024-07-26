@@ -22,11 +22,11 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 
 internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPotResponse>
 {
-    private readonly IPotRepository potRepository;
+    private readonly IUnitOfWork unitOfWork;
 
-    public PresentPotUseCase(IPotRepository potRepository)
+    public PresentPotUseCase(IUnitOfWork unitOfWork)
     {
-        this.potRepository = potRepository ?? throw new ArgumentNullException(nameof(potRepository));
+        this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
 
     public async Task<PresentPotResponse> Handle(PresentPotRequest request, CancellationToken cancellationToken)
@@ -51,16 +51,16 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
 
             if (success)
             {
-                Pot pot = await potRepository.GetById(potGuid);
+                Pot pot = await unitOfWork.PotRepository.GetById(potGuid);
                 return new[] { pot };
             }
 
-            return await potRepository.GetByPartialId(request.PotId);
+            return await unitOfWork.PotRepository.GetByPartialId(request.PotId);
         }
 
         if (request.PotName != null)
-            return await potRepository.Get(request.PotName);
+            return await unitOfWork.PotRepository.GetByName(request.PotName);
 
-        return await potRepository.GetAll();
+        return await unitOfWork.PotRepository.GetAll();
     }
 }

@@ -14,19 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Domain;
+namespace DustInTheWind.CsvParser.Ports.SheetsAccess;
 
-namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
-
-public interface IPotRepository
+public class BcrRecord
 {
-    Task<IEnumerable<Pot>> GetAll();
+    public DateTime Date { get; set; }
 
-    Task<IEnumerable<PotInstance>> GetInstances(DateTime date, DateMatchingMode dateMatchingMode);
+    public decimal TotalLei { get; set; }
 
-    Task<IEnumerable<Pot>> GetByName(string potName);
+    public decimal? CurrentAccountLei { get; set; }
 
-    Task<Pot> GetById(Guid potId);
+    public decimal? SavingsAccountLei { get; set; }
 
-    Task<IEnumerable<Pot>> GetByPartialId(string partialPotId);
+    public decimal? DepositAccountLei { get; set; }
+
+    public decimal? CurrentAccountEuro { get; set; }
+
+    public decimal? CurrentAccountEuroConvertedInLei { get; set; }
 }

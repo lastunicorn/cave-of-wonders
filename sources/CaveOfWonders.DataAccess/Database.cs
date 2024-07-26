@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.JsonFileStorage;
 using DustInTheWind.CaveOfWonders.Domain;
-using Newtonsoft.Json;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess;
 
@@ -30,18 +30,19 @@ public class Database
     public Database(string location)
     {
         databaseDirectoryPath = location ?? throw new ArgumentNullException(nameof(location));
-
-        LoadConversionRates();
-        LoadPots();
     }
 
-    private void LoadConversionRates()
+    public async Task Load()
     {
-        string fileName = "conversion-rates.json";
-        string filePath = Path.Combine(databaseDirectoryPath, fileName);
+        await LoadConversionRates();
+        await LoadPots();
+    }
 
-        string json = File.ReadAllText(filePath);
-        ConversionRates = JsonConvert.DeserializeObject<List<JConversionRate>>(json)
+    private async Task LoadConversionRates()
+    {
+        ConversionRatesFile conversionRatesFile = new(databaseDirectoryPath);
+
+        ConversionRates = (await conversionRatesFile.ReadAll())
             .Select(x => new ConversionRate
             {
                 SourceCurrency = x.SourceCurrency,
@@ -52,26 +53,21 @@ public class Database
             .ToList();
     }
 
-    private void LoadPots()
+    private async Task LoadPots()
     {
-        string directoryName = "pots";
-        string directoryPath = Path.Combine(databaseDirectoryPath, directoryName);
-
-        string[] potFilePaths = Directory.GetFiles(directoryPath);
-
         Pots = new List<Pot>();
 
-        foreach (string potFilePath in potFilePaths)
-        {
-            string json = File.ReadAllText(potFilePath);
-            JPot jPot = JsonConvert.DeserializeObject<JPot>(json);
+        PotsDirectory potsDirectory = new(databaseDirectoryPath);
 
-            string idAsString = Path.GetFileNameWithoutExtension(potFilePath);
-            Guid id = Guid.Parse(idAsString);
+        IEnumerable<PotFile> potFiles = potsDirectory.EnumeratePotFiles();
+
+        foreach (PotFile potFile in potFiles)
+        {
+            JPot jPot = await potFile.Read();
 
             Pot pot = new()
             {
-                Id = id,
+                Id = potFile.PotId,
                 Name = jPot.Name,
                 Description = jPot.Description,
                 DisplayOrder = jPot.DisplayOrder,
@@ -90,6 +86,56 @@ public class Database
             pot.Gems.AddRange(gems);
 
             Pots.Add(pot);
+        }
+    }
+
+    public async Task Save()
+    {
+        await SaveConversionRates();
+        await SavePots();
+    }
+
+    private Task SaveConversionRates()
+    {
+        ConversionRatesFile conversionRatesFile = new(databaseDirectoryPath);
+
+        IEnumerable<JConversionRate> conversionRates = ConversionRates
+            .Select(x => new JConversionRate
+            {
+                SourceCurrency = x.SourceCurrency,
+                DestinationCurrency = x.DestinationCurrency,
+                Date = x.Date,
+                Value = x.Value
+            });
+
+        return conversionRatesFile.SaveAll(conversionRates);
+    }
+
+    private async Task SavePots()
+    {
+        PotsDirectory potsDirectory = new(databaseDirectoryPath);
+
+        foreach (Pot pot in Pots)
+        {
+            JPot jPot = new()
+            {
+                Name = pot.Name,
+                Description = pot.Description,
+                DisplayOrder = pot.DisplayOrder,
+                StartDate = pot.StartDate,
+                EndDate = pot.EndDate,
+                Currency = pot.Currency,
+                Gems = pot.Gems
+                    .Select(x => new JGem
+                    {
+                        Date = x.Date,
+                        Value = x.Value
+                    })
+                    .ToList()
+            };
+
+            PotFile potFile = potsDirectory.GetPotFile(pot.Id);
+            await potFile.Save(jPot);
         }
     }
 }

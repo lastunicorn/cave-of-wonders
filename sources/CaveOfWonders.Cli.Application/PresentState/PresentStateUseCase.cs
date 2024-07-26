@@ -23,15 +23,13 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
 
 public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentStateResponse>
 {
-    private readonly IPotRepository potRepository;
-    private readonly IConversionRateRepository conversionRateRepository;
     private readonly ISystemClock systemClock;
+    private readonly IUnitOfWork unitOfWork;
 
-    public PresentStateUseCase(IPotRepository potRepository, IConversionRateRepository conversionRateRepository, ISystemClock systemClock)
+    public PresentStateUseCase(ISystemClock systemClock, IUnitOfWork unitOfWork)
     {
-        this.potRepository = potRepository ?? throw new ArgumentNullException(nameof(potRepository));
-        this.conversionRateRepository = conversionRateRepository ?? throw new ArgumentNullException(nameof(conversionRateRepository));
         this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+        this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
 
     public async Task<PresentStateResponse> Handle(PresentStateRequest request, CancellationToken cancellationToken)
@@ -59,13 +57,13 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
 
     private async Task<List<ConversionRate>> RetrieveConversionRates(DateTime date)
     {
-        IEnumerable<ConversionRate> conversionRates = await conversionRateRepository.GetAll(date);
+        IEnumerable<ConversionRate> conversionRates = await unitOfWork.ConversionRateRepository.GetAll(date);
         return conversionRates.ToList();
     }
 
     private async Task<List<PotInstanceInfo>> RetrievePotInstances(DateTime date, string currency, List<ConversionRate> conversionRates)
     {
-        IEnumerable<PotInstance> potInstances = await potRepository.GetInstances(date, DateMatchingMode.LastAvailable);
+        IEnumerable<PotInstance> potInstances = await unitOfWork.PotRepository.GetInstances(date, DateMatchingMode.LastAvailable);
         potInstances = potInstances.OrderBy(x => x.Pot.DisplayOrder);
 
         PotInstanceTransformation potInstanceTransformation = new()

@@ -1,4 +1,4 @@
-﻿namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess;
+﻿namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.JsonFileStorage;
 
 public class JGem
 {

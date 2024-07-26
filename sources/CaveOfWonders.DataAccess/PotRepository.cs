@@ -47,7 +47,7 @@ public class PotRepository : IPotRepository
         return Task.FromResult(potSnapshots);
     }
 
-    public Task<IEnumerable<Pot>> Get(string potName)
+    public Task<IEnumerable<Pot>> GetByName(string potName)
     {
         IEnumerable<Pot> pot = database.Pots
             .Where(x => x.Name?.Contains(potName) ?? false);

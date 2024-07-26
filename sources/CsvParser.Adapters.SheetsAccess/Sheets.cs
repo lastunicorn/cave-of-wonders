@@ -14,19 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CsvParser.Ports.SheetsAccess;
 
-namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
+namespace DustInTheWind.CsvParser.Adapters.SheetsAccess;
 
-public interface IPotRepository
+public class Sheets : ISheets
 {
-    Task<IEnumerable<Pot>> GetAll();
+    public IEnumerable<BcrRecord> GetBcrRecords(string location)
+    {
+        if (location == null) throw new ArgumentNullException(nameof(location));
 
-    Task<IEnumerable<PotInstance>> GetInstances(DateTime date, DateMatchingMode dateMatchingMode);
+        BcrSheetCsvFile bcrSheetCsvFile = new(location);
+        return bcrSheetCsvFile.ParseBcrSheetCsv();
+    }
 
-    Task<IEnumerable<Pot>> GetByName(string potName);
+    public IEnumerable<SheetRecord> GetRecords(string location, SheetType sheetType)
+    {
+        if (location == null) throw new ArgumentNullException(nameof(location));
 
-    Task<Pot> GetById(Guid potId);
-
-    Task<IEnumerable<Pot>> GetByPartialId(string partialPotId);
+        BcrSheetCsvFile bcrSheetCsvFile = new(location);
+        return bcrSheetCsvFile.Read();
+    }
 }

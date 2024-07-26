@@ -14,15 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess;
+namespace DustInTheWind.CsvParser.Application;
 
-public class JConversionRate
+public interface ILog
 {
-    public string SourceCurrency { get; set; }
-
-    public string DestinationCurrency { get; set; }
-
-    public DateTime Date { get; set; }
-
-    public double Value { get; set; }
+    void WriteInfo(string text);
 }

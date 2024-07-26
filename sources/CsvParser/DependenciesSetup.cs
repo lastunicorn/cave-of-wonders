@@ -16,31 +16,26 @@
 
 using Autofac;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess;
-using DustInTheWind.CaveOfWonders.Adapters.SystemAccess;
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
-using MediatR.Extensions.Autofac.DependencyInjection;
-using MediatR.Extensions.Autofac.DependencyInjection.Builder;
+using DustInTheWind.CsvParser.Adapters.SheetsAccess;
+using DustInTheWind.CsvParser.Application;
+using DustInTheWind.CsvParser.Application.ImportBcr;
+using DustInTheWind.CsvParser.Ports.SheetsAccess;
 
-namespace DustInTheWind.CaveOfWonders.Cli;
+namespace DustInTheWind.CsvParser;
 
 internal class DependenciesSetup
 {
     public static void Configure(ContainerBuilder containerBuilder)
     {
-        MediatRConfiguration mediatRConfiguration = MediatRConfigurationBuilder
-            .Create(typeof(PresentStateRequest).Assembly)
-            .WithAllOpenGenericHandlerTypesRegistered()
-            .Build();
-
-        containerBuilder.RegisterMediatR(mediatRConfiguration);
-
         containerBuilder
             .Register(context => new Database(@"c:\Projects.pet\CaveOfWonders\db"))
             .AsSelf();
         containerBuilder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
 
-        containerBuilder.RegisterType<SystemClock>().As<ISystemClock>();
+        containerBuilder.RegisterType<Log>().As<ILog>();
+        containerBuilder.RegisterType<Sheets>().As<ISheets>();
+
+        containerBuilder.RegisterType<ImportBcrGemsUseCase>().AsSelf();
     }
 }

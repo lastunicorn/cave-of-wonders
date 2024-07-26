@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 Cave of Wonders
 Copyright (C) 2023 Dust in the Wind
 
@@ -26,12 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MediatR" Version="12.4.0" />
-        <PackageReference Include="ConsoleTools.Commando" Version="2.0.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\CaveOfWonders.Cli.Application\CaveOfWonders.Cli.Application.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CsvParser.Ports.LogAccess\CsvParser.Ports.LogAccess.csproj" PrivateAssets="All" />
     </ItemGroup>
 
 </Project>
