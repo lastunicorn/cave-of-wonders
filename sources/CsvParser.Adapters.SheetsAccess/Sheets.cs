@@ -35,4 +35,20 @@ public class Sheets : ISheets
         IngSheetCsvFile ingSheetCsvFile = new(location);
         return ingSheetCsvFile.Read();
     }
+
+    public IEnumerable<SheetValue> GetBrdRecords(string location)
+    {
+        if (location == null) throw new ArgumentNullException(nameof(location));
+
+        BrdSheetCsvFile brdSheetCsvFile = new(location);
+        return brdSheetCsvFile.Read();
+    }
+
+    public IEnumerable<SheetValue> GetBtRecords(string location)
+    {
+        if (location == null) throw new ArgumentNullException(nameof(location));
+
+        BtSheetCsvFile btSheetCsvFile = new(location);
+        return btSheetCsvFile.Read();
+    }
 }

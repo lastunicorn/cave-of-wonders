@@ -21,6 +21,8 @@ using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CsvParser.Adapters.LogAccess;
 using DustInTheWind.CsvParser.Adapters.SheetsAccess;
 using DustInTheWind.CsvParser.Application.UseCases.ImportBcr;
+using DustInTheWind.CsvParser.Application.UseCases.ImportBrd;
+using DustInTheWind.CsvParser.Application.UseCases.ImportBt;
 using DustInTheWind.CsvParser.Application.UseCases.ImportIng;
 using DustInTheWind.CsvParser.Ports.SheetsAccess;
 
@@ -40,5 +42,7 @@ internal class DependenciesSetup
 
         containerBuilder.RegisterType<ImportBcrGemsUseCase>().AsSelf();
         containerBuilder.RegisterType<ImportIngGemsUseCase>().AsSelf();
+        containerBuilder.RegisterType<ImportBrdGemsUseCase>().AsSelf();
+        containerBuilder.RegisterType<ImportBtGemsUseCase>().AsSelf();
     }
 }

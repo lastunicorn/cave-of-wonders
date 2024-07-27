@@ -34,6 +34,16 @@ internal static class PotIds
         public const string DepositAccountLei = "03d7ac58";
     }
 
+    public static class Brd
+    {
+        public const string CurrentAccountLei = "5adb19c5";
+    }
+
+    public static class Bt
+    {
+        public const string CurrentAccountEuro = "889d781f";
+    }
+
     public static class Revolut
     {
         public const string CurrentAccountLei = "596569be";

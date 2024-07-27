@@ -14,15 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CsvParser.Ports.SheetsAccess;
+using DustInTheWind.CsvParser.Application.Importing;
 
-public interface ISheets
+namespace DustInTheWind.CsvParser.Application.UseCases.ImportBt;
+
+public class ImportBtResponse
 {
-    IEnumerable<SheetValue> GetBcrRecords(string location);
-
-    IEnumerable<SheetValue> GetIngRecords(string location);
-
-    IEnumerable<SheetValue> GetBrdRecords(string location);
-    
-    IEnumerable<SheetValue> GetBtRecords(string location);
+    public ImportReport Report { get; set; }
 }

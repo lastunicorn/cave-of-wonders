@@ -17,6 +17,8 @@
 using Autofac;
 using DustInTheWind.CsvParser.Application.Importing;
 using DustInTheWind.CsvParser.Application.UseCases.ImportBcr;
+using DustInTheWind.CsvParser.Application.UseCases.ImportBrd;
+using DustInTheWind.CsvParser.Application.UseCases.ImportBt;
 using DustInTheWind.CsvParser.Application.UseCases.ImportIng;
 
 namespace DustInTheWind.CsvParser;
@@ -31,6 +33,8 @@ internal class Program
 
             await ImportBcrSheet(container);
             await ImportIngSheet(container);
+            await ImportBrdSheet(container);
+            await ImportBtSheet(container);
         }
         catch (Exception ex)
         {
@@ -52,7 +56,7 @@ internal class Program
 
         ImportBcrGemsUseCase useCase = lifetimeScope.Resolve<ImportBcrGemsUseCase>();
 
-        useCase.SourceFilePath = @"c:\Users\alexandruiuga\OneDrive - Nagarro\Desktop\bcr.csv";
+        useCase.SourceFilePath = @"c:\Projects.pet\finanțe\CaveOfWonders\import\bcr.csv";
         useCase.Overwrite = true;
 
         ImportBcrResponse response = await useCase.Execute();
@@ -65,10 +69,36 @@ internal class Program
 
         ImportIngGemsUseCase useCase = lifetimeScope.Resolve<ImportIngGemsUseCase>();
 
-        useCase.SourceFilePath = @"c:\Users\alexandruiuga\OneDrive - Nagarro\Desktop\ing.csv";
+        useCase.SourceFilePath = @"c:\Projects.pet\finanțe\CaveOfWonders\import\ing.csv";
         useCase.Overwrite = true;
 
         ImportIngResponse response = await useCase.Execute();
+        DisplayReports(response.Report);
+    }
+
+    private static async Task ImportBrdSheet(IContainer container)
+    {
+        await using ILifetimeScope lifetimeScope = container.BeginLifetimeScope();
+
+        ImportBrdGemsUseCase useCase = lifetimeScope.Resolve<ImportBrdGemsUseCase>();
+
+        useCase.SourceFilePath = @"c:\Projects.pet\finanțe\CaveOfWonders\import\brd.csv";
+        useCase.Overwrite = true;
+
+        ImportBrdResponse response = await useCase.Execute();
+        DisplayReports(response.Report);
+    }
+
+    private static async Task ImportBtSheet(IContainer container)
+    {
+        await using ILifetimeScope lifetimeScope = container.BeginLifetimeScope();
+
+        ImportBtGemsUseCase useCase = lifetimeScope.Resolve<ImportBtGemsUseCase>();
+
+        useCase.SourceFilePath = @"c:\Projects.pet\finanțe\CaveOfWonders\import\bt.csv";
+        useCase.Overwrite = true;
+
+        ImportBtResponse response = await useCase.Execute();
         DisplayReports(response.Report);
     }
 
