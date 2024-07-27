@@ -27,7 +27,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DustInTheWind.CurrencyExchange;
 
-internal static class DependencySetup
+internal static class DependenciesSetup
 {
     public static void Configure(IServiceCollection services)
     {

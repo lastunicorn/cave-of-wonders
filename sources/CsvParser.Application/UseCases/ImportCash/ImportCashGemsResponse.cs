@@ -16,9 +16,9 @@
 
 using DustInTheWind.CsvParser.Application.Importing;
 
-namespace DustInTheWind.CsvParser.Application.UseCases.ImportIng;
+namespace DustInTheWind.CsvParser.Application.UseCases.ImportCash;
 
-public class ImportIngResponse
+public class ImportCashGemsResponse
 {
     public ImportReport Report { get; set; }
 }

@@ -14,11 +14,35 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CsvParser.Ports.SheetsAccess;
+
 namespace DustInTheWind.CsvParser.Adapters.SheetsAccess;
 
-public enum ValueFormat
+internal class GoldSheetCsvFile
 {
-    Lei,
-    Euro,
-    Grams
+    private static readonly ColumnDescriptor[] ColumnDescriptors =
+    {
+        new()
+        {
+            Index = 2,
+            DateIndex = 0,
+            Format = ValueFormat.Grams,
+            Key = "bcr"
+        }
+    };
+
+    private readonly string filePath;
+
+    public GoldSheetCsvFile(string filePath)
+    {
+        this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
+    }
+
+    public IEnumerable<SheetValue> Read()
+    {
+        return File.ReadLines(filePath)
+            .Skip(1)
+            .Select(x => new SheetRecord(x, ColumnDescriptors))
+            .SelectMany(x => x.ParseCells());
+    }
 }

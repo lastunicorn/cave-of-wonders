@@ -21,10 +21,11 @@ using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CsvParser.Adapters.LogAccess;
 using DustInTheWind.CsvParser.Adapters.SheetsAccess;
 using DustInTheWind.CsvParser.Application.UseCases.ImportBcr;
-using DustInTheWind.CsvParser.Application.UseCases.ImportBrd;
 using DustInTheWind.CsvParser.Application.UseCases.ImportBt;
 using DustInTheWind.CsvParser.Application.UseCases.ImportIng;
 using DustInTheWind.CsvParser.Ports.SheetsAccess;
+using MediatR.Extensions.Autofac.DependencyInjection.Builder;
+using MediatR.Extensions.Autofac.DependencyInjection;
 
 namespace DustInTheWind.CsvParser;
 
@@ -32,6 +33,13 @@ internal class DependenciesSetup
 {
     public static void Configure(ContainerBuilder containerBuilder)
     {
+        MediatRConfiguration mediatRConfiguration = MediatRConfigurationBuilder
+            .Create(typeof(ImportBcrGemsRequest).Assembly)
+            .WithAllOpenGenericHandlerTypesRegistered()
+            .Build();
+
+        containerBuilder.RegisterMediatR(mediatRConfiguration);
+
         containerBuilder
             .Register(context => new Database(@"c:\Projects.pet\finanțe\CaveOfWonders\db"))
             .AsSelf();
@@ -39,10 +47,5 @@ internal class DependenciesSetup
 
         containerBuilder.RegisterType<Log>().As<ILog>();
         containerBuilder.RegisterType<Sheets>().As<ISheets>();
-
-        containerBuilder.RegisterType<ImportBcrGemsUseCase>().AsSelf();
-        containerBuilder.RegisterType<ImportIngGemsUseCase>().AsSelf();
-        containerBuilder.RegisterType<ImportBrdGemsUseCase>().AsSelf();
-        containerBuilder.RegisterType<ImportBtGemsUseCase>().AsSelf();
     }
 }

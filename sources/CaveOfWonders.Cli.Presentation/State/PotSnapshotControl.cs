@@ -94,7 +94,9 @@ internal class PotSnapshotControl
                         row[3].ForegroundColor = ConsoleColor.DarkYellow;
                     }
 
-                    if (normalizedValue != null)
+                    bool valueIsNormal = x.OriginalValue?.Currency == Total.Currency;
+
+                    if (!valueIsNormal)
                         row[2].ForegroundColor = ConsoleColor.DarkGray;
                 }
                 else

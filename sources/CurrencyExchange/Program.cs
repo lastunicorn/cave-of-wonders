@@ -1,4 +1,4 @@
-﻿// Currency Exchange
+﻿// Cave of Wonders
 // Copyright (C) 2023 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Reflection;
+using DustInTheWind.ConsoleTools;
+using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.ConsoleTools.Commando.Setup.Microsoft;
 using DustInTheWind.CurrencyExchange.Presentation.Exchange;
 
@@ -22,15 +23,19 @@ namespace DustInTheWind.CurrencyExchange;
 
 internal class Program
 {
-    private static async Task Main(string[] args)
+    public static async Task Main(string[] args)
     {
-        Assembly assembly = typeof(ExchangeCommand).Assembly;
-
-        DustInTheWind.ConsoleTools.Commando.Application application = new ApplicationBuilder()
-            .ConfigureServices(DependencySetup.Configure)
-            .RegisterCommandsFrom(assembly)
+        ConsoleTools.Commando.Application application = ApplicationBuilder.Create()
+            .ConfigureServices(DependenciesSetup.Configure)
+            .RegisterCommandsFrom(typeof(ExchangeCommand).Assembly)
+            .HandleExceptions(HandlerApplicationException)
             .Build();
-        
+
         await application.RunAsync(args);
+    }
+
+    private static void HandlerApplicationException(object o, UnhandledApplicationExceptionEventArgs e)
+    {
+        CustomConsole.WriteError(e.Exception);
     }
 }

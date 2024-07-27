@@ -43,6 +43,7 @@ internal class SheetRecord
         {
             ValueFormat.Lei => ParseCellLei(columnDescriptor.Index),
             ValueFormat.Euro => ParseCellEuro(columnDescriptor.Index),
+            ValueFormat.Grams => ParseCellGrams(columnDescriptor.Index),
             _ => throw new ArgumentOutOfRangeException()
         };
 
@@ -74,6 +75,16 @@ internal class SheetRecord
             return null;
 
         return decimal.Parse(value.Trim('€'), NumberStyles.Currency, CultureInfo.CreateSpecificCulture("ro-RO"));
+    }
+
+    private decimal? ParseCellGrams(int cellIndex)
+    {
+        string value = cells[cellIndex];
+
+        if (string.IsNullOrEmpty(value))
+            return null;
+
+        return decimal.Parse(value.Trim('g'), CultureInfo.CreateSpecificCulture("ro-RO"));
     }
 
     private DateTime ParseDate(int cellIndex)

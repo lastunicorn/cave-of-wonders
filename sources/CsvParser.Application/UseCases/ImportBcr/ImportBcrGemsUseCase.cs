@@ -19,18 +19,15 @@ using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CsvParser.Application.Importing;
 using DustInTheWind.CsvParser.Ports.SheetsAccess;
+using MediatR;
 
 namespace DustInTheWind.CsvParser.Application.UseCases.ImportBcr;
 
-public class ImportBcrGemsUseCase
+internal class ImportBcrGemsUseCase : IRequestHandler<ImportBcrGemsRequest, ImportBcrGemsResponse>
 {
     private readonly IUnitOfWork unitOfWork;
     private readonly ISheets sheets;
     private readonly ILog log;
-
-    public string SourceFilePath { get; set; }
-
-    public bool Overwrite { get; set; }
 
     public ImportBcrGemsUseCase(IUnitOfWork unitOfWork, ISheets sheets, ILog log)
     {
@@ -39,13 +36,13 @@ public class ImportBcrGemsUseCase
         this.log = log ?? throw new ArgumentNullException(nameof(log));
     }
 
-    public async Task<ImportBcrResponse> Execute()
+    public async Task<ImportBcrGemsResponse> Handle(ImportBcrGemsRequest request, CancellationToken cancellationToken)
     {
         log.WriteInfo(new string('-', 100));
         log.WriteInfo("---> Starting import of BCR Sheet.");
-        log.WriteInfo($"---> Import from file: {SourceFilePath}");
+        log.WriteInfo($"---> Import from file: {request.SourceFilePath}");
 
-        string importTypeDescription = Overwrite
+        string importTypeDescription = request.Overwrite
             ? "overwrite"
             : "append";
 
@@ -54,18 +51,18 @@ public class ImportBcrGemsUseCase
         GemImport gemImport = new()
         {
             Pots = await CreatePotCollection(),
-            Overwrite = Overwrite,
+            Overwrite = request.Overwrite,
             Log = log
         };
 
-        IEnumerable<SheetValue> sheetsValues = sheets.GetBcrRecords(SourceFilePath);
+        IEnumerable<SheetValue> sheetsValues = sheets.GetBcrRecords(request.SourceFilePath);
         gemImport.Import(sheetsValues);
 
         await unitOfWork.SaveChanges();
 
         log.WriteInfo(new string('-', 100));
 
-        return new ImportBcrResponse
+        return new ImportBcrGemsResponse
         {
             Report = gemImport.Report
         };

@@ -19,7 +19,11 @@ using DustInTheWind.CsvParser.Application.Importing;
 using DustInTheWind.CsvParser.Application.UseCases.ImportBcr;
 using DustInTheWind.CsvParser.Application.UseCases.ImportBrd;
 using DustInTheWind.CsvParser.Application.UseCases.ImportBt;
+using DustInTheWind.CsvParser.Application.UseCases.ImportCash;
+using DustInTheWind.CsvParser.Application.UseCases.ImportGold;
 using DustInTheWind.CsvParser.Application.UseCases.ImportIng;
+using DustInTheWind.CsvParser.Application.UseCases.ImportRevolut;
+using MediatR;
 
 namespace DustInTheWind.CsvParser;
 
@@ -35,6 +39,9 @@ internal class Program
             await ImportIngSheet(container);
             await ImportBrdSheet(container);
             await ImportBtSheet(container);
+            await ImportRevolutSheet(container);
+            await ImportCashSheet(container);
+            await ImportGoldSheet(container);
         }
         catch (Exception ex)
         {
@@ -54,12 +61,15 @@ internal class Program
     {
         await using ILifetimeScope lifetimeScope = container.BeginLifetimeScope();
 
-        ImportBcrGemsUseCase useCase = lifetimeScope.Resolve<ImportBcrGemsUseCase>();
+        IMediator mediator = lifetimeScope.Resolve<IMediator>();
 
-        useCase.SourceFilePath = @"c:\Projects.pet\finanțe\CaveOfWonders\import\bcr.csv";
-        useCase.Overwrite = true;
+        ImportBcrGemsRequest request = new()
+        {
+            SourceFilePath = @"c:\Projects.pet\finanțe\CaveOfWonders\import\bcr.csv",
+            Overwrite = true
+        };
 
-        ImportBcrResponse response = await useCase.Execute();
+        ImportBcrGemsResponse response = await mediator.Send(request);
         DisplayReports(response.Report);
     }
 
@@ -67,12 +77,15 @@ internal class Program
     {
         await using ILifetimeScope lifetimeScope = container.BeginLifetimeScope();
 
-        ImportIngGemsUseCase useCase = lifetimeScope.Resolve<ImportIngGemsUseCase>();
+        IMediator mediator = lifetimeScope.Resolve<IMediator>();
 
-        useCase.SourceFilePath = @"c:\Projects.pet\finanțe\CaveOfWonders\import\ing.csv";
-        useCase.Overwrite = true;
+        ImportIngGemsRequest request = new()
+        {
+            SourceFilePath = @"c:\Projects.pet\finanțe\CaveOfWonders\import\ing.csv",
+            Overwrite = true
+        };
 
-        ImportIngResponse response = await useCase.Execute();
+        ImportIngGemsResponse response = await mediator.Send(request);
         DisplayReports(response.Report);
     }
 
@@ -80,12 +93,15 @@ internal class Program
     {
         await using ILifetimeScope lifetimeScope = container.BeginLifetimeScope();
 
-        ImportBrdGemsUseCase useCase = lifetimeScope.Resolve<ImportBrdGemsUseCase>();
+        IMediator mediator = lifetimeScope.Resolve<IMediator>();
 
-        useCase.SourceFilePath = @"c:\Projects.pet\finanțe\CaveOfWonders\import\brd.csv";
-        useCase.Overwrite = true;
+        ImportBrdGemsRequest request = new()
+        {
+            SourceFilePath = @"c:\Projects.pet\finanțe\CaveOfWonders\import\brd.csv",
+            Overwrite = true
+        };
 
-        ImportBrdResponse response = await useCase.Execute();
+        ImportBrdGemsResponse response = await mediator.Send(request);
         DisplayReports(response.Report);
     }
 
@@ -93,12 +109,63 @@ internal class Program
     {
         await using ILifetimeScope lifetimeScope = container.BeginLifetimeScope();
 
-        ImportBtGemsUseCase useCase = lifetimeScope.Resolve<ImportBtGemsUseCase>();
+        IMediator mediator = lifetimeScope.Resolve<IMediator>();
 
-        useCase.SourceFilePath = @"c:\Projects.pet\finanțe\CaveOfWonders\import\bt.csv";
-        useCase.Overwrite = true;
+        ImportBtGemsRequest request = new()
+        {
+            SourceFilePath = @"c:\Projects.pet\finanțe\CaveOfWonders\import\bt.csv",
+            Overwrite = true
+        };
 
-        ImportBtResponse response = await useCase.Execute();
+        ImportBtGemsResponse response = await mediator.Send(request);
+        DisplayReports(response.Report);
+    }
+
+    private static async Task ImportRevolutSheet(IContainer container)
+    {
+        await using ILifetimeScope lifetimeScope = container.BeginLifetimeScope();
+
+        IMediator mediator = lifetimeScope.Resolve<IMediator>();
+
+        ImportRevolutGemsRequest request = new()
+        {
+            SourceFilePath = @"c:\Projects.pet\finanțe\CaveOfWonders\import\revolut.csv",
+            Overwrite = true
+        };
+
+        ImportRevolutGemsResponse response = await mediator.Send(request);
+        DisplayReports(response.Report);
+    }
+
+    private static async Task ImportCashSheet(IContainer container)
+    {
+        await using ILifetimeScope lifetimeScope = container.BeginLifetimeScope();
+
+        IMediator mediator = lifetimeScope.Resolve<IMediator>();
+
+        ImportCashGemsRequest request = new()
+        {
+            SourceFilePath = @"c:\Projects.pet\finanțe\CaveOfWonders\import\cash.csv",
+            Overwrite = true
+        };
+
+        ImportCashGemsResponse response = await mediator.Send(request);
+        DisplayReports(response.Report);
+    }
+
+    private static async Task ImportGoldSheet(IContainer container)
+    {
+        await using ILifetimeScope lifetimeScope = container.BeginLifetimeScope();
+
+        IMediator mediator = lifetimeScope.Resolve<IMediator>();
+
+        ImportGoldGemsRequest request = new()
+        {
+            SourceFilePath = @"c:\Projects.pet\finanțe\CaveOfWonders\import\gold.csv",
+            Overwrite = true
+        };
+
+        ImportGoldGemsResponse response = await mediator.Send(request);
         DisplayReports(response.Report);
     }
 

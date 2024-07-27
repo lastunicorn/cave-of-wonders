@@ -21,25 +21,25 @@ using DustInTheWind.CsvParser.Application.Importing;
 using DustInTheWind.CsvParser.Ports.SheetsAccess;
 using MediatR;
 
-namespace DustInTheWind.CsvParser.Application.UseCases.ImportIng;
+namespace DustInTheWind.CsvParser.Application.UseCases.ImportGold;
 
-internal class ImportIngGemsUseCase : IRequestHandler<ImportIngGemsRequest, ImportIngGemsResponse>
+internal class ImportGoldGemsUseCase : IRequestHandler<ImportGoldGemsRequest, ImportGoldGemsResponse>
 {
     private readonly IUnitOfWork unitOfWork;
     private readonly ISheets sheets;
     private readonly ILog log;
 
-    public ImportIngGemsUseCase(IUnitOfWork unitOfWork, ISheets sheets, ILog log)
+    public ImportGoldGemsUseCase(IUnitOfWork unitOfWork, ISheets sheets, ILog log)
     {
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         this.sheets = sheets ?? throw new ArgumentNullException(nameof(sheets));
         this.log = log ?? throw new ArgumentNullException(nameof(log));
     }
 
-    public async Task<ImportIngGemsResponse> Handle(ImportIngGemsRequest request, CancellationToken cancellationToken)
+    public async Task<ImportGoldGemsResponse> Handle(ImportGoldGemsRequest request, CancellationToken cancellationToken)
     {
         log.WriteInfo(new string('-', 100));
-        log.WriteInfo("---> Starting import of ING Sheet.");
+        log.WriteInfo("---> Starting import of Gold Sheet.");
         log.WriteInfo($"---> Import from file: {request.SourceFilePath}");
 
         string importTypeDescription = request.Overwrite
@@ -55,14 +55,14 @@ internal class ImportIngGemsUseCase : IRequestHandler<ImportIngGemsRequest, Impo
             Log = log
         };
 
-        IEnumerable<SheetValue> sheetsValues = sheets.GetIngRecords(request.SourceFilePath);
+        IEnumerable<SheetValue> sheetsValues = sheets.GetGoldRecords(request.SourceFilePath);
         gemImport.Import(sheetsValues);
 
         await unitOfWork.SaveChanges();
 
         log.WriteInfo(new string('-', 100));
 
-        return new ImportIngGemsResponse
+        return new ImportGoldGemsResponse
         {
             Report = gemImport.Report
         };
@@ -72,17 +72,8 @@ internal class ImportIngGemsUseCase : IRequestHandler<ImportIngGemsRequest, Impo
     {
         PotCollection pots = new();
 
-        Pot currentAccountLeiPot = await GetPot(PotIds.Ing.CurrentAccountLei);
-        pots.Add(currentAccountLeiPot, "current-account");
-
-        Pot savingsAccountLeiPot = await GetPot(PotIds.Ing.SavingsAccountLei);
-        pots.Add(savingsAccountLeiPot, "savings-account");
-
-        Pot depositAccountParintiLeiPot = await GetPot(PotIds.Ing.DepositAccountParintiLei);
-        pots.Add(depositAccountParintiLeiPot, "deposit-account-parinti");
-
-        Pot depositAccountLeiPot = await GetPot(PotIds.Ing.DepositAccountLei);
-        pots.Add(depositAccountLeiPot, "deposit-account");
+        Pot currentAccountLeiPot = await GetPot(PotIds.Gold.Bcr);
+        pots.Add(currentAccountLeiPot, "bcr");
 
         return pots;
     }

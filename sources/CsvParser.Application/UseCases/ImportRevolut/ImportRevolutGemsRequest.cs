@@ -14,11 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CsvParser.Adapters.SheetsAccess;
+using MediatR;
 
-public enum ValueFormat
+namespace DustInTheWind.CsvParser.Application.UseCases.ImportRevolut;
+
+public class ImportRevolutGemsRequest : IRequest<ImportRevolutGemsResponse>
 {
-    Lei,
-    Euro,
-    Grams
+    public string SourceFilePath { get; set; }
+
+    public bool Overwrite { get; set; }
 }

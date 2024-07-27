@@ -28,8 +28,8 @@ internal class Program
         Console.WriteLine(Guid.NewGuid().ToString("D"));
 
         ConsoleTools.Commando.Application application = ApplicationBuilder.Create()
-            .RegisterCommandsFrom(typeof(StateCommand).Assembly)
             .ConfigureServices(DependenciesSetup.Configure)
+            .RegisterCommandsFrom(typeof(StateCommand).Assembly)
             .HandleExceptions(HandlerApplicationException)
             .Build();
 

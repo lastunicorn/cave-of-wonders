@@ -19,19 +19,16 @@ using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CsvParser.Application.Importing;
 using DustInTheWind.CsvParser.Ports.SheetsAccess;
+using MediatR;
 
 namespace DustInTheWind.CsvParser.Application.UseCases.ImportBt;
 
-public class ImportBtGemsUseCase
+internal class ImportBtGemsUseCase : IRequestHandler<ImportBtGemsRequest, ImportBtGemsResponse>
 {
     private readonly IUnitOfWork unitOfWork;
     private readonly ISheets sheets;
     private readonly ILog log;
-
-    public string SourceFilePath { get; set; }
-
-    public bool Overwrite { get; set; }
-
+    
     public ImportBtGemsUseCase(IUnitOfWork unitOfWork, ISheets sheets, ILog log)
     {
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
@@ -39,13 +36,13 @@ public class ImportBtGemsUseCase
         this.log = log ?? throw new ArgumentNullException(nameof(log));
     }
 
-    public async Task<ImportBtResponse> Execute()
+    public async Task<ImportBtGemsResponse> Handle(ImportBtGemsRequest request, CancellationToken cancellationToken)
     {
         log.WriteInfo(new string('-', 100));
         log.WriteInfo("---> Starting import of BT Sheet.");
-        log.WriteInfo($"---> Import from file: {SourceFilePath}");
+        log.WriteInfo($"---> Import from file: {request.SourceFilePath}");
 
-        string importTypeDescription = Overwrite
+        string importTypeDescription = request.Overwrite
             ? "overwrite"
             : "append";
 
@@ -54,18 +51,18 @@ public class ImportBtGemsUseCase
         GemImport gemImport = new()
         {
             Pots = await CreatePotCollection(),
-            Overwrite = Overwrite,
+            Overwrite = request.Overwrite,
             Log = log
         };
 
-        IEnumerable<SheetValue> sheetsValues = sheets.GetBtRecords(SourceFilePath);
+        IEnumerable<SheetValue> sheetsValues = sheets.GetBtRecords(request.SourceFilePath);
         gemImport.Import(sheetsValues);
 
         await unitOfWork.SaveChanges();
 
         log.WriteInfo(new string('-', 100));
 
-        return new ImportBtResponse
+        return new ImportBtGemsResponse
         {
             Report = gemImport.Report
         };

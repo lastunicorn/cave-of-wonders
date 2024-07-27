@@ -25,4 +25,10 @@ public interface ISheets
     IEnumerable<SheetValue> GetBrdRecords(string location);
     
     IEnumerable<SheetValue> GetBtRecords(string location);
+
+    IEnumerable<SheetValue> GetRevolutRecords(string location);
+
+    IEnumerable<SheetValue> GetCashRecords(string location);
+
+    IEnumerable<SheetValue> GetGoldRecords(string location);
 }

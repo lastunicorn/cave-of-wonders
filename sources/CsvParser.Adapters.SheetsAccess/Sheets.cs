@@ -51,4 +51,28 @@ public class Sheets : ISheets
         BtSheetCsvFile btSheetCsvFile = new(location);
         return btSheetCsvFile.Read();
     }
+
+    public IEnumerable<SheetValue> GetRevolutRecords(string location)
+    {
+        if (location == null) throw new ArgumentNullException(nameof(location));
+
+        RevolutSheetCsvFile revolutSheetCsvFile = new(location);
+        return revolutSheetCsvFile.Read();
+    }
+
+    public IEnumerable<SheetValue> GetCashRecords(string location)
+    {
+        if (location == null) throw new ArgumentNullException(nameof(location));
+
+        CashSheetCsvFile cashSheetCsvFile = new(location);
+        return cashSheetCsvFile.Read();
+    }
+
+    public IEnumerable<SheetValue> GetGoldRecords(string location)
+    {
+        if (location == null) throw new ArgumentNullException(nameof(location));
+
+        GoldSheetCsvFile goldSheetCsvFile = new(location);
+        return goldSheetCsvFile.Read();
+    }
 }

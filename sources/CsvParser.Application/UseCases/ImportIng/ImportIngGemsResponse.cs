@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CsvParser.Adapters.SheetsAccess;
+using DustInTheWind.CsvParser.Application.Importing;
 
-public enum ValueFormat
+namespace DustInTheWind.CsvParser.Application.UseCases.ImportIng;
+
+public class ImportIngGemsResponse
 {
-    Lei,
-    Euro,
-    Grams
+    public ImportReport Report { get; set; }
 }

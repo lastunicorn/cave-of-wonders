@@ -50,4 +50,15 @@ internal static class PotIds
         public const string CurrentAccountEuro = "50e27d7e";
         public const string SavingsAccountLei = "5eca3af2";
     }
+
+    public static class Cash
+    {
+        public const string Lei = "d7a02fd8";
+        public const string Euro = "3f25f32e";
+    }
+
+    public static class Gold
+    {
+        public const string Bcr = "bf646f1e";
+    }
 }

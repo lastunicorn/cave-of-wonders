@@ -14,11 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CsvParser.Application.Importing;
+using MediatR;
 
-namespace DustInTheWind.CsvParser.Application.UseCases.ImportBt;
+namespace DustInTheWind.CsvParser.Application.UseCases.ImportIng;
 
-public class ImportBtResponse
+public class ImportIngGemsRequest : IRequest<ImportIngGemsResponse>
 {
-    public ImportReport Report { get; set; }
+    public string SourceFilePath { get; set; }
+
+    public bool Overwrite { get; set; }
 }

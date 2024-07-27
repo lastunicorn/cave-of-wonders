@@ -18,7 +18,7 @@ using DustInTheWind.CsvParser.Ports.SheetsAccess;
 
 namespace DustInTheWind.CsvParser.Adapters.SheetsAccess;
 
-internal class BcrSheetCsvFile
+internal class CashSheetCsvFile
 {
     private static readonly ColumnDescriptor[] ColumnDescriptors =
     {
@@ -27,34 +27,20 @@ internal class BcrSheetCsvFile
             Index = 2,
             DateIndex = 0,
             Format = ValueFormat.Lei,
-            Key = "current-account"
+            Key = "lei"
         },
         new()
         {
             Index = 3,
             DateIndex = 0,
-            Format = ValueFormat.Lei,
-            Key = "savings-account"
-        },
-        new()
-        {
-            Index = 4,
-            DateIndex = 0,
-            Format = ValueFormat.Lei,
-            Key = "deposit-account"
-        },
-        new()
-        {
-            Index = 5,
-            DateIndex = 0,
             Format = ValueFormat.Euro,
-            Key = "current-account-euro"
+            Key = "euro"
         }
     };
 
     private readonly string filePath;
 
-    public BcrSheetCsvFile(string filePath)
+    public CashSheetCsvFile(string filePath)
     {
         this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
     }
