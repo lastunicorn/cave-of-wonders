@@ -58,8 +58,8 @@ public class ImportIngGemsUseCase
             Log = log
         };
 
-        IEnumerable<SheetRecord> sheetsRecords = sheets.GetRecords(SourceFilePath, SheetType.Ing);
-        gemImport.Import(sheetsRecords);
+        IEnumerable<SheetValue> sheetsValues = sheets.GetIngRecords(SourceFilePath);
+        gemImport.Import(sheetsValues);
 
         await unitOfWork.SaveChanges();
 

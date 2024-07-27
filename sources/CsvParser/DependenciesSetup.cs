@@ -31,7 +31,7 @@ internal class DependenciesSetup
     public static void Configure(ContainerBuilder containerBuilder)
     {
         containerBuilder
-            .Register(context => new Database(@"c:\Projects.pet\CaveOfWonders\db"))
+            .Register(context => new Database(@"c:\Projects.pet\finanțe\CaveOfWonders\db"))
             .AsSelf();
         containerBuilder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
 

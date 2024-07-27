@@ -58,8 +58,8 @@ public class ImportBcrGemsUseCase
             Log = log
         };
 
-        IEnumerable<SheetRecord> sheetsRecords = sheets.GetRecords(SourceFilePath, SheetType.Bcr);
-        gemImport.Import(sheetsRecords);
+        IEnumerable<SheetValue> sheetsValues = sheets.GetBcrRecords(SourceFilePath);
+        gemImport.Import(sheetsValues);
 
         await unitOfWork.SaveChanges();
 

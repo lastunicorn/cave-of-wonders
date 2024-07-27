@@ -20,57 +20,19 @@ namespace DustInTheWind.CsvParser.Adapters.SheetsAccess;
 
 public class Sheets : ISheets
 {
-    public IEnumerable<SheetRecord> GetRecords(string location, SheetType sheetType)
+    public IEnumerable<SheetValue> GetBcrRecords(string location)
     {
         if (location == null) throw new ArgumentNullException(nameof(location));
 
-        switch (sheetType)
-        {
-            case SheetType.Bcr:
-                BcrSheetCsvFile bcrSheetCsvFile = new(location);
-                return bcrSheetCsvFile.Read();
+        BcrSheetCsvFile bcrSheetCsvFile = new(location);
+        return bcrSheetCsvFile.Read();
+    }
 
-            case SheetType.Ing:
-                IngSheetCsvFile ingSheetCsvFile = new(location);
-                return ingSheetCsvFile.Read();
+    public IEnumerable<SheetValue> GetIngRecords(string location)
+    {
+        if (location == null) throw new ArgumentNullException(nameof(location));
 
-            case SheetType.Brd:
-                break;
-
-            case SheetType.Bt:
-                break;
-
-            case SheetType.Revolut:
-                break;
-
-            case SheetType.Cash:
-                break;
-
-            case SheetType.Gold:
-                break;
-
-            case SheetType.TeleTrade:
-                break;
-
-            case SheetType.Quanloop:
-                break;
-
-            case SheetType.Mintos:
-                break;
-
-            case SheetType.PeerBerry:
-                break;
-
-            case SheetType.Xtb:
-                break;
-
-            case SheetType.Bonds:
-                break;
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(sheetType), sheetType, null);
-        }
-
-        return Enumerable.Empty<SheetRecord>();
+        IngSheetCsvFile ingSheetCsvFile = new(location);
+        return ingSheetCsvFile.Read();
     }
 }

@@ -20,6 +20,38 @@ namespace DustInTheWind.CsvParser.Adapters.SheetsAccess;
 
 internal class BcrSheetCsvFile
 {
+    private static readonly ColumnDescriptor[] ColumnDescriptors =
+    {
+        new()
+        {
+            Index = 2,
+            DateIndex = 0,
+            Format = ValueFormat.Lei,
+            Key = "current-account"
+        },
+        new()
+        {
+            Index = 3,
+            DateIndex = 0,
+            Format = ValueFormat.Lei,
+            Key = "savings-account"
+        },
+        new()
+        {
+            Index = 4,
+            DateIndex = 0,
+            Format = ValueFormat.Lei,
+            Key = "deposit-account"
+        },
+        new()
+        {
+            Index = 5,
+            DateIndex = 0,
+            Format = ValueFormat.Euro,
+            Key = "current-account-euro"
+        }
+    };
+
     private readonly string filePath;
 
     public BcrSheetCsvFile(string filePath)
@@ -27,64 +59,11 @@ internal class BcrSheetCsvFile
         this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
     }
 
-    public IEnumerable<SheetRecord> Read()
+    public IEnumerable<SheetValue> Read()
     {
-        IEnumerable<string> lines = File.ReadLines(filePath)
-            .Skip(1);
-
-        foreach (string line in lines)
-        {
-            string[] cells = line.Split(';');
-
-            yield return new SheetRecord
-            {
-                Date = cells[0].ParseDate().Value,
-                Values = ParseCells(cells)
-                    .ToList()
-            };
-        }
-    }
-
-    private static IEnumerable<SheetValue> ParseCells(IReadOnlyList<string> cells)
-    {
-        SheetValue[] sheetValues =
-        {
-            ParseCellLei(cells[2],"current-account"),
-            ParseCellLei(cells[3],"savings-account"),
-            ParseCellLei(cells[4], "deposit-account"),
-            ParseCellEuro(cells[5], "current-account-euro")
-        };
-
-        foreach (SheetValue sheetValue in sheetValues)
-        {
-            if (sheetValue != null)
-                yield return sheetValue;
-        }
-    }
-
-    private static SheetValue ParseCellLei(string cell, string valueKey)
-    {
-        decimal? currentAccountValue = cell.ParseCurrencyLei();
-
-        return currentAccountValue.HasValue
-            ? new SheetValue
-            {
-                Name = valueKey,
-                Value = currentAccountValue.Value
-            }
-            : null;
-    }
-
-    private static SheetValue ParseCellEuro(string cell, string valueKey)
-    {
-        decimal? currentAccountValue = cell.ParseCurrencyEuro();
-
-        return currentAccountValue.HasValue
-            ? new SheetValue
-            {
-                Name = valueKey,
-                Value = currentAccountValue.Value
-            }
-            : null;
+        return File.ReadLines(filePath)
+            .Skip(1)
+            .Select(x => new SheetRecord(x, ColumnDescriptors))
+            .SelectMany(x=> x.ParseCells());
     }
 }

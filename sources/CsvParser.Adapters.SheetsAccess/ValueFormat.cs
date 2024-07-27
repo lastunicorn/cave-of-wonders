@@ -14,21 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CsvParser.Ports.SheetsAccess;
+namespace DustInTheWind.CsvParser.Adapters.SheetsAccess;
 
-public enum SheetType
+public enum ValueFormat
 {
-    Bcr,
-    Ing,
-    Brd,
-    Bt,
-    Revolut,
-    Cash,
-    Gold,
-    TeleTrade,
-    Quanloop,
-    Mintos,
-    PeerBerry,
-    Xtb,
-    Bonds
+    Lei,
+    Euro
 }

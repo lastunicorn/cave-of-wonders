@@ -18,7 +18,9 @@ namespace DustInTheWind.CsvParser.Ports.SheetsAccess;
 
 public class SheetValue
 {
-    public string Name { get; set; }
+    public string Key { get; set; }
+
+    public DateTime Date { get; set; }
 
     public decimal Value { get; set; }
 }

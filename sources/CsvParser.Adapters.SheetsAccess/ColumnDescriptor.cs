@@ -14,11 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CsvParser.Ports.SheetsAccess;
+namespace DustInTheWind.CsvParser.Adapters.SheetsAccess;
 
-public class SheetRecord
+public class ColumnDescriptor
 {
-    public DateTime Date { get; set; }
+    public int Index { get; set; }
 
-    public List<SheetValue> Values { get; set; }
+    public int DateIndex { get; set; }
+
+    public ValueFormat Format { get; set; }
+
+    public string Key { get; set; }
 }

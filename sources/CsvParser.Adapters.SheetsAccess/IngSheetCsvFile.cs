@@ -20,6 +20,38 @@ namespace DustInTheWind.CsvParser.Adapters.SheetsAccess;
 
 internal class IngSheetCsvFile
 {
+    private static readonly ColumnDescriptor[] ColumnDescriptors =
+    {
+        new()
+        {
+            Index = 2,
+            DateIndex = 0,
+            Format = ValueFormat.Lei,
+            Key = "current-account"
+        },
+        new()
+        {
+            Index = 3,
+            DateIndex = 0,
+            Format = ValueFormat.Lei,
+            Key = "savings-account"
+        },
+        new()
+        {
+            Index = 4,
+            DateIndex = 0,
+            Format = ValueFormat.Lei,
+            Key = "deposit-account-parinti"
+        },
+        new()
+        {
+            Index = 5,
+            DateIndex = 0,
+            Format = ValueFormat.Lei,
+            Key = "deposit-account"
+        }
+    };
+
     private readonly string filePath;
 
     public IngSheetCsvFile(string filePath)
@@ -27,68 +59,11 @@ internal class IngSheetCsvFile
         this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
     }
 
-    public IEnumerable<SheetRecord> Read()
+    public IEnumerable<SheetValue> Read()
     {
-        IEnumerable<string> lines = File.ReadLines(filePath)
-            .Skip(1);
-
-        foreach (string line in lines)
-        {
-            string[] cells = line.Split(';');
-
-            yield return new SheetRecord
-            {
-                Date = cells[0].ParseDate().Value,
-                Values = ParseCells(cells)
-                    .ToList()
-            };
-        }
-    }
-
-    private static IEnumerable<SheetValue> ParseCells(IReadOnlyList<string> cells)
-    {
-        decimal? currentAccountValue = cells[2].ParseCurrencyLei();
-
-        if (currentAccountValue.HasValue)
-        {
-            yield return new SheetValue
-            {
-                Name = "current-account",
-                Value = currentAccountValue.Value
-            };
-        }
-
-        decimal? savingsAccountValue = cells[3].ParseCurrencyLei();
-
-        if (savingsAccountValue.HasValue)
-        {
-            yield return new SheetValue
-            {
-                Name = "savings-account",
-                Value = savingsAccountValue.Value
-            };
-        }
-
-        decimal? depositAccountParintiValue = cells[4].ParseCurrencyLei();
-
-        if (depositAccountParintiValue.HasValue)
-        {
-            yield return new SheetValue
-            {
-                Name = "deposit-account-parinti",
-                Value = depositAccountParintiValue.Value
-            };
-        }
-
-        decimal? depositAccountValue = cells[5].ParseCurrencyLei();
-
-        if (depositAccountValue.HasValue)
-        {
-            yield return new SheetValue
-            {
-                Name = "deposit-account",
-                Value = depositAccountValue.Value
-            };
-        }
+        return File.ReadLines(filePath)
+            .Skip(1)
+            .Select(x => new SheetRecord(x, ColumnDescriptors))
+            .SelectMany(x => x.ParseCells());
     }
 }

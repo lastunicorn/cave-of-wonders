@@ -30,26 +30,23 @@ internal class GemImport
 
     public ImportReport Report { get; private set; }
 
-    public void Import(IEnumerable<SheetRecord> sheetRecords)
+    public void Import(IEnumerable<SheetValue> sheetValues)
     {
         Report = new ImportReport();
 
         if (Overwrite)
             Pots.ClearGems();
 
-        foreach (SheetRecord sheetRecord in sheetRecords)
+        foreach (SheetValue sheetValue in sheetValues)
         {
-            foreach (SheetValue sheetValue in sheetRecord.Values)
+            Gem gem = new()
             {
-                Gem gem = new()
-                {
-                    Date = sheetRecord.Date,
-                    Value = (double)sheetValue.Value
-                };
+                Date = sheetValue.Date,
+                Value = (double)sheetValue.Value
+            };
 
-                GemAddReport gemAddReport = Pots.AddGem(sheetValue.Name, gem);
-                ProcessGemAddReport(gemAddReport);
-            }
+            GemAddReport gemAddReport = Pots.AddGem(sheetValue.Key, gem);
+            ProcessGemAddReport(gemAddReport);
         }
 
         LogReports();
@@ -60,31 +57,31 @@ internal class GemImport
         switch (gemAddReport.AddStatus)
         {
             case GemAddStatus.PotNotFound:
-                {
-                    Gem gem = gemAddReport.Gem;
-                    Log.WriteInfo($"Gem skipped - Pot unknown for key '{gemAddReport.Key}'. Date = {gem.Date:yyyy-MM-dd}; Value = {gem.Value}");
-                    break;
-                }
+            {
+                Gem gem = gemAddReport.Gem;
+                Log.WriteInfo($"Gem skipped - Pot unknown for key '{gemAddReport.Key}'. Date = {gem.Date:yyyy-MM-dd}; Value = {gem.Value}");
+                break;
+            }
 
             case GemAddStatus.GemAlreadyExists:
-                {
-                    Pot pot = gemAddReport.Pot;
-                    Gem gem = gemAddReport.Gem;
+            {
+                Pot pot = gemAddReport.Pot;
+                Gem gem = gemAddReport.Gem;
 
-                    Report[pot].SkipCount++;
-                    Log.WriteInfo($"Gem skipped - Pot '{pot.Name}' ({pot.Id:D}); Date = {gem.Date:yyyy-MM-dd}; Value = {gem.Value}");
-                    break;
-                }
+                Report[pot].SkipCount++;
+                Log.WriteInfo($"Gem skipped - Pot '{pot.Name}' ({pot.Id:D}); Date = {gem.Date:yyyy-MM-dd}; Value = {gem.Value}");
+                break;
+            }
 
             case GemAddStatus.Success:
-                {
-                    Pot pot = gemAddReport.Pot;
-                    Gem gem = gemAddReport.Gem;
+            {
+                Pot pot = gemAddReport.Pot;
+                Gem gem = gemAddReport.Gem;
 
-                    Report[pot].AddCount++;
-                    Log.WriteInfo($"Gem added - Pot '{pot.Name}' ({pot.Id:D}); Date = {gem.Date:yyyy-MM-dd}; Value = {gem.Value}");
-                    break;
-                }
+                Report[pot].AddCount++;
+                Log.WriteInfo($"Gem added - Pot '{pot.Name}' ({pot.Id:D}); Date = {gem.Date:yyyy-MM-dd}; Value = {gem.Value}");
+                break;
+            }
 
             default:
                 throw new ArgumentOutOfRangeException("Invalid status reported when adding Gem to Port.", nameof(gemAddReport));
