@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CurrencyExchange": {
+      "commandName": "Project",
+      "commandLineArgs": "exchange eurron"
+    }
+  }
+}

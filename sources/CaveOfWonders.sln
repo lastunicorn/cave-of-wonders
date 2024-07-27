@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Domain", "Cav
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Ports.DataAccess", "CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj", "{B78F0D30-1178-4D26-80A9-5B51FAC25E9E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Adapters.DataAccess", "CaveOfWonders.DataAccess\CaveOfWonders.Adapters.DataAccess.csproj", "{E3C75DF0-D668-417B-B37F-BCC778A061E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Adapters.DataAccess", "CaveOfWonders.Adapters.DataAccess\CaveOfWonders.Adapters.DataAccess.csproj", "{E3C75DF0-D668-417B-B37F-BCC778A061E7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Cli.Presentation", "CaveOfWonders.Cli.Presentation\CaveOfWonders.Cli.Presentation.csproj", "{8ACA7B8C-2188-48B2-B539-C94880F7E7E0}"
 EndProject
@@ -19,25 +19,45 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ports", "Ports", "{C43414A4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Adapters", "Adapters", "{DE84EDBF-40C3-4AAD-BED4-2C868C177515}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App.Cli", "App.Cli", "{7D68841E-86F8-4A32-B6E3-30ABB5DB9FB2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application.Cli", "Application.Cli", "{7D68841E-86F8-4A32-B6E3-30ABB5DB9FB2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Ports.SystemAccess", "CaveOfWonders.Ports.SystemAccess\CaveOfWonders.Ports.SystemAccess.csproj", "{91F1E976-C0AE-4749-A62D-9EAEB0086B7B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Adapters.SystemAccess", "CaveOfWonders.Adapters.SystemAccess\CaveOfWonders.Adapters.SystemAccess.csproj", "{83432918-6455-4B38-97FC-FFCBF15ED3F2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App.CsvParser", "App.CsvParser", "{63092511-0194-4A58-9FDD-B200C8EE9D38}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application.CsvParser", "Application.CsvParser", "{63092511-0194-4A58-9FDD-B200C8EE9D38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvParser", "CsvParser\CsvParser.csproj", "{E3BF5E3C-5466-4B24-A0F3-207C9DCD21B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvParser", "CsvParser\CsvParser.csproj", "{E3BF5E3C-5466-4B24-A0F3-207C9DCD21B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvParser.Ports.SheetsAccess", "CsvParser.Ports.SheetsAccess\CsvParser.Ports.SheetsAccess.csproj", "{608C98BC-5552-452D-BA5B-9E6143EAE6AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvParser.Ports.SheetsAccess", "CsvParser.Ports.SheetsAccess\CsvParser.Ports.SheetsAccess.csproj", "{608C98BC-5552-452D-BA5B-9E6143EAE6AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvParser.Adapters.SheetsAccess", "CsvParser.Adapters.SheetsAccess\CsvParser.Adapters.SheetsAccess.csproj", "{91570B62-8074-4FE4-BDFA-1E8A0CEE8D19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvParser.Adapters.SheetsAccess", "CsvParser.Adapters.SheetsAccess\CsvParser.Adapters.SheetsAccess.csproj", "{91570B62-8074-4FE4-BDFA-1E8A0CEE8D19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvParser.Application", "CsvParser.Application\CsvParser.Application.csproj", "{CF6863CC-5612-413B-BFC3-F9C9DDE025E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvParser.Application", "CsvParser.Application\CsvParser.Application.csproj", "{CF6863CC-5612-413B-BFC3-F9C9DDE025E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvParser.Ports.LogAccess", "CsvParser.Ports.LogAccess\CsvParser.Ports.LogAccess.csproj", "{B05D1F46-B22C-434A-87E0-19DFF4DE78BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvParser.Ports.LogAccess", "CsvParser.Ports.LogAccess\CsvParser.Ports.LogAccess.csproj", "{B05D1F46-B22C-434A-87E0-19DFF4DE78BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvParser.Adapters.LogAccess", "CsvParser.Adapters.LogAccess\CsvParser.Adapters.LogAccess.csproj", "{8FD33939-5E6C-4FD9-B616-FE6CC102C330}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvParser.Adapters.LogAccess", "CsvParser.Adapters.LogAccess\CsvParser.Adapters.LogAccess.csproj", "{8FD33939-5E6C-4FD9-B616-FE6CC102C330}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application.Exchange", "Application.Exchange", "{2F6668F4-BA94-4206-803A-28C39AD76421}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyExchange.Presentation", "CurrencyExchange.Presentation\CurrencyExchange.Presentation.csproj", "{10D4AAB2-EEAA-4AA9-9B51-CCE9C3E5E614}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyExchange.Application", "CurrencyExchange.Application\CurrencyExchange.Application.csproj", "{95C0FFDB-B38C-429C-9A25-83DF0C74207E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyExchange", "CurrencyExchange\CurrencyExchange.csproj", "{AC9BA378-F955-415C-801E-8169CC6C79AA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyExchange.Ports.BnrAccess", "CurrencyExchange.Ports.BnrAccess\CurrencyExchange.Ports.BnrAccess.csproj", "{7E51C82F-F3C1-480D-8D97-3F9EFD06E4ED}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyExchange.Ports.InsAccess", "CurrencyExchange.Ports.InsAccess\CurrencyExchange.Ports.InsAccess.csproj", "{88F53467-9AF1-424A-B270-1B400EF9A4B2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyExchange.Adapters.InsAccess", "CurrencyExchange.Adapters.InsAccess\CurrencyExchange.Adapters.InsAccess.csproj", "{B3792906-B901-4945-AA38-A5452188515F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyExchange.Adapters.BnrAccess", "CurrencyExchange.Adapters.BnrAccess\CurrencyExchange.Adapters.BnrAccess.csproj", "{A80EC0E9-0D59-4D62-BB6E-BDC5152714DB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyExchange.Adapters.BnrAccess.BnrFiles", "CurrencyExchange.Adapters.BnrAccess.BnrFiles\CurrencyExchange.Adapters.BnrAccess.BnrFiles.csproj", "{A605A348-698C-436B-92F5-F6A76A16B2DF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyExchange.Adapters.BnrAccess.NbrFiles", "CurrencyExchange.Adapters.BnrAccess.NbrFiles\CurrencyExchange.Adapters.BnrAccess.NbrFiles.csproj", "{3D66C70F-505A-43F0-BEB1-EE83303E819B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +121,42 @@ Global
 		{8FD33939-5E6C-4FD9-B616-FE6CC102C330}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FD33939-5E6C-4FD9-B616-FE6CC102C330}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FD33939-5E6C-4FD9-B616-FE6CC102C330}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10D4AAB2-EEAA-4AA9-9B51-CCE9C3E5E614}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10D4AAB2-EEAA-4AA9-9B51-CCE9C3E5E614}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10D4AAB2-EEAA-4AA9-9B51-CCE9C3E5E614}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10D4AAB2-EEAA-4AA9-9B51-CCE9C3E5E614}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95C0FFDB-B38C-429C-9A25-83DF0C74207E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95C0FFDB-B38C-429C-9A25-83DF0C74207E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95C0FFDB-B38C-429C-9A25-83DF0C74207E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95C0FFDB-B38C-429C-9A25-83DF0C74207E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC9BA378-F955-415C-801E-8169CC6C79AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC9BA378-F955-415C-801E-8169CC6C79AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC9BA378-F955-415C-801E-8169CC6C79AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC9BA378-F955-415C-801E-8169CC6C79AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E51C82F-F3C1-480D-8D97-3F9EFD06E4ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E51C82F-F3C1-480D-8D97-3F9EFD06E4ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E51C82F-F3C1-480D-8D97-3F9EFD06E4ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E51C82F-F3C1-480D-8D97-3F9EFD06E4ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88F53467-9AF1-424A-B270-1B400EF9A4B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88F53467-9AF1-424A-B270-1B400EF9A4B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88F53467-9AF1-424A-B270-1B400EF9A4B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88F53467-9AF1-424A-B270-1B400EF9A4B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3792906-B901-4945-AA38-A5452188515F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3792906-B901-4945-AA38-A5452188515F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3792906-B901-4945-AA38-A5452188515F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3792906-B901-4945-AA38-A5452188515F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A80EC0E9-0D59-4D62-BB6E-BDC5152714DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A80EC0E9-0D59-4D62-BB6E-BDC5152714DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A80EC0E9-0D59-4D62-BB6E-BDC5152714DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A80EC0E9-0D59-4D62-BB6E-BDC5152714DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A605A348-698C-436B-92F5-F6A76A16B2DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A605A348-698C-436B-92F5-F6A76A16B2DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A605A348-698C-436B-92F5-F6A76A16B2DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A605A348-698C-436B-92F5-F6A76A16B2DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D66C70F-505A-43F0-BEB1-EE83303E819B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D66C70F-505A-43F0-BEB1-EE83303E819B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D66C70F-505A-43F0-BEB1-EE83303E819B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D66C70F-505A-43F0-BEB1-EE83303E819B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -119,6 +175,15 @@ Global
 		{CF6863CC-5612-413B-BFC3-F9C9DDE025E0} = {63092511-0194-4A58-9FDD-B200C8EE9D38}
 		{B05D1F46-B22C-434A-87E0-19DFF4DE78BF} = {C43414A4-F3BF-4EAE-9A52-370952C6109F}
 		{8FD33939-5E6C-4FD9-B616-FE6CC102C330} = {DE84EDBF-40C3-4AAD-BED4-2C868C177515}
+		{10D4AAB2-EEAA-4AA9-9B51-CCE9C3E5E614} = {2F6668F4-BA94-4206-803A-28C39AD76421}
+		{95C0FFDB-B38C-429C-9A25-83DF0C74207E} = {2F6668F4-BA94-4206-803A-28C39AD76421}
+		{AC9BA378-F955-415C-801E-8169CC6C79AA} = {2F6668F4-BA94-4206-803A-28C39AD76421}
+		{7E51C82F-F3C1-480D-8D97-3F9EFD06E4ED} = {C43414A4-F3BF-4EAE-9A52-370952C6109F}
+		{88F53467-9AF1-424A-B270-1B400EF9A4B2} = {C43414A4-F3BF-4EAE-9A52-370952C6109F}
+		{B3792906-B901-4945-AA38-A5452188515F} = {DE84EDBF-40C3-4AAD-BED4-2C868C177515}
+		{A80EC0E9-0D59-4D62-BB6E-BDC5152714DB} = {DE84EDBF-40C3-4AAD-BED4-2C868C177515}
+		{A605A348-698C-436B-92F5-F6A76A16B2DF} = {DE84EDBF-40C3-4AAD-BED4-2C868C177515}
+		{3D66C70F-505A-43F0-BEB1-EE83303E819B} = {DE84EDBF-40C3-4AAD-BED4-2C868C177515}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28F94200-205A-4A69-84A9-427B804D252F}

@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CsvParser.Application;
+using CsvParser.Ports.LogAccess;
 
-namespace DustInTheWind.CsvParser;
+namespace DustInTheWind.CsvParser.Adapters.LogAccess;
 
 public sealed class Log : ILog, IDisposable, IAsyncDisposable
 {

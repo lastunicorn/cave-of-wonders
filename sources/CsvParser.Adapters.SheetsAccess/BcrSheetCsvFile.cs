@@ -47,48 +47,44 @@ internal class BcrSheetCsvFile
 
     private static IEnumerable<SheetValue> ParseCells(IReadOnlyList<string> cells)
     {
-        decimal? currentAccountValue = cells[2].ParseCurrencyLei();
-
-        if (currentAccountValue.HasValue)
+        SheetValue[] sheetValues =
         {
-            yield return new SheetValue
+            ParseCellLei(cells[2],"current-account"),
+            ParseCellLei(cells[3],"savings-account"),
+            ParseCellLei(cells[4], "deposit-account"),
+            ParseCellEuro(cells[5], "current-account-euro")
+        };
+
+        foreach (SheetValue sheetValue in sheetValues)
+        {
+            if (sheetValue != null)
+                yield return sheetValue;
+        }
+    }
+
+    private static SheetValue ParseCellLei(string cell, string valueKey)
+    {
+        decimal? currentAccountValue = cell.ParseCurrencyLei();
+
+        return currentAccountValue.HasValue
+            ? new SheetValue
             {
-                Name = "current-account",
+                Name = valueKey,
                 Value = currentAccountValue.Value
-            };
-        }
+            }
+            : null;
+    }
 
-        decimal? savingsAccountValue = cells[3].ParseCurrencyLei();
+    private static SheetValue ParseCellEuro(string cell, string valueKey)
+    {
+        decimal? currentAccountValue = cell.ParseCurrencyEuro();
 
-        if (savingsAccountValue.HasValue)
-        {
-            yield return new SheetValue
+        return currentAccountValue.HasValue
+            ? new SheetValue
             {
-                Name = "savings-account",
-                Value = savingsAccountValue.Value
-            };
-        }
-
-        decimal? depositAccountValue = cells[4].ParseCurrencyLei();
-
-        if (depositAccountValue.HasValue)
-        {
-            yield return new SheetValue
-            {
-                Name = "deposit-account",
-                Value = depositAccountValue.Value
-            };
-        }
-
-        decimal? currentAccountEuroValue = cells[5].ParseCurrencyEuro();
-
-        if (currentAccountEuroValue.HasValue)
-        {
-            yield return new SheetValue
-            {
-                Name = "current-account-euro",
-                Value = currentAccountEuroValue.Value
-            };
-        }
+                Name = valueKey,
+                Value = currentAccountValue.Value
+            }
+            : null;
     }
 }
