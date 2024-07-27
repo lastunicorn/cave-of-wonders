@@ -25,6 +25,6 @@ internal static class CurrencyValueExtensions
         if (currencyValue == null)
             return string.Empty;
 
-        return $"{currencyValue.Value:N4} {currencyValue.Currency}";
+        return $"{currencyValue.Value:N2} {currencyValue.Currency}";
     }
 }

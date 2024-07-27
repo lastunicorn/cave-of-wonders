@@ -52,7 +52,6 @@ internal class GemImport
         }
 
         LogReports();
-        Log.WriteInfo(new string('-', 100));
     }
 
     private void ProcessGemAddReport(GemAddReport gemAddReport)
