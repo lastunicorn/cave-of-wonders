@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023 Dust in the Wind
+// Copyright (C) 2023-2024 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ internal static class DataGridTemplate
 {
     public static DataGrid CreateNew()
     {
-        return new DataGrid()
+        return new DataGrid
         {
             TitleRow =
             {

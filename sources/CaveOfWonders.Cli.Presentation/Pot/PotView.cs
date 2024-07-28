@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023 Dust in the Wind
+// Copyright (C) 2023-2024 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ internal class PotView : ViewBase<PotCommandViewModel>
         DataGrid dataGrid = DataGridTemplate.CreateNew();
         dataGrid.Title = potDetailsViewModel.Name;
 
-        if (!potDetailsViewModel.IsActive) 
+        if (!potDetailsViewModel.IsActive)
             DataGridTemplate.Disable(dataGrid);
 
         dataGrid.Rows.Add("Id", potDetailsViewModel.Id);

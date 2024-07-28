@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023 Dust in the Wind
+// Copyright (C) 2023-2024 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,5 +21,4 @@ internal class PresentPotsViewModel
     public DateTime Date { get; set; }
 
     public List<PotInfoViewModel> Pots { get; set; }
-
 }
