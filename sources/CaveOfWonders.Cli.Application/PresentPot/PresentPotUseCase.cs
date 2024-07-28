@@ -16,6 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
@@ -23,10 +24,12 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPotResponse>
 {
     private readonly IUnitOfWork unitOfWork;
+    private readonly ISystemClock systemClock;
 
-    public PresentPotUseCase(IUnitOfWork unitOfWork)
+    public PresentPotUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
     {
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
     }
 
     public async Task<PresentPotResponse> Handle(PresentPotRequest request, CancellationToken cancellationToken)
@@ -61,6 +64,64 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
         if (request.PotName != null)
             return await unitOfWork.PotRepository.GetByName(request.PotName);
 
+        bool isIdentifierSpecified = !string.IsNullOrWhiteSpace(request.PotIdentifier);
+
+        if (isIdentifierSpecified)
+        {
+            IEnumerable<Pot> pots = await unitOfWork.PotRepository.GetByIdOrName(request.PotIdentifier);
+
+            if (!request.IncludeInactivePots)
+            {
+                DateTime today = systemClock.Today;
+
+                pots = pots.Where(x => x.IsActive(today));
+            }
+
+            pots = pots.OrderBy(x => x.DisplayOrder);
+
+            return pots;
+
+            //bool success = Guid.TryParse(request.PotIdentifier, out Guid potGuid);
+
+            //if (success)
+            //{
+            //    Pot pot = await unitOfWork.PotRepository.GetById(potGuid);
+            //    return new[] { pot };
+            //}
+
+            //List<Pot> pots = (await unitOfWork.PotRepository.GetByPartialId(request.PotIdentifier))
+            //    .ToList();
+
+            //if (pots.Count == 0)
+            //{
+            //    pots = (await unitOfWork.PotRepository.GetByName(request.PotIdentifier))
+            //        .ToList();
+            //}
+
+            //return pots;
+        }
+
         return await unitOfWork.PotRepository.GetAll();
     }
+
+    //private async Task<IEnumerable<Pot>> RetrievePot(PresentPotRequest request)
+    //{
+    //    if (!string.IsNullOrWhiteSpace(request.PotId))
+    //    {
+    //        bool success = Guid.TryParse(request.PotId, out Guid potGuid);
+
+    //        if (success)
+    //        {
+    //            Pot pot = await unitOfWork.PotRepository.GetById(potGuid);
+    //            return new[] { pot };
+    //        }
+
+    //        return await unitOfWork.PotRepository.GetByPartialId(request.PotId);
+    //    }
+
+    //    if (request.PotName != null)
+    //        return await unitOfWork.PotRepository.GetByName(request.PotName);
+
+    //    return await unitOfWork.PotRepository.GetAll();
+    //}
 }

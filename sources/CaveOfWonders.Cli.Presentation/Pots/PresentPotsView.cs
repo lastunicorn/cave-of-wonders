@@ -37,7 +37,10 @@ internal class PresentPotsView : IView<PresentPotsViewModel>
             }
         };
 
-        dataGrid.Columns.Add(new Column("Id"));
+        dataGrid.Columns.Add(new Column("Id")
+        {
+            ForegroundColor = ConsoleColor.DarkGray
+        });
         dataGrid.Columns.Add(new Column("Name"));
         dataGrid.Columns.Add(new Column("Value")
         {

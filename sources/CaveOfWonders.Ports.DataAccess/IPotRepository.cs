@@ -29,4 +29,6 @@ public interface IPotRepository
     Task<Pot> GetById(Guid potId);
 
     Task<IEnumerable<Pot>> GetByPartialId(string partialPotId);
+
+    Task<IEnumerable<Pot>> GetByIdOrName(string idOrName);
 }

@@ -23,4 +23,8 @@ public class PresentPotRequest : IRequest<PresentPotResponse>
     public string PotName { get; set; }
 
     public string PotId { get; set; }
+
+    public string PotIdentifier { get; set; }
+
+    public bool IncludeInactivePots { get; set; }
 }

@@ -20,7 +20,7 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.Pot;
 
-[NamedCommand("pot")]
+[NamedCommand("pot", Description = "Display details about a specific pot.")]
 internal class PotCommand : IConsoleCommand<PotCommandViewModel>
 {
     private readonly IMediator mediator;
@@ -30,6 +30,12 @@ internal class PotCommand : IConsoleCommand<PotCommandViewModel>
 
     [NamedParameter("Id", ShortName = 'i', IsOptional = true, Description = "The Id of the pot for which to display details. Partial Id (ex: first 8 characters) is allowed to be provided.")]
     public string PotId { get; set; }
+
+    [AnonymousParameter(DisplayName = "Pot Identifier", Order = 1, IsOptional = true, Description = "Name or id of the pot. Partial id is accepted.")]
+    public string PotIdentifier { get; set; }
+
+    [NamedParameter("all", ShortName = 'a', IsOptional = true, Description = "Display all pots, including the inactive ones. Default = false.")]
+    public bool IncludeInactivePots { get; set; }
 
     public PotCommand(IMediator mediator)
     {
@@ -41,7 +47,9 @@ internal class PotCommand : IConsoleCommand<PotCommandViewModel>
         PresentPotRequest request = new()
         {
             PotName = PotName,
-            PotId = PotId
+            PotId = PotId,
+            PotIdentifier = PotIdentifier,
+            IncludeInactivePots = IncludeInactivePots
         };
 
         PresentPotResponse response = await mediator.Send(request);

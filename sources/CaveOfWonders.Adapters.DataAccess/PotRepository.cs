@@ -50,7 +50,7 @@ public class PotRepository : IPotRepository
     public Task<IEnumerable<Pot>> GetByName(string potName)
     {
         IEnumerable<Pot> pot = database.Pots
-            .Where(x => x.Name?.Contains(potName) ?? false);
+            .Where(x => x.Name?.Contains(potName, StringComparison.InvariantCultureIgnoreCase) ?? false);
 
         return Task.FromResult(pot);
     }
@@ -64,8 +64,16 @@ public class PotRepository : IPotRepository
     public Task<IEnumerable<Pot>> GetByPartialId(string partialPotId)
     {
         IEnumerable<Pot> pot = database.Pots
-            .Where(x => x.Id.ToString("N").Contains(partialPotId, StringComparison.InvariantCultureIgnoreCase));
+            .Where(x => x.Id.ToString("D").Contains(partialPotId, StringComparison.InvariantCultureIgnoreCase));
 
         return Task.FromResult(pot);
+    }
+
+    public Task<IEnumerable<Pot>> GetByIdOrName(string idOrName)
+    {
+        IEnumerable<Pot> pots = database.Pots
+            .Where(x => x.Id.ToString("D").Contains(idOrName, StringComparison.InvariantCultureIgnoreCase) || (x.Name?.Contains(idOrName, StringComparison.InvariantCultureIgnoreCase) ?? false));
+
+        return Task.FromResult(pots);
     }
 }

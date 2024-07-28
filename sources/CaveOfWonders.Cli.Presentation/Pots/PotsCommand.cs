@@ -20,7 +20,7 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.Pots;
 
-[NamedCommand("pots")]
+[NamedCommand("pots", Description = "Display the current value of the pots.")]
 internal class PotsCommand : IConsoleCommand<PresentPotsViewModel>
 {
     private readonly IMediator mediator;

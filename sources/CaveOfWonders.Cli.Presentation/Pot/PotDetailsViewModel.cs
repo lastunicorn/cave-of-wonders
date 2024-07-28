@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Cli.Application;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.Pot;
@@ -36,7 +37,9 @@ internal class PotDetailsViewModel
 
     public bool IsActive { get; set; }
 
-    public DateTime? LastGemDate { get; set; }
+    public DateTime? LastGemDate { get; }
+
+    public CurrencyValue Value { get; }
 
     public PotDetailsViewModel(PotDetails potDetails)
     {
@@ -51,6 +54,7 @@ internal class PotDetailsViewModel
         Currency = potDetails.Currency;
         GemCount = potDetails.GemCount;
         LastGemDate = potDetails.LastGemDate;
+        Value = potDetails.Value;
 
         IsActive = potDetails.EndDate == null || potDetails.EndDate >= DateTime.Today;
     }

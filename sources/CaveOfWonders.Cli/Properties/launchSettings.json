@@ -1,9 +1,9 @@
 {
   "profiles": {
-    "CaveOfWonders.Cli.Bootstrapper": {
+    "CaveOfWonders.Cli": {
       "commandName": "Project",
       //"commandLineArgs": "state -d 2023-05-12 -c EUR"
-      "commandLineArgs": "state"
+      "commandLineArgs": "pot bcr"
     }
   }
 }

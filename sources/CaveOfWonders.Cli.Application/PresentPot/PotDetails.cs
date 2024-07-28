@@ -36,6 +36,8 @@ public class PotDetails
 
     public DateTime? LastGemDate { get; set; }
 
+    public CurrencyValue Value { get; set; }
+
     internal PotDetails(Pot pot)
     {
         Id = pot.Id;
@@ -45,6 +47,18 @@ public class PotDetails
         EndDate = pot.EndDate;
         Currency = pot.Currency;
         GemCount = pot.Gems.Count;
-        LastGemDate = pot.Gems.Last()?.Date;
+
+        Gem lastGem = pot.Gems.Last();
+
+        LastGemDate = lastGem?.Date;
+
+        if (lastGem != null)
+        {
+            Value = new CurrencyValue
+            {
+                Currency = pot.Currency,
+                Value = lastGem.Value
+            };
+        }
     }
 }
