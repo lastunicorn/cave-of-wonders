@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023 Dust in the Wind
+// Copyright (C) 2023-2024 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ internal class ImportBtGemsUseCase : IRequestHandler<ImportBtGemsRequest, Import
     private readonly IUnitOfWork unitOfWork;
     private readonly ISheets sheets;
     private readonly ILog log;
-    
+
     public ImportBtGemsUseCase(IUnitOfWork unitOfWork, ISheets sheets, ILog log)
     {
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
