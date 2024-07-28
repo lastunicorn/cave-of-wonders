@@ -1,5 +1,5 @@
-﻿// Currency Exchange
-// Copyright (C) 2023 Dust in the Wind
+﻿// Cave of Wonders
+// Copyright (C) 2023-2024 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.ConsoleTools;
 using System.Globalization;
+using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 using DustInTheWind.CurrencyExchange.Application.PresentExchangeRate;
