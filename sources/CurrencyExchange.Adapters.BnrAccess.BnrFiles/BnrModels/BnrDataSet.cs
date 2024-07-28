@@ -16,7 +16,7 @@
 
 using System.Xml.Serialization;
 
-namespace DustInTheWind.CurrencyExchange.BnrAccess.BnrFiles.BnrModels;
+namespace DustInTheWind.CurrencyExchange.Adapters.BnrAccess.BnrFiles.BnrModels;
 
 [XmlRoot("DataSet", Namespace = "http://www.bnr.ro/xsd")]
 public class BnrDataSet

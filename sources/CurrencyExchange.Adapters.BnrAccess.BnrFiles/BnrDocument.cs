@@ -15,9 +15,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.Xml.Serialization;
-using DustInTheWind.CurrencyExchange.BnrAccess.BnrFiles.BnrModels;
+using DustInTheWind.CurrencyExchange.Adapters.BnrAccess.BnrFiles.BnrModels;
 
-namespace DustInTheWind.CurrencyExchange.BnrAccess.BnrFiles;
+namespace DustInTheWind.CurrencyExchange.Adapters.BnrAccess.BnrFiles;
 
 public class BnrDocument
 {

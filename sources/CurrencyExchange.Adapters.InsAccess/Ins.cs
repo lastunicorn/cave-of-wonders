@@ -16,7 +16,7 @@
 
 using DustInTheWind.CurrencyExchange.Ports.InsAccess;
 
-namespace DustInTheWind.CurrencyExchange.InsAccess;
+namespace DustInTheWind.CurrencyExchange.Adapters.InsAccess;
 
 /// <summary>
 /// INS = Institutul Național de Statistică

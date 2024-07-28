@@ -15,10 +15,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.Globalization;
-using DustInTheWind.CurrencyExchange.BnrAccess.NbrFiles.NbrModels;
+using DustInTheWind.CurrencyExchange.Adapters.BnrAccess.NbrFiles.NbrModels;
 using DustInTheWind.CurrencyExchange.Ports.BnrAccess;
 
-namespace DustInTheWind.CurrencyExchange.BnrAccess;
+namespace DustInTheWind.CurrencyExchange.Adapters.BnrAccess;
 
 internal static class NbrRowExtensions
 {

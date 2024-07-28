@@ -17,7 +17,7 @@
 using System.Globalization;
 using DustInTheWind.CurrencyExchange.Ports.InsAccess;
 
-namespace DustInTheWind.CurrencyExchange.InsAccess;
+namespace DustInTheWind.CurrencyExchange.Adapters.InsAccess;
 
 internal class YearlyInflationDocument
 {

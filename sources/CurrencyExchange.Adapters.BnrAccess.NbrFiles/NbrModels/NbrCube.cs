@@ -16,7 +16,7 @@
 
 using System.Xml.Serialization;
 
-namespace DustInTheWind.CurrencyExchange.BnrAccess.NbrFiles.NbrModels;
+namespace DustInTheWind.CurrencyExchange.Adapters.BnrAccess.NbrFiles.NbrModels;
 
 public class NbrCube
 {

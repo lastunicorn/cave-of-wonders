@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CurrencyExchange.BnrAccess.BnrFiles;
-using DustInTheWind.CurrencyExchange.BnrAccess.NbrFiles;
+using DustInTheWind.CurrencyExchange.Adapters.BnrAccess.BnrFiles;
+using DustInTheWind.CurrencyExchange.Adapters.BnrAccess.NbrFiles;
 using DustInTheWind.CurrencyExchange.Ports.BnrAccess;
 
-namespace DustInTheWind.CurrencyExchange.BnrAccess;
+namespace DustInTheWind.CurrencyExchange.Adapters.BnrAccess;
 
 public class Bnr : IBnr
 {
