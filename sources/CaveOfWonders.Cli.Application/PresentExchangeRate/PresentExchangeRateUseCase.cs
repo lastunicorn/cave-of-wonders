@@ -61,6 +61,9 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
 
     private Task RetrieveForToday(CurrencyPair currencyPair)
     {
+        // If currency pair provided        => 1 currency; multiple dates       => display by currency
+        // If currency pair NOT provided    => multiple currencies; multiple dates       => display by currency
+
         DateTime dateTime = systemClock.Today;
         return RetrieveByDate(currencyPair, dateTime);
     }

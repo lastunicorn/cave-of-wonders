@@ -63,6 +63,11 @@ public class ExchangeRateRepository : IExchangeRateRepository
         return Task.FromResult(exchangeRates);
     }
 
+    public Task<IEnumerable<ExchangeRate>> Get(CurrencyPair currencyPair, List<DateTime> dates)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<ExchangeRate> GetLatest(CurrencyPair currencyPair, DateTime date)
     {
         string currencyPairAsString = currencyPair.ToString();

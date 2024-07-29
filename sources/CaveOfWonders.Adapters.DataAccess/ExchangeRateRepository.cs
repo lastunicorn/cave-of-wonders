@@ -16,6 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
@@ -40,6 +41,15 @@ public class ExchangeRateRepository : IExchangeRateRepository
     {
         IEnumerable<ExchangeRate> exchangeRates = database.ExchangeRates
             .Where(x => x.Date == date);
+
+        return Task.FromResult(exchangeRates);
+    }
+
+    public Task<IEnumerable<ExchangeRate>> Get(CurrencyPair currencyPair, List<DateTime> dates)
+    {
+        string currencyPairAsString = currencyPair.ToString();
+        IEnumerable<ExchangeRate> exchangeRates = database.ExchangeRates
+            .Where(x => x.CurrencyPair == currencyPairAsString && dates.Contains(x.Date));
 
         return Task.FromResult(exchangeRates);
     }

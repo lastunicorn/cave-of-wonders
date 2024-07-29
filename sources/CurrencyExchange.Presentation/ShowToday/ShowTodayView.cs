@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Globalization;
 using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
+using DustInTheWind.ConsoleTools.Controls;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 using DustInTheWind.CurrencyExchange.Application.PresentToday;
 
@@ -26,38 +26,121 @@ internal class ShowTodayView : IView<PresentTodayResponse>
 {
     public void Display(PresentTodayResponse response)
     {
-        string date = response.Date.ToString("d", CultureInfo.CurrentCulture);
-
-        if (response.ExchangeRates.Count == 0)
+        if (response.ExchangeRatesByDates != null)
         {
-            CustomConsole.WriteLineWarning($"There are no exchange rates for {date}.");
+            DisplayByDates(response.ExchangeRatesByDates);
         }
-        else
+
+        if (response.ExchangeRatesByCurrencies != null)
         {
-            DataGrid dataGrid = new("Exchange Rates")
-            {
-                TitleRow =
-                {
-                    BackgroundColor = ConsoleColor.Gray,
-                    ForegroundColor = ConsoleColor.Black
-                },
-                Border =
-                {
-                    Template = BorderTemplate.SingleLineBorderTemplate
-                }
-            };
+            DisplayByCurrencies(response.ExchangeRatesByCurrencies);
+        }
 
-            dataGrid.Columns.Add("Currency");
-            dataGrid.Columns.Add(date);
+        if (response.ExchangeRatesByDates == null && response.ExchangeRatesByCurrencies == null)
+        {
+            CustomConsole.WriteLineWarning("There are no exchange rates for the date and/or currencies specified.");
+        }
+    }
 
-            foreach (ExchangeRateResponseDto exchangeRateResponseDto in response.ExchangeRates)
+    private void DisplayByDates(List<ExchangeRatesByDateCollection> exchangeRatesByDates)
+    {
+        DataGrid dataGrid = new("Exchange Rates")
+        {
+            TitleRow =
             {
-                string currencyPair = exchangeRateResponseDto.CurrencyPair.ToString();
-                string value = exchangeRateResponseDto.Value.ToString(CultureInfo.CurrentCulture);
-                dataGrid.Rows.Add(currencyPair, value);
+                BackgroundColor = ConsoleColor.Gray,
+                ForegroundColor = ConsoleColor.Black
+            },
+            Border =
+            {
+                Template = BorderTemplate.SingleLineBorderTemplate
             }
+        };
 
-            dataGrid.Display();
+        dataGrid.Columns.Add("Currency");
+
+        foreach (ExchangeRatesByDateCollection exchangeRatesByDateCollection in exchangeRatesByDates)
+        {
+            dataGrid.Columns.Add(new Column(exchangeRatesByDateCollection.Date.ToString("d")));
+            int columnIndex = dataGrid.Columns.Count - 1;
+
+            foreach (ContentRow dataGridRow in dataGrid.Rows)
+                dataGridRow.AddCell(string.Empty);
+
+            foreach (ExchangeRateForCurrency exchangeRateForCurrency in exchangeRatesByDateCollection.ExchangeRates)
+            {
+                ContentRow contentRow = dataGrid.Rows.FirstOrDefault(x => x[0].Content == exchangeRateForCurrency.CurrencyPair);
+
+                if (contentRow != null)
+                {
+                    contentRow[columnIndex].Content = new MultilineText(exchangeRateForCurrency.Value);
+                }
+                else
+                {
+                    contentRow = new ContentRow();
+                    dataGrid.Rows.Add(contentRow);
+
+                    contentRow.AddCell(exchangeRateForCurrency.CurrencyPair);
+
+                    for (int i = 1; i < dataGrid.Columns.Count - 1; i++)
+                        contentRow.AddCell(string.Empty);
+
+                    contentRow.AddCell(exchangeRateForCurrency.Value);
+                }
+            }
         }
+
+        dataGrid.Display();
+    }
+
+    private void DisplayByCurrencies(List<ExchangeRatesByCurrencyCollection> exchangeRatesByCurrencies)
+    {
+        DataGrid dataGrid = new("Exchange Rates")
+        {
+            TitleRow =
+            {
+                BackgroundColor = ConsoleColor.Gray,
+                ForegroundColor = ConsoleColor.Black
+            },
+            Border =
+            {
+                Template = BorderTemplate.SingleLineBorderTemplate
+            }
+        };
+
+        dataGrid.Columns.Add("Date");
+
+        foreach (ExchangeRatesByCurrencyCollection exchangeRatesByCurrencyCollection in exchangeRatesByCurrencies)
+        {
+            dataGrid.Columns.Add(exchangeRatesByCurrencyCollection.CurrencyPair);
+            int columnIndex = dataGrid.Columns.Count - 1;
+
+            foreach (ContentRow dataGridRow in dataGrid.Rows)
+                dataGridRow.AddCell(string.Empty);
+
+            foreach (ExchangeRateForDate exchangeRateForDate in exchangeRatesByCurrencyCollection.ExchangeRates)
+            {
+                ContentRow contentRow = dataGrid.Rows.FirstOrDefault(x => x[0].Content == exchangeRateForDate.Date.ToString("d"));
+
+                if (contentRow != null)
+                {
+                    contentRow[columnIndex].Content = new MultilineText(exchangeRateForDate.Value);
+                }
+                else
+                {
+                    contentRow = new ContentRow();
+                    dataGrid.Rows.Add(contentRow);
+
+                    contentRow.AddCell(exchangeRateForDate.Date.ToString("d"));
+
+                    for (int i = 1; i < dataGrid.Columns.Count - 1; i++)
+                        contentRow.AddCell(string.Empty);
+
+                    contentRow.AddCell(exchangeRateForDate.Value);
+                }
+            }
+        }
+
+        dataGrid.Display();
     }
 }

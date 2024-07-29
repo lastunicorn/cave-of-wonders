@@ -27,7 +27,7 @@ internal class Program
     {
         ConsoleTools.Commando.Application application = ApplicationBuilder.Create()
             .ConfigureServices(DependenciesSetup.Configure)
-            .RegisterCommandsFrom(typeof(ShowTodayCommand).Assembly)
+            .RegisterCommandsFrom(typeof(ShowCommand).Assembly)
             .HandleExceptions(HandlerApplicationException)
             .Build();
 

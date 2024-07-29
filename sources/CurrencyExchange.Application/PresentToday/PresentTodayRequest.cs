@@ -20,4 +20,11 @@ namespace DustInTheWind.CurrencyExchange.Application.PresentToday;
 
 public class PresentTodayRequest : IRequest<PresentTodayResponse>
 {
+    public DateTime? Date { get; set; }
+
+    public bool Today { get; set; }
+
+    public List<DateTime> Dates { get; set; }
+
+    public string CurrencyPair { get; set; }
 }
