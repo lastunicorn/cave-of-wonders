@@ -14,11 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CurrencyExchange.Application.PresentToday;
+using MediatR;
 
-public class PresentTodayResponse
+namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
+
+public class PresentExchangeRateRequest : IRequest<PresentExchangeRateResponse>
 {
-    public DateTime Date { get; set; }
+    public string CurrencyPair { get; set; }
 
-    public List<ExchangeRateResponseDto> ExchangeRates { get; set; }
+    public bool Today { get; set; }
+
+    public DateTime? Date { get; set; }
+
+    public DateTime? StartDate { get; set; }
+
+    public DateTime? EndDate { get; set; }
+
+    public uint? Year { get; set; }
+
+    public uint? Month { get; set; }
 }

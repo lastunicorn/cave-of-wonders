@@ -14,33 +14,33 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
+using DustInTheWind.CurrencyExchange.Ports.BnrAccess;
 using MediatR;
 
-namespace DustInTheWind.CurrencyExchange.Application.PresentToday;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportFromNbrFile;
 
-public class PresentTodayUseCase : IRequestHandler<PresentTodayRequest, PresentTodayResponse>
+internal class ImportFromNbrUseCase : IRequestHandler<ImportFromNbrRequest, ImportFromNbrResponse>
 {
+    private readonly IBnr bnr;
     private readonly IUnitOfWork unitOfWork;
-    private readonly ISystemClock systemClock;
 
-    public PresentTodayUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
+    public ImportFromNbrUseCase(IBnr bnr, IUnitOfWork unitOfWork)
     {
+        this.bnr = bnr ?? throw new ArgumentNullException(nameof(bnr));
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
     }
 
-    public async Task<PresentTodayResponse> Handle(PresentTodayRequest request, CancellationToken cancellationToken)
+    public async Task<ImportFromNbrResponse> Handle(ImportFromNbrRequest request, CancellationToken cancellationToken)
     {
-        DateTime today = systemClock.Today;
+        IEnumerable<ExchangeRate> exchangeRates = (await bnr.GetExchangeRatesFromNbr(request.SourceFilePath))
+            .ToExchangeRates();
 
-        return new PresentTodayResponse
-        {
-            Date = today,
-            ExchangeRates = (await unitOfWork.ExchangeRateRepository.Get(today))
-                .Select(x => new ExchangeRateResponseDto(x))
-                .ToList()
-        };
+        ImportReport report = await unitOfWork.ExchangeRateRepository.Import(exchangeRates);
+
+        await unitOfWork.SaveChanges();
+
+        return new ImportFromNbrResponse(report);
     }
 }

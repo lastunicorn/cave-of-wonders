@@ -14,26 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportFromNbrWebsite;
 using DustInTheWind.ConsoleTools.Commando;
-using DustInTheWind.CurrencyExchange.Application.PresentToday;
 using MediatR;
 
-namespace DustInTheWind.CurrencyExchange.Presentation.ShowToday;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.Import;
 
-[NamedCommand("show-today")]
-public class ShowTodayCommand : IConsoleCommand<PresentTodayResponse>
+[NamedCommand("import", Description = "Import exchange rates directly from BNR website, from nbr files.")]
+internal class ImportCommand : IConsoleCommand<ImportFromNbrWebsiteResponse>
 {
     private readonly IMediator mediator;
 
-    public ShowTodayCommand(IMediator mediator)
+    [NamedParameter("year", ShortName = 'y')]
+    public int Year { get; set; }
+
+    public ImportCommand(IMediator mediator)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
-    public async Task<PresentTodayResponse> Execute()
+    public async Task<ImportFromNbrWebsiteResponse> Execute()
     {
-        PresentTodayRequest request = new();
-        PresentTodayResponse response = await mediator.Send(request);
+        ImportFromNbrWebsiteRequest request = new()
+        {
+            Year = Year
+        };
+        ImportFromNbrWebsiteResponse response = await mediator.Send(request);
 
         return response;
     }

@@ -14,11 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CurrencyExchange.Application.PresentToday;
+using DustInTheWind.CurrencyExchange.Ports.InsAccess;
 
-public class PresentTodayResponse
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
+
+public class InflationRecord
 {
-    public DateTime Date { get; set; }
+    public int Year { get; set; }
 
-    public List<ExchangeRateResponseDto> ExchangeRates { get; set; }
+    public decimal Value { get; set; }
+
+    public InflationRecord(InsInflationRecord insInflationRecord)
+    {
+        Year = insInflationRecord.Year;
+        Value = insInflationRecord.Value;
+    }
 }

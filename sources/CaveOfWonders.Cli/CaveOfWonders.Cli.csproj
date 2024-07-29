@@ -40,6 +40,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <ProjectReference Include="..\CaveOfWonders.Cli.Presentation\CaveOfWonders.Cli.Presentation.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Ports.SystemAccess\CaveOfWonders.Ports.SystemAccess.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CurrencyExchange.Adapters.BnrAccess\CurrencyExchange.Adapters.BnrAccess.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CurrencyExchange.Adapters.InsAccess\CurrencyExchange.Adapters.InsAccess.csproj" PrivateAssets="All" />
     </ItemGroup>
 
 </Project>

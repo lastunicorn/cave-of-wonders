@@ -14,11 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CurrencyExchange.Application.PresentToday;
+using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
-public class PresentTodayResponse
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportFromBnrFile;
+
+public class DuplicateReportResponseDto
 {
     public DateTime Date { get; set; }
 
-    public List<ExchangeRateResponseDto> ExchangeRates { get; set; }
+    public string CurrencyPair { get; set; }
+
+    public decimal Value1 { get; set; }
+
+    public decimal Value2 { get; set; }
+
+    internal DuplicateReportResponseDto(DuplicateReport duplicateReport)
+    {
+        Date = duplicateReport.Date;
+        CurrencyPair = duplicateReport.CurrencyPair;
+        Value1 = duplicateReport.Value1;
+        Value2 = duplicateReport.Value2;
+    }
 }

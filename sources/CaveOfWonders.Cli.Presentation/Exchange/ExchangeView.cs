@@ -15,22 +15,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.Globalization;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.ConsoleTools.Controls.Tables;
-using DustInTheWind.CurrencyExchange.Application.PresentToday;
 
-namespace DustInTheWind.CurrencyExchange.Presentation.ShowToday;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.Exchange;
 
-internal class ShowTodayView : IView<PresentTodayResponse>
+internal class ExchangeView : IView<PresentExchangeRateResponse>
 {
-    public void Display(PresentTodayResponse response)
+    public void Display(PresentExchangeRateResponse response)
     {
-        string date = response.Date.ToString("d", CultureInfo.CurrentCulture);
-
         if (response.ExchangeRates.Count == 0)
         {
-            CustomConsole.WriteLineWarning($"There are no exchange rates for {date}.");
+            CustomConsole.WriteLineWarning($"There are no exchange rates for {response.CurrencyPair} and the specified dates.");
         }
         else
         {
@@ -47,17 +45,20 @@ internal class ShowTodayView : IView<PresentTodayResponse>
                 }
             };
 
-            dataGrid.Columns.Add("Currency");
-            dataGrid.Columns.Add(date);
+            dataGrid.Columns.Add("Date");
+            dataGrid.Columns.Add(response.CurrencyPair);
 
             foreach (ExchangeRateResponseDto exchangeRateResponseDto in response.ExchangeRates)
             {
-                string currencyPair = exchangeRateResponseDto.CurrencyPair.ToString();
+                string date = exchangeRateResponseDto.Date.ToString("d", CultureInfo.CurrentCulture);
                 string value = exchangeRateResponseDto.Value.ToString(CultureInfo.CurrentCulture);
-                dataGrid.Rows.Add(currencyPair, value);
+                dataGrid.Rows.Add(date, value);
             }
 
             dataGrid.Display();
         }
+
+        if (response.Comments != null)
+            CustomConsole.WriteLineWarning(response.Comments);
     }
 }

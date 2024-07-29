@@ -14,11 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CurrencyExchange.Application.PresentToday;
+using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CurrencyExchange.Ports.BnrAccess;
 
-public class PresentTodayResponse
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportFromBnrFile;
+
+internal static class ExchangeRateExtensions
 {
-    public DateTime Date { get; set; }
-
-    public List<ExchangeRateResponseDto> ExchangeRates { get; set; }
+    public static IEnumerable<ExchangeRate> ToExchangeRates(this IEnumerable<BnrExchangeRate> bnrExchangeRates)
+    {
+        return bnrExchangeRates
+            .Select(x => new ExchangeRate
+            {
+                Date = x.Date,
+                CurrencyPair = x.CurrencyPair,
+                Value = x.Value
+            });
+    }
 }

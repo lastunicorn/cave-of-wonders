@@ -15,27 +15,33 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.ConsoleTools;
-using DustInTheWind.ConsoleTools.Commando;
-using DustInTheWind.ConsoleTools.Commando.Setup.Microsoft;
-using DustInTheWind.CurrencyExchange.Presentation.ShowToday;
 
-namespace DustInTheWind.CurrencyExchange;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.ImportInflation;
 
-internal class Program
+internal class ChartLineControl
 {
-    public static async Task Main(string[] args)
-    {
-        ConsoleTools.Commando.Application application = ApplicationBuilder.Create()
-            .ConfigureServices(DependenciesSetup.Configure)
-            .RegisterCommandsFrom(typeof(ShowTodayCommand).Assembly)
-            .HandleExceptions(HandlerApplicationException)
-            .Build();
+    private const int Threshold = 3;
 
-        await application.RunAsync(args);
+    public decimal Value { get; set; }
+
+    public void Display()
+    {
+        if (Value <= 0)
+            return;
+
+        int roundedValue = (int)Math.Round(Math.Max(0, Value));
+
+        int safeValue = Math.Min(Threshold, roundedValue);
+        DisplayValue(safeValue, ConsoleColor.DarkBlue);
+
+        int painfulValue = roundedValue - safeValue;
+        if (painfulValue > 0)
+            DisplayValue(painfulValue, ConsoleColor.White);
     }
 
-    private static void HandlerApplicationException(object o, UnhandledApplicationExceptionEventArgs e)
+    private static void DisplayValue(int value, ConsoleColor color)
     {
-        CustomConsole.WriteError(e.Exception);
+        string chartLine = new('.', value);
+        CustomConsole.Write(color, chartLine);
     }
 }

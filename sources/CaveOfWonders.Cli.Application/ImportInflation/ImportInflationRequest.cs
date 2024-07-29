@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CurrencyExchange.Application.PresentToday;
+using MediatR;
 
-public class PresentTodayResponse
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
+
+public class ImportInflationRequest : IRequest<ImportInflationResponse>
 {
-    public DateTime Date { get; set; }
-
-    public List<ExchangeRateResponseDto> ExchangeRates { get; set; }
+    public string SourceFilePath { get; set; }
 }

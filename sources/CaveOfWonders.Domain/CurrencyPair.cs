@@ -18,7 +18,7 @@ using System.Text.RegularExpressions;
 
 namespace DustInTheWind.CaveOfWonders.Domain;
 
-public struct CurrencyPair : IEquatable<CurrencyPair>
+public readonly struct CurrencyPair : IEquatable<CurrencyPair>
 {
     private static readonly Regex Regex = new(@"^(.{3})[\/| ]?(.{3})$", RegexOptions.Singleline);
 

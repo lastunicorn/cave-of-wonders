@@ -14,27 +14,36 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 using DustInTheWind.ConsoleTools.Commando;
-using DustInTheWind.CurrencyExchange.Application.PresentToday;
 using MediatR;
 
-namespace DustInTheWind.CurrencyExchange.Presentation.ShowToday;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.ImportInflation;
 
-[NamedCommand("show-today")]
-public class ShowTodayCommand : IConsoleCommand<PresentTodayResponse>
+[NamedCommand("import-inflation")]
+internal class ImportInflationCommand : IConsoleCommand<ImportInflationViewModel>
 {
     private readonly IMediator mediator;
 
-    public ShowTodayCommand(IMediator mediator)
+    [NamedParameter("source-file", ShortName = 'f', IsOptional = false)]
+    public string SourceFile { get; set; }
+
+    public ImportInflationCommand(IMediator mediator)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
-    public async Task<PresentTodayResponse> Execute()
+    public async Task<ImportInflationViewModel> Execute()
     {
-        PresentTodayRequest request = new();
-        PresentTodayResponse response = await mediator.Send(request);
+        ImportInflationRequest request = new()
+        {
+            SourceFilePath = SourceFile
+        };
+        ImportInflationResponse response = await mediator.Send(request);
 
-        return response;
+        return new ImportInflationViewModel
+        {
+            Records = response.Records
+        };
     }
 }

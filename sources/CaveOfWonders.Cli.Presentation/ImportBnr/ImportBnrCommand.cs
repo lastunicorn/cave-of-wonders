@@ -14,26 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportFromBnrFile;
 using DustInTheWind.ConsoleTools.Commando;
-using DustInTheWind.CurrencyExchange.Application.PresentToday;
 using MediatR;
 
-namespace DustInTheWind.CurrencyExchange.Presentation.ShowToday;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.ImportBnr;
 
-[NamedCommand("show-today")]
-public class ShowTodayCommand : IConsoleCommand<PresentTodayResponse>
+[NamedCommand("import-bnr", Description = "Import exchange rates from a local xml file downloaded from BNR website.")]
+internal class ImportBnrCommand : IConsoleCommand<ImportFromBnrResponse>
 {
     private readonly IMediator mediator;
 
-    public ShowTodayCommand(IMediator mediator)
+    [NamedParameter("source-file", ShortName = 's')]
+    public string SourceFilePath { get; set; }
+
+    public ImportBnrCommand(IMediator mediator)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
-    public async Task<PresentTodayResponse> Execute()
+    public async Task<ImportFromBnrResponse> Execute()
     {
-        PresentTodayRequest request = new();
-        PresentTodayResponse response = await mediator.Send(request);
+        ImportFromBnrRequest request = new()
+        {
+            SourceFilePath = SourceFilePath
+        };
+        ImportFromBnrResponse response = await mediator.Send(request);
 
         return response;
     }

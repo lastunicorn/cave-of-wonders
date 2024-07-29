@@ -33,6 +33,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <ProjectReference Include="..\CaveOfWonders.Domain\CaveOfWonders.Domain.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Ports.SystemAccess\CaveOfWonders.Ports.SystemAccess.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CurrencyExchange.Ports.BnrAccess\CurrencyExchange.Ports.BnrAccess.csproj" />
+        <ProjectReference Include="..\CurrencyExchange.Ports.InsAccess\CurrencyExchange.Ports.InsAccess.csproj" />
     </ItemGroup>
 
 </Project>
