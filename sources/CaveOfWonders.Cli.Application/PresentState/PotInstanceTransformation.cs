@@ -28,9 +28,13 @@ internal class PotInstanceTransformation
 
     public List<ExchangeRate> ExchangeRates { get; set; }
 
-    public IEnumerable<PotInstanceInfo> Transform()
+    public List<ExchangeRate> UsedExchangeRates { get; } = new();
+
+    public List<PotInstanceInfo> PotInstanceInfos { get; private set; }
+
+    public void Execute()
     {
-        return Instances
+        PotInstanceInfos = Instances
             .Select(ToPotInstance)
             .ToList();
     }
@@ -59,8 +63,9 @@ internal class PotInstanceTransformation
         {
             string originalCurrency = potInstanceInfo.OriginalValue.Currency;
 
-            if (originalCurrency != DestinationCurrency)
-                potInstanceInfo.NormalizedValue = TryConvert(potInstanceInfo.OriginalValue, DestinationCurrency);
+            potInstanceInfo.NormalizedValue = originalCurrency != DestinationCurrency
+                ? TryConvert(potInstanceInfo.OriginalValue, DestinationCurrency)
+                : potInstanceInfo.OriginalValue;
         }
 
         return potInstanceInfo;
@@ -73,6 +78,9 @@ internal class PotInstanceTransformation
 
         if (exchangeRate == null)
             return null;
+
+        if (!UsedExchangeRates.Contains(exchangeRate))
+            UsedExchangeRates.Add(exchangeRate);
 
         return new CurrencyValue
         {

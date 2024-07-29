@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.State;
+using DustInTheWind.CaveOfWonders.Cli.Presentation;
 using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.ConsoleTools.Commando.Setup.Autofac;
@@ -29,7 +29,7 @@ internal class Program
 
         ConsoleTools.Commando.Application application = ApplicationBuilder.Create()
             .ConfigureServices(DependenciesSetup.Configure)
-            .RegisterCommandsFrom(typeof(StateCommand).Assembly)
+            .RegisterCommandsFrom(typeof(PresentationAssemblyHandle).Assembly)
             .HandleExceptions(HandlerApplicationException)
             .Build();
 

@@ -21,7 +21,7 @@ using MediatR;
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.State;
 
 [NamedCommand("state", Description = "Display the state of the cave in a specific date.")]
-public class StateCommand : IConsoleCommand<StateViewModel>
+internal class StateCommand : IConsoleCommand<StateViewModel>
 {
     private readonly IMediator mediator;
 

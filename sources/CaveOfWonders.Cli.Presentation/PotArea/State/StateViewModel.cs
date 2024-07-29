@@ -19,11 +19,11 @@ using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.State;
 
-public class StateViewModel
+internal class StateViewModel
 {
     public DateTime Date { get; set; }
 
-    public List<PotInstanceInfo> Values { get; set; }
+    public List<PotInstanceViewModel> Values { get; set; }
 
     public List<ExchangeRateViewModel> ConversionRates { get; set; }
 
@@ -32,10 +32,29 @@ public class StateViewModel
     public StateViewModel(PresentStateResponse presentStateResponse)
     {
         Date = presentStateResponse.Date;
-        Values = presentStateResponse.PotInstances;
+
+        Values = presentStateResponse.PotInstances
+            .Select(x => new PotInstanceViewModel
+            {
+                Id = x.Id,
+                Name = x.Name,
+                OriginalValue = x.IsActive
+                    ? x.OriginalValue
+                    : null,
+                IsValueActual = x.Date == presentStateResponse.Date,
+                IsValueAlreadyNormal = x.OriginalValue?.Currency == x.NormalizedValue?.Currency,
+                Date = x.IsActive
+                    ? x.Date
+                    : null,
+                NormalizedValue = x.NormalizedValue,
+                IsPotActive = x.IsActive
+            })
+            .ToList();
+
         ConversionRates = presentStateResponse.ConversionRates
             .Select(x => new ExchangeRateViewModel(x))
             .ToList();
+
         Total = presentStateResponse.Total;
     }
 }

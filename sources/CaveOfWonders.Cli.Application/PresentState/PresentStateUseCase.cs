@@ -38,18 +38,18 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
         string currency = request.Currency ?? "RON";
 
         List<ExchangeRate> exchangeRates = await RetrieveExchangeRates(date);
-        List<PotInstanceInfo> potInstances = await RetrievePotInstances(date, currency, exchangeRates, request.IncludeInactive);
+        PotInstanceTransformation potInstanceTransformation = await RetrievePotInstances(date, currency, exchangeRates, request.IncludeInactive);
 
         return new PresentStateResponse
         {
             Date = date,
-            PotInstances = potInstances,
-            ConversionRates = exchangeRates
+            PotInstances = potInstanceTransformation.PotInstanceInfos,
+            ConversionRates = potInstanceTransformation.UsedExchangeRates
                 .Select(x => new ExchangeRateInfo(x))
                 .ToList(),
             Total = new CurrencyValue
             {
-                Value = potInstances.Sum(x => x.NormalizedValue?.Value ?? x.OriginalValue?.Value ?? 0),
+                Value = potInstanceTransformation.PotInstanceInfos.Sum(x => x.NormalizedValue?.Value ?? x.OriginalValue?.Value ?? 0),
                 Currency = currency
             }
         };
@@ -61,7 +61,7 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
         return exchangeRates.ToList();
     }
 
-    private async Task<List<PotInstanceInfo>> RetrievePotInstances(DateTime date, string currency, List<ExchangeRate> exchangeRates, bool includeInactive)
+    private async Task<PotInstanceTransformation> RetrievePotInstances(DateTime date, string currency, List<ExchangeRate> exchangeRates, bool includeInactive)
     {
         IEnumerable<PotInstance> potInstances = await unitOfWork.PotRepository.GetInstances(date, DateMatchingMode.LastAvailable, includeInactive);
         potInstances = potInstances.OrderBy(x => x.Pot.DisplayOrder);
@@ -74,6 +74,8 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
             ExchangeRates = exchangeRates
         };
 
-        return potInstanceTransformation.Transform().ToList();
+        potInstanceTransformation.Execute();
+
+        return potInstanceTransformation;
     }
 }

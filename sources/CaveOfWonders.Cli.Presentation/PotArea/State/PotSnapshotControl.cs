@@ -15,7 +15,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Cli.Application;
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
 using DustInTheWind.ConsoleTools.Controls;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 
@@ -25,7 +24,7 @@ internal class PotSnapshotControl
 {
     public DateTime Date { get; set; }
 
-    public List<PotInstanceInfo> Values { get; set; }
+    public List<PotInstanceViewModel> Values { get; set; }
 
     public CurrencyValue Total { get; set; }
 
@@ -74,29 +73,21 @@ internal class PotSnapshotControl
             {
                 string id = x.Id.ToString("D")[..8];
                 string name = x.Name;
-                string value = x.IsActive
-                    ? x.OriginalValue?.ToDisplayString()
-                    : string.Empty;
-                string date = x.IsActive
-                    ? x.Date.ToString("d")
-                    : string.Empty;
+                string value = x.OriginalValue?.ToDisplayString();
+                string date = x.Date?.ToString("d");
                 string normalizedValue = x.NormalizedValue?.ToDisplayString();
 
                 ContentRow row = new(id, name, value, date, normalizedValue);
 
-                bool valueIsActual = x.Date == Date;
-
-                if (x.IsActive)
+                if (x.IsPotActive)
                 {
-                    if (!valueIsActual)
+                    if (!x.IsValueActual)
                     {
                         row[2].ForegroundColor = ConsoleColor.DarkYellow;
                         row[3].ForegroundColor = ConsoleColor.DarkYellow;
                     }
 
-                    bool valueIsNormal = x.OriginalValue?.Currency == Total.Currency;
-
-                    if (!valueIsNormal)
+                    if (!x.IsValueAlreadyNormal)
                         row[2].ForegroundColor = ConsoleColor.DarkGray;
                 }
                 else
