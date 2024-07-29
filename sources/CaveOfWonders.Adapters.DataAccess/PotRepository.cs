@@ -17,7 +17,7 @@
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
 public class PotRepository : IPotRepository
 {

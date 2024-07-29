@@ -14,30 +14,34 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.Utils;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.State;
-
-public class ConversionRateViewModel
+internal static class EnumerableExtensions
 {
-    public string SourceCurrency { get; }
-
-    public string DestinationCurrency { get; }
-
-    public DateTime Date { get; }
-
-    public double Value { get; }
-
-    public ConversionRateViewModel(ConversionRateInfo conversionRateInfo)
+    public static IEnumerable<IEnumerable<T>> Batch<T>(this IEnumerable<T> source, int size)
     {
-        SourceCurrency = conversionRateInfo.SourceCurrency;
-        DestinationCurrency = conversionRateInfo.DestinationCurrency;
-        Date = conversionRateInfo.Date;
-        Value = conversionRateInfo.Value;
-    }
+        T[] bucket = null;
+        int count = 0;
 
-    public override string ToString()
-    {
-        return $"1 {SourceCurrency} = {Value} {DestinationCurrency}";
+        foreach (T item in source)
+        {
+            bucket ??= new T[size];
+
+            bucket[count++] = item;
+
+            if (count != size)
+                continue;
+
+            yield return bucket;
+
+            bucket = null;
+            count = 0;
+        }
+
+        if (bucket != null && count > 0)
+        {
+            Array.Resize(ref bucket, count);
+            yield return bucket.Select(x => x);
+        }
     }
 }

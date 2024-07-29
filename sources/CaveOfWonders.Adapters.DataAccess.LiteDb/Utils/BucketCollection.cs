@@ -16,7 +16,7 @@
 
 using System.Collections;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.Utils;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.Utils;
 
 internal class BucketCollection<TKey, TItem> : IEnumerable<TItem>
 {

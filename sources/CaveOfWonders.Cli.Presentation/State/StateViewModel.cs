@@ -25,7 +25,7 @@ public class StateViewModel
 
     public List<PotInstanceInfo> Values { get; set; }
 
-    public List<ConversionRateViewModel> ConversionRates { get; set; }
+    public List<ExchangeRateViewModel> ConversionRates { get; set; }
 
     public CurrencyValue Total { get; set; }
 
@@ -34,7 +34,7 @@ public class StateViewModel
         Date = presentStateResponse.Date;
         Values = presentStateResponse.PotInstances;
         ConversionRates = presentStateResponse.ConversionRates
-            .Select(x => new ConversionRateViewModel(x))
+            .Select(x => new ExchangeRateViewModel(x))
             .ToList();
         Total = presentStateResponse.Total;
     }

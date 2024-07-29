@@ -14,25 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess;
-
-public class ConversionRateRepository : IConversionRateRepository
+internal class JExchangeRate
 {
-    private readonly Database database;
+    public string Currency1 { get; set; }
 
-    public ConversionRateRepository(Database database)
-    {
-        this.database = database ?? throw new ArgumentNullException(nameof(database));
-    }
+    public string Currency2 { get; set; }
 
-    public Task<IEnumerable<ConversionRate>> GetAll(DateTime date)
-    {
-        IEnumerable<ConversionRate> conversionRates = database.ConversionRates
-            .Where(x => x.Date == date);
+    public DateTime Date { get; set; }
 
-        return Task.FromResult(conversionRates);
-    }
+    public decimal Value { get; set; }
 }

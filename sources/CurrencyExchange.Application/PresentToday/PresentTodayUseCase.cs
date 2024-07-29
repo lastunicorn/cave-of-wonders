@@ -23,12 +23,12 @@ namespace DustInTheWind.CurrencyExchange.Application.PresentToday;
 
 public class PresentTodayUseCase : IRequestHandler<PresentTodayRequest, PresentTodayResponse>
 {
-    private readonly IExchangeRateRepository exchangeRateRepository;
+    private readonly IUnitOfWork unitOfWork;
     private readonly ISystemClock systemClock;
 
-    public PresentTodayUseCase(IExchangeRateRepository exchangeRateRepository, ISystemClock systemClock)
+    public PresentTodayUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
     {
-        this.exchangeRateRepository = exchangeRateRepository ?? throw new ArgumentNullException(nameof(exchangeRateRepository));
+        this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
     }
 
@@ -39,7 +39,7 @@ public class PresentTodayUseCase : IRequestHandler<PresentTodayRequest, PresentT
         return new PresentTodayResponse
         {
             Date = today,
-            ExchangeRates = (await exchangeRateRepository.Get(today))
+            ExchangeRates = (await unitOfWork.ExchangeRateRepository.Get(today))
                 .Select(x => new ExchangeRateResponseDto(x))
                 .ToList()
         };

@@ -1,4 +1,4 @@
-// Cave of Wonders
+﻿// Cave of Wonders
 // Copyright (C) 2023-2024 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess;
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 using DustInTheWind.CaveOfWonders.Adapters.SystemAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
@@ -33,8 +34,9 @@ internal static class DependenciesSetup
     {
         services.AddMediatR(config => config.RegisterServicesFromAssemblyContaining<PresentExchangeRateRequest>());
 
-        services.AddScoped<DbContext>();
-        services.AddTransient<IExchangeRateRepository, ExchangeRateRepository>();
+        services
+            .AddTransient(context => new Database(@"c:\Projects.pet\finanțe\CaveOfWonders\db"));
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddTransient<ISystemClock, SystemClock>();
         services.AddTransient<IBnr, Bnr>();

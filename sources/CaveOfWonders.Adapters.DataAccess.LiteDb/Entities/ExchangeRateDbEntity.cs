@@ -14,28 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Entities;
-using LiteDB;
+using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.Entities;
 
-public sealed class DbContext : IDisposable
+internal class ExchangeRateDbEntity
 {
-    private const string DatabaseFilePath = "database.db";
-    private readonly LiteDatabase db;
+    public int Id { get; set; }
 
-    internal ILiteCollection<ExchangeRateDbEntity> ExchangeRates { get; }
+    public DateTime Date { get; set; }
 
-    public DbContext()
+    public string CurrencyPair { get; set; }
+
+    public decimal Value { get; set; }
+
+    public ExchangeRateDbEntity()
     {
-        db = new LiteDatabase(DatabaseFilePath);
-
-        ExchangeRates = db.GetCollection<ExchangeRateDbEntity>();
-        ExchangeRates.EnsureIndex(x => x.Date);
     }
 
-    public void Dispose()
+    public ExchangeRateDbEntity(ExchangeRate exchangeRate)
     {
-        db?.Dispose();
+        Date = exchangeRate.Date;
+        CurrencyPair = exchangeRate.CurrencyPair;
+        Value = exchangeRate.Value;
     }
 }

@@ -16,11 +16,65 @@
 
 namespace DustInTheWind.CaveOfWonders.Domain;
 
-public class ExchangeRate
+public class ExchangeRate : IEquatable<ExchangeRate>
 {
     public DateTime Date { get; set; }
 
     public CurrencyPair CurrencyPair { get; set; }
 
     public decimal Value { get; set; }
+
+    public decimal Convert(decimal value)
+    {
+        return value * Value;
+    }
+
+    public decimal ConvertBack(decimal value)
+    {
+        return value == 0
+            ? 0
+            : value / Value;
+    }
+
+    public bool CanConvert(CurrencyId source, CurrencyId destination)
+    {
+        return (CurrencyPair.Currency1 == source && CurrencyPair.Currency2 == destination) ||
+               (CurrencyPair.Currency1 == destination && CurrencyPair.Currency2 == source);
+    }
+
+    //public bool CanConvert(string source, string destination)
+    //{
+    //    return (SourceCurrency == source && DestinationCurrency == destination) ||
+    //           (SourceCurrency == destination && DestinationCurrency == source);
+    //}
+
+    public bool Equals(ExchangeRate other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return Date.Equals(other.Date) && CurrencyPair.Equals(other.CurrencyPair) && Value == other.Value;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((ExchangeRate)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Date, CurrencyPair, Value);
+    }
+
+    public static bool operator ==(ExchangeRate left, ExchangeRate right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(ExchangeRate left, ExchangeRate right)
+    {
+        return !Equals(left, right);
+    }
 }

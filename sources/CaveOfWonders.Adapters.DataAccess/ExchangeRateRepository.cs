@@ -14,51 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Entities;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using LiteDB;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
 public class ExchangeRateRepository : IExchangeRateRepository
 {
-    private readonly DbContext dbContext;
+    private readonly Database database;
 
-    public ExchangeRateRepository(DbContext dbContext)
+    public ExchangeRateRepository(Database database)
     {
-        this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        this.database = database ?? throw new ArgumentNullException(nameof(database));
     }
 
     public Task<IEnumerable<ExchangeRate>> Get(CurrencyPair currencyPair)
     {
-        string currencyPairAsString = currencyPair.ToString();
-
-        IEnumerable<ExchangeRate> exchangeRates = dbContext.ExchangeRates.Query()
-            .Where(x => x.CurrencyPair == currencyPairAsString)
-            .OrderBy(x => x.Date)
-            .ToEnumerable()
-            .Select(x => new ExchangeRate
-            {
-                Date = x.Date,
-                CurrencyPair = x.CurrencyPair,
-                Value = x.Value
-            });
+        IEnumerable<ExchangeRate> exchangeRates = database.ExchangeRates
+            .Where(x => x.CurrencyPair == currencyPair);
 
         return Task.FromResult(exchangeRates);
     }
 
     public Task<IEnumerable<ExchangeRate>> Get(DateTime date)
     {
-        IEnumerable<ExchangeRate> exchangeRates = dbContext.ExchangeRates.Query()
-            .Where(x => x.Date == date)
-            .ToEnumerable()
-            .Select(x => new ExchangeRate
-            {
-                Date = x.Date,
-                CurrencyPair = x.CurrencyPair,
-                Value = x.Value
-            });
+        IEnumerable<ExchangeRate> exchangeRates = database.ExchangeRates
+            .Where(x => x.Date == date);
 
         return Task.FromResult(exchangeRates);
     }
@@ -67,17 +48,9 @@ public class ExchangeRateRepository : IExchangeRateRepository
     {
         string currencyPairAsString = currencyPair.ToString();
 
-        ExchangeRateDbEntity exchangeRateDbEntity = dbContext.ExchangeRates.Query()
+        ExchangeRate exchangeRate = database.ExchangeRates
             .Where(x => x.CurrencyPair == currencyPairAsString && x.Date <= date)
-            .OrderByDescending(x => x.Date)
-            .FirstOrDefault();
-
-        ExchangeRate exchangeRate = new()
-        {
-            Date = exchangeRateDbEntity.Date,
-            CurrencyPair = exchangeRateDbEntity.CurrencyPair,
-            Value = exchangeRateDbEntity.Value
-        };
+            .MaxBy(x => x.Date);
 
         return Task.FromResult(exchangeRate);
     }
@@ -86,25 +59,16 @@ public class ExchangeRateRepository : IExchangeRateRepository
     {
         string currencyPairAsString = currencyPair.ToString();
 
-        ILiteQueryable<ExchangeRateDbEntity> query = dbContext.ExchangeRates.Query()
+        IEnumerable<ExchangeRate> exchangeRates = database.ExchangeRates
             .Where(x => x.CurrencyPair == currencyPairAsString);
 
         if (startDate != null)
-            query = query.Where(x => x.Date >= startDate.Value);
+            exchangeRates = exchangeRates.Where(x => x.Date >= startDate.Value);
 
         if (endDate != null)
-            query = query.Where(x => x.Date <= endDate.Value);
+            exchangeRates = exchangeRates.Where(x => x.Date <= endDate.Value);
 
-        query = query.OrderBy(x => x.Date);
-
-        IEnumerable<ExchangeRate> exchangeRates = query
-            .ToEnumerable()
-            .Select(x => new ExchangeRate
-            {
-                Date = x.Date,
-                CurrencyPair = x.CurrencyPair,
-                Value = x.Value
-            });
+        exchangeRates = exchangeRates.OrderBy(x => x.Date);
 
         return Task.FromResult(exchangeRates);
     }
@@ -113,29 +77,20 @@ public class ExchangeRateRepository : IExchangeRateRepository
     {
         string currencyPairAsString = currencyPair.ToString();
 
-        ILiteQueryable<ExchangeRateDbEntity> query = dbContext.ExchangeRates.Query()
+        IEnumerable<ExchangeRate> exchangeRates = database.ExchangeRates
             .Where(x => x.CurrencyPair == currencyPairAsString && x.Date.Year == year);
 
         if (month != null)
-            query = query.Where(x => x.Date.Month == month.Value);
+            exchangeRates = exchangeRates.Where(x => x.Date.Month == month.Value);
 
-        query = query.OrderBy(x => x.Date);
-
-        IEnumerable<ExchangeRate> exchangeRates = query
-            .ToEnumerable()
-            .Select(x => new ExchangeRate
-            {
-                Date = x.Date,
-                CurrencyPair = x.CurrencyPair,
-                Value = x.Value
-            });
+        exchangeRates = exchangeRates.OrderBy(x => x.Date);
 
         return Task.FromResult(exchangeRates);
     }
 
     public Task<ImportReport> Import(IEnumerable<ExchangeRate> exchangeRates)
     {
-        ImportProcedure importProcedure = new(dbContext.ExchangeRates);
+        ImportProcedure importProcedure = new(database.ExchangeRates);
         importProcedure.Execute(exchangeRates);
 
         return Task.FromResult(importProcedure.Report);

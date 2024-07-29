@@ -26,7 +26,7 @@ internal class PotInstanceTransformation
 
     public string DestinationCurrency { get; set; }
 
-    public List<ConversionRate> ConversionRates { get; set; }
+    public List<ExchangeRate> ExchangeRates { get; set; }
 
     public IEnumerable<PotInstanceInfo> Transform()
     {
@@ -68,18 +68,18 @@ internal class PotInstanceTransformation
 
     private CurrencyValue TryConvert(CurrencyValue originalValue, string destinationCurrency)
     {
-        ConversionRate conversionRate = ConversionRates
+        ExchangeRate exchangeRate = ExchangeRates
             .FirstOrDefault(x => x.CanConvert(originalValue.Currency, destinationCurrency));
 
-        if (conversionRate == null)
+        if (exchangeRate == null)
             return null;
 
         return new CurrencyValue
         {
             Currency = destinationCurrency,
-            Value = originalValue.Currency == conversionRate.SourceCurrency
-                ? conversionRate.Convert(originalValue.Value)
-                : conversionRate.ConvertBack(originalValue.Value)
+            Value = originalValue.Currency == exchangeRate.CurrencyPair.Currency1
+                ? exchangeRate.Convert(originalValue.Value)
+                : exchangeRate.ConvertBack(originalValue.Value)
         };
     }
 }

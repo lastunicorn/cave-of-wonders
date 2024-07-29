@@ -20,7 +20,7 @@ public class Gem : IEquatable<Gem>
 {
     public DateTime Date { get; set; }
 
-    public double Value { get; set; }
+    public decimal Value { get; set; }
 
     public bool Equals(Gem other)
     {

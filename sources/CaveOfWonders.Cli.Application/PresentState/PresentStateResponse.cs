@@ -22,7 +22,7 @@ public class PresentStateResponse
 
     public List<PotInstanceInfo> PotInstances { get; set; }
 
-    public List<ConversionRateInfo> ConversionRates { get; set; }
+    public List<ExchangeRateInfo> ConversionRates { get; set; }
 
     public CurrencyValue Total { get; set; }
 }

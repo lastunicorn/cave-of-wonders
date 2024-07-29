@@ -20,5 +20,5 @@ namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
 public interface IConversionRateRepository
 {
-    Task<IEnumerable<ConversionRate>> GetAll(DateTime date);
+    Task<IEnumerable<ExchangeRate>> GetAll(DateTime date);
 }

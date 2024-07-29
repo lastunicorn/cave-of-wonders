@@ -42,7 +42,7 @@ internal class GemImport
             Gem gem = new()
             {
                 Date = sheetValue.Date,
-                Value = (double)sheetValue.Value
+                Value = sheetValue.Value
             };
 
             GemAddReport gemAddReport = Pots.AddGem(sheetValue.Key, gem);

@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.State;
 
-public class ConversionRateInfo
+public class ExchangeRateViewModel
 {
     public string SourceCurrency { get; }
 
@@ -26,13 +26,18 @@ public class ConversionRateInfo
 
     public DateTime Date { get; }
 
-    public double Value { get; }
+    public decimal Value { get; }
 
-    internal ConversionRateInfo(ConversionRate conversionRate)
+    public ExchangeRateViewModel(ExchangeRateInfo exchangeRateInfo)
     {
-        SourceCurrency = conversionRate.SourceCurrency;
-        DestinationCurrency = conversionRate.DestinationCurrency;
-        Date = conversionRate.Date;
-        Value = conversionRate.Value;
+        SourceCurrency = exchangeRateInfo.SourceCurrency;
+        DestinationCurrency = exchangeRateInfo.DestinationCurrency;
+        Date = exchangeRateInfo.Date;
+        Value = exchangeRateInfo.Value;
+    }
+
+    public override string ToString()
+    {
+        return $"1 {SourceCurrency} = {Value} {DestinationCurrency}";
     }
 }

@@ -14,33 +14,37 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Domain;
+
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
 
-internal class PotsDirectory
+internal class ExchangeRatesDirectory
 {
-    private const string DirectoryName = "Pots";
+    private const string DirectoryName = "Exchange Rates";
     private readonly string directoryPath;
 
-    public PotsDirectory(string rootDirectoryPath)
+    public ExchangeRatesDirectory(string rootDirectoryPath)
     {
         if (rootDirectoryPath == null) throw new ArgumentNullException(nameof(rootDirectoryPath));
+        
         directoryPath = Path.Combine(rootDirectoryPath, DirectoryName);
     }
 
     public bool Exists => Directory.Exists(directoryPath);
 
-    public IEnumerable<PotFile> EnumeratePotFiles()
+    public IEnumerable<ExchangeRatesFile> EnumerateExchangeRateFiles()
     {
         return Directory.GetFiles(directoryPath)
-            .Select(x => new PotFile(x));
+            .Select(x => new ExchangeRatesFile(x));
     }
 
-    public PotFile GetPotFile(Guid potId)
+    public ExchangeRatesFile GetExchangeRateFile(CurrencyPair currencyPair)
     {
-        string potFileName = $"{potId:D}.json";
-        string potFilePath = Path.Combine(directoryPath, potFileName);
+        string fileNameWithoutExtension = currencyPair.ToString().ToLower();
+        string fileName = $"{fileNameWithoutExtension}.json";
+        string filePath = Path.Combine(directoryPath, fileName);
 
-        return new PotFile(potFilePath);
+        return new ExchangeRatesFile(filePath);
     }
 
     public void Create()

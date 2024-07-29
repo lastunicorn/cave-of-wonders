@@ -14,15 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.JsonFileStorage;
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.Entities;
+using LiteDB;
 
-public class JConversionRate
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb;
+
+public sealed class DbContext : IDisposable
 {
-    public string SourceCurrency { get; set; }
+    private const string DatabaseFilePath = "database.db";
+    private readonly LiteDatabase db;
 
-    public string DestinationCurrency { get; set; }
+    internal ILiteCollection<ExchangeRateDbEntity> ExchangeRates { get; }
 
-    public DateTime Date { get; set; }
+    public DbContext()
+    {
+        db = new LiteDatabase(DatabaseFilePath);
 
-    public double Value { get; set; }
+        ExchangeRates = db.GetCollection<ExchangeRateDbEntity>();
+        ExchangeRates.EnsureIndex(x => x.Date);
+    }
+
+    public void Dispose()
+    {
+        db?.Dispose();
+    }
 }

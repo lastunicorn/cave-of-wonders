@@ -14,33 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Domain;
 
-public class ConversionRate
+namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
+
+public class ExchangeRateInfo
 {
-    public string SourceCurrency { get; set; }
+    public string SourceCurrency { get; }
 
-    public string DestinationCurrency { get; set; }
+    public string DestinationCurrency { get; }
 
-    public DateTime Date { get; set; }
+    public DateTime Date { get; }
 
-    public double Value { get; set; }
+    public decimal Value { get; }
 
-    public double Convert(double value)
+    internal ExchangeRateInfo(ExchangeRate conversionRate)
     {
-        return value * Value;
-    }
-
-    public double ConvertBack(double value)
-    {
-        return value == 0
-            ? 0
-            : value / Value;
-    }
-
-    public bool CanConvert(string source, string destination)
-    {
-        return (SourceCurrency == source && DestinationCurrency == destination) ||
-               (SourceCurrency == destination && DestinationCurrency == source);
+        SourceCurrency = conversionRate.CurrencyPair.Currency1;
+        DestinationCurrency = conversionRate.CurrencyPair.Currency2;
+        Date = conversionRate.Date;
+        Value = conversionRate.Value;
     }
 }

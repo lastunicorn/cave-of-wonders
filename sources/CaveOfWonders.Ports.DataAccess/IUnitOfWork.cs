@@ -20,7 +20,7 @@ public interface IUnitOfWork
 {
     public IPotRepository PotRepository { get; }
 
-    public IConversionRateRepository ConversionRateRepository { get; }
+    public IExchangeRateRepository ExchangeRateRepository { get; }
 
     public Task SaveChanges();
 }

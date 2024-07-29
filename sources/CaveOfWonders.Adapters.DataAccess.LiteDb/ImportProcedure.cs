@@ -14,29 +14,31 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.Utils;
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.Entities;
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.Utils;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using LiteDB;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb;
 
 internal class ImportProcedure
 {
-    private readonly List<ExchangeRate> exchangeRatesFromDatabase;
+    private readonly ILiteCollection<ExchangeRateDbEntity> exchangeRatesCollection;
 
-    private BucketCollection<DateTime, ExchangeRate> scheduledItems = new();
+    private BucketCollection<DateTime, ExchangeRateDbEntity> scheduledItems = new();
 
     public ImportReport Report { get; private set; }
 
-    public ImportProcedure(List<ExchangeRate> exchangeRatesCollection)
+    public ImportProcedure(ILiteCollection<ExchangeRateDbEntity> exchangeRatesCollection)
     {
-        this.exchangeRatesFromDatabase = exchangeRatesCollection ?? throw new ArgumentNullException(nameof(exchangeRatesCollection));
+        this.exchangeRatesCollection = exchangeRatesCollection ?? throw new ArgumentNullException(nameof(exchangeRatesCollection));
     }
 
     public void Execute(IEnumerable<ExchangeRate> exchangeRates)
     {
         Report = new ImportReport();
-        scheduledItems = new BucketCollection<DateTime, ExchangeRate>();
+        scheduledItems = new BucketCollection<DateTime, ExchangeRateDbEntity>();
 
         foreach (ExchangeRate exchangeRate in exchangeRates)
         {
@@ -47,37 +49,12 @@ internal class ImportProcedure
         }
 
         if (scheduledItems.Count > 0)
-        {
-            foreach (ExchangeRate exchangeRate in exchangeRates) 
-                UpdateOrAddInDatabase(exchangeRate);
-        }
-    }
-
-    private void UpdateOrAddInDatabase(ExchangeRate exchangeRate)
-    {
-        ExchangeRate existingExchangeRate = exchangeRatesFromDatabase
-            .FirstOrDefault(x => x.CurrencyPair == exchangeRate.CurrencyPair && x.Date == exchangeRate.Date);
-
-        if (existingExchangeRate != null)
-        {
-            existingExchangeRate.Value = exchangeRate.Value;
-        }
-        else
-        {
-            ExchangeRate newExchangeRate = new()
-            {
-                CurrencyPair = exchangeRate.CurrencyPair,
-                Date = exchangeRate.Date,
-                Value = exchangeRate.Value
-            };
-
-            exchangeRatesFromDatabase.Add(newExchangeRate);
-        }
+            exchangeRatesCollection.Upsert(scheduledItems);
     }
 
     private void ProcessNew(ExchangeRate exchangeRate)
     {
-        ExchangeRate existingExchangeRate = RetrieveSimilarExisting(exchangeRate);
+        ExchangeRateDbEntity existingExchangeRate = RetrieveSimilarExisting(exchangeRate);
 
         if (existingExchangeRate != null)
         {
@@ -96,23 +73,23 @@ internal class ImportProcedure
         Report.TotalCount++;
     }
 
-    private ExchangeRate RetrieveSimilarExisting(ExchangeRate exchangeRate)
+    private ExchangeRateDbEntity RetrieveSimilarExisting(ExchangeRate exchangeRate)
     {
         string currencyPairAsString = exchangeRate.CurrencyPair;
-        return exchangeRatesFromDatabase.FirstOrDefault(x => x.Date == exchangeRate.Date && x.CurrencyPair == currencyPairAsString);
+        return exchangeRatesCollection.FindOne(x => x.Date == exchangeRate.Date && x.CurrencyPair == currencyPairAsString);
     }
 
-    private ExchangeRate RetrieveSimilarScheduled(ExchangeRate exchangeRate)
+    private ExchangeRateDbEntity RetrieveSimilarScheduled(ExchangeRate exchangeRate)
     {
         string currencyPairAsString = exchangeRate.CurrencyPair;
 
-        List<ExchangeRate> bucket = scheduledItems.GetBucket(exchangeRate.Date);
+        List<ExchangeRateDbEntity> bucket = scheduledItems.GetBucket(exchangeRate.Date);
 
         return bucket?
             .FirstOrDefault(x => x.CurrencyPair == currencyPairAsString);
     }
 
-    private void UpdateExistingIfNecessary(ExchangeRate existingExchangeRate, ExchangeRate exchangeRate)
+    private void UpdateExistingIfNecessary(ExchangeRateDbEntity existingExchangeRate, ExchangeRate exchangeRate)
     {
         bool areEqualValues = existingExchangeRate.Value == exchangeRate.Value;
 
@@ -133,14 +110,14 @@ internal class ImportProcedure
 
             existingExchangeRate.Value = exchangeRate.Value;
 
-            List<ExchangeRate> bucket = scheduledItems.GetOrCreateBucket(existingExchangeRate.Date);
+            List<ExchangeRateDbEntity> bucket = scheduledItems.GetOrCreateBucket(existingExchangeRate.Date);
             bucket.Add(existingExchangeRate);
 
             Report.ExistingUpdatedCount++;
         }
     }
 
-    private void UpdateNewIfNecessary(ExchangeRate existingExchangeRate, ExchangeRate exchangeRate)
+    private void UpdateNewIfNecessary(ExchangeRateDbEntity existingExchangeRate, ExchangeRate exchangeRate)
     {
         bool areEqualValues = existingExchangeRate.Value == exchangeRate.Value;
 
@@ -161,7 +138,7 @@ internal class ImportProcedure
 
             existingExchangeRate.Value = exchangeRate.Value;
 
-            List<ExchangeRate> bucket = scheduledItems.GetOrCreateBucket(existingExchangeRate.Date);
+            List<ExchangeRateDbEntity> bucket = scheduledItems.GetOrCreateBucket(existingExchangeRate.Date);
             bucket.Add(existingExchangeRate);
 
             Report.NewDuplicateDifferentCount++;
@@ -170,8 +147,10 @@ internal class ImportProcedure
 
     private void AddNew(ExchangeRate exchangeRate)
     {
-        List<ExchangeRate> bucket = scheduledItems.GetOrCreateBucket(exchangeRate.Date);
-        bucket.Add(exchangeRate);
+        ExchangeRateDbEntity exchangeRateDbEntity = new(exchangeRate);
+
+        List<ExchangeRateDbEntity> bucket = scheduledItems.GetOrCreateBucket(exchangeRateDbEntity.Date);
+        bucket.Add(exchangeRateDbEntity);
 
         Report.AddedCount++;
     }

@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.JsonFileStorage;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
 
 public class JGem
 {
     public DateTime Date { get; set; }
 
-    public double Value { get; set; }
+    public decimal Value { get; set; }
 }

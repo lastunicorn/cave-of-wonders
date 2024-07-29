@@ -16,19 +16,19 @@
 
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
 public class UnitOfWork : IUnitOfWork
 {
     private readonly Database database;
 
     private IPotRepository potRepository;
-    private IConversionRateRepository conversionRateRepository;
+    private IExchangeRateRepository exchangeRateRepository;
 
     public IPotRepository PotRepository => potRepository ??= new PotRepository(database);
 
-    public IConversionRateRepository ConversionRateRepository => conversionRateRepository ??= new ConversionRateRepository(database);
-
+    public IExchangeRateRepository ExchangeRateRepository => exchangeRateRepository ??= new ExchangeRateRepository(database);
+    
     public UnitOfWork(Database database)
     {
         this.database = database ?? throw new ArgumentNullException(nameof(database));

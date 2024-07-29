@@ -24,12 +24,12 @@ namespace DustInTheWind.CurrencyExchange.Application.ImportFromBnrFile;
 internal class ImportFromBnrUseCase : IRequestHandler<ImportFromBnrRequest, ImportFromBnrResponse>
 {
     private readonly IBnr bnr;
-    private readonly IExchangeRateRepository exchangeRateRepository;
+    private readonly IUnitOfWork unitOfWork;
 
-    public ImportFromBnrUseCase(IBnr bnr, IExchangeRateRepository exchangeRateRepository)
+    public ImportFromBnrUseCase(IBnr bnr, IUnitOfWork unitOfWork)
     {
         this.bnr = bnr ?? throw new ArgumentNullException(nameof(bnr));
-        this.exchangeRateRepository = exchangeRateRepository ?? throw new ArgumentNullException(nameof(exchangeRateRepository));
+        this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
 
     public async Task<ImportFromBnrResponse> Handle(ImportFromBnrRequest request, CancellationToken cancellationToken)
@@ -37,7 +37,9 @@ internal class ImportFromBnrUseCase : IRequestHandler<ImportFromBnrRequest, Impo
         IEnumerable<ExchangeRate> exchangeRates = (await bnr.GetExchangeRatesFrom(request.SourceFilePath))
             .ToExchangeRates();
 
-        ImportReport report = await exchangeRateRepository.Import(exchangeRates);
+        ImportReport report = await unitOfWork.ExchangeRateRepository.Import(exchangeRates);
+
+        await unitOfWork.SaveChanges();
 
         return new ImportFromBnrResponse(report);
     }

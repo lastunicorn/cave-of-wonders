@@ -32,7 +32,7 @@ internal class ExchangeView : IView<PresentExchangeRateResponse>
         }
         else
         {
-            DataGrid dataGrid = new(response.CurrencyPair)
+            DataGrid dataGrid = new("Exchange Rates")
             {
                 TitleRow =
                 {
@@ -46,7 +46,7 @@ internal class ExchangeView : IView<PresentExchangeRateResponse>
             };
 
             dataGrid.Columns.Add("Date");
-            dataGrid.Columns.Add("Value");
+            dataGrid.Columns.Add(response.CurrencyPair);
 
             foreach (ExchangeRateResponseDto exchangeRateResponseDto in response.ExchangeRates)
             {

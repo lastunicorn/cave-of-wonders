@@ -17,30 +17,27 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.JsonFileStorage;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
 
-internal class ConversionRatesFile
+internal class ExchangeRatesFile
 {
-    private readonly string rootDirectoryPath;
-    private const string FileName = "conversion-rates.json";
+    private readonly string filePath;
 
-    public ConversionRatesFile(string rootDirectoryPath)
+    public ExchangeRatesFile(string filePath)
     {
-        this.rootDirectoryPath = rootDirectoryPath;
+        this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
     }
 
-    public async Task<List<JConversionRate>> ReadAll()
-    {
-        string filePath = Path.Combine(rootDirectoryPath, FileName);
+    public bool Exists => File.Exists(filePath);
 
+    public async Task<List<JExchangeRate>> ReadAll()
+    {
         string json = await File.ReadAllTextAsync(filePath);
-        return JsonConvert.DeserializeObject<List<JConversionRate>>(json);
+        return JsonConvert.DeserializeObject<List<JExchangeRate>>(json);
     }
 
-    public Task SaveAll(IEnumerable<JConversionRate> conversionRates)
+    public Task SaveAll(IEnumerable<JExchangeRate> conversionRates)
     {
-        string filePath = Path.Combine(rootDirectoryPath, FileName);
-
         IsoDateTimeConverter dateTimeConverter = new()
         {
             DateTimeFormat = "yyy-MM-dd"

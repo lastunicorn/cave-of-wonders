@@ -23,13 +23,13 @@ namespace DustInTheWind.CurrencyExchange.Application.PresentExchangeRate;
 
 internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateRequest, PresentExchangeRateResponse>
 {
-    private readonly IExchangeRateRepository exchangeRateRepository;
+    private readonly IUnitOfWork unitOfWork;
     private readonly ISystemClock systemClock;
     private PresentExchangeRateResponse response;
 
-    public PresentExchangeRateUseCase(IExchangeRateRepository exchangeRateRepository, ISystemClock systemClock)
+    public PresentExchangeRateUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
     {
-        this.exchangeRateRepository = exchangeRateRepository ?? throw new ArgumentNullException(nameof(exchangeRateRepository));
+        this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
     }
 
@@ -65,7 +65,7 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
 
     private async Task RetrieveByDate(CurrencyPair currencyPair, DateTime date)
     {
-        ExchangeRate exchangeRate = await exchangeRateRepository.GetLatest(currencyPair, date);
+        ExchangeRate exchangeRate = await unitOfWork.ExchangeRateRepository.GetLatest(currencyPair, date);
 
         if (exchangeRate == null)
             throw new Exception($"Exchange rate for {currencyPair} and date {date:d} was not found.");
@@ -81,21 +81,21 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
 
     private async Task RetrieveByYear(CurrencyPair currencyPair, uint year, uint? month)
     {
-        response.ExchangeRates = (await exchangeRateRepository.GetByYear(currencyPair, year, month))
+        response.ExchangeRates = (await unitOfWork.ExchangeRateRepository.GetByYear(currencyPair, year, month))
             .Select(x => new ExchangeRateResponseDto(x))
             .ToList();
     }
 
     private async Task RetrieveByDateInterval(CurrencyPair currencyPair, DateTime? startDate, DateTime? endDate)
     {
-        response.ExchangeRates = (await exchangeRateRepository.GetByDateInterval(currencyPair, startDate, endDate))
+        response.ExchangeRates = (await unitOfWork.ExchangeRateRepository.GetByDateInterval(currencyPair, startDate, endDate))
             .Select(x => new ExchangeRateResponseDto(x))
             .ToList();
     }
 
     private async Task RetrieveAll(CurrencyPair currencyPair)
     {
-        response.ExchangeRates = (await exchangeRateRepository.Get(currencyPair))
+        response.ExchangeRates = (await unitOfWork.ExchangeRateRepository.Get(currencyPair))
             .Select(x => new ExchangeRateResponseDto(x))
             .ToList();
     }

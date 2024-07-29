@@ -37,15 +37,15 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
         DateTime date = request.Date ?? systemClock.Today;
         string currency = request.Currency ?? "RON";
 
-        List<ConversionRate> conversionRates = await RetrieveConversionRates(date);
-        List<PotInstanceInfo> potInstances = await RetrievePotInstances(date, currency, conversionRates, request.IncludeInactive);
+        List<ExchangeRate> exchangeRates = await RetrieveExchangeRates(date);
+        List<PotInstanceInfo> potInstances = await RetrievePotInstances(date, currency, exchangeRates, request.IncludeInactive);
 
         return new PresentStateResponse
         {
             Date = date,
             PotInstances = potInstances,
-            ConversionRates = conversionRates
-                .Select(x => new ConversionRateInfo(x))
+            ConversionRates = exchangeRates
+                .Select(x => new ExchangeRateInfo(x))
                 .ToList(),
             Total = new CurrencyValue
             {
@@ -55,13 +55,13 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
         };
     }
 
-    private async Task<List<ConversionRate>> RetrieveConversionRates(DateTime date)
+    private async Task<List<ExchangeRate>> RetrieveExchangeRates(DateTime date)
     {
-        IEnumerable<ConversionRate> conversionRates = await unitOfWork.ConversionRateRepository.GetAll(date);
-        return conversionRates.ToList();
+        IEnumerable<ExchangeRate> exchangeRates = await unitOfWork.ExchangeRateRepository.Get(date);
+        return exchangeRates.ToList();
     }
 
-    private async Task<List<PotInstanceInfo>> RetrievePotInstances(DateTime date, string currency, List<ConversionRate> conversionRates, bool includeInactive)
+    private async Task<List<PotInstanceInfo>> RetrievePotInstances(DateTime date, string currency, List<ExchangeRate> exchangeRates, bool includeInactive)
     {
         IEnumerable<PotInstance> potInstances = await unitOfWork.PotRepository.GetInstances(date, DateMatchingMode.LastAvailable, includeInactive);
         potInstances = potInstances.OrderBy(x => x.Pot.DisplayOrder);
@@ -71,7 +71,7 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
             Date = date,
             Instances = potInstances.ToList(),
             DestinationCurrency = currency,
-            ConversionRates = conversionRates
+            ExchangeRates = exchangeRates
         };
 
         return potInstanceTransformation.Transform().ToList();

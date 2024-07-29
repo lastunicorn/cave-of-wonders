@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.JsonFileStorage;
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
 using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
 public class Database
 {
@@ -25,7 +25,7 @@ public class Database
 
     public List<Pot> Pots { get; private set; }
 
-    public List<ConversionRate> ConversionRates { get; private set; }
+    public List<ExchangeRate> ExchangeRates { get; private set; }
 
     public Database(string location)
     {
@@ -34,23 +34,35 @@ public class Database
 
     public async Task Load()
     {
-        await LoadConversionRates();
+        await LoadExchangeRates();
         await LoadPots();
     }
 
-    private async Task LoadConversionRates()
+    private async Task LoadExchangeRates()
     {
-        ConversionRatesFile conversionRatesFile = new(databaseDirectoryPath);
+        ExchangeRates = new List<ExchangeRate>();
 
-        ConversionRates = (await conversionRatesFile.ReadAll())
-            .Select(x => new ConversionRate
-            {
-                SourceCurrency = x.SourceCurrency,
-                DestinationCurrency = x.DestinationCurrency,
-                Date = x.Date,
-                Value = x.Value
-            })
-            .ToList();
+        ExchangeRatesDirectory exchangeRatesDirectory = new(databaseDirectoryPath);
+
+        if (!exchangeRatesDirectory.Exists)
+            return;
+
+        IEnumerable<ExchangeRatesFile> exchangeRateFiles = exchangeRatesDirectory.EnumerateExchangeRateFiles();
+
+        foreach (ExchangeRatesFile exchangeRatesFile in exchangeRateFiles)
+        {
+            List<JExchangeRate> jExchangeRates = await exchangeRatesFile.ReadAll();
+
+            IEnumerable<ExchangeRate> exchangeRates = jExchangeRates
+                .Select(x => new ExchangeRate
+                {
+                    CurrencyPair = new CurrencyPair(x.Currency1, x.Currency2),
+                    Date = x.Date,
+                    Value = x.Value
+                });
+
+            ExchangeRates.AddRange(exchangeRates);
+        }
     }
 
     private async Task LoadPots()
@@ -95,25 +107,41 @@ public class Database
         await SavePots();
     }
 
-    private Task SaveConversionRates()
+    private async Task SaveConversionRates()
     {
-        ConversionRatesFile conversionRatesFile = new(databaseDirectoryPath);
+        ExchangeRatesDirectory exchangeRatesDirectory = new(databaseDirectoryPath);
 
-        IEnumerable<JConversionRate> conversionRates = ConversionRates
-            .Select(x => new JConversionRate
-            {
-                SourceCurrency = x.SourceCurrency,
-                DestinationCurrency = x.DestinationCurrency,
-                Date = x.Date,
-                Value = x.Value
-            });
+        if (!exchangeRatesDirectory.Exists)
+            exchangeRatesDirectory.Create();
 
-        return conversionRatesFile.SaveAll(conversionRates);
+        Dictionary<CurrencyPair, IEnumerable<JExchangeRate>> conversionRateGroups = ExchangeRates
+            .GroupBy(x => x.CurrencyPair)
+            .ToDictionary(x => x.Key, x => x.Select(ToJEntity));
+
+        foreach (KeyValuePair<CurrencyPair, IEnumerable<JExchangeRate>> conversionRateGroup in conversionRateGroups)
+        {
+            ExchangeRatesFile exchangeRatesFile = exchangeRatesDirectory.GetExchangeRateFile(conversionRateGroup.Key);
+            await exchangeRatesFile.SaveAll(conversionRateGroup.Value);
+        }
+    }
+
+    private static JExchangeRate ToJEntity(ExchangeRate exchangeRate)
+    {
+        return new JExchangeRate
+        {
+            Currency1 = exchangeRate.CurrencyPair.Currency1,
+            Currency2 = exchangeRate.CurrencyPair.Currency2,
+            Date = exchangeRate.Date,
+            Value = exchangeRate.Value
+        };
     }
 
     private async Task SavePots()
     {
         PotsDirectory potsDirectory = new(databaseDirectoryPath);
+
+        if (potsDirectory.Exists)
+            potsDirectory.Create();
 
         foreach (Pot pot in Pots)
         {

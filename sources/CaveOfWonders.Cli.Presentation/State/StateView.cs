@@ -43,7 +43,7 @@ internal class StateView : IView<StateViewModel>
         Console.WriteLine();
         Console.WriteLine("Conversion Rates:");
 
-        foreach (ConversionRateViewModel conversionRate in stateViewModel.ConversionRates)
+        foreach (ExchangeRateViewModel conversionRate in stateViewModel.ConversionRates)
             Console.WriteLine($"\t{conversionRate}");
     }
 }

@@ -24,9 +24,9 @@ public struct CurrencyPair : IEquatable<CurrencyPair>
 
     public static CurrencyPair Empty = new();
 
-    public CurrencyId Currency1 { get; set; }
+    public CurrencyId Currency1 { get; init; }
 
-    public CurrencyId Currency2 { get; set; }
+    public CurrencyId Currency2 { get; init; }
 
     public bool IsEmpty => Currency1.IsEmpty || Currency2.IsEmpty;
 
@@ -34,6 +34,12 @@ public struct CurrencyPair : IEquatable<CurrencyPair>
     {
         Currency1 = CurrencyId.Empty;
         Currency2 = CurrencyId.Empty;
+    }
+
+    public CurrencyPair(CurrencyId currency1, CurrencyId currency2)
+    {
+        Currency1 = currency1;
+        Currency2 = currency2;
     }
 
     public CurrencyPair(string value)
