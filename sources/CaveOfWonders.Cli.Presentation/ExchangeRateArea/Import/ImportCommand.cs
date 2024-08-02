@@ -20,12 +20,12 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.ExchangeRateArea.Import;
 
-[NamedCommand("import", Description = "Import exchange rates directly from BNR website, from nbr files.")]
+[NamedCommand("import", Description = "Import exchange rates from local files or directly from the BNR website.")]
 internal class ImportCommand : IConsoleCommand<ImportResultViewModel>
 {
     private readonly IMediator mediator;
 
-    [NamedParameter("source-type", ShortName = 's', IsOptional = false, Description = "The source of the imported data. (bnr - bnr file; nbr - nbr file; web - bnr web site)")]
+    [NamedParameter("source-type", ShortName = 's', IsOptional = false, Description = "The source of the imported data. (bnr - bnr file; nbr - nbr file; web - nbr file from BNR website)")]
     public ImportSourceType SourceType { get; set; }
 
     [NamedParameter("file", ShortName = 'f', IsOptional = true, Description = "The full name of the file containing the exchange rates. Used by bnr and nbr imports.")]

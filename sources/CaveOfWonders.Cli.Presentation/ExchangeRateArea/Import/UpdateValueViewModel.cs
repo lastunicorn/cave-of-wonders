@@ -1,4 +1,4 @@
-﻿using DustInTheWind.CaveOfWonders.Cli.Application.ImportFromBnrFile;
+﻿using DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.ExchangeRateArea.Import;
 

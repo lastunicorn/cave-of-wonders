@@ -14,11 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using MediatR;
+using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportFromNbrFile;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
 
-public class ImportFromNbrRequest : IRequest<ImportFromNbrResponse>
+public class UpdateReportResponseDto
 {
-    public string SourceFilePath { get; set; }
+    public DateTime Date { get; set; }
+
+    public string CurrencyPair { get; set; }
+
+    public decimal OldValue { get; set; }
+
+    public decimal NewValue { get; set; }
+
+    internal UpdateReportResponseDto(UpdateReport updateReport)
+    {
+        Date = updateReport.Date;
+        CurrencyPair = updateReport.CurrencyPair;
+        OldValue = updateReport.OldValue;
+        NewValue = updateReport.NewValue;
+    }
 }
