@@ -32,5 +32,5 @@ public interface IExchangeRateRepository
 
     Task<IEnumerable<ExchangeRate>> GetByYear(CurrencyPair currencyPair, uint year, uint? month);
 
-    Task<ImportReport> Import(IEnumerable<ExchangeRate> exchangeRates);
+    Task<ImportReport> Import(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken);
 }

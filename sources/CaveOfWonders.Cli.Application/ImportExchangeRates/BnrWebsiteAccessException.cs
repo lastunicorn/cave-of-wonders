@@ -14,13 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CurrencyExchange.Ports.BnrAccess;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
 
-public interface IBnr
+public class BnrWebsiteAccessException : Exception
 {
-    Task<IEnumerable<BnrExchangeRate>> GetExchangeRatesFrom(string filePath, CancellationToken cancellationToken);
+    private const string DefaultMessage = "Failed to read the online nbr file for year: {0}";
 
-    Task<IEnumerable<BnrExchangeRate>> GetExchangeRatesFromNbr(string filePath, CancellationToken cancellationToken);
+    public BnrWebsiteAccessException(int year)
+        : base(string.Format(DefaultMessage, year))
+    {
+    }
 
-    Task<IEnumerable<BnrExchangeRate>> GetExchangeRatesFromNbrOnline(int year, CancellationToken cancellationToken);
+    public BnrWebsiteAccessException(int year, Exception innerException)
+        : base(string.Format(DefaultMessage, year), innerException)
+    {
+    }
 }

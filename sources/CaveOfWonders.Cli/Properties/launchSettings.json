@@ -2,8 +2,7 @@
   "profiles": {
     "CaveOfWonders.Cli": {
       "commandName": "Project",
-      //"commandLineArgs": "state -d 2023-05-12 -c EUR"
-      "commandLineArgs": "pot bcr"
+      "commandLineArgs": "import -t web"
     }
   }
 }

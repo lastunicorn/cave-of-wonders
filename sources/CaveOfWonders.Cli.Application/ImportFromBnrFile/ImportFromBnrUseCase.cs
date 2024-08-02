@@ -34,10 +34,10 @@ internal class ImportFromBnrUseCase : IRequestHandler<ImportFromBnrRequest, Impo
 
     public async Task<ImportFromBnrResponse> Handle(ImportFromBnrRequest request, CancellationToken cancellationToken)
     {
-        IEnumerable<ExchangeRate> exchangeRates = (await bnr.GetExchangeRatesFrom(request.SourceFilePath))
+        IEnumerable<ExchangeRate> exchangeRates = (await bnr.GetExchangeRatesFrom(request.SourceFilePath, cancellationToken))
             .ToExchangeRates();
 
-        ImportReport report = await unitOfWork.ExchangeRateRepository.Import(exchangeRates);
+        ImportReport report = await unitOfWork.ExchangeRateRepository.Import(exchangeRates, cancellationToken);
 
         await unitOfWork.SaveChanges();
 

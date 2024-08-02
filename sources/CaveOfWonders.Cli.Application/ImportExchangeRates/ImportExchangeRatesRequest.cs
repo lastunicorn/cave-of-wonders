@@ -14,13 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CurrencyExchange.Ports.BnrAccess;
+using MediatR;
 
-public interface IBnr
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
+
+public class ImportExchangeRatesRequest : IRequest<ImportExchangeRatesResponse>
 {
-    Task<IEnumerable<BnrExchangeRate>> GetExchangeRatesFrom(string filePath, CancellationToken cancellationToken);
+    public ImportSource ImportSource { get; set; }
 
-    Task<IEnumerable<BnrExchangeRate>> GetExchangeRatesFromNbr(string filePath, CancellationToken cancellationToken);
+    public string SourceFilePath { get; set; }
 
-    Task<IEnumerable<BnrExchangeRate>> GetExchangeRatesFromNbrOnline(int year, CancellationToken cancellationToken);
+    public int? Year { get; set; }
 }

@@ -22,7 +22,7 @@ namespace DustInTheWind.CurrencyExchange.Adapters.BnrAccess;
 
 public class Bnr : IBnr
 {
-    public Task<IEnumerable<BnrExchangeRate>> GetExchangeRatesFrom(string filePath)
+    public Task<IEnumerable<BnrExchangeRate>> GetExchangeRatesFrom(string filePath, CancellationToken cancellationToken)
     {
         using FileStream fileStream = File.OpenRead(filePath);
         BnrDocument bnrDocument = BnrDocument.Load(fileStream);
@@ -33,7 +33,7 @@ public class Bnr : IBnr
         return Task.FromResult(exchangeRates);
     }
 
-    public Task<IEnumerable<BnrExchangeRate>> GetExchangeRatesFromNbr(string filePath)
+    public Task<IEnumerable<BnrExchangeRate>> GetExchangeRatesFromNbr(string filePath, CancellationToken cancellationToken)
     {
         using FileStream fileStream = File.OpenRead(filePath);
 

@@ -14,34 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.ImportFromBnrFile;
-using DustInTheWind.CaveOfWonders.Cli.Application.ImportFromNbrWebsite;
 using DustInTheWind.ConsoleTools.Commando;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.ExchangeRateArea.Import;
 
-internal class ImportView : IView<ImportFromNbrWebsiteResponse>
+internal class ImportView : IView<ImportResultViewModel>
 {
-    public void Display(ImportFromNbrWebsiteResponse response)
+    public void Display(ImportResultViewModel result)
     {
-        foreach (UpdateReportResponseDto updateReportResponseDto in response.Updates)
+        foreach (UpdateValueViewModel updateValueViewModel in result.Updates)
         {
             Console.WriteLine();
-            Console.WriteLine($"Existing : {updateReportResponseDto.Date} {updateReportResponseDto.CurrencyPair} {updateReportResponseDto.OldValue}");
-            Console.WriteLine($"New      : {updateReportResponseDto.Date} {updateReportResponseDto.CurrencyPair} {updateReportResponseDto.NewValue}");
+            Console.WriteLine($"Existing : {updateValueViewModel.Date} {updateValueViewModel.CurrencyPair} {updateValueViewModel.OldValue}");
+            Console.WriteLine($"New      : {updateValueViewModel.Date} {updateValueViewModel.CurrencyPair} {updateValueViewModel.NewValue}");
         }
 
-        foreach (DuplicateReportResponseDto duplicateReportResponseDto in response.Duplicates)
+        foreach (DuplicateValueViewModel duplicateValueViewModel in result.Duplicates)
         {
             Console.WriteLine();
-            Console.WriteLine($"Duplicate 1 : {duplicateReportResponseDto.Date} {duplicateReportResponseDto.CurrencyPair} {duplicateReportResponseDto.Value1}");
-            Console.WriteLine($"Duplicate 2 : {duplicateReportResponseDto.Date} {duplicateReportResponseDto.CurrencyPair} {duplicateReportResponseDto.Value2}");
+            Console.WriteLine($"Duplicate 1 : {duplicateValueViewModel.Date} {duplicateValueViewModel.CurrencyPair} {duplicateValueViewModel.Value1}");
+            Console.WriteLine($"Duplicate 2 : {duplicateValueViewModel.Date} {duplicateValueViewModel.CurrencyPair} {duplicateValueViewModel.Value2}");
         }
 
         Console.WriteLine();
-        Console.WriteLine($"Import Count: {response.TotalCount}");
-        Console.WriteLine($"Added: {response.AddedCount}; Updated: {response.ExistingUpdatedCount}; Existing: {response.ExistingIdenticalCount}");
-        Console.WriteLine($"Input Duplicates (identical): {response.NewDuplicateIdenticalCount}");
-        Console.WriteLine($"Input Duplicates (different value): {response.NewDuplicateDifferentCount}");
+        Console.WriteLine($"Import Count: {result.TotalCount}");
+        Console.WriteLine($"Added: {result.AddedCount}; Updated: {result.ExistingUpdatedCount}; Existing: {result.ExistingIdenticalCount}");
+        Console.WriteLine($"Input Duplicates (identical): {result.NewDuplicateIdenticalCount}");
+        Console.WriteLine($"Input Duplicates (different value): {result.NewDuplicateDifferentCount}");
     }
 }

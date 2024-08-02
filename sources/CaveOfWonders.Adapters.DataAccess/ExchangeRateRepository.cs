@@ -98,7 +98,7 @@ public class ExchangeRateRepository : IExchangeRateRepository
         return Task.FromResult(exchangeRates);
     }
 
-    public Task<ImportReport> Import(IEnumerable<ExchangeRate> exchangeRates)
+    public Task<ImportReport> Import(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken)
     {
         ImportProcedure importProcedure = new(database.ExchangeRates);
         importProcedure.Execute(exchangeRates);

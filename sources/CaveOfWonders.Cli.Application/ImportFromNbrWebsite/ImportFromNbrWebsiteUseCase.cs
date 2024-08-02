@@ -38,7 +38,7 @@ public class ImportFromNbrWebsiteUseCase : IRequestHandler<ImportFromNbrWebsiteR
         IEnumerable<ExchangeRate> exchangeRates = (await bnr.GetExchangeRatesFromNbrOnline(request.Year, cancellationToken))
             .ToExchangeRates();
 
-        ImportReport report = await unitOfWork.ExchangeRateRepository.Import(exchangeRates);
+        ImportReport report = await unitOfWork.ExchangeRateRepository.Import(exchangeRates, cancellationToken);
 
         await unitOfWork.SaveChanges();
 

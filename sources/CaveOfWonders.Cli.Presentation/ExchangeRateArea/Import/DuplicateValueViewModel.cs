@@ -14,13 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CurrencyExchange.Ports.BnrAccess;
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportFromBnrFile;
 
-public interface IBnr
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.ExchangeRateArea.Import;
+
+internal class DuplicateValueViewModel
 {
-    Task<IEnumerable<BnrExchangeRate>> GetExchangeRatesFrom(string filePath, CancellationToken cancellationToken);
+    public DateTime Date { get; }
 
-    Task<IEnumerable<BnrExchangeRate>> GetExchangeRatesFromNbr(string filePath, CancellationToken cancellationToken);
+    public string CurrencyPair { get; }
 
-    Task<IEnumerable<BnrExchangeRate>> GetExchangeRatesFromNbrOnline(int year, CancellationToken cancellationToken);
+    public decimal Value1 { get; }
+
+    public decimal Value2 { get; }
+
+    internal DuplicateValueViewModel(DuplicateReportResponseDto duplicateReport)
+    {
+        Date = duplicateReport.Date;
+        CurrencyPair = duplicateReport.CurrencyPair;
+        Value1 = duplicateReport.Value1;
+        Value2 = duplicateReport.Value2;
+    }
 }
