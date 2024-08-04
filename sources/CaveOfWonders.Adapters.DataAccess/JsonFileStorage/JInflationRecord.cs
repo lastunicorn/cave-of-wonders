@@ -14,9 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.InflationArea.ImportInflation;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
 
-internal class InflationViewModel
+internal class JInflationRecord
 {
-    public int ImportCount { get; set; }
+    public int Year { get; set; }
+
+    public decimal Value { get; set; }
 }

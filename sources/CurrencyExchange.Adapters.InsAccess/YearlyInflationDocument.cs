@@ -14,50 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Globalization;
 using DustInTheWind.CurrencyExchange.Ports.InsAccess;
 
 namespace DustInTheWind.CurrencyExchange.Adapters.InsAccess;
 
 internal class YearlyInflationDocument
 {
-    public List<InsInflationRecord> Records { get; } = new();
+    public List<InflationRecordDto> Records { get; } = new();
 
     public YearlyInflationDocument(IEnumerable<string> lines)
     {
-        IEnumerable<string> filteredLines = lines
-            .Where(x => !string.IsNullOrWhiteSpace(x))
-            .Skip(3);
+        InflationRecordDtoEnumerator enumerator = new(lines);
 
-        CultureInfo cultureInfo = new("ro-RO");
-
-        int index = -1;
-        InsInflationRecord record = null;
-
-        foreach (string line in filteredLines)
-        {
-            index++;
-
-            switch (index % 3)
-            {
-                case 0:
-                    if (record != null)
-                        Records.Add(record);
-
-                    record = new InsInflationRecord
-                    {
-                        Year = int.Parse(line, cultureInfo)
-                    };
-
-                    break;
-
-                case 1:
-                    record.Value = decimal.Parse(line, cultureInfo) - 100;
-                    break;
-            }
-        }
-
-        if (record != null)
-            Records.Add(record);
+        while (enumerator.MoveNext())
+            Records.Add(enumerator.Current);
     }
 }

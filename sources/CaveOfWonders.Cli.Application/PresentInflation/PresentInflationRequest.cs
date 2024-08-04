@@ -14,11 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CurrencyExchange.Ports.InsAccess;
+using MediatR;
 
-public class InsInflationRecord
+namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentInflation;
+
+public class PresentInflationRequest : IRequest<PresentInflationResponse>
 {
-    public int Year { get; set; }
-
-    public decimal Value { get; set; }
 }

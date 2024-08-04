@@ -18,13 +18,34 @@ using DustInTheWind.CaveOfWonders.Cli.Application.PresentInflation;
 using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.InflationArea.ImportInflation;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.InflationArea.Inflation;
 
 internal class InflationView : IView<InflationViewModel>
 {
     public void Display(InflationViewModel viewModel)
     {
-        CustomConsole.WriteLineSuccess("Import succeeded.");
-        CustomConsole.WriteLine($"Imported: {viewModel.ImportCount}");
+        if (viewModel.Records?.Count > 0)
+        {
+            foreach (InflationRecord inflationRecord in viewModel.Records)
+            {
+                Console.Write($"{inflationRecord.Year}: {inflationRecord.Value,6:N2} ");
+                DisplayChartLine(inflationRecord.Value);
+
+                Console.WriteLine();
+            }
+        }
+        else
+        {
+            CustomConsole.WriteLineWarning("No inflation rates.");
+        }
+    }
+
+    private static void DisplayChartLine(decimal roundedValue)
+    {
+        ChartLineControl chartLineControl = new()
+        {
+            Value = roundedValue
+        };
+        chartLineControl.Display();
     }
 }

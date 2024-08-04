@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.InflationArea.ImportInflation;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentInflation;
 
-internal class InflationViewModel
+public class PresentInflationResponse
 {
-    public int ImportCount { get; set; }
+    public List<InflationRecord> InflationRecords { get; set; }
 }

@@ -16,7 +16,7 @@
 
 using DustInTheWind.ConsoleTools;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.InflationArea.ImportInflation;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.InflationArea.Inflation;
 
 internal class ChartLineControl
 {
@@ -32,7 +32,7 @@ internal class ChartLineControl
         int roundedValue = (int)Math.Round(Math.Max(0, Value));
 
         int safeValue = Math.Min(Threshold, roundedValue);
-        DisplayValue(safeValue, ConsoleColor.DarkBlue);
+        DisplayValue(safeValue, ConsoleColor.DarkGray);
 
         int painfulValue = roundedValue - safeValue;
         if (painfulValue > 0)

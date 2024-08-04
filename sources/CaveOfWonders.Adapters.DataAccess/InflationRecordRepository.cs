@@ -18,29 +18,25 @@ using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
-public class UnitOfWork : IUnitOfWork
+public class InflationRecordRepository : IInflationRecordRepository
 {
     private readonly Database database;
 
-    private IPotRepository potRepository;
-    private IExchangeRateRepository exchangeRateRepository;
-    private IInflationRecordRepository inflationRecordRepository;
-
-    public IPotRepository PotRepository => potRepository ??= new PotRepository(database);
-
-    public IExchangeRateRepository ExchangeRateRepository => exchangeRateRepository ??= new ExchangeRateRepository(database);
-
-    public IInflationRecordRepository InflationRecordRepository => inflationRecordRepository ??= new InflationRecordRepository(database);
-
-    public UnitOfWork(Database database)
+    public InflationRecordRepository(Database database)
     {
         this.database = database ?? throw new ArgumentNullException(nameof(database));
-
-        database.Load().Wait();
     }
 
-    public Task SaveChanges()
+    public Task Add(InflationRecordDto inflationRecordDto)
     {
-        return database.Save();
+        database.InflationRecords.Add(inflationRecordDto);
+
+        return Task.CompletedTask;
+    }
+
+    public Task<IEnumerable<InflationRecordDto>> GetAll()
+    {
+        IEnumerable<InflationRecordDto> inflationRecords = database.InflationRecords;
+        return Task.FromResult(inflationRecords);
     }
 }

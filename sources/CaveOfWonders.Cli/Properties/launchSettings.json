@@ -2,7 +2,7 @@
   "profiles": {
     "CaveOfWonders.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "import -t web"
+      "commandLineArgs": "inflation"
     }
   }
 }

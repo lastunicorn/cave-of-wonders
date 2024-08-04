@@ -14,19 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CurrencyExchange.Ports.InsAccess;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentInflation;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.InflationArea.Inflation;
 
-public class InflationRecord
+internal class InflationViewModel
 {
-    public int Year { get; set; }
-
-    public decimal Value { get; set; }
-
-    public InflationRecord(InsInflationRecord insInflationRecord)
-    {
-        Year = insInflationRecord.Year;
-        Value = insInflationRecord.Value;
-    }
+    public List<InflationRecord> Records { get; set; }
 }

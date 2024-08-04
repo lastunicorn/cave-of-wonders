@@ -14,9 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.InflationArea.ImportInflation;
+namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
-internal class InflationViewModel
+public interface IInflationRecordRepository
 {
-    public int ImportCount { get; set; }
+    Task Add(InflationRecordDto inflationRecordDto);
+
+    Task<IEnumerable<InflationRecordDto>> GetAll();
 }

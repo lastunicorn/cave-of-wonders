@@ -16,6 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
@@ -23,9 +24,11 @@ public class Database
 {
     private readonly string databaseDirectoryPath;
 
-    public List<Pot> Pots { get; private set; }
+    public List<Pot> Pots { get; } = new();
 
-    public List<ExchangeRate> ExchangeRates { get; private set; }
+    public List<ExchangeRate> ExchangeRates { get; } = new();
+
+    public List<InflationRecordDto> InflationRecords { get; } = new();
 
     public Database(string location)
     {
@@ -36,11 +39,12 @@ public class Database
     {
         await LoadExchangeRates();
         await LoadPots();
+        await LoadInflationRates();
     }
 
     private async Task LoadExchangeRates()
     {
-        ExchangeRates = new List<ExchangeRate>();
+        ExchangeRates.Clear();
 
         ExchangeRatesDirectory exchangeRatesDirectory = new(databaseDirectoryPath);
 
@@ -67,7 +71,7 @@ public class Database
 
     private async Task LoadPots()
     {
-        Pots = new List<Pot>();
+        Pots.Clear();
 
         PotsDirectory potsDirectory = new(databaseDirectoryPath);
 
@@ -101,13 +105,31 @@ public class Database
         }
     }
 
-    public async Task Save()
+    private async Task LoadInflationRates()
     {
-        await SaveConversionRates();
-        await SavePots();
+        string filePath = Path.Combine(databaseDirectoryPath, "inflation-rates.json");
+        InflationRatesFile inflationRatesFile = new(filePath);
+
+        IEnumerable<JInflationRecord> jInflationRecords = await inflationRatesFile.Read();
+
+        IEnumerable<InflationRecordDto> inflationRecordDtos = jInflationRecords
+            .Select(x => new InflationRecordDto
+            {
+                Year = x.Year,
+                Value = x.Value
+            });
+
+        InflationRecords.AddRange(inflationRecordDtos);
     }
 
-    private async Task SaveConversionRates()
+    public async Task Save()
+    {
+        await SaveExchangeRates();
+        await SavePots();
+        await SaveInflationRates();
+    }
+
+    private async Task SaveExchangeRates()
     {
         ExchangeRatesDirectory exchangeRatesDirectory = new(databaseDirectoryPath);
 
@@ -165,5 +187,20 @@ public class Database
             PotFile potFile = potsDirectory.GetPotFile(pot.Id);
             await potFile.Save(jPot);
         }
+    }
+
+    private async Task SaveInflationRates()
+    {
+        string filePath = Path.Combine(databaseDirectoryPath, "inflation-rates.json");
+        InflationRatesFile inflationRatesFile = new(filePath);
+
+        IEnumerable<JInflationRecord> jInflationRecords = InflationRecords
+            .Select(x => new JInflationRecord
+            {
+                Year = x.Year,
+                Value = x.Value
+            });
+
+        await inflationRatesFile.Save(jInflationRecords);
     }
 }

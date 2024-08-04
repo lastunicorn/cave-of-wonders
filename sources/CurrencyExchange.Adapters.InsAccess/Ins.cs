@@ -23,7 +23,7 @@ namespace DustInTheWind.CurrencyExchange.Adapters.InsAccess;
 /// </summary>
 public class Ins : IIns
 {
-    public async Task<IEnumerable<InsInflationRecord>> GetInflationValuesFrom(string filePath)
+    public async Task<IEnumerable<InflationRecordDto>> GetInflationValuesFrom(string filePath)
     {
         string[] lines = await File.ReadAllLinesAsync(filePath);
         YearlyInflationDocument yearlyInflationDocument = new(lines);

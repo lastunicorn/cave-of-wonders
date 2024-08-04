@@ -18,5 +18,5 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 
 public class ImportInflationResponse
 {
-    public List<InflationRecord> Records { get; set; }
+    public int ImportCount { get; set; }
 }
