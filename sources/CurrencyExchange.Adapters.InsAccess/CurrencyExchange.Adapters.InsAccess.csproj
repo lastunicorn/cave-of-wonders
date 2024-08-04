@@ -26,6 +26,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="HtmlAgilityPack" Version="1.11.62" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\CurrencyExchange.Ports.InsAccess\CurrencyExchange.Ports.InsAccess.csproj" PrivateAssets="All" />
     </ItemGroup>
 

@@ -33,7 +33,10 @@ internal class InflationRatesFile
             return Enumerable.Empty<JInflationRecord>();
 
         string json = await File.ReadAllTextAsync(filePath);
-        return JsonConvert.DeserializeObject<IEnumerable<JInflationRecord>>(json);
+
+        return string.IsNullOrEmpty(json)
+            ? Enumerable.Empty<JInflationRecord>()
+            : JsonConvert.DeserializeObject<IEnumerable<JInflationRecord>>(json);
     }
 
     public Task Save(IEnumerable<JInflationRecord> jInflationRecords)

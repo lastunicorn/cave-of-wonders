@@ -14,13 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.InflationArea.ImportInflation;
 
-public class ImportInflationResponse
+internal enum InflationImportSourceType
 {
-    public int AddedCount { get; set; }
-    
-    public int UpdatedCount { get; set; }
-    
-    public int TotalCount { get; set; }
+    File,
+    Web
 }

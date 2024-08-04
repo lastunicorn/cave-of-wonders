@@ -27,16 +27,37 @@ public class InflationRecordRepository : IInflationRecordRepository
         this.database = database ?? throw new ArgumentNullException(nameof(database));
     }
 
+    public Task<IEnumerable<InflationRecordDto>> GetAll()
+    {
+        IEnumerable<InflationRecordDto> inflationRecords = database.InflationRecords;
+        return Task.FromResult(inflationRecords);
+    }
+
     public Task Add(InflationRecordDto inflationRecordDto)
     {
+        if (inflationRecordDto == null) throw new ArgumentNullException(nameof(inflationRecordDto));
+
         database.InflationRecords.Add(inflationRecordDto);
 
         return Task.CompletedTask;
     }
 
-    public Task<IEnumerable<InflationRecordDto>> GetAll()
+    public Task<AddOrUpdateResult> AddOrUpdate(InflationRecordDto inflationRecordDto)
     {
-        IEnumerable<InflationRecordDto> inflationRecords = database.InflationRecords;
-        return Task.FromResult(inflationRecords);
+        if (inflationRecordDto == null) throw new ArgumentNullException(nameof(inflationRecordDto));
+
+        InflationRecordDto existingRecord = database.InflationRecords
+            .FirstOrDefault(x => x.Year == inflationRecordDto.Year);
+
+        if (existingRecord == null)
+        {
+            database.InflationRecords.Add(inflationRecordDto);
+            return Task.FromResult(AddOrUpdateResult.Added);
+        }
+        else
+        {
+            existingRecord.Value = inflationRecordDto.Value;
+            return Task.FromResult(AddOrUpdateResult.Updated);
+        }
     }
 }

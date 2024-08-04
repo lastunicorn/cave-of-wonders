@@ -25,7 +25,10 @@ internal class ImportInflationCommand : IConsoleCommand<InflationViewModel>
 {
     private readonly IMediator mediator;
 
-    [NamedParameter("source-file", ShortName = 'f', IsOptional = false)]
+    [NamedParameter("source-type", ShortName = 't', IsOptional = true, Description = "The source of the imported data. (file - text file; web - html webpage from https://insse.ro)")]
+    public InflationImportSourceType ImportSourceType { get; set; } = InflationImportSourceType.Web;
+
+    [NamedParameter("source-file", ShortName = 'f', IsOptional = true)]
     public string SourceFile { get; set; }
 
     public ImportInflationCommand(IMediator mediator)
@@ -37,13 +40,21 @@ internal class ImportInflationCommand : IConsoleCommand<InflationViewModel>
     {
         ImportInflationRequest request = new()
         {
+            ImportSource = ImportSourceType switch
+            {
+                InflationImportSourceType.File => ImportSource.File,
+                InflationImportSourceType.Web => ImportSource.Web,
+                _ => throw new ArgumentOutOfRangeException()
+            },
             SourceFilePath = SourceFile
         };
         ImportInflationResponse response = await mediator.Send(request);
 
         return new InflationViewModel
         {
-            ImportCount = response.ImportCount
+            AddedCount = response.AddedCount,
+            UpdatedCount = response.UpdatedCount,
+            TotalCount = response.TotalCount
         };
     }
 }

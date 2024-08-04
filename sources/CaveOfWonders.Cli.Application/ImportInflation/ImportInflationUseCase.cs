@@ -35,9 +35,9 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
 
     public async Task<ImportInflationResponse> Handle(ImportInflationRequest request, CancellationToken cancellationToken)
     {
-        IEnumerable<InsInflationRecordDto> inflationRecordDtos = await ins.GetInflationValuesFrom(request.SourceFilePath);
+        IEnumerable<InsInflationRecordDto> inflationRecordDtos = await RetrieveInflationValues(request);
 
-        int count = 0;
+        ImportInflationResponse response = new();
 
         foreach (InsInflationRecordDto insInflationRecordDto in inflationRecordDtos)
         {
@@ -47,25 +47,45 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
                 Value = insInflationRecordDto.Value
             };
 
-            await unitOfWork.InflationRecordRepository.Add(inflationRecordDto);
+            AddOrUpdateResult result = await unitOfWork.InflationRecordRepository.AddOrUpdate(inflationRecordDto);
 
-            count++;
+            response.TotalCount++;
+
+            switch (result)
+            {
+                case AddOrUpdateResult.Added:
+                    response.AddedCount++;
+                    break;
+
+                case AddOrUpdateResult.Updated:
+                    response.UpdatedCount++;
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         await unitOfWork.SaveChanges();
 
-        return new ImportInflationResponse
+        return response;
+    }
+
+    private async Task<IEnumerable<InsInflationRecordDto>> RetrieveInflationValues(ImportInflationRequest request)
+    {
+        switch (request.ImportSource)
         {
-            ImportCount = count
-        };
+            case ImportSource.File:
+                if (string.IsNullOrEmpty(request.SourceFilePath))
+                    throw new Exception("The name of the text file containing inflation values was not provided.");
 
-        //List<InflationRecord> inflationRecords = inflationRecordDtos
-        //    .Select(x => new InflationRecord(x))
-        //    .ToList();
+                return await ins.GetInflationValuesFromFile(request.SourceFilePath);
 
-        //return new ImportInflationResponse
-        //{
-        //    Records = inflationRecords
-        //};
+            case ImportSource.Web:
+                return await ins.GetInflationValuesFromWeb();
+
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
 }

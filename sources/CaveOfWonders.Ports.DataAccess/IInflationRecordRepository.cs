@@ -18,7 +18,9 @@ namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
 public interface IInflationRecordRepository
 {
+    Task<IEnumerable<InflationRecordDto>> GetAll();
+
     Task Add(InflationRecordDto inflationRecordDto);
 
-    Task<IEnumerable<InflationRecordDto>> GetAll();
+    Task<AddOrUpdateResult> AddOrUpdate(InflationRecordDto inflationRecordDto);
 }

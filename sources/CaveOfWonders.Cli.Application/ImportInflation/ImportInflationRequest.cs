@@ -21,4 +21,6 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 public class ImportInflationRequest : IRequest<ImportInflationResponse>
 {
     public string SourceFilePath { get; set; }
+
+    public ImportSource ImportSource { get; set; }
 }

@@ -18,5 +18,7 @@ namespace DustInTheWind.CurrencyExchange.Ports.InsAccess;
 
 public interface IIns
 {
-    Task<IEnumerable<InflationRecordDto>> GetInflationValuesFrom(string filePath);
+    Task<IEnumerable<InflationRecordDto>> GetInflationValuesFromFile(string filePath);
+
+    Task<IEnumerable<InflationRecordDto>> GetInflationValuesFromWeb();
 }

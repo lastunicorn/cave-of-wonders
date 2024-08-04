@@ -18,5 +18,9 @@ namespace DustInTheWind.CaveOfWonders.Cli.Presentation.InflationArea.ImportInfla
 
 internal class InflationViewModel
 {
-    public int ImportCount { get; set; }
+    public int AddedCount { get; set; }
+
+    public int UpdatedCount { get; set; }
+
+    public int TotalCount { get; set; }
 }

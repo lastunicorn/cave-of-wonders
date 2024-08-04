@@ -16,11 +16,8 @@
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 
-public class ImportInflationResponse
+public enum ImportSource
 {
-    public int AddedCount { get; set; }
-    
-    public int UpdatedCount { get; set; }
-    
-    public int TotalCount { get; set; }
+    File,
+    Web
 }
