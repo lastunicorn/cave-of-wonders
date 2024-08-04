@@ -26,7 +26,7 @@ internal class ExchangeRatesDirectory
     public ExchangeRatesDirectory(string rootDirectoryPath)
     {
         if (rootDirectoryPath == null) throw new ArgumentNullException(nameof(rootDirectoryPath));
-        
+
         directoryPath = Path.Combine(rootDirectoryPath, DirectoryName);
     }
 

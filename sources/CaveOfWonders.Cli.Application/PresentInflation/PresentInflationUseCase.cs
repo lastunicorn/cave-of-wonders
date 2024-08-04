@@ -32,7 +32,7 @@ internal class PresentInflationUseCase : IRequestHandler<PresentInflationRequest
     {
         IEnumerable<InflationRecordDto> inflationRecordDtos = await unitOfWork.InflationRecordRepository.GetAll();
 
-        return new PresentInflationResponse()
+        return new PresentInflationResponse
         {
             InflationRecords = inflationRecordDtos
                 .Select(x => new InflationRecord(x))

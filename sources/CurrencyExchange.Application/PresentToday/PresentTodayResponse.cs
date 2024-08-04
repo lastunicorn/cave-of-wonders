@@ -19,6 +19,6 @@ namespace DustInTheWind.CurrencyExchange.Application.PresentToday;
 public class PresentTodayResponse
 {
     public List<ExchangeRatesByDateCollection> ExchangeRatesByDates { get; set; }
-    
+
     public List<ExchangeRatesByCurrencyCollection> ExchangeRatesByCurrencies { get; set; }
 }

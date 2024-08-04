@@ -47,7 +47,6 @@ public class PresentTodayUseCase : IRequestHandler<PresentTodayRequest, PresentT
 
         if (request.CurrencyPair == null)
         {
-
             if (dates.Count == 0)
             {
                 DateTime today = systemClock.Today;

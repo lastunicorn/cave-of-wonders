@@ -30,7 +30,7 @@ internal class ImportProcedure
 
     public ImportProcedure(List<ExchangeRate> exchangeRatesCollection)
     {
-        this.exchangeRatesFromDatabase = exchangeRatesCollection ?? throw new ArgumentNullException(nameof(exchangeRatesCollection));
+        exchangeRatesFromDatabase = exchangeRatesCollection ?? throw new ArgumentNullException(nameof(exchangeRatesCollection));
     }
 
     public void Execute(IEnumerable<ExchangeRate> exchangeRates)
@@ -48,7 +48,7 @@ internal class ImportProcedure
 
         if (scheduledItems.Count > 0)
         {
-            foreach (ExchangeRate exchangeRate in exchangeRates) 
+            foreach (ExchangeRate exchangeRate in exchangeRates)
                 UpdateOrAddInDatabase(exchangeRate);
         }
     }
