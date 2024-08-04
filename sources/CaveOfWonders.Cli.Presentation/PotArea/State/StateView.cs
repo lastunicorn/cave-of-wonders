@@ -48,7 +48,7 @@ internal class StateView : IView<StateViewModel>
         {
             CustomConsole.Write($"  1 {conversionRate.SourceCurrency} = {conversionRate.Value} {conversionRate.DestinationCurrency}");
 
-            if (!conversionRate.IsCurrent) 
+            if (!conversionRate.IsCurrent)
                 CustomConsole.Write(ConsoleColor.DarkYellow, $" ({conversionRate.CurrencyDate:d})");
 
             CustomConsole.WriteLine();

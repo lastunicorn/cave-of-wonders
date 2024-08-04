@@ -27,7 +27,7 @@ internal class PotInstanceViewModel
     public CurrencyValue OriginalValue { get; set; }
 
     public bool IsValueActual { get; set; }
-    
+
     public bool IsValueAlreadyNormal { get; set; }
 
     public DateTime? Date { get; set; }
