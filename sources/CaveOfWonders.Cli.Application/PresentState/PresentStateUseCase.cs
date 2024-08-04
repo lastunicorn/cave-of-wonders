@@ -40,14 +40,7 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
         string defaultCurrency = request.Currency ?? "RON";
 
         IEnumerable<PotInstance> potInstances = await RetrievePotInstances(currentDate, request.IncludeInactive);
-
-        List<PotInstanceInfo> potInstanceInfos = new();
-
-        foreach (PotInstance potInstance in potInstances)
-        {
-            PotInstanceInfo potInstanceInfo = await Convert(potInstance, currentDate, defaultCurrency);
-            potInstanceInfos.Add(potInstanceInfo);
-        }
+        List<PotInstanceInfo> potInstanceInfos = await ConvertToPotInstanceInfos(potInstances, currentDate, defaultCurrency);
 
         return new PresentStateResponse
         {
@@ -58,10 +51,31 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
                 .ToList(),
             Total = new CurrencyValue
             {
-                Value = potInstanceInfos.Sum(x => x.NormalizedValue?.Value ?? x.OriginalValue?.Value ?? 0),
+                Value = potInstanceInfos.Sum(x => x.NormalizedValue?.Value ?? 0),
                 Currency = defaultCurrency
             }
         };
+    }
+
+    private async Task<IEnumerable<PotInstance>> RetrievePotInstances(DateTime date, bool includeInactive)
+    {
+        IEnumerable<PotInstance> potInstances = await unitOfWork.PotRepository.GetInstances(date, DateMatchingMode.LastAvailable, includeInactive);
+        potInstances = potInstances.OrderBy(x => x.Pot.DisplayOrder);
+
+        return potInstances;
+    }
+
+    private async Task<List<PotInstanceInfo>> ConvertToPotInstanceInfos(IEnumerable<PotInstance> potInstances, DateTime currentDate, string defaultCurrency)
+    {
+        List<PotInstanceInfo> potInstanceInfos = new();
+
+        foreach (PotInstance potInstance in potInstances)
+        {
+            PotInstanceInfo potInstanceInfo = await Convert(potInstance, currentDate, defaultCurrency);
+            potInstanceInfos.Add(potInstanceInfo);
+        }
+
+        return potInstanceInfos;
     }
 
     private async Task<PotInstanceInfo> Convert(PotInstance potInstance, DateTime currentDate, CurrencyId defaultCurrency)
@@ -113,7 +127,8 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
             return new CurrencyValue
             {
                 Currency = defaultCurrency,
-                Value = 0
+                Value = 0,
+                Date = originalValue.Date
             };
         }
 
@@ -133,15 +148,8 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
             Currency = destinationCurrency,
             Value = originalValue.Currency == exchangeRate.CurrencyPair.Currency1
                 ? exchangeRate.Convert(originalValue.Value)
-                : exchangeRate.ConvertBack(originalValue.Value)
+                : exchangeRate.ConvertBack(originalValue.Value),
+            Date = exchangeRate.Date
         };
-    }
-
-    private async Task<IEnumerable<PotInstance>> RetrievePotInstances(DateTime date, bool includeInactive)
-    {
-        IEnumerable<PotInstance> potInstances = await unitOfWork.PotRepository.GetInstances(date, DateMatchingMode.LastAvailable, includeInactive);
-        potInstances = potInstances.OrderBy(x => x.Pot.DisplayOrder);
-
-        return potInstances;
     }
 }

@@ -69,40 +69,40 @@ internal class PotSnapshotControl
     private void AddRows(DataGrid dataGrid)
     {
         IEnumerable<ContentRow> rows = Values
-            .Select(x =>
-            {
-                string id = x.Id.ToString("D")[..8];
-                string name = x.Name;
-                string value = x.OriginalValue?.ToDisplayString();
-                string date = x.Date?.ToString("d");
-                string normalizedValue = x.NormalizedValue?.ToDisplayString();
-
-                ContentRow row = new(id, name, value, date, normalizedValue);
-
-                if (x.IsPotActive)
-                {
-                    if (!x.IsValueActual)
-                    {
-                        row[2].ForegroundColor = ConsoleColor.DarkYellow;
-                        row[3].ForegroundColor = ConsoleColor.DarkYellow;
-                    }
-
-                    if (!x.IsValueAlreadyNormal)
-                        row[2].ForegroundColor = ConsoleColor.DarkGray;
-                }
-                else
-                {
-                    row.ForegroundColor = ConsoleColor.DarkGray;
-                }
-
-                //bool isCurrent = x.NormalizedValue?.Currency != x.OriginalValue?.Currency && x.Date == Date;
-
-                //if (!isCurrent)
-                //    row[4].ForegroundColor = ConsoleColor.DarkYellow;
-
-                return row;
-            });
+            .Select(CreateRow);
 
         dataGrid.Rows.AddRange(rows);
+    }
+
+    private static ContentRow CreateRow(PotInstanceViewModel potInstanceViewModel)
+    {
+        string id = potInstanceViewModel.Id.ToString("D")[..8];
+        string name = potInstanceViewModel.Name;
+        string value = potInstanceViewModel.OriginalValue?.ToDisplayString();
+        string date = potInstanceViewModel.Date?.ToString("d");
+        string normalizedValue = potInstanceViewModel.NormalizedValue?.ToDisplayString();
+
+        ContentRow row = new(id, name, value, date, normalizedValue);
+
+        if (potInstanceViewModel.IsPotActive)
+        {
+            if (!potInstanceViewModel.IsValueActual)
+            {
+                row[2].ForegroundColor = ConsoleColor.DarkYellow;
+                row[3].ForegroundColor = ConsoleColor.DarkYellow;
+            }
+
+            if (!potInstanceViewModel.IsValueAlreadyNormal)
+                row[2].ForegroundColor = ConsoleColor.DarkGray;
+        }
+        else
+        {
+            row.ForegroundColor = ConsoleColor.DarkGray;
+        }
+
+        if (potInstanceViewModel.NormalizedValue?.Value != 0 && !potInstanceViewModel.IsValueAlreadyNormal && !potInstanceViewModel.IsNormalizedCurrent)
+            row[4].ForegroundColor = ConsoleColor.DarkYellow;
+
+        return row;
     }
 }

@@ -34,5 +34,7 @@ internal class PotInstanceViewModel
 
     public CurrencyValue NormalizedValue { get; set; }
 
+    public bool IsNormalizedCurrent { get; set; }
+
     public bool IsPotActive { get; set; }
 }

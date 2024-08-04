@@ -43,6 +43,7 @@ internal class StateViewModel
                     : null,
                 IsValueActual = x.OriginalValue.Date == presentStateResponse.Date,
                 IsValueAlreadyNormal = x.OriginalValue?.Currency == x.NormalizedValue?.Currency,
+                IsNormalizedCurrent = x.NormalizedValue?.Date == Date,
                 Date = x.IsActive
                     ? x.OriginalValue?.Date
                     : null,
