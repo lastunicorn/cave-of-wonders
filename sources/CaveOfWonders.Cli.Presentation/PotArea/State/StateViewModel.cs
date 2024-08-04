@@ -41,10 +41,10 @@ internal class StateViewModel
                 OriginalValue = x.IsActive
                     ? x.OriginalValue
                     : null,
-                IsValueActual = x.Date == presentStateResponse.Date,
+                IsValueActual = x.OriginalValue.Date == presentStateResponse.Date,
                 IsValueAlreadyNormal = x.OriginalValue?.Currency == x.NormalizedValue?.Currency,
                 Date = x.IsActive
-                    ? x.Date
+                    ? x.OriginalValue?.Date
                     : null,
                 NormalizedValue = x.NormalizedValue,
                 IsPotActive = x.IsActive
@@ -52,7 +52,7 @@ internal class StateViewModel
             .ToList();
 
         ConversionRates = presentStateResponse.ConversionRates
-            .Select(x => new ExchangeRateViewModel(x))
+            .Select(x => new ExchangeRateViewModel(x, presentStateResponse.Date))
             .ToList();
 
         Total = presentStateResponse.Total;

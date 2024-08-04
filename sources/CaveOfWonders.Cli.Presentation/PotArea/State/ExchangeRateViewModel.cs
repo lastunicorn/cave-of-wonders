@@ -41,20 +41,23 @@ public class ExchangeRateViewModel
 
     public string DestinationCurrency { get; }
 
-    public DateTime Date { get; }
-
     public decimal Value { get; }
 
-    public ExchangeRateViewModel(ExchangeRateInfo exchangeRateInfo)
+    public DateTime CurrencyDate { get; }
+    
+    public bool IsCurrent { get; }
+
+    public ExchangeRateViewModel(ExchangeRateInfo exchangeRateInfo, DateTime currentDate)
     {
         SourceCurrency = exchangeRateInfo.SourceCurrency;
         DestinationCurrency = exchangeRateInfo.DestinationCurrency;
-        Date = exchangeRateInfo.Date;
         Value = exchangeRateInfo.Value;
+        CurrencyDate = exchangeRateInfo.Date;
+        IsCurrent = exchangeRateInfo.Date == currentDate;
     }
 
     public override string ToString()
     {
-        return $"1 {SourceCurrency} = {Value} {DestinationCurrency}";
+        return $"1 {SourceCurrency} = {Value} {DestinationCurrency} ({CurrencyDate:d})";
     }
 }

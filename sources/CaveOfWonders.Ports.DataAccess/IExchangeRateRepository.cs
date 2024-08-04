@@ -26,7 +26,7 @@ public interface IExchangeRateRepository
 
     Task<IEnumerable<ExchangeRate>> Get(CurrencyPair currencyPair, List<DateTime> dates);
 
-    Task<ExchangeRate> GetLatest(CurrencyPair currencyPair, DateTime date);
+    Task<ExchangeRate> GetLatest(CurrencyPair currencyPair, DateTime date, bool allowInverted = false);
 
     Task<IEnumerable<ExchangeRate>> GetByDateInterval(CurrencyPair currencyPair, DateTime? startDate, DateTime? endDate);
 

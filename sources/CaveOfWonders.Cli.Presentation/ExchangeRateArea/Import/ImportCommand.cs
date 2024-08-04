@@ -20,7 +20,7 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.ExchangeRateArea.Import;
 
-[NamedCommand("import", Description = "Import exchange rates from local files or directly from the BNR website.")]
+[NamedCommand("import-exchange", Description = "Import exchange rates from local files or directly from the BNR website.")]
 internal class ImportCommand : IConsoleCommand<ImportResultViewModel>
 {
     private readonly IMediator mediator;

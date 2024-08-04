@@ -26,7 +26,5 @@ public class PotInstanceInfo
 
     public CurrencyValue NormalizedValue { get; set; }
 
-    public DateTime Date { get; set; }
-
     public bool IsActive { get; set; }
 }

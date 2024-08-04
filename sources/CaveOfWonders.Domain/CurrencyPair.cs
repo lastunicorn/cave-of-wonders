@@ -55,6 +55,11 @@ public readonly struct CurrencyPair : IEquatable<CurrencyPair>
         Currency2 = match.Groups[2].Value;
     }
 
+    public CurrencyPair Invert()
+    {
+        return new CurrencyPair(Currency2, Currency1);
+    }
+
     public override string ToString()
     {
         return Currency1 + Currency2;

@@ -68,7 +68,7 @@ public class ExchangeRateRepository : IExchangeRateRepository
         throw new NotImplementedException();
     }
 
-    public Task<ExchangeRate> GetLatest(CurrencyPair currencyPair, DateTime date)
+    public Task<ExchangeRate> GetLatest(CurrencyPair currencyPair, DateTime date, bool allowInverted = false)
     {
         string currencyPairAsString = currencyPair.ToString();
 

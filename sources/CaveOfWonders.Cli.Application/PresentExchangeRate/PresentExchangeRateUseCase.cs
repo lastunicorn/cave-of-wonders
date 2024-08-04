@@ -35,8 +35,8 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
 
     public async Task<PresentExchangeRateResponse> Handle(PresentExchangeRateRequest request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(request.CurrencyPair))
-            throw new Exception("Currency pair value was not provided.");
+        //if (string.IsNullOrEmpty(request.CurrencyPair))
+        //    throw new Exception("Currency pair value was not provided.");
 
         CurrencyPair currencyPair = request.CurrencyPair;
 
@@ -86,6 +86,9 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
 
     private async Task RetrieveByYear(CurrencyPair currencyPair, uint year, uint? month)
     {
+        if (string.IsNullOrEmpty(currencyPair))
+            throw new Exception("Currency pair value was not provided.");
+
         response.ExchangeRates = (await unitOfWork.ExchangeRateRepository.GetByYear(currencyPair, year, month))
             .Select(x => new ExchangeRateResponseDto(x))
             .ToList();

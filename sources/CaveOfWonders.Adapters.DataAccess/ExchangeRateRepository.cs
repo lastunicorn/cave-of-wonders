@@ -16,7 +16,6 @@
 
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
@@ -54,12 +53,24 @@ public class ExchangeRateRepository : IExchangeRateRepository
         return Task.FromResult(exchangeRates);
     }
 
-    public Task<ExchangeRate> GetLatest(CurrencyPair currencyPair, DateTime date)
+    public Task<ExchangeRate> GetLatest(CurrencyPair currencyPair, DateTime date, bool allowInverted = false)
     {
-        string currencyPairAsString = currencyPair.ToString();
+        CurrencyPair invertedCurrencyPair = currencyPair.Invert();
 
         ExchangeRate exchangeRate = database.ExchangeRates
-            .Where(x => x.CurrencyPair == currencyPairAsString && x.Date <= date)
+            .Where(x =>
+            {
+                if (x.Date > date)
+                    return false;
+
+                if (x.CurrencyPair == currencyPair)
+                    return true;
+
+                if (allowInverted)
+                    return x.CurrencyPair == invertedCurrencyPair;
+
+                return false;
+            })
             .MaxBy(x => x.Date);
 
         return Task.FromResult(exchangeRate);

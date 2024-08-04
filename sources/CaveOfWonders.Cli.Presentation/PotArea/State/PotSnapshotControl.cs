@@ -95,6 +95,11 @@ internal class PotSnapshotControl
                     row.ForegroundColor = ConsoleColor.DarkGray;
                 }
 
+                //bool isCurrent = x.NormalizedValue?.Currency != x.OriginalValue?.Currency && x.Date == Date;
+
+                //if (!isCurrent)
+                //    row[4].ForegroundColor = ConsoleColor.DarkYellow;
+
                 return row;
             });
 
