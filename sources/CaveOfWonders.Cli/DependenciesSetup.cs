@@ -15,15 +15,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using Autofac;
+using DustInTheWind.CaveOfWonders.Adapters.BnrAccess;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
+using DustInTheWind.CaveOfWonders.Adapters.InsAccess;
 using DustInTheWind.CaveOfWonders.Adapters.SystemAccess;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
+using DustInTheWind.CaveOfWonders.Ports.BnrAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
-using DustInTheWind.CurrencyExchange.Adapters.BnrAccess;
-using DustInTheWind.CurrencyExchange.Adapters.InsAccess;
-using DustInTheWind.CurrencyExchange.Ports.BnrAccess;
-using DustInTheWind.CurrencyExchange.Ports.InsAccess;
 using MediatR.Extensions.Autofac.DependencyInjection;
 using MediatR.Extensions.Autofac.DependencyInjection.Builder;
 

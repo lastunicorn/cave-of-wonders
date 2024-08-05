@@ -47,17 +47,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyExchange.Applicatio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyExchange", "CurrencyExchange\CurrencyExchange.csproj", "{AC9BA378-F955-415C-801E-8169CC6C79AA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyExchange.Ports.BnrAccess", "CurrencyExchange.Ports.BnrAccess\CurrencyExchange.Ports.BnrAccess.csproj", "{7E51C82F-F3C1-480D-8D97-3F9EFD06E4ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Ports.BnrAccess", "CaveOfWonders.Ports.BnrAccess\CaveOfWonders.Ports.BnrAccess.csproj", "{7E51C82F-F3C1-480D-8D97-3F9EFD06E4ED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyExchange.Ports.InsAccess", "CurrencyExchange.Ports.InsAccess\CurrencyExchange.Ports.InsAccess.csproj", "{88F53467-9AF1-424A-B270-1B400EF9A4B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Ports.InsAccess", "CaveOfWonders.Ports.InsAccess\CaveOfWonders.Ports.InsAccess.csproj", "{88F53467-9AF1-424A-B270-1B400EF9A4B2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyExchange.Adapters.InsAccess", "CurrencyExchange.Adapters.InsAccess\CurrencyExchange.Adapters.InsAccess.csproj", "{B3792906-B901-4945-AA38-A5452188515F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Adapters.InsAccess", "CaveOfWonders.Adapters.InsAccess\CaveOfWonders.Adapters.InsAccess.csproj", "{B3792906-B901-4945-AA38-A5452188515F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyExchange.Adapters.BnrAccess", "CurrencyExchange.Adapters.BnrAccess\CurrencyExchange.Adapters.BnrAccess.csproj", "{A80EC0E9-0D59-4D62-BB6E-BDC5152714DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Adapters.BnrAccess", "CaveOfWonders.Adapters.BnrAccess\CaveOfWonders.Adapters.BnrAccess.csproj", "{A80EC0E9-0D59-4D62-BB6E-BDC5152714DB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyExchange.Adapters.BnrAccess.BnrFiles", "CurrencyExchange.Adapters.BnrAccess.BnrFiles\CurrencyExchange.Adapters.BnrAccess.BnrFiles.csproj", "{A605A348-698C-436B-92F5-F6A76A16B2DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Adapters.BnrAccess.BnrFiles", "CaveOfWonders.Adapters.BnrAccess.BnrFiles\CaveOfWonders.Adapters.BnrAccess.BnrFiles.csproj", "{A605A348-698C-436B-92F5-F6A76A16B2DF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyExchange.Adapters.BnrAccess.NbrFiles", "CurrencyExchange.Adapters.BnrAccess.NbrFiles\CurrencyExchange.Adapters.BnrAccess.NbrFiles.csproj", "{3D66C70F-505A-43F0-BEB1-EE83303E819B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Adapters.BnrAccess.NbrFiles", "CaveOfWonders.Adapters.BnrAccess.NbrFiles\CaveOfWonders.Adapters.BnrAccess.NbrFiles.csproj", "{3D66C70F-505A-43F0-BEB1-EE83303E819B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaveOfWonders.Adapters.DataAccess.LiteDb", "CaveOfWonders.Adapters.DataAccess.LiteDb\CaveOfWonders.Adapters.DataAccess.LiteDb.csproj", "{008BDCC9-005A-45FA-B400-761419AD5F44}"
 EndProject

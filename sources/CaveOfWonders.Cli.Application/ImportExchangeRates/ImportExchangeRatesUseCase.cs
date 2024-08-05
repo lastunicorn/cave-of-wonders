@@ -15,9 +15,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Ports.BnrAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
-using DustInTheWind.CurrencyExchange.Ports.BnrAccess;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;

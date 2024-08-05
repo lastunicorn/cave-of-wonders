@@ -14,21 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CaveOfWonders.Ports.BnrAccess;
+using System.Xml.Serialization;
+using DustInTheWind.CaveOfWonders.Adapters.BnrAccess.BnrFiles.BnrModels;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
+namespace DustInTheWind.CaveOfWonders.Adapters.BnrAccess.BnrFiles;
 
-internal static class ExchangeRateExtensions
+public class BnrDocument
 {
-    public static IEnumerable<ExchangeRate> ToExchangeRates(this IEnumerable<BnrExchangeRate> bnrExchangeRates)
+    public BnrDataSet DataSet { get; private set; }
+
+    public static BnrDocument Load(Stream stream)
     {
-        return bnrExchangeRates
-            .Select(x => new ExchangeRate
-            {
-                Date = x.Date,
-                CurrencyPair = x.CurrencyPair,
-                Value = x.Value
-            });
+        XmlSerializer xmlSerializer = new(typeof(BnrDataSet));
+
+        return new BnrDocument
+        {
+            DataSet = (BnrDataSet)xmlSerializer.Deserialize(stream)
+        };
     }
 }

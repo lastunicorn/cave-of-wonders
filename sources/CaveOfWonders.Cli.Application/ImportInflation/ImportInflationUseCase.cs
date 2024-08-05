@@ -15,10 +15,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CurrencyExchange.Ports.InsAccess;
+using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 using MediatR;
 using InflationRecordDto = DustInTheWind.CaveOfWonders.Ports.DataAccess.InflationRecordDto;
-using InsInflationRecordDto = DustInTheWind.CurrencyExchange.Ports.InsAccess.InflationRecordDto;
+using InsInflationRecordDto = DustInTheWind.CaveOfWonders.Ports.InsAccess.InflationRecordDto;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 

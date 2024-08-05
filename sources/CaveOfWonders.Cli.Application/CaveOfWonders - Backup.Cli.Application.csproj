@@ -19,30 +19,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
-        <AssemblyName>cave</AssemblyName>
+        <AssemblyName>DustInTheWind.$(MSBuildProjectName)</AssemblyName>
         <RootNamespace>DustInTheWind.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ConsoleTools.Commando" Version="2.0.0" />
-        <PackageReference Include="ConsoleTools.Commando.Setup.Autofac" Version="2.0.0" />
         <PackageReference Include="MediatR" Version="12.4.0" />
-        <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" Version="12.1.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess\CaveOfWonders.Adapters.DataAccess.Json.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CaveOfWonders.Adapters.SystemAccess\CaveOfWonders.Adapters.SystemAccess.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CaveOfWonders.Cli.Application\CaveOfWonders.Cli.Application.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CaveOfWonders.Cli.Presentation\CaveOfWonders.Cli.Presentation.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CaveOfWonders.Domain\CaveOfWonders.Domain.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CaveOfWonders.Ports.InsAccess\CaveOfWonders.Ports.InsAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Ports.SystemAccess\CaveOfWonders.Ports.SystemAccess.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CaveOfWonders.Adapters.BnrAccess\CaveOfWonders.Adapters.BnrAccess.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CaveOfWonders.Adapters.InsAccess\CaveOfWonders.Adapters.InsAccess.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CurrencyExchange.Ports.BnrAccess\CaveOfWonders.Ports.BnrAccess.csproj" />
+        <ProjectReference Include="..\CurrencyExchange.Ports.InsAccess\CurrencyExchange.Ports.InsAccess.csproj" />
     </ItemGroup>
 
 </Project>

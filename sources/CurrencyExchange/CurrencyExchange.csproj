@@ -38,10 +38,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <ProjectReference Include="..\CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Ports.SystemAccess\CaveOfWonders.Ports.SystemAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CurrencyExchange.Application\CurrencyExchange.Application.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CurrencyExchange.Adapters.BnrAccess\CurrencyExchange.Adapters.BnrAccess.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CurrencyExchange.Adapters.InsAccess\CurrencyExchange.Adapters.InsAccess.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CurrencyExchange.Ports.BnrAccess\CurrencyExchange.Ports.BnrAccess.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CurrencyExchange.Ports.InsAccess\CurrencyExchange.Ports.InsAccess.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CaveOfWonders.Adapters.BnrAccess\CaveOfWonders.Adapters.BnrAccess.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CaveOfWonders.Adapters.InsAccess\CaveOfWonders.Adapters.InsAccess.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CaveOfWonders.Ports.BnrAccess\CaveOfWonders.Ports.BnrAccess.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CaveOfWonders.Ports.InsAccess\CaveOfWonders.Ports.InsAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CurrencyExchange.Presentation\CurrencyExchange.Presentation.csproj" PrivateAssets="All" />
     </ItemGroup>
 
