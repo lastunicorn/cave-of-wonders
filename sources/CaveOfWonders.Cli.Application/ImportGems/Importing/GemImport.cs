@@ -94,8 +94,8 @@ internal class GemImport
 
         foreach (PotImportReport potImportReport in Report)
         {
-            string potName = potImportReport.Pot.Name;
-            Guid potId = potImportReport.Pot.Id;
+            string potName = potImportReport.PotName;
+            Guid potId = potImportReport.PotId;
             int addCount = potImportReport.AddCount;
             int skipCount = potImportReport.SkipCount;
 

@@ -14,13 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using MediatR;
+using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CsvParser.Application.UseCases.ImportBrd;
+namespace DustInTheWind.CsvParser.Application.Importing;
 
-public class ImportBrdGemsRequest : IRequest<ImportBrdGemsResponse>
+public class PotImportReport
 {
-    public string SourceFilePath { get; set; }
+    public string PotName { get; init; }
+    
+    public Guid PotId { get; init; }
 
-    public bool Overwrite { get; set; }
+    public int SkipCount { get; set; }
+
+    public int AddCount { get; set; }
 }

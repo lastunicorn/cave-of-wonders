@@ -14,13 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using MediatR;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.ImportGems;
 
-namespace DustInTheWind.CsvParser.Application.UseCases.ImportBt;
-
-public class ImportBtGemsRequest : IRequest<ImportBtGemsResponse>
+internal enum ImportCategory
 {
-    public string SourceFilePath { get; set; }
-
-    public bool Overwrite { get; set; }
+    Unspecified = 0,
+    Bcr,
+    Ing,
+    Brd,
+    Bt,
+    Revolut,
+    Cash,
+    Gold
 }

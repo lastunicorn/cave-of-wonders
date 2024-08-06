@@ -28,13 +28,14 @@ public class ImportReport : IEnumerable<PotImportReport>
         get
         {
             PotImportReport potImportReport = potImportReports
-                .FirstOrDefault(x => x.Pot == pot);
+                .FirstOrDefault(x => x.PotId == pot.Id);
 
             if (potImportReport == null)
             {
                 potImportReport = new PotImportReport
                 {
-                    Pot = pot
+                    PotId = pot.Id,
+                    PotName = pot.Name
                 };
 
                 potImportReports.Add(potImportReport);

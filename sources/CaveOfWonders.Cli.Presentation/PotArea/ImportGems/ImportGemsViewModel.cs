@@ -14,13 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using MediatR;
+using DustInTheWind.CsvParser.Application.Importing;
 
-namespace DustInTheWind.CsvParser.Application.UseCases.ImportBcr;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.ImportGems;
 
-public class ImportBcrGemsRequest : IRequest<ImportBcrGemsResponse>
+internal class ImportGemsViewModel
 {
-    public string SourceFilePath { get; set; }
-
-    public bool Overwrite { get; set; }
+    public List<PotImportReport> Report { get; set; }
 }

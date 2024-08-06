@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using Autofac;
+using CsvParser.Ports.LogAccess;
 using DustInTheWind.CaveOfWonders.Adapters.BnrAccess;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 using DustInTheWind.CaveOfWonders.Adapters.InsAccess;
@@ -24,6 +25,9 @@ using DustInTheWind.CaveOfWonders.Ports.BnrAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
+using DustInTheWind.CsvParser.Adapters.LogAccess;
+using DustInTheWind.CsvParser.Adapters.SheetsAccess;
+using DustInTheWind.CsvParser.Ports.SheetsAccess;
 using MediatR.Extensions.Autofac.DependencyInjection;
 using MediatR.Extensions.Autofac.DependencyInjection.Builder;
 
@@ -48,5 +52,7 @@ internal class DependenciesSetup
         containerBuilder.RegisterType<SystemClock>().As<ISystemClock>();
         containerBuilder.RegisterType<Bnr>().As<IBnr>();
         containerBuilder.RegisterType<Ins>().As<IIns>();
+        containerBuilder.RegisterType<Sheets>().As<ISheets>();
+        containerBuilder.RegisterType<Log>().As<ILog>().InstancePerLifetimeScope();
     }
 }

@@ -14,13 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using MediatR;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;
 
-namespace DustInTheWind.CsvParser.Application.UseCases.ImportRevolut;
-
-public class ImportRevolutGemsRequest : IRequest<ImportRevolutGemsResponse>
+public enum PotCategory
 {
-    public string SourceFilePath { get; set; }
-
-    public bool Overwrite { get; set; }
+    Bcr,
+    Ing,
+    Brd,
+    Bt,
+    Revolut,
+    Cash,
+    Gold
 }

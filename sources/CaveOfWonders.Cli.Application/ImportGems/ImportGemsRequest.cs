@@ -14,11 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CsvParser.Application.Importing;
+using MediatR;
 
-namespace DustInTheWind.CsvParser.Application.UseCases.ImportRevolut;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;
 
-public class ImportRevolutGemsResponse
+public class ImportGemsRequest : IRequest<ImportGemsResponse>
 {
-    public ImportReport Report { get; set; }
+    public PotCategory PotCategory { get; set; }
+
+    public string SourceFilePath { get; set; }
+
+    public bool Overwrite { get; set; }
 }

@@ -43,6 +43,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <ProjectReference Include="..\CaveOfWonders.Ports.SystemAccess\CaveOfWonders.Ports.SystemAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Adapters.BnrAccess\CaveOfWonders.Adapters.BnrAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Adapters.InsAccess\CaveOfWonders.Adapters.InsAccess.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CsvParser.Adapters.LogAccess\CsvParser.Adapters.LogAccess.csproj" />
+        <ProjectReference Include="..\CsvParser.Adapters.SheetsAccess\CsvParser.Adapters.SheetsAccess.csproj" PrivateAssets="All" />
     </ItemGroup>
 
 </Project>

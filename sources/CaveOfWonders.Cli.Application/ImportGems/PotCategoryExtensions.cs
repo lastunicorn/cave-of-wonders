@@ -14,11 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CsvParser.Application.Importing;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;
 
-namespace DustInTheWind.CsvParser.Application.UseCases.ImportBt;
-
-public class ImportBtGemsResponse
+internal static class PotCategoryExtensions
 {
-    public ImportReport Report { get; set; }
+    public static string ToDisplayString(this PotCategory potCategory)
+    {
+        return potCategory switch
+        {
+            PotCategory.Bcr => "BCR",
+            PotCategory.Ing => "ING",
+            PotCategory.Brd => "BRD",
+            PotCategory.Bt => "BT",
+            PotCategory.Revolut => "Revolut",
+            _ => throw new ArgumentOutOfRangeException(nameof(potCategory), potCategory, null)
+        };
+    }
 }
