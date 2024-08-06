@@ -25,13 +25,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Ports.SystemA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Adapters.SystemAccess", "CaveOfWonders.Adapters.SystemAccess\CaveOfWonders.Adapters.SystemAccess.csproj", "{83432918-6455-4B38-97FC-FFCBF15ED3F2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvParser.Ports.SheetsAccess", "CsvParser.Ports.SheetsAccess\CsvParser.Ports.SheetsAccess.csproj", "{608C98BC-5552-452D-BA5B-9E6143EAE6AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Ports.SheetsAccess", "CaveOfWonders.Ports.SheetsAccess\CaveOfWonders.Ports.SheetsAccess.csproj", "{608C98BC-5552-452D-BA5B-9E6143EAE6AE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvParser.Adapters.SheetsAccess", "CsvParser.Adapters.SheetsAccess\CsvParser.Adapters.SheetsAccess.csproj", "{91570B62-8074-4FE4-BDFA-1E8A0CEE8D19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Adapters.SheetsAccess", "CaveOfWonders.Adapters.SheetsAccess\CaveOfWonders.Adapters.SheetsAccess.csproj", "{91570B62-8074-4FE4-BDFA-1E8A0CEE8D19}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvParser.Ports.LogAccess", "CsvParser.Ports.LogAccess\CsvParser.Ports.LogAccess.csproj", "{B05D1F46-B22C-434A-87E0-19DFF4DE78BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Ports.LogAccess", "CaveOfWonders.Ports.LogAccess\CaveOfWonders.Ports.LogAccess.csproj", "{B05D1F46-B22C-434A-87E0-19DFF4DE78BF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvParser.Adapters.LogAccess", "CsvParser.Adapters.LogAccess\CsvParser.Adapters.LogAccess.csproj", "{8FD33939-5E6C-4FD9-B616-FE6CC102C330}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Adapters.LogAccess", "CaveOfWonders.Adapters.LogAccess\CaveOfWonders.Adapters.LogAccess.csproj", "{8FD33939-5E6C-4FD9-B616-FE6CC102C330}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application.Exchange", "Application.Exchange", "{2F6668F4-BA94-4206-803A-28C39AD76421}"
 EndProject

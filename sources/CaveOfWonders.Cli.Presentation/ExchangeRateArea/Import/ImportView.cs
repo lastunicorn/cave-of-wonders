@@ -15,6 +15,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.ConsoleTools.Commando;
+using DustInTheWind.ConsoleTools.Controls;
+using DustInTheWind.ConsoleTools.Controls.Tables;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.ExchangeRateArea.Import;
 
@@ -37,9 +39,26 @@ internal class ImportView : IView<ImportResultViewModel>
         }
 
         Console.WriteLine();
-        Console.WriteLine($"Import Count: {result.TotalCount}");
-        Console.WriteLine($"Added: {result.AddedCount}; Updated: {result.ExistingUpdatedCount}; Existing: {result.ExistingIdenticalCount}");
-        Console.WriteLine($"Input Duplicates (identical): {result.NewDuplicateIdenticalCount}");
-        Console.WriteLine($"Input Duplicates (different value): {result.NewDuplicateDifferentCount}");
+
+        DataGrid dataGrid = DataGridTemplate.CreateNew();
+        dataGrid.DisplayBorderBetweenRows = true;
+        dataGrid.HeaderRow.BackgroundColor = ConsoleColor.Gray;
+        dataGrid.HeaderRow.ForegroundColor = ConsoleColor.Black;
+
+        dataGrid.Columns.Add(new Column("Name"));
+        dataGrid.Columns.Add(new Column("Value")
+        {
+            CellHorizontalAlignment = HorizontalAlignment.Right
+        });
+        dataGrid.Columns.Add(new Column("Comments"));
+
+        dataGrid.Rows.Add("Added", result.AddedCount.ToStringOrEmpty("-"));
+        dataGrid.Rows.Add("Updated", result.ExistingUpdatedCount.ToStringOrEmpty("-"), "The items already exist in the storage, but having different values.\nValues were updated.");
+        dataGrid.Rows.Add("Existing", result.ExistingIdenticalCount.ToStringOrEmpty("-"), "The items already exist in the storage.\nNothing to do.");
+
+        dataGrid.Rows.Add("Source Duplicates\n(identical)", result.NewDuplicateIdenticalCount.ToStringOrEmpty("-"), "Import source provided same item multiple times.\nThey are ignored.");
+        dataGrid.Rows.Add("Source Duplicates\n(different value)", result.NewDuplicateDifferentCount.ToStringOrEmpty("-"), "Import source provided same currency multiple times,\nbut with different values.");
+
+        dataGrid.Display();
     }
 }

@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CsvParser.Ports.LogAccess\CsvParser.Ports.LogAccess.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CaveOfWonders.Ports.LogAccess\CaveOfWonders.Ports.LogAccess.csproj" PrivateAssets="All" />
     </ItemGroup>
 
 </Project>

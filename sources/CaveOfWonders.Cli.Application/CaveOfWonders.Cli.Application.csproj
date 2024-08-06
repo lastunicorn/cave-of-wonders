@@ -35,8 +35,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <ProjectReference Include="..\CaveOfWonders.Ports.SystemAccess\CaveOfWonders.Ports.SystemAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Ports.BnrAccess\CaveOfWonders.Ports.BnrAccess.csproj" />
         <ProjectReference Include="..\CaveOfWonders.Ports.InsAccess\CaveOfWonders.Ports.InsAccess.csproj" />
-        <ProjectReference Include="..\CsvParser.Ports.LogAccess\CsvParser.Ports.LogAccess.csproj" />
-        <ProjectReference Include="..\CsvParser.Ports.SheetsAccess\CsvParser.Ports.SheetsAccess.csproj" />
+        <ProjectReference Include="..\CaveOfWonders.Ports.LogAccess\CaveOfWonders.Ports.LogAccess.csproj" />
+        <ProjectReference Include="..\CaveOfWonders.Ports.SheetsAccess\CaveOfWonders.Ports.SheetsAccess.csproj" />
     </ItemGroup>
 
 </Project>
