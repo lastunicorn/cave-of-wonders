@@ -31,7 +31,7 @@ internal class PotSnapshotControl
     public void Display()
     {
         DataGrid dataGrid = DataGridTemplate.CreateNew();
-        dataGrid.Title = $"{Date:d} ({Total.Currency})";
+        dataGrid.Title = $"State - {Date:d} ({Total.Currency})";
 
         AddColumns(dataGrid);
         AddRows(dataGrid);
@@ -48,7 +48,7 @@ internal class PotSnapshotControl
             ForegroundColor = ConsoleColor.DarkGray
         });
 
-        dataGrid.Columns.Add("Name");
+        dataGrid.Columns.Add(new Column("Name"));
 
         dataGrid.Columns.Add(new Column("Value")
         {

@@ -52,7 +52,7 @@ internal class ImportView : IView<ImportResultViewModel>
         });
         dataGrid.Columns.Add(new Column("Comments"));
 
-        dataGrid.Rows.Add("Added", result.AddedCount.ToStringOrEmpty("-"));
+        dataGrid.Rows.Add("Added", result.AddedCount.ToStringOrEmpty("-"), string.Empty);
         dataGrid.Rows.Add("Updated", result.ExistingUpdatedCount.ToStringOrEmpty("-"), "The items already exist in the storage, but having different values.\nValues were updated.");
         dataGrid.Rows.Add("Existing", result.ExistingIdenticalCount.ToStringOrEmpty("-"), "The items already exist in the storage.\nNothing to do.");
 

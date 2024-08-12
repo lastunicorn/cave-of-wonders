@@ -36,17 +36,34 @@ public class ExchangeRate : IEquatable<ExchangeRate>
             : value / Value;
     }
 
+    public ConversionAbility AnalyzeConversionAbility(CurrencyId source, CurrencyId destination)
+    {
+        bool canConvertDirect = CurrencyPair.Currency1 == source && CurrencyPair.Currency2 == destination;
+        if (canConvertDirect)
+            return ConversionAbility.ConvertDirect;
+
+        bool canConvertReverse = CurrencyPair.Currency1 == destination && CurrencyPair.Currency2 == source;
+        if (canConvertReverse)
+            return ConversionAbility.ConvertReverse;
+
+        return ConversionAbility.None;
+    }
+
     public bool CanConvert(CurrencyId source, CurrencyId destination)
     {
         return (CurrencyPair.Currency1 == source && CurrencyPair.Currency2 == destination) ||
                (CurrencyPair.Currency1 == destination && CurrencyPair.Currency2 == source);
     }
 
-    //public bool CanConvert(string source, string destination)
-    //{
-    //    return (SourceCurrency == source && DestinationCurrency == destination) ||
-    //           (SourceCurrency == destination && DestinationCurrency == source);
-    //}
+    public ExchangeRate Invert()
+    {
+        return new ExchangeRate
+        {
+            CurrencyPair = CurrencyPair.Invert(),
+            Date = Date,
+            Value = ConvertBack(1)
+        };
+    }
 
     public bool Equals(ExchangeRate other)
     {
