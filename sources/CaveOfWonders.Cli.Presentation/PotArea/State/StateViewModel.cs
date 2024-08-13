@@ -53,7 +53,7 @@ internal class StateViewModel
             .ToList();
 
         ConversionRates = presentStateResponse.ConversionRates
-            .Select(x => new ExchangeRateViewModel(x, presentStateResponse.Date))
+            .Select(x => new ExchangeRateViewModel(x, x.Date == presentStateResponse.Date))
             .ToList();
 
         Total = presentStateResponse.Total;

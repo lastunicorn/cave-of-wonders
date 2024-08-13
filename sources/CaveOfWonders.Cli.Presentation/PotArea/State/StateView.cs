@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Cli.Presentation.ExchangeRateArea.Convert;
 using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
 
@@ -42,16 +43,12 @@ internal class StateView : IView<StateViewModel>
     private void DisplayConversionRates(StateViewModel stateViewModel)
     {
         Console.WriteLine();
-        CustomConsole.WriteLine("Conversion Rates:");
 
-        foreach (ExchangeRateViewModel conversionRate in stateViewModel.ConversionRates)
+        ExchangeRatesControl exchangeRatesControl = new()
         {
-            CustomConsole.Write($"  1 {conversionRate.SourceCurrency} = {conversionRate.Value} {conversionRate.DestinationCurrency}");
+            ExchangeRates = stateViewModel.ConversionRates
+        };
 
-            if (!conversionRate.IsCurrent)
-                CustomConsole.Write(ConsoleColor.DarkYellow, $" ({conversionRate.CurrencyDate:d})");
-
-            CustomConsole.WriteLine();
-        }
+        exchangeRatesControl.Display();
     }
 }

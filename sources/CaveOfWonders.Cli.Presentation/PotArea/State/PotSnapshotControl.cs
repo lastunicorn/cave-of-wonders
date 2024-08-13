@@ -36,7 +36,8 @@ internal class PotSnapshotControl
         AddColumns(dataGrid);
         AddRows(dataGrid);
 
-        dataGrid.FooterRow.FooterCell.Content = $"Total: {Total.ToDisplayString()}";
+        dataGrid.Footer = $"Total: {Total.ToDisplayString()}";
+        dataGrid.FooterRow.ForegroundColor = ConsoleColor.White;
 
         dataGrid.Display();
     }

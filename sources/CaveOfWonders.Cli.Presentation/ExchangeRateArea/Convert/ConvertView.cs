@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.State;
 using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
 
@@ -27,7 +28,7 @@ internal class ConvertView : IView<ConvertViewModel>
         DisplayConvertedValue(viewModel);
 
         CustomConsole.WriteLine();
-        DisplayExchangeRateInformation(viewModel);
+        DisplayExchangeRateInformation(viewModel.ExchangeRate);
     }
 
     private static void DisplayConvertedValue(ConvertViewModel viewModel)
@@ -41,22 +42,17 @@ internal class ConvertView : IView<ConvertViewModel>
         CustomConsole.WriteLineEmphasized($"{initialValue} {sourceCurrency} = {convertedValue:N2} {destinationCurrency}");
     }
 
-    private static void DisplayExchangeRateInformation(ConvertViewModel viewModel)
+    private static void DisplayExchangeRateInformation(ExchangeRateViewModel exchangeRateViewModel)
     {
-        string sourceCurrency = viewModel.SourceCurrency;
+        ExchangeRatesControl exchangeRatesControl = new()
+        {
+            ExchangeRates = new List<ExchangeRateViewModel>
+            {
+                exchangeRateViewModel
+            },
+            ForegroundColor = ConsoleColor.DarkGray
+        };
 
-        string destinationCurrency = viewModel.DestinationCurrency;
-
-        decimal exchangeValue = viewModel.ExchangeValue;
-        DateTime exchangeDate = viewModel.ExchangeDate;
-
-        CustomConsole.WriteLine("Conversion rate:");
-
-        CustomConsole.Write($"  1 {sourceCurrency} = {exchangeValue:N4} {destinationCurrency} ");
-
-        if (viewModel.IsActualDate)
-            CustomConsole.WriteLine($"({exchangeDate:d})");
-        else
-            CustomConsole.WriteLine(ConsoleColor.DarkYellow, $"({exchangeDate:d})");
+        exchangeRatesControl.Display();
     }
 }

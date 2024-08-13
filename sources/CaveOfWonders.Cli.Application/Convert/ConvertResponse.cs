@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
+
 namespace DustInTheWind.CaveOfWonders.Cli.Application.Convert;
 
 public class ConvertResponse
@@ -26,9 +28,7 @@ public class ConvertResponse
 
     public string DestinationCurrency { get; set; }
 
-    public DateTime ExchangeDate { get; set; }
+    public bool IsDateCurrent { get; set; }
 
-    public decimal ExchangeValue { get; set; }
-
-    public bool IsRequestedDate { get; set; }
+    public ExchangeRateInfo ExchangeRate { get; set; }
 }

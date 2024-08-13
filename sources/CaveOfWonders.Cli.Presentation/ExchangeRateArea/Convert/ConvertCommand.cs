@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
+using DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.State;
 using DustInTheWind.ConsoleTools.Commando;
 using MediatR;
 
@@ -41,7 +42,7 @@ internal class ConvertCommand : IConsoleCommand<ConvertViewModel>
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
-    
+
     public async Task<ConvertViewModel> Execute()
     {
         ConvertRequest request = new()
@@ -60,9 +61,7 @@ internal class ConvertCommand : IConsoleCommand<ConvertViewModel>
             ConvertedValue = response.ConvertedValue,
             SourceCurrency = response.SourceCurrency,
             DestinationCurrency = response.DestinationCurrency,
-            ExchangeDate = response.ExchangeDate,
-            ExchangeValue = response.ExchangeValue,
-            IsActualDate = response.IsRequestedDate
+            ExchangeRate = new ExchangeRateViewModel(response.ExchangeRate, response.IsDateCurrent)
         };
     }
 }

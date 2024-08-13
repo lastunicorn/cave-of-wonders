@@ -15,18 +15,27 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.State;
+using DustInTheWind.ConsoleTools.Controls;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.ExchangeRateArea.Convert;
 
-internal class ConvertViewModel
+internal class ExchangeRatesControl : BlockControl
 {
-    public decimal InitialValue { get; set; }
+    public List<ExchangeRateViewModel> ExchangeRates { get; set; }
 
-    public decimal ConvertedValue { get; set; }
+    protected override void DoDisplayContent(ControlDisplay display)
+    {
+        display.WriteRow("Conversion Rates:");
 
-    public string SourceCurrency { get; set; }
+        foreach (ExchangeRateViewModel exchangeRate in ExchangeRates)
+        {
+            display.StartRow();
+            display.Write($"  1 {exchangeRate.SourceCurrency} = {exchangeRate.Value:N4} {exchangeRate.DestinationCurrency}");
 
-    public string DestinationCurrency { get; set; }
+            if (!exchangeRate.IsCurrent)
+                display.Write(ConsoleColor.DarkYellow, null, $" ({exchangeRate.CurrencyDate:d})");
 
-    public ExchangeRateViewModel ExchangeRate { get; set; }
+            display.EndRow();
+        }
+    }
 }

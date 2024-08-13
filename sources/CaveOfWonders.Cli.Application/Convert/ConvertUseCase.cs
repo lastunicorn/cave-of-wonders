@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
@@ -58,7 +59,7 @@ internal class ConvertUseCase : IRequestHandler<ConvertRequest, ConvertResponse>
         if (exchangeRate == null)
             throw new Exception($"There is no exchange rate for the specific currency pair: {request.SourceCurrency} {request.DestinationCurrency}");
 
-        response.IsRequestedDate = exchangeRate.Date == date;
+        response.IsDateCurrent = exchangeRate.Date == date;
 
         return exchangeRate;
     }
@@ -87,7 +88,6 @@ internal class ConvertUseCase : IRequestHandler<ConvertRequest, ConvertResponse>
         response.DestinationCurrency = exchangeRate.CurrencyPair.Currency2;
         response.InitialValue = request.InitialValue;
         response.ConvertedValue = exchangeRate.Convert(request.InitialValue);
-        response.ExchangeValue = exchangeRate.Value;
-        response.ExchangeDate = exchangeRate.Date;
+        response.ExchangeRate = new ExchangeRateInfo(exchangeRate);
     }
 }

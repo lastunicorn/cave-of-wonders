@@ -28,9 +28,9 @@ internal class ImportProcedure
 
     public ImportReport Report { get; private set; }
 
-    public ImportProcedure(List<ExchangeRate> exchangeRatesCollection)
+    public ImportProcedure(List<ExchangeRate> exchangeRatesFromDatabase)
     {
-        exchangeRatesFromDatabase = exchangeRatesCollection ?? throw new ArgumentNullException(nameof(exchangeRatesCollection));
+        this.exchangeRatesFromDatabase = exchangeRatesFromDatabase ?? throw new ArgumentNullException(nameof(exchangeRatesFromDatabase));
     }
 
     public void Execute(IEnumerable<ExchangeRate> exchangeRates)

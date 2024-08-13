@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Data;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.ConsoleTools.Controls;
 using DustInTheWind.ConsoleTools.Controls.Tables;
@@ -41,23 +42,47 @@ internal class ImportView : IView<ImportResultViewModel>
         Console.WriteLine();
 
         DataGrid dataGrid = DataGridTemplate.CreateNew();
+        dataGrid.Title = "Import Report";
         dataGrid.DisplayBorderBetweenRows = true;
-        dataGrid.HeaderRow.BackgroundColor = ConsoleColor.Gray;
-        dataGrid.HeaderRow.ForegroundColor = ConsoleColor.Black;
+        //dataGrid.HeaderRow.BackgroundColor = ConsoleColor.Gray;
+        //dataGrid.HeaderRow.ForegroundColor = ConsoleColor.Black;
 
-        dataGrid.Columns.Add(new Column("Name"));
+        dataGrid.Columns.Add(new Column("Name")
+        {
+            ForegroundColor = ConsoleColor.White
+        });
         dataGrid.Columns.Add(new Column("Value")
         {
             CellHorizontalAlignment = HorizontalAlignment.Right
         });
-        dataGrid.Columns.Add(new Column("Comments"));
+        dataGrid.Columns.Add(new Column("Comments")
+        {
+            ForegroundColor = ConsoleColor.DarkGray
+        });
 
-        dataGrid.Rows.Add("Added", result.AddedCount.ToStringOrEmpty("-"), string.Empty);
-        dataGrid.Rows.Add("Updated", result.ExistingUpdatedCount.ToStringOrEmpty("-"), "The items already exist in the storage, but having different values.\nValues were updated.");
+        dataGrid.HeaderRow.IsVisible = false;
+
+        ContentRow contentRowAdded = dataGrid.Rows.Add("Added", result.AddedCount.ToStringOrEmpty("-"), "New items that were added into the storage.");
+        if (result.AddedCount > 0)
+            contentRowAdded[1].ForegroundColor = ConsoleColor.Green;
+
+        ContentRow contentRowUpdated = dataGrid.Rows.Add("Updated", result.ExistingUpdatedCount.ToStringOrEmpty("-"), "The items already exist in the storage, but with different values.\nValues were updated.");
+        if (result.ExistingUpdatedCount > 0)
+            contentRowUpdated[1].ForegroundColor = ConsoleColor.Green;
+
         dataGrid.Rows.Add("Existing", result.ExistingIdenticalCount.ToStringOrEmpty("-"), "The items already exist in the storage.\nNothing to do.");
 
-        dataGrid.Rows.Add("Source Duplicates\n(identical)", result.NewDuplicateIdenticalCount.ToStringOrEmpty("-"), "Import source provided same item multiple times.\nThey are ignored.");
-        dataGrid.Rows.Add("Source Duplicates\n(different value)", result.NewDuplicateDifferentCount.ToStringOrEmpty("-"), "Import source provided same currency multiple times,\nbut with different values.");
+        if (result.NewDuplicateIdenticalCount > 0)
+        {
+            ContentRow contentRowSourceDuplicatesIdentical = dataGrid.Rows.Add("Source Duplicates\n(identical)", result.NewDuplicateIdenticalCount.ToStringOrEmpty("-"), "The import source provided same exchange rate multiple times.\nDuplicates were ignored.");
+            contentRowSourceDuplicatesIdentical[1].ForegroundColor = ConsoleColor.DarkRed;
+        }
+
+        if (result.NewDuplicateIdenticalCount > 0)
+        {
+            ContentRow contentRowSourceDuplicatesDifferent = dataGrid.Rows.Add("Source Duplicates\n(different value)", result.NewDuplicateDifferentCount.ToStringOrEmpty("-"), "The import source provided same currency multiple times, but with different values.\nDuplicates were ignored.");
+            contentRowSourceDuplicatesDifferent[1].ForegroundColor = ConsoleColor.DarkRed;
+        }
 
         dataGrid.Display();
     }

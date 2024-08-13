@@ -30,13 +30,13 @@ public class ExchangeRateViewModel
 
     public bool IsCurrent { get; }
 
-    public ExchangeRateViewModel(ExchangeRateInfo exchangeRateInfo, DateTime currentDate)
+    public ExchangeRateViewModel(ExchangeRateInfo exchangeRateInfo, bool isDateCurrent)
     {
         SourceCurrency = exchangeRateInfo.SourceCurrency;
         DestinationCurrency = exchangeRateInfo.DestinationCurrency;
         Value = exchangeRateInfo.Value;
         CurrencyDate = exchangeRateInfo.Date;
-        IsCurrent = exchangeRateInfo.Date == currentDate;
+        IsCurrent = isDateCurrent;
     }
 
     public override string ToString()
