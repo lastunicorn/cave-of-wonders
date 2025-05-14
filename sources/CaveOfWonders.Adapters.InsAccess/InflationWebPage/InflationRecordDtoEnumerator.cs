@@ -18,7 +18,7 @@ using System.Collections;
 using System.Globalization;
 using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.InsAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.InsAccess.InflationWebPage;
 
 internal class InflationRecordDtoEnumerator : IEnumerator<InflationRecordDto>
 {

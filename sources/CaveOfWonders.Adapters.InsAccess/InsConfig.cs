@@ -14,13 +14,24 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
+using Microsoft.Extensions.Configuration;
 
-public class ImportInflationResponse
+namespace DustInTheWind.CaveOfWonders.Adapters.InsAccess;
+
+internal class InsConfig
 {
-    public int AddedCount { get; set; }
-    
-    public int UpdatedCount { get; set; }
-    
-    public int TotalCount => AddedCount + UpdatedCount;
+    private const string AppSettingsFileName = "appsettings.json";
+    private readonly IConfigurationSection insConfig;
+
+    public string InflationPageUrl => insConfig["InflationPageUrl"];
+
+    public InsConfig()
+    {
+        IConfigurationBuilder builder = new ConfigurationBuilder()
+            .AddJsonFile(AppSettingsFileName, optional: true, reloadOnChange: true);
+
+        IConfigurationRoot configurationRoot = builder.Build();
+
+        insConfig = configurationRoot.GetRequiredSection("Ins");
+    }
 }

@@ -26,6 +26,7 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
 {
     private readonly IIns ins;
     private readonly IUnitOfWork unitOfWork;
+    private ImportInflationResponse response;
 
     public ImportInflationUseCase(IIns ins, IUnitOfWork unitOfWork)
     {
@@ -35,35 +36,14 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
 
     public async Task<ImportInflationResponse> Handle(ImportInflationRequest request, CancellationToken cancellationToken)
     {
-        IEnumerable<InsInflationRecordDto> inflationRecordDtos = await RetrieveInflationValues(request);
+        response = new ImportInflationResponse();
 
-        ImportInflationResponse response = new();
+        IEnumerable<InsInflationRecordDto> inflationRecordDtos = await RetrieveInflationValues(request);
 
         foreach (InsInflationRecordDto insInflationRecordDto in inflationRecordDtos)
         {
-            InflationRecordDto inflationRecordDto = new()
-            {
-                Year = insInflationRecordDto.Year,
-                Value = insInflationRecordDto.Value
-            };
-
-            AddOrUpdateResult result = await unitOfWork.InflationRecordRepository.AddOrUpdate(inflationRecordDto);
-
-            response.TotalCount++;
-
-            switch (result)
-            {
-                case AddOrUpdateResult.Added:
-                    response.AddedCount++;
-                    break;
-
-                case AddOrUpdateResult.Updated:
-                    response.UpdatedCount++;
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            AddOrUpdateResult result = await AddOrUpdateInflationRecordToStore(insInflationRecordDto);
+            UpdateResponse(result);
         }
 
         await unitOfWork.SaveChanges();
@@ -77,12 +57,40 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
         {
             case ImportSource.File:
                 if (string.IsNullOrEmpty(request.SourceFilePath))
-                    throw new Exception("The name of the text file containing inflation values was not provided.");
+                    throw new InflationFileNotProvidedException();
 
                 return await ins.GetInflationValuesFromFile(request.SourceFilePath);
 
             case ImportSource.Web:
                 return await ins.GetInflationValuesFromWeb();
+
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    private async Task<AddOrUpdateResult> AddOrUpdateInflationRecordToStore(InsInflationRecordDto insInflationRecordDto)
+    {
+        InflationRecordDto inflationRecordDto = new()
+        {
+            Year = insInflationRecordDto.Year,
+            Value = insInflationRecordDto.Value
+        };
+
+        return await unitOfWork.InflationRecordRepository.AddOrUpdate(inflationRecordDto);
+    }
+
+    private void UpdateResponse(AddOrUpdateResult result)
+    {
+        switch (result)
+        {
+            case AddOrUpdateResult.Added:
+                response.AddedCount++;
+                break;
+
+            case AddOrUpdateResult.Updated:
+                response.UpdatedCount++;
+                break;
 
             default:
                 throw new ArgumentOutOfRangeException();

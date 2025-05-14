@@ -2,7 +2,7 @@
   "profiles": {
     "CaveOfWonders.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "state -d 2024-08-10"
+      "commandLineArgs": "import-inflation"
     }
   }
 }

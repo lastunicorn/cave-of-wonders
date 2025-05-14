@@ -14,13 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 
-public class ImportInflationResponse
+[Serializable]
+internal class InflationFileNotProvidedException : Exception
 {
-    public int AddedCount { get; set; }
-    
-    public int UpdatedCount { get; set; }
-    
-    public int TotalCount => AddedCount + UpdatedCount;
+    private const string DefaultMessage = "The name of the text file containing inflation values was not provided.";
+
+    public InflationFileNotProvidedException()
+        : base(DefaultMessage)
+    {
+    }
+
+    public InflationFileNotProvidedException(string message, Exception innerException) : base(message, innerException)
+    {
+    }
 }

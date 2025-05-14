@@ -45,7 +45,7 @@ internal class DependenciesSetup
         containerBuilder.RegisterMediatR(mediatRConfiguration);
 
         containerBuilder
-            .Register(context => new Database(@"c:\Projects.pet\finanțe\CaveOfWonders\db"))
+            .Register(context => new Database(@"C:\Projects.pet\CaveOfWonders-db"))
             .AsSelf();
         containerBuilder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
 
