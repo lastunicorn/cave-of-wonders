@@ -39,7 +39,7 @@ public class Ins : IIns
         string url = insConfig.Value.InflationPageUrl;
 
         if (url == null)
-            throw new Exception("The URL for the inflation values was not provided in the appsettings file. Path: 'Ins.InflationPageUrl'.");
+            throw new MissingInflationUrlException();
 
         InflationWebPageRequest webRequest = new(url);
 

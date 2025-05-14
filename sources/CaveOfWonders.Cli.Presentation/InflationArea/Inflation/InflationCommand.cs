@@ -25,6 +25,9 @@ internal class InflationCommand : IConsoleCommand<InflationViewModel>
 {
     private readonly IMediator mediator;
 
+    [NamedParameter("output", ShortName = 'o', IsOptional = true, Description = "Path to the output file.")]
+    public string OutputPath { get; set; }
+
     public InflationCommand(IMediator mediator)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -32,7 +35,10 @@ internal class InflationCommand : IConsoleCommand<InflationViewModel>
 
     public async Task<InflationViewModel> Execute()
     {
-        PresentInflationRequest request = new();
+        PresentInflationRequest request = new()
+        {
+            OutputPath = OutputPath
+        };
         PresentInflationResponse response = await mediator.Send(request);
 
         return new InflationViewModel

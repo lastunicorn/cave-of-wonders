@@ -14,19 +14,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.InsAccess;
-
-internal class YearlyInflationDocument
+public class InflationRecordLine
 {
-    public List<InflationRecordDto> Records { get; } = new();
+    private readonly int year;
+    private readonly decimal value;
 
-    public YearlyInflationDocument(IEnumerable<string> lines)
+    public InflationRecordLine(int year, decimal value)
     {
-        InflationRecordDtoEnumerator enumerator = new(lines);
+        this.year = year;
+        this.value = value;
+    }
 
-        while (enumerator.MoveNext())
-            Records.Add(enumerator.Current);
+    public async Task Write(StreamWriter streamWriter)
+    {
+        await streamWriter.WriteAsync($"{year}: {value,6:N2} ");
+
+        if (value > 0)
+        {
+            int roundedValue = (int)Math.Round(Math.Max(0, value));
+
+            string chartLine = new('.', roundedValue);
+            await streamWriter.WriteAsync(chartLine);
+        }
+
+        await streamWriter.WriteLineAsync();
     }
 }

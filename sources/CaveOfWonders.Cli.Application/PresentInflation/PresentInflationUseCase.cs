@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Domain.Inflation;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Ports.FileAccess;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentInflation;
@@ -22,15 +24,20 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentInflation;
 internal class PresentInflationUseCase : IRequestHandler<PresentInflationRequest, PresentInflationResponse>
 {
     private readonly IUnitOfWork unitOfWork;
+    private readonly IFileSystem fileSystem;
 
-    public PresentInflationUseCase(IUnitOfWork unitOfWork)
+    public PresentInflationUseCase(IUnitOfWork unitOfWork, IFileSystem fileSystem)
     {
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
     }
 
     public async Task<PresentInflationResponse> Handle(PresentInflationRequest request, CancellationToken cancellationToken)
     {
         IEnumerable<InflationRecordDto> inflationRecordDtos = await unitOfWork.InflationRecordRepository.GetAll();
+
+        if (request.OutputPath != null)
+            await WriteToFile(request.OutputPath, inflationRecordDtos);
 
         return new PresentInflationResponse
         {
@@ -38,5 +45,17 @@ internal class PresentInflationUseCase : IRequestHandler<PresentInflationRequest
                 .Select(x => new InflationRecord(x))
                 .ToList()
         };
+    }
+
+    private async Task WriteToFile(string outputPath, IEnumerable<InflationRecordDto> inflationRecordDtos)
+    {
+        Stream stream = fileSystem.CreateFile(outputPath);
+        using InflationDocument inflationDocument = new(stream);
+
+
+        IEnumerable<InflationRecordLine> inflationRecordLines = inflationRecordDtos
+            .Select(x => new InflationRecordLine(x.Year, x.Value));
+
+        await inflationDocument.Write(inflationRecordLines);
     }
 }

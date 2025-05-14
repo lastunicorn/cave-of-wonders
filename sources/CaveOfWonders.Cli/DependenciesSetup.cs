@@ -18,11 +18,13 @@ using Autofac;
 using CsvParser.Ports.LogAccess;
 using DustInTheWind.CaveOfWonders.Adapters.BnrAccess;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
+using DustInTheWind.CaveOfWonders.Adapters.FileAccess;
 using DustInTheWind.CaveOfWonders.Adapters.InsAccess;
 using DustInTheWind.CaveOfWonders.Adapters.SystemAccess;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
 using DustInTheWind.CaveOfWonders.Ports.BnrAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Ports.FileAccess;
 using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using DustInTheWind.CsvParser.Adapters.LogAccess;
@@ -54,5 +56,6 @@ internal class DependenciesSetup
         containerBuilder.RegisterType<Ins>().As<IIns>();
         containerBuilder.RegisterType<Sheets>().As<ISheets>();
         containerBuilder.RegisterType<Log>().As<ILog>().InstancePerLifetimeScope();
+        containerBuilder.RegisterType<FileSystem>().As<IFileSystem>().SingleInstance();
     }
 }

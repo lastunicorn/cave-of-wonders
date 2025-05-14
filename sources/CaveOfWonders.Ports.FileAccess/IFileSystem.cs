@@ -14,19 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Ports.InsAccess;
+namespace DustInTheWind.CaveOfWonders.Ports.FileAccess;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.InsAccess;
-
-internal class YearlyInflationDocument
+public interface IFileSystem
 {
-    public List<InflationRecordDto> Records { get; } = new();
-
-    public YearlyInflationDocument(IEnumerable<string> lines)
-    {
-        InflationRecordDtoEnumerator enumerator = new(lines);
-
-        while (enumerator.MoveNext())
-            Records.Add(enumerator.Current);
-    }
+    Stream CreateFile(string path);
 }

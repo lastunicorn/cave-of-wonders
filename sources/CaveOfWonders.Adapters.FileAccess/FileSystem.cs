@@ -14,19 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Ports.InsAccess;
+using DustInTheWind.CaveOfWonders.Ports.FileAccess;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.InsAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.FileAccess;
 
-internal class YearlyInflationDocument
+public class FileSystem : IFileSystem
 {
-    public List<InflationRecordDto> Records { get; } = new();
-
-    public YearlyInflationDocument(IEnumerable<string> lines)
+    public Stream CreateFile(string path)
     {
-        InflationRecordDtoEnumerator enumerator = new(lines);
+        if (string.IsNullOrWhiteSpace(path))
+            throw new ArgumentException("Path cannot be null or empty.", nameof(path));
 
-        while (enumerator.MoveNext())
-            Records.Add(enumerator.Current);
+        return File.Create(path);
     }
 }
