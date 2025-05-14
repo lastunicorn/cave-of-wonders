@@ -35,8 +35,8 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
 
     public async Task<PresentExchangeRateResponse> Handle(PresentExchangeRateRequest request, CancellationToken cancellationToken)
     {
-        //if (string.IsNullOrEmpty(request.CurrencyPair))
-        //    throw new Exception("Currency pair value was not provided.");
+        if (string.IsNullOrEmpty(request.CurrencyPair))
+            throw new CurrencyPairMissingException();
 
         CurrencyPair currencyPair = request.CurrencyPair;
 
@@ -73,7 +73,7 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
         ExchangeRate exchangeRate = await unitOfWork.ExchangeRateRepository.GetLatest(currencyPair, date);
 
         if (exchangeRate == null)
-            throw new Exception($"Exchange rate for {currencyPair} and date {date:d} was not found.");
+            throw new ExchangeRateNotFoundException(currencyPair, date);
 
         response.ExchangeRates = new List<ExchangeRateResponseDto>
         {
@@ -87,9 +87,10 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
     private async Task RetrieveByYear(CurrencyPair currencyPair, uint year, uint? month)
     {
         if (string.IsNullOrEmpty(currencyPair))
-            throw new Exception("Currency pair value was not provided.");
+            throw new CurrencyPairMissingException();
 
         response.ExchangeRates = (await unitOfWork.ExchangeRateRepository.GetByYear(currencyPair, year, month))
+            .OrderBy(x => x.Date)
             .Select(x => new ExchangeRateResponseDto(x))
             .ToList();
     }
@@ -97,6 +98,7 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
     private async Task RetrieveByDateInterval(CurrencyPair currencyPair, DateTime? startDate, DateTime? endDate)
     {
         response.ExchangeRates = (await unitOfWork.ExchangeRateRepository.GetByDateInterval(currencyPair, startDate, endDate))
+            .OrderBy(x => x.Date)
             .Select(x => new ExchangeRateResponseDto(x))
             .ToList();
     }
@@ -104,6 +106,7 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
     private async Task RetrieveAll(CurrencyPair currencyPair)
     {
         response.ExchangeRates = (await unitOfWork.ExchangeRateRepository.Get(currencyPair))
+            .OrderBy(x => x.Date)
             .Select(x => new ExchangeRateResponseDto(x))
             .ToList();
     }

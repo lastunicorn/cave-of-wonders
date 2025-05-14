@@ -25,7 +25,7 @@ public class ExchangeCommand : IConsoleCommand<PresentExchangeRateResponse>
 {
     private readonly IMediator mediator;
 
-    [AnonymousParameter(Order = 1, DisplayName = "Currency", IsOptional = true, Description = "The currency pair to be displayed. Ex: EUR/RON")]
+    [AnonymousParameter(Order = 1, DisplayName = "Currency", IsOptional = false, Description = "The currency pair to be displayed. Ex: EUR/RON")]
     public string CurrencyPair { get; set; }
 
     [NamedParameter("today", ShortName = 't', IsOptional = true, Description = "If this flag is set, the exchange rate for today is displayed.")]
