@@ -26,9 +26,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MediatR" Version="12.4.0" />
-        <PackageReference Include="ConsoleTools.Commando" Version="2.0.0" />
-        <PackageReference Include="ConsoleTools.Controls.Tables" Version="1.2.0" />
+        <PackageReference Include="MediatR" Version="12.5.0" />
+        <PackageReference Include="ConsoleTools.Commando" Version="2.1.0" />
+        <PackageReference Include="ConsoleTools.Controls.Tables" Version="1.2.1" />
     </ItemGroup>
 
     <ItemGroup>

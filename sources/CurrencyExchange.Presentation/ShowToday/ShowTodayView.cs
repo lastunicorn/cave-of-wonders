@@ -51,10 +51,7 @@ internal class ShowTodayView : IView<PresentTodayResponse>
                 BackgroundColor = ConsoleColor.Gray,
                 ForegroundColor = ConsoleColor.Black
             },
-            Border =
-            {
-                Template = BorderTemplate.SingleLineBorderTemplate
-            }
+            BorderTemplate = BorderTemplate.SingleLineBorderTemplate
         };
 
         dataGrid.Columns.Add("Currency");
@@ -102,10 +99,7 @@ internal class ShowTodayView : IView<PresentTodayResponse>
                 BackgroundColor = ConsoleColor.Gray,
                 ForegroundColor = ConsoleColor.Black
             },
-            Border =
-            {
-                Template = BorderTemplate.SingleLineBorderTemplate
-            }
+            BorderTemplate = BorderTemplate.SingleLineBorderTemplate
         };
 
         dataGrid.Columns.Add("Date");
