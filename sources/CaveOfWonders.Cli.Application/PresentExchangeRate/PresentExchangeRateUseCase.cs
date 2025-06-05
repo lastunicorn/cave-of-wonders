@@ -18,7 +18,6 @@ using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 
