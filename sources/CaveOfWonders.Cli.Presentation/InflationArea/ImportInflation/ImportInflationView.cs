@@ -23,7 +23,7 @@ internal class InflationView : IView<InflationViewModel>
 {
     public void Display(InflationViewModel viewModel)
     {
-        CustomConsole.WriteLineSuccess("Import succeeded.");
+        CustomConsole.WriteLineSuccess("Execute succeeded.");
 
         CustomConsole.WriteLine($"  Added: {viewModel.AddedCount}");
         CustomConsole.WriteLine($"  Updated: {viewModel.UpdatedCount}");

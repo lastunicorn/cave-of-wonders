@@ -42,7 +42,7 @@ internal class ImportView : IView<ImportResultViewModel>
         Console.WriteLine();
 
         DataGrid dataGrid = DataGridTemplate.CreateNew();
-        dataGrid.Title = "Import Report";
+        dataGrid.Title = "Execute Report";
         dataGrid.DisplayBorderBetweenRows = true;
         //dataGrid.HeaderRow.BackgroundColor = ConsoleColor.Gray;
         //dataGrid.HeaderRow.ForegroundColor = ConsoleColor.Black;

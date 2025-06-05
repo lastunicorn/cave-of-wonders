@@ -37,9 +37,7 @@ internal class ImportExchangeRatesUseCase : IRequestHandler<ImportExchangeRatesR
 
     public async Task<ImportExchangeRatesResponse> Handle(ImportExchangeRatesRequest request, CancellationToken cancellationToken)
     {
-        IEnumerable<ExchangeRate> exchangeRates = (await GetExchangeRates(request, cancellationToken))
-            .ToExchangeRates();
-
+        IEnumerable<ExchangeRate> exchangeRates = await GetExchangeRatesFromSource(request, cancellationToken);
         ImportReport report = await unitOfWork.ExchangeRateRepository.Import(exchangeRates, cancellationToken);
 
         await unitOfWork.SaveChanges();
@@ -47,15 +45,17 @@ internal class ImportExchangeRatesUseCase : IRequestHandler<ImportExchangeRatesR
         return new ImportExchangeRatesResponse(report);
     }
 
-    private async Task<IEnumerable<BnrExchangeRate>> GetExchangeRates(ImportExchangeRatesRequest request, CancellationToken cancellationToken)
+    private async Task<IEnumerable<ExchangeRate>> GetExchangeRatesFromSource(ImportExchangeRatesRequest request, CancellationToken cancellationToken)
     {
-        return request.ImportSource switch
+        IEnumerable<BnrExchangeRate> bnrExchangeRates = request.ImportSource switch
         {
             ImportSource.BnrWebsite => await ImportFromWebNbrFile(request, cancellationToken),
             ImportSource.BnrFile => await ImportFromLocalBnrFile(request, cancellationToken),
             ImportSource.BnrNbrFile => await ImportFromLocalNbrFile(request, cancellationToken),
             _ => throw new ArgumentOutOfRangeException()
         };
+
+        return bnrExchangeRates.ToExchangeRates();
     }
 
     private async Task<IEnumerable<BnrExchangeRate>> ImportFromWebNbrFile(ImportExchangeRatesRequest request, CancellationToken cancellationToken)

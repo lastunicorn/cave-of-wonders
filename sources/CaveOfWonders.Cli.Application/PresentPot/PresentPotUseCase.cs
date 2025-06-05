@@ -55,7 +55,7 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
             if (success)
             {
                 Pot pot = await unitOfWork.PotRepository.GetById(potGuid);
-                return new[] { pot };
+                return [pot];
             }
 
             return await unitOfWork.PotRepository.GetByPartialId(request.PotId);

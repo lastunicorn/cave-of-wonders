@@ -14,15 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Domain;
+namespace DustInTheWind.CaveOfWonders.Infrastructure;
 
-public struct CurrencyId
+public readonly struct CurrencyId
 {
-    private string value;
+    private readonly string value;
 
-    public static CurrencyId Empty = new();
+    public static CurrencyId Empty { get; } = new();
 
     public bool IsEmpty => value == null;
+
+    private CurrencyId(string value)
+    {
+        this.value = value;
+    }
 
     public override string ToString()
     {
@@ -34,10 +39,7 @@ public struct CurrencyId
         if (value == null) throw new ArgumentNullException(nameof(value));
         if (value.Length != 3) throw new ArgumentException("The currency ID must have three characters.", nameof(value));
 
-        return new CurrencyId
-        {
-            value = value.ToUpper()
-        };
+        return new CurrencyId(value.ToUpper());
     }
 
     public static implicit operator string(CurrencyId currencyId)

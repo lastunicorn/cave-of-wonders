@@ -16,11 +16,14 @@
 
 using DustInTheWind.CaveOfWonders.Infrastructure;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
+namespace DustInTheWind.CaveOfWonders.Infrastructure;
 
-public class ExchangeRateForCurrency
+internal static class EnumerableExtensions
 {
-    public CurrencyPair CurrencyPair { get; set; }
-
-    public decimal Value { get; set; }
+    public static IEnumerable<TResult> ToList<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector)
+    {
+        return source
+            .Select(selector)
+            .ToList();
+    }
 }

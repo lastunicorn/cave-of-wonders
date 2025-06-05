@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
@@ -26,7 +27,7 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
     private readonly ISystemClock systemClock;
     private readonly IUnitOfWork unitOfWork;
 
-    private readonly List<ExchangeRate> usedExchangeRates = new();
+    private readonly List<ExchangeRate> usedExchangeRates = [];
 
     public PresentStateUseCase(ISystemClock systemClock, IUnitOfWork unitOfWork)
     {
@@ -67,7 +68,7 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
 
     private async Task<List<PotInstanceInfo>> ConvertToPotInstanceInfos(IEnumerable<PotInstance> potInstances, DateTime currentDate, string defaultCurrency)
     {
-        List<PotInstanceInfo> potInstanceInfos = new();
+        List<PotInstanceInfo> potInstanceInfos = [];
 
         foreach (PotInstance potInstance in potInstances)
         {

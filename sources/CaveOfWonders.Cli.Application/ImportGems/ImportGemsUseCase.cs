@@ -56,7 +56,7 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
         };
 
         IEnumerable<SheetValue> sheetsValues = GetRecordsToImport(request);
-        gemImport.Import(sheetsValues);
+        gemImport.Execute(sheetsValues);
 
         await unitOfWork.SaveChanges();
 

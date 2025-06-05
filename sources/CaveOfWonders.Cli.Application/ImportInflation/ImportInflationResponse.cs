@@ -14,13 +14,38 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 
 public class ImportInflationResponse
 {
     public int AddedCount { get; set; }
-    
+
     public int UpdatedCount { get; set; }
-    
+
     public int TotalCount => AddedCount + UpdatedCount;
+
+    public void AddRange(IEnumerable<AddOrUpdateResult> results)
+    {
+        foreach (AddOrUpdateResult result in results)
+            Add(result);
+    }
+
+    public void Add(AddOrUpdateResult result)
+    {
+        switch (result)
+        {
+            case AddOrUpdateResult.Added:
+                AddedCount++;
+                break;
+
+            case AddOrUpdateResult.Updated:
+                UpdatedCount++;
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(result), result, null);
+        }
+    }
 }

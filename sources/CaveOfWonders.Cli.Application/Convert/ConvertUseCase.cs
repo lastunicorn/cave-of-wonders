@@ -14,8 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
@@ -57,7 +59,7 @@ internal class ConvertUseCase : IRequestHandler<ConvertRequest, ConvertResponse>
         ExchangeRate exchangeRate = await unitOfWork.ExchangeRateRepository.GetForLatestDayAvailable(currencyPair, date, true);
 
         if (exchangeRate == null)
-            throw new Exception($"There is no exchange rate for the specific currency pair: {request.SourceCurrency} {request.DestinationCurrency}");
+            throw new ExchangeRateNotFoundException(currencyPair, date);
 
         response.IsDateCurrent = exchangeRate.Date == date;
 

@@ -2,7 +2,7 @@
   "profiles": {
     "CaveOfWonders.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "exchange eurron --date 2025-05-14"
+      "commandLineArgs": "import-inflation -t web"
     }
   }
 }

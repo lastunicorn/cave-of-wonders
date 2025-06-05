@@ -30,7 +30,7 @@ internal class GemImport
 
     public ImportReport Report { get; private set; }
 
-    public void Import(IEnumerable<SheetValue> sheetValues)
+    public void Execute(IEnumerable<SheetValue> sheetValues)
     {
         Report = new ImportReport();
 

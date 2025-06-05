@@ -26,7 +26,6 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
 {
     private readonly IIns ins;
     private readonly IUnitOfWork unitOfWork;
-    private ImportInflationResponse response;
 
     public ImportInflationUseCase(IIns ins, IUnitOfWork unitOfWork)
     {
@@ -36,14 +35,14 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
 
     public async Task<ImportInflationResponse> Handle(ImportInflationRequest request, CancellationToken cancellationToken)
     {
-        response = new ImportInflationResponse();
+        ImportInflationResponse response = new();
 
         IEnumerable<InsInflationRecordDto> inflationRecordDtos = await RetrieveInflationValues(request);
 
         foreach (InsInflationRecordDto insInflationRecordDto in inflationRecordDtos)
         {
             AddOrUpdateResult result = await AddOrUpdateInflationRecordToStore(insInflationRecordDto);
-            UpdateResponse(result);
+            response.Add(result);
         }
 
         await unitOfWork.SaveChanges();
@@ -78,22 +77,5 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
         };
 
         return await unitOfWork.InflationRecordRepository.AddOrUpdate(inflationRecordDto);
-    }
-
-    private void UpdateResponse(AddOrUpdateResult result)
-    {
-        switch (result)
-        {
-            case AddOrUpdateResult.Added:
-                response.AddedCount++;
-                break;
-
-            case AddOrUpdateResult.Updated:
-                response.UpdatedCount++;
-                break;
-
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
     }
 }

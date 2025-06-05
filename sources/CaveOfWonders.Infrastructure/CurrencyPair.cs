@@ -16,13 +16,13 @@
 
 using System.Text.RegularExpressions;
 
-namespace DustInTheWind.CaveOfWonders.Domain;
+namespace DustInTheWind.CaveOfWonders.Infrastructure;
 
 public readonly struct CurrencyPair : IEquatable<CurrencyPair>
 {
     private static readonly Regex Regex = new(@"^(.{3})[\/| ]?(.{3})$", RegexOptions.Singleline);
 
-    public static CurrencyPair Empty = new();
+    public static CurrencyPair Empty { get; } = new();
 
     public CurrencyId Currency1 { get; init; }
 
