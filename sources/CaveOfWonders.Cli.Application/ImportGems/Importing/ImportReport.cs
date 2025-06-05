@@ -17,7 +17,7 @@
 using System.Collections;
 using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CsvParser.Application.Importing;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
 
 public class ImportReport : IEnumerable<PotImportReport>
 {

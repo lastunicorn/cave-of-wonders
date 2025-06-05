@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <ItemGroup>
         <ProjectReference Include="..\CaveOfWonders.Domain\CaveOfWonders.Domain.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CaveOfWonders.Infrastructure\CaveOfWonders.Infrastructure.csproj" />
         <ProjectReference Include="..\CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Ports.FileAccess\CaveOfWonders.Ports.FileAccess.csproj" />
         <ProjectReference Include="..\CaveOfWonders.Ports.SystemAccess\CaveOfWonders.Ports.SystemAccess.csproj" PrivateAssets="All" />

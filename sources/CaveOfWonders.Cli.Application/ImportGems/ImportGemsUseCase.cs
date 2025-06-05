@@ -14,12 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using CsvParser.Ports.LogAccess;
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CsvParser.Application;
-using DustInTheWind.CsvParser.Application.Importing;
-using DustInTheWind.CsvParser.Ports.SheetsAccess;
+using DustInTheWind.CaveOfWonders.Ports.LogAccess;
+using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;

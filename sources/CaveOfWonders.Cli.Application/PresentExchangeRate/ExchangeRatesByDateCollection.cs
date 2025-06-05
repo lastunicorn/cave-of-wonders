@@ -14,25 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
+namespace DustInTheWind.CurrencyExchange.Application.PresentToday;
 
-public class ExchangeRateResponseDto
+public class ExchangeRatesByDateCollection
 {
     public DateTime Date { get; set; }
 
-    public CurrencyPair CurrencyPair { get; set; }
-
-    public decimal Value { get; set; }
-
-    internal ExchangeRateResponseDto(ExchangeRate exchangeRate)
-    {
-        if (exchangeRate == null)
-            return;
-
-        Date = exchangeRate.Date;
-        CurrencyPair = exchangeRate.CurrencyPair;
-        Value = exchangeRate.Value;
-    }
+    public List<ExchangeRateForCurrency> ExchangeRates { get; set; } = new();
 }

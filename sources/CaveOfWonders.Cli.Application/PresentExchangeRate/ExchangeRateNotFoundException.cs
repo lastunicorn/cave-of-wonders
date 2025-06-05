@@ -29,6 +29,11 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate
         {
         }
 
+        public ExchangeRateNotFoundException(IEnumerable<CurrencyPair> currencyPairs, DateTime date)
+            : base(string.Format(DefaultMessage, string.Join(", ", currencyPairs), date))
+        {
+        }
+
         public ExchangeRateNotFoundException(string message, Exception innerException)
             : base(message, innerException)
         {

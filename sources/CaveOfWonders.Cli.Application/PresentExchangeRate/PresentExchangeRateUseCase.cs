@@ -18,6 +18,7 @@ using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 
@@ -35,79 +36,126 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
 
     public async Task<PresentExchangeRateResponse> Handle(PresentExchangeRateRequest request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(request.CurrencyPair))
-            throw new CurrencyPairMissingException();
+        response = new PresentExchangeRateResponse();
 
-        CurrencyPair currencyPair = request.CurrencyPair;
+        /*
+         * If "today" or specific date is requested, the exchange rate for today is displayed.
+         *  - return requested currency pairs for that day.
+         */
 
-        response = new PresentExchangeRateResponse
-        {
-            CurrencyPair = currencyPair
-        };
+        CurrencyPair[] currencyPairs = request.CurrencyPair?.ParseCurrencyPairs().ToArray() ?? [];
 
         if (request.Today)
-            await RetrieveForToday(currencyPair);
+            await RetrieveForToday(currencyPairs);
         else if (request.Date != null)
-            await RetrieveByDate(currencyPair, request.Date.Value);
+            await RetrieveByDate(currencyPairs, request.Date.Value.Date);
         else if (request.Year != null)
-            await RetrieveByYear(currencyPair, request.Year.Value, request.Month);
+            await RetrieveByYear(currencyPairs, request.Year.Value, request.Month);
         else if (request.StartDate != null || request.EndDate != null)
-            await RetrieveByDateInterval(currencyPair, request.StartDate, request.EndDate);
+            await RetrieveByDateInterval(currencyPairs, request.StartDate, request.EndDate);
         else
-            await RetrieveAll(currencyPair);
+            await RetrieveAll(currencyPairs);
 
         return response;
     }
 
-    private Task RetrieveForToday(CurrencyPair currencyPair)
+    private Task RetrieveForToday(CurrencyPair[] currencyPairs)
     {
         // If currency pair provided        => 1 currency; multiple dates       => display by currency
         // If currency pair NOT provided    => multiple currencies; multiple dates       => display by currency
 
         DateTime dateTime = systemClock.Today;
-        return RetrieveByDate(currencyPair, dateTime);
+        return RetrieveByDate(currencyPairs, dateTime);
     }
 
-    private async Task RetrieveByDate(CurrencyPair currencyPair, DateTime date)
+    private async Task RetrieveByDate(CurrencyPair[] currencyPairs, DateTime date)
     {
-        ExchangeRate exchangeRate = await unitOfWork.ExchangeRateRepository.GetLatest(currencyPair, date);
+        IEnumerable<ExchangeRate> exchangeRates = await unitOfWork.ExchangeRateRepository.GetForLatestDayAvailable(currencyPairs, date);
 
-        if (exchangeRate == null)
-            throw new ExchangeRateNotFoundException(currencyPair, date);
+        if (exchangeRates == null)
+            throw new ExchangeRateNotFoundException(currencyPairs, date);
 
-        response.ExchangeRates = new List<ExchangeRateResponseDto>
+        DateTime? actualDate = exchangeRates
+            .FirstOrDefault()?.Date;
+
+        DailyExchangeRates dailyExchangeRates = new()
         {
-            new(exchangeRate)
+            Date = actualDate ?? date,
+            ExchangeRates = exchangeRates
+                .Select(x => new ExchangeRateForCurrency
+                {
+                    CurrencyPair = x.CurrencyPair,
+                    Value = x.Value
+                })
+                .ToList()
         };
 
-        if (exchangeRate.Date != date)
-            response.Comments = $"Exchange rate for {currencyPair} was not found for the specified date {date:d}. The last available value was returned.";
+        response.DailyExchangeRates = [dailyExchangeRates];
+
+        if (dailyExchangeRates.ExchangeRates.Count > 0 && actualDate != date)
+        {
+            response.Comments = new ExchangeRatesNotFoundNote
+            {
+                CurrencyPairs = currencyPairs?.ToList(),
+                Date = date
+            };
+        }
     }
 
-    private async Task RetrieveByYear(CurrencyPair currencyPair, uint year, uint? month)
+    private async Task RetrieveByYear(CurrencyPair[] currencyPairs, uint year, uint? month)
     {
-        if (string.IsNullOrEmpty(currencyPair))
-            throw new CurrencyPairMissingException();
-
-        response.ExchangeRates = (await unitOfWork.ExchangeRateRepository.GetByYear(currencyPair, year, month))
+        response.DailyExchangeRates = (await unitOfWork.ExchangeRateRepository.GetByYear(currencyPairs, year, month))
+            .GroupBy(x => x.Date)
+            .Select(x => new DailyExchangeRates
+            {
+                Date = x.Key,
+                ExchangeRates = x
+                    .Select(y => new ExchangeRateForCurrency
+                    {
+                        CurrencyPair = y.CurrencyPair,
+                        Value = y.Value
+                    })
+                    .ToList()
+            })
             .OrderBy(x => x.Date)
-            .Select(x => new ExchangeRateResponseDto(x))
             .ToList();
     }
 
-    private async Task RetrieveByDateInterval(CurrencyPair currencyPair, DateTime? startDate, DateTime? endDate)
+    private async Task RetrieveByDateInterval(CurrencyPair[] currencyPairs, DateTime? startDate, DateTime? endDate)
     {
-        response.ExchangeRates = (await unitOfWork.ExchangeRateRepository.GetByDateInterval(currencyPair, startDate, endDate))
+        response.DailyExchangeRates = (await unitOfWork.ExchangeRateRepository.GetByDateInterval(currencyPairs, startDate, endDate))
+            .GroupBy(x => x.Date)
+            .Select(x => new DailyExchangeRates
+            {
+                Date = x.Key,
+                ExchangeRates = x
+                    .Select(y => new ExchangeRateForCurrency
+                    {
+                        CurrencyPair = y.CurrencyPair,
+                        Value = y.Value
+                    })
+                    .ToList()
+            })
             .OrderBy(x => x.Date)
-            .Select(x => new ExchangeRateResponseDto(x))
             .ToList();
     }
 
-    private async Task RetrieveAll(CurrencyPair currencyPair)
+    private async Task RetrieveAll(CurrencyPair[] currencyPairs)
     {
-        response.ExchangeRates = (await unitOfWork.ExchangeRateRepository.Get(currencyPair))
+        response.DailyExchangeRates = (await unitOfWork.ExchangeRateRepository.Get(currencyPairs))
+            .GroupBy(x => x.Date)
+            .Select(x => new DailyExchangeRates
+            {
+                Date = x.Key,
+                ExchangeRates = x
+                    .Select(y => new ExchangeRateForCurrency
+                    {
+                        CurrencyPair = y.CurrencyPair,
+                        Value = y.Value
+                    })
+                    .ToList()
+            })
             .OrderBy(x => x.Date)
-            .Select(x => new ExchangeRateResponseDto(x))
             .ToList();
     }
 }

@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.ConsoleTools.Controls;
 using DustInTheWind.ConsoleTools.Controls.Tables;
-using DustInTheWind.CsvParser.Application.Importing;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.ImportGems;
 

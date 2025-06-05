@@ -39,11 +39,11 @@ public class PresentTodayUseCase : IRequestHandler<PresentTodayRequest, PresentT
         List<DateTime> dates;
 
         if (request.Today)
-            dates = new List<DateTime> { systemClock.Today };
+            dates = [systemClock.Today];
         else if (request.Dates?.Count > 0)
             dates = request.Dates;
         else
-            dates = new List<DateTime>();
+            dates = [];
 
         if (request.CurrencyPair == null)
         {

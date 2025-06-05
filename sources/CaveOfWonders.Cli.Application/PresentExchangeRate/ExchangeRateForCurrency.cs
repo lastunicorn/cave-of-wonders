@@ -14,21 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
+using DustInTheWind.CaveOfWonders.Domain;
 
-public class BcrRecord
+namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
+
+public class ExchangeRateForCurrency
 {
-    public DateTime Date { get; set; }
+    public CurrencyPair CurrencyPair { get; set; }
 
-    public decimal TotalLei { get; set; }
-
-    public decimal? CurrentAccountLei { get; set; }
-
-    public decimal? SavingsAccountLei { get; set; }
-
-    public decimal? DepositAccountLei { get; set; }
-
-    public decimal? CurrentAccountEuro { get; set; }
-
-    public decimal? CurrentAccountEuroConvertedInLei { get; set; }
+    public decimal Value { get; set; }
 }

@@ -54,7 +54,7 @@ internal class ConvertUseCase : IRequestHandler<ConvertRequest, ConvertResponse>
 
         DateTime date = request.Date ?? systemClock.Today;
 
-        ExchangeRate exchangeRate = await unitOfWork.ExchangeRateRepository.GetLatest(currencyPair, date, true);
+        ExchangeRate exchangeRate = await unitOfWork.ExchangeRateRepository.GetForLatestDayAvailable(currencyPair, date, true);
 
         if (exchangeRate == null)
             throw new Exception($"There is no exchange rate for the specific currency pair: {request.SourceCurrency} {request.DestinationCurrency}");

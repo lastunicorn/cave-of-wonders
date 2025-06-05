@@ -118,7 +118,7 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
                 Currency2 = defaultCurrency
             };
 
-            ExchangeRate exchangeRate = await unitOfWork.ExchangeRateRepository.GetLatest(currencyPair, currentDate, true);
+            ExchangeRate exchangeRate = await unitOfWork.ExchangeRateRepository.GetForLatestDayAvailable(currencyPair, currentDate, true);
             return TryConvert(originalValue, defaultCurrency, exchangeRate);
         }
 

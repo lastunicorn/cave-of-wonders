@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 Cave of Wonders
 Copyright (C) 2023 Dust in the Wind
 
@@ -24,9 +24,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <AssemblyName>DustInTheWind.$(MSBuildProjectName)</AssemblyName>
         <RootNamespace>DustInTheWind.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     </PropertyGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\CaveOfWonders.Infrastructure\CaveOfWonders.Infrastructure.csproj" />
-    </ItemGroup>
 
 </Project>

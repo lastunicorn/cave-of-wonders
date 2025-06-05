@@ -30,20 +30,22 @@ public class ExchangeRateRepository : IExchangeRateRepository
         this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    public Task<IEnumerable<ExchangeRate>> Get(CurrencyPair currencyPair)
+    public Task<IEnumerable<ExchangeRate>> Get(CurrencyPair[] currencyPairs)
     {
-        string currencyPairAsString = currencyPair.ToString();
+        ILiteQueryable<ExchangeRateDbEntity> query = dbContext.ExchangeRates.Query();
 
-        IEnumerable<ExchangeRate> exchangeRates = dbContext.ExchangeRates.Query()
-            .Where(x => x.CurrencyPair == currencyPairAsString)
-            .OrderBy(x => x.Date)
-            .ToEnumerable()
-            .Select(x => new ExchangeRate
-            {
-                Date = x.Date,
-                CurrencyPair = x.CurrencyPair,
-                Value = x.Value
-            });
+        if (currencyPairs != null && currencyPairs.Length > 0)
+            query = query.Where(x => currencyPairs.Contains(x.CurrencyPair));
+
+        IEnumerable<ExchangeRate> exchangeRates = query
+             .OrderBy(x => x.Date)
+             .ToEnumerable()
+             .Select(x => new ExchangeRate
+             {
+                 Date = x.Date,
+                 CurrencyPair = x.CurrencyPair,
+                 Value = x.Value
+             });
 
         return Task.FromResult(exchangeRates);
     }
@@ -68,7 +70,7 @@ public class ExchangeRateRepository : IExchangeRateRepository
         throw new NotImplementedException();
     }
 
-    public Task<ExchangeRate> GetLatest(CurrencyPair currencyPair, DateTime date, bool allowInverted = false)
+    public Task<ExchangeRate> GetForLatestDayAvailable(CurrencyPair currencyPair, DateTime date, bool allowInverted = false)
     {
         string currencyPairAsString = currencyPair.ToString();
 
@@ -87,12 +89,34 @@ public class ExchangeRateRepository : IExchangeRateRepository
         return Task.FromResult(exchangeRate);
     }
 
-    public Task<IEnumerable<ExchangeRate>> GetByDateInterval(CurrencyPair currencyPair, DateTime? startDate, DateTime? endDate)
+    public Task<IEnumerable<ExchangeRate>> GetForLatestDayAvailable(CurrencyPair[] currencyPairs, DateTime date, bool allowInverted = false)
     {
-        string currencyPairAsString = currencyPair.ToString();
+        string[] currencyPairsAsStrings = currencyPairs
+            .Select(x => x.ToString())
+            .ToArray();
 
-        ILiteQueryable<ExchangeRateDbEntity> query = dbContext.ExchangeRates.Query()
-            .Where(x => x.CurrencyPair == currencyPairAsString);
+        IEnumerable<ExchangeRate> exchangeRates = dbContext.ExchangeRates.Query()
+            .Where(x => currencyPairsAsStrings.Contains(x.CurrencyPair) && x.Date <= date)
+            .ToList()
+            .GroupBy(x => x.Date)
+            .OrderByDescending(x => x.Key)
+            .FirstOrDefault()
+            .Select(x => new ExchangeRate
+            {
+                Date = x.Date,
+                CurrencyPair = x.CurrencyPair,
+                Value = x.Value
+            });
+
+        return Task.FromResult(exchangeRates);
+    }
+
+    public Task<IEnumerable<ExchangeRate>> GetByDateInterval(CurrencyPair[] currencyPairs, DateTime? startDate, DateTime? endDate)
+    {
+        ILiteQueryable<ExchangeRateDbEntity> query = dbContext.ExchangeRates.Query();
+
+        if (currencyPairs != null && currencyPairs.Length > 0)
+            query = query.Where(x => currencyPairs.Contains(x.CurrencyPair));
 
         if (startDate != null)
             query = query.Where(x => x.Date >= startDate.Value);
@@ -136,6 +160,11 @@ public class ExchangeRateRepository : IExchangeRateRepository
             });
 
         return Task.FromResult(exchangeRates);
+    }
+
+    public Task<IEnumerable<ExchangeRate>> GetByYear(CurrencyPair[] currencyPairs, uint year, uint? month)
+    {
+        throw new NotImplementedException();
     }
 
     public Task<ImportReport> Import(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken)

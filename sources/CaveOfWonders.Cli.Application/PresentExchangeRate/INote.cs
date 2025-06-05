@@ -14,21 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 
-public class BcrRecord
+public interface INote
 {
-    public DateTime Date { get; set; }
-
-    public decimal TotalLei { get; set; }
-
-    public decimal? CurrentAccountLei { get; set; }
-
-    public decimal? SavingsAccountLei { get; set; }
-
-    public decimal? DepositAccountLei { get; set; }
-
-    public decimal? CurrentAccountEuro { get; set; }
-
-    public decimal? CurrentAccountEuroConvertedInLei { get; set; }
+    string ToString();
 }

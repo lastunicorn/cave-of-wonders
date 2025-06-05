@@ -14,11 +14,29 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Infrastructure;
+
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 
-public class PresentExchangeRateResponse
+internal static class CurrencyPairExtensions
 {
-    public List<DailyExchangeRates> DailyExchangeRates { get; set; }
+    public static IEnumerable<CurrencyPair> ParseCurrencyPairs(this string currencyPair)
+    {
+        if (currencyPair.IsNullOrEmpty())
+        {
+            yield return CurrencyPair.Empty;
+        }
+        else if (currencyPair.Contains(',') || currencyPair.Contains(';'))
+        {
+            string[] pairs = currencyPair.Split([',', ';'], StringSplitOptions.RemoveEmptyEntries);
 
-    public INote Comments { get; set; }
+            foreach (string pair in pairs)
+                yield return new CurrencyPair(pair.Trim());
+        }
+        else
+        {
+            yield return new CurrencyPair(currencyPair.Trim());
+        }
+    }
 }

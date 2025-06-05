@@ -59,6 +59,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaveOfWonders.Ports.FileAcc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaveOfWonders.Adapters.FileAccess", "CaveOfWonders.Adapters.FileAccess\CaveOfWonders.Adapters.FileAccess.csproj", "{ECEFB48E-33CD-4BC4-BCF4-0F5D644C13E1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaveOfWonders.Infrastructure", "CaveOfWonders.Infrastructure\CaveOfWonders.Infrastructure.csproj", "{B0293479-6E6A-41A6-BCC9-6488AC4EE2D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -161,6 +163,10 @@ Global
 		{ECEFB48E-33CD-4BC4-BCF4-0F5D644C13E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECEFB48E-33CD-4BC4-BCF4-0F5D644C13E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECEFB48E-33CD-4BC4-BCF4-0F5D644C13E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0293479-6E6A-41A6-BCC9-6488AC4EE2D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0293479-6E6A-41A6-BCC9-6488AC4EE2D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0293479-6E6A-41A6-BCC9-6488AC4EE2D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0293479-6E6A-41A6-BCC9-6488AC4EE2D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

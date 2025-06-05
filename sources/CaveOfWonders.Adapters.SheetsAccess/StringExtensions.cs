@@ -16,7 +16,7 @@
 
 using System.Globalization;
 
-namespace DustInTheWind.CsvParser.Adapters.SheetsAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
 
 internal static class StringExtensions
 {

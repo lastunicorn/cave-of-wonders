@@ -34,7 +34,7 @@ internal static class DependenciesSetup
         services.AddMediatR(config => config.RegisterServicesFromAssemblyContaining<PresentTodayRequest>());
 
         services
-            .AddTransient(context => new Database(@"c:\Projects.pet\finanțe\CaveOfWonders\db"));
+            .AddTransient(context => new Database(@"C:\Projects.pet\CaveOfWonders-db"));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddTransient<ISystemClock, SystemClock>();

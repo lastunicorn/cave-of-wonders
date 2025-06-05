@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CsvParser.Ports.SheetsAccess;
+using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
-namespace DustInTheWind.CsvParser.Adapters.SheetsAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
 
 internal class GoldSheetCsvFile
 {

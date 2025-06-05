@@ -14,11 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Globalization;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
-using DustInTheWind.ConsoleTools.Controls.Tables;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.ExchangeRateArea.Exchange;
 
@@ -26,39 +24,18 @@ internal class ExchangeView : IView<PresentExchangeRateResponse>
 {
     public void Display(PresentExchangeRateResponse response)
     {
-        if (response.ExchangeRates.Count == 0)
-        {
-            CustomConsole.WriteLineWarning($"There are no exchange rates for {response.CurrencyPair} and the specified dates.");
-        }
+        if (response.DailyExchangeRates.Count == 0 || response.DailyExchangeRates.All(x => x.ExchangeRates.Count == 0))
+            CustomConsole.WriteLineWarning($"There are no exchange rates.");
         else
-        {
-            DataGrid dataGrid = new("Exchange Rates")
-            {
-                TitleRow =
-                {
-                    BackgroundColor = ConsoleColor.Gray,
-                    ForegroundColor = ConsoleColor.Black
-                },
-                Border =
-                {
-                    Template = BorderTemplate.SingleLineBorderTemplate
-                }
-            };
-
-            dataGrid.Columns.Add("Date");
-            dataGrid.Columns.Add(response.CurrencyPair);
-
-            foreach (ExchangeRateResponseDto exchangeRateResponseDto in response.ExchangeRates)
-            {
-                string date = exchangeRateResponseDto.Date.ToString("d", CultureInfo.CurrentCulture);
-                string value = exchangeRateResponseDto.Value.ToString(CultureInfo.CurrentCulture);
-                dataGrid.Rows.Add(date, value);
-            }
-
-            dataGrid.Display();
-        }
+            DisplayExchangeRates(response);
 
         if (response.Comments != null)
             CustomConsole.WriteLineWarning(response.Comments);
+    }
+
+    private static void DisplayExchangeRates(PresentExchangeRateResponse response)
+    {
+        ExchangeRatesDataGrid dataGrid = new(response);
+        dataGrid.Display();
     }
 }

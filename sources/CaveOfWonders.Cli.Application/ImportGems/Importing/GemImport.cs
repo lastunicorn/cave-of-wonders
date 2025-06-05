@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using CsvParser.Ports.LogAccess;
 using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CsvParser.Ports.SheetsAccess;
+using DustInTheWind.CaveOfWonders.Ports.LogAccess;
+using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
-namespace DustInTheWind.CsvParser.Application.Importing;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
 
 internal class GemImport
 {
