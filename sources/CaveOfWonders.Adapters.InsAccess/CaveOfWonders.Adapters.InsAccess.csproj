@@ -1,5 +1,5 @@
 <!--
-Currency Exchange
+Cave of Wonders
 Copyright (C) 2023-2025 Dust in the Wind
 
 This program is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="HtmlAgilityPack" Version="1.12.1" />
-      <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" />
+        <PackageReference Include="HtmlAgilityPack" Version="1.12.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" />
     </ItemGroup>
 
     <ItemGroup>

@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <AssemblyName>DustInTheWind.$(MSBuildProjectName)</AssemblyName>
         <RootNamespace>DustInTheWind.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     </PropertyGroup>
-    
+
     <ItemGroup>
         <ProjectReference Include="..\CaveOfWonders.Ports.FileAccess\CaveOfWonders.Ports.FileAccess.csproj" PrivateAssets="All" />
     </ItemGroup>

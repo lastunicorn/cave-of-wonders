@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 Cave of Wonders
 Copyright (C) 2023-2025 Dust in the Wind
 
@@ -16,13 +16,18 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<Project Sdk="Microsoft.NET.Sdk">
-
+<Project>
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <AssemblyName>DustInTheWind.$(MSBuildProjectName)</AssemblyName>
-        <RootNamespace>DustInTheWind.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
-    </PropertyGroup>
+        <Company>Dust in the Wind</Company>
+        <Product>Cave of Wonders</Product>
+        <Copyright>Copyright © 2023-2025 Dust in the Wind</Copyright>
+        <Version>2.0.0.0</Version>
+        <NeutralLanguage>en</NeutralLanguage>
+        <RepositoryType>git</RepositoryType>
 
+        <PackageProjectUrl>https://github.com/lastunicorn/cave-of-wonders</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/lastunicorn/cave-of-wonders</RepositoryUrl>
+
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
 </Project>
