@@ -14,16 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Infrastructure;
-using MediatR;
+using DustInTheWind.CaveOfWonders.Domain;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.Convert;
 
-public class ConvertRequest : IRequest<ConvertResponse>
+[Serializable]
+internal class ExchangeRateUnusableException : Exception
 {
-    public decimal InitialValue { get; set; }
+    private const string DefaultMessage = "An exchange rate was found in the database, but could not be used for conversion. The value could not be converted. Exchange rate: {0}";
 
-    public CurrencyPair CurrencyPair { get; set; }
-
-    public DateTime? Date { get; set; }
+    public ExchangeRateUnusableException(ExchangeRate exchangeRate)
+        : base(string.Format(DefaultMessage, exchangeRate))
+    {
+    }
 }

@@ -28,7 +28,6 @@ internal class ConvertUseCase : IRequestHandler<ConvertRequest, ConvertResponse>
 {
     private readonly IUnitOfWork unitOfWork;
     private readonly ISystemClock systemClock;
-    private ConvertResponse response;
 
     public ConvertUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
     {
@@ -38,58 +37,33 @@ internal class ConvertUseCase : IRequestHandler<ConvertRequest, ConvertResponse>
 
     public async Task<ConvertResponse> Handle(ConvertRequest request, CancellationToken cancellationToken)
     {
-        response = new ConvertResponse();
+        DateTime dateOfExchangeRate = request.Date ?? systemClock.Today;
+        ExchangeRate exchangeRate = await RetrieveExchangeRate(request.CurrencyPair, dateOfExchangeRate);
 
-        ExchangeRate exchangeRate = await RetrieveExchangeRate(request);
-        Convert(request, exchangeRate);
-
-        return response;
+        return new ConvertResponse
+        {
+            InitialValue = request.InitialValue,
+            ConvertedValue = exchangeRate.Convert(request.InitialValue),
+            ExchangeRate = new ExchangeRateInfo(exchangeRate),
+            IsDateCurrent = exchangeRate.Date == dateOfExchangeRate
+        };
     }
 
-    private async Task<ExchangeRate> RetrieveExchangeRate(ConvertRequest request)
+    private async Task<ExchangeRate> RetrieveExchangeRate(CurrencyPair currencyPair, DateTime date)
     {
-        CurrencyPair currencyPair = new()
-        {
-            Currency1 = request.SourceCurrency,
-            Currency2 = request.DestinationCurrency
-        };
-
-        DateTime date = request.Date ?? systemClock.Today;
-
         ExchangeRate exchangeRate = await unitOfWork.ExchangeRateRepository.GetForLatestDayAvailable(currencyPair, date, true);
 
         if (exchangeRate == null)
             throw new ExchangeRateNotFoundException(currencyPair, date);
 
-        response.IsDateCurrent = exchangeRate.Date == date;
+        ConversionAbility conversionAbility = exchangeRate.AnalyzeConversionAbility(currencyPair.Currency1, currencyPair.Currency2);
 
-        return exchangeRate;
-    }
-
-    private void Convert(ConvertRequest request, ExchangeRate exchangeRate)
-    {
-        ConversionAbility conversionAbility = exchangeRate.AnalyzeConversionAbility(request.SourceCurrency, request.DestinationCurrency);
-
-        switch (conversionAbility)
+        return conversionAbility switch
         {
-            case ConversionAbility.None:
-                throw new Exception($"An exchange rate was found in the database, but could not be used for conversion. The value could not be converted. Exchange rate: {exchangeRate}");
-
-            case ConversionAbility.ConvertDirect:
-                break;
-
-            case ConversionAbility.ConvertReverse:
-                exchangeRate = exchangeRate.Invert();
-                break;
-
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-
-        response.SourceCurrency = exchangeRate.CurrencyPair.Currency1;
-        response.DestinationCurrency = exchangeRate.CurrencyPair.Currency2;
-        response.InitialValue = request.InitialValue;
-        response.ConvertedValue = exchangeRate.Convert(request.InitialValue);
-        response.ExchangeRate = new ExchangeRateInfo(exchangeRate);
+            ConversionAbility.None => throw new ExchangeRateUnusableException(exchangeRate),
+            ConversionAbility.ConvertDirect => exchangeRate,
+            ConversionAbility.ConvertReverse => exchangeRate.Invert(),
+            _ => throw new ArgumentOutOfRangeException(),
+        };
     }
 }

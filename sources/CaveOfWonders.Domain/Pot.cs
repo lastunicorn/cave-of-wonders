@@ -32,7 +32,7 @@ public class Pot
 
     public string Currency { get; set; }
 
-    public List<Gem> Gems { get; } = new();
+    public List<Gem> Gems { get; } = [];
 
     public bool IsActive(DateTime date)
     {
@@ -44,7 +44,7 @@ public class Pot
         bool hasGems = Gems.Count > 0;
 
         return hasGems
-            ? Gems.Last()
+            ? Gems[Gems.Count - 1]
             : null;
     }
 }

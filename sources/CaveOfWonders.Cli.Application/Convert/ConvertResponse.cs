@@ -24,10 +24,6 @@ public class ConvertResponse
 
     public decimal ConvertedValue { get; set; }
 
-    public string SourceCurrency { get; set; }
-
-    public string DestinationCurrency { get; set; }
-
     public bool IsDateCurrent { get; set; }
 
     public ExchangeRateInfo ExchangeRate { get; set; }

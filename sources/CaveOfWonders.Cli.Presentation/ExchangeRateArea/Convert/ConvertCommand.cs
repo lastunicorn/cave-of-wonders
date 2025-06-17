@@ -16,6 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
 using DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.State;
+using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.ConsoleTools.Commando;
 using MediatR;
 
@@ -48,8 +49,11 @@ internal class ConvertCommand : IConsoleCommand<ConvertViewModel>
         ConvertRequest request = new()
         {
             InitialValue = InitialValue,
-            SourceCurrency = SourceCurrencyId,
-            DestinationCurrency = DestinationCurrencyId,
+            CurrencyPair = new CurrencyPair
+            {
+                Currency1 = SourceCurrencyId,
+                Currency2 = DestinationCurrencyId
+            },
             Date = Date
         };
 
@@ -59,8 +63,8 @@ internal class ConvertCommand : IConsoleCommand<ConvertViewModel>
         {
             InitialValue = response.InitialValue,
             ConvertedValue = response.ConvertedValue,
-            SourceCurrency = response.SourceCurrency,
-            DestinationCurrency = response.DestinationCurrency,
+            SourceCurrency = response.ExchangeRate.SourceCurrency,
+            DestinationCurrency = response.ExchangeRate.DestinationCurrency,
             ExchangeRate = new ExchangeRateViewModel(response.ExchangeRate, response.IsDateCurrent)
         };
     }

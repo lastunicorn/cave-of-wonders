@@ -48,7 +48,7 @@ public class PotDetails
         Currency = pot.Currency;
         GemCount = pot.Gems.Count;
 
-        Gem lastGem = pot.Gems.Last();
+        Gem lastGem = pot.Gems[pot.Gems.Count - 1];
 
         LastGemDate = lastGem?.Date;
 
