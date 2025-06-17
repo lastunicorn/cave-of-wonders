@@ -20,7 +20,7 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.InflationArea.ImportInflation;
 
-[NamedCommand("import-inflation")]
+[NamedCommand("import-inflation", Description = "Imports Romanian annual inflation values from the INSS web page or a file.")]
 internal class ImportInflationCommand : IConsoleCommand<InflationViewModel>
 {
     private readonly IMediator mediator;

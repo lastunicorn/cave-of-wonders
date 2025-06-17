@@ -25,8 +25,6 @@ internal class Program
 {
     public static async Task Main(string[] args)
     {
-        Console.WriteLine(Guid.NewGuid().ToString("D"));
-
         ConsoleTools.Commando.Application application = ApplicationBuilder.Create()
             .ConfigureServices(DependenciesSetup.Configure)
             .RegisterCommandsFrom(typeof(PresentationAssemblyHandle).Assembly)

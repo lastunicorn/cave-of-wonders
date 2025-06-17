@@ -56,7 +56,7 @@ internal class InflationWebPageDocument
             string valueAsString = divNodes[1].InnerText;
 
             int year = int.Parse(yearAsString, cultureInfo);
-            decimal value = decimal.Parse(valueAsString, cultureInfo);
+            decimal value = decimal.Parse(valueAsString, cultureInfo) - 100;
 
             InflationRecordDto inflationRecordDto = new()
             {
