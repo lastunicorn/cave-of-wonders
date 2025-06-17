@@ -40,4 +40,4 @@ internal class Program
     {
         CustomConsole.WriteError(e.Exception);
     }
-}
+} 

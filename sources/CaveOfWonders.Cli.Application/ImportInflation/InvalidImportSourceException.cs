@@ -14,16 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Infrastructure;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 
 [Serializable]
-internal class InflationFileNotProvidedException : Exception
+internal class InvalidImportSourceException : Exception
 {
-    private const string DefaultMessage = "The name of the text file containing inflation values was not provided.";
+    private const string DefaultMessage = "The provided import source is not valid: {0}";
 
-    public InflationFileNotProvidedException()
-        : base(DefaultMessage)
+    public InvalidImportSourceException(ImportSource importSource)
+        : base(BuildMessage(importSource))
     {
+    }
+
+    private static string BuildMessage(ImportSource importSource)
+    {
+        string valueAsString = importSource.ToDisplay();
+        return string.Format(DefaultMessage, valueAsString);
     }
 }

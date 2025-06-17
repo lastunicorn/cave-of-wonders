@@ -14,16 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace DustInTheWind.CaveOfWonders.Infrastructure;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
-
-[Serializable]
-internal class InflationFileNotProvidedException : Exception
+public static class EnumExtensions
 {
-    private const string DefaultMessage = "The name of the text file containing inflation values was not provided.";
-
-    public InflationFileNotProvidedException()
-        : base(DefaultMessage)
+    public static string ToDisplay<T>(this T value)
+        where T : Enum
     {
+        string valueAsString = Convert.ToInt32(value).ToString();
+
+        bool valueIsDefined = Enum.IsDefined(typeof(T), value);
+
+        return valueIsDefined
+            ? $"{valueAsString} ({value})"
+            : valueAsString;
     }
 }

@@ -40,7 +40,7 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
         DateTime currentDate = request.Date ?? systemClock.Today;
         string defaultCurrency = request.Currency ?? "RON";
 
-        IEnumerable<PotInstance> potInstances = await RetrievePotInstances(currentDate, request.IncludeInactive);
+        IEnumerable<PotInstance> potInstances = await RetrievePotInstancesFromStorage(currentDate, request.IncludeInactive);
         List<PotInstanceInfo> potInstanceInfos = await ConvertToPotInstanceInfos(potInstances, currentDate, defaultCurrency);
 
         return new PresentStateResponse
@@ -58,7 +58,7 @@ public class PresentStateUseCase : IRequestHandler<PresentStateRequest, PresentS
         };
     }
 
-    private async Task<IEnumerable<PotInstance>> RetrievePotInstances(DateTime date, bool includeInactive)
+    private async Task<IEnumerable<PotInstance>> RetrievePotInstancesFromStorage(DateTime date, bool includeInactive)
     {
         IEnumerable<PotInstance> potInstances = await unitOfWork.PotRepository.GetInstances(date, DateMatchingMode.LastAvailable, includeInactive);
         potInstances = potInstances.OrderBy(x => x.Pot.DisplayOrder);

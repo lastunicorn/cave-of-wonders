@@ -64,7 +64,7 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
                 return await ins.GetInflationValuesFromWeb();
 
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new InvalidImportSourceException(request.ImportSource);
         }
     }
 
