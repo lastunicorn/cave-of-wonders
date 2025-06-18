@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
-using DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.State;
+using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
 using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.ConsoleTools.Commando;
 using MediatR;

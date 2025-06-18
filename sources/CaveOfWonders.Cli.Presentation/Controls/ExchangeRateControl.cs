@@ -14,11 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pots;
+using DustInTheWind.ConsoleTools;
+using DustInTheWind.ConsoleTools.Controls;
 
-internal class PresentPotsViewModel
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
+
+internal class ExchangeRateControl : InlineControl
 {
-    public DateTime Date { get; set; }
+    public ExchangeRateViewModel ViewModel { get; set; }
 
-    public List<PotInfoViewModel> Pots { get; set; }
+    protected override void DoDisplayContent()
+    {
+        if (ViewModel == null)
+            return;
+
+        Console.Write($"1 {ViewModel.SourceCurrency} = {ViewModel.Value:N4} {ViewModel.DestinationCurrency}");
+
+        if (!ViewModel.IsCurrent)
+            CustomConsole.Write(ConsoleColor.DarkYellow, $" ({ViewModel.CurrencyDate:d})");
+    }
 }

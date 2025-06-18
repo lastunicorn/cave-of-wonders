@@ -31,15 +31,27 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
+using DustInTheWind.CaveOfWonders.Cli.Application;
 
-public class PresentPotsResponse
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pots;
+
+internal class PotInstanceViewModel
 {
-    public DateTime Date { get; set; }
+    public Guid Id { get; set; }
 
-    public List<PotInstanceInfo> PotInstances { get; set; }
+    public string Name { get; set; }
 
-    public List<ExchangeRateInfo> ConversionRates { get; set; }
+    public CurrencyValue OriginalValue { get; set; }
 
-    public CurrencyValue Total { get; set; }
+    public bool IsValueActual { get; set; }
+
+    public bool IsValueAlreadyNormal { get; set; }
+
+    public DateTime? Date { get; set; }
+
+    public CurrencyValue NormalizedValue { get; set; }
+
+    public bool IsNormalizedCurrent { get; set; }
+
+    public bool IsPotActive { get; set; }
 }

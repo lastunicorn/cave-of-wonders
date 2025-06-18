@@ -15,11 +15,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Cli.Application;
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
+using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.State;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pots;
 
-internal class StateViewModel
+internal class PotsViewModel
 {
     public DateTime Date { get; set; }
 
@@ -29,7 +30,7 @@ internal class StateViewModel
 
     public CurrencyValue Total { get; set; }
 
-    public StateViewModel(PresentStateResponse presentStateResponse)
+    public PotsViewModel(PresentPotsResponse presentStateResponse)
     {
         Date = presentStateResponse.Date;
 

@@ -14,15 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using MediatR;
+using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 
-public class PresentStateRequest : IRequest<PresentStateResponse>
+public class ExchangeRateInfo
 {
-    public DateTime? Date { get; set; }
+    public string SourceCurrency { get; }
 
-    public string Currency { get; set; }
+    public string DestinationCurrency { get; }
 
-    public bool IncludeInactive { get; set; }
+    public DateTime Date { get; }
+
+    public decimal Value { get; }
+
+    internal ExchangeRateInfo(ExchangeRate conversionRate)
+    {
+        SourceCurrency = conversionRate.CurrencyPair.Currency1;
+        DestinationCurrency = conversionRate.CurrencyPair.Currency2;
+        Date = conversionRate.Date;
+        Value = conversionRate.Value;
+    }
 }

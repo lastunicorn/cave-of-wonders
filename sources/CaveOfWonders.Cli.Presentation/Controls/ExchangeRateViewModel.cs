@@ -14,29 +14,33 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pots;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
 
-internal class PotInfoViewModel
+public class ExchangeRateViewModel
 {
-    public Guid Id { get; }
+    public string SourceCurrency { get; }
 
-    public string Name { get; }
+    public string DestinationCurrency { get; }
 
-    public CurrencyValue Value { get; }
+    public decimal Value { get; }
 
-    public bool IsActive { get; }
+    public DateTime CurrencyDate { get; }
 
-    public PotInfoViewModel(PotInfo x)
+    public bool IsCurrent { get; }
+
+    public ExchangeRateViewModel(ExchangeRateInfo exchangeRateInfo, bool isDateCurrent)
     {
-        if (x == null)
-            return;
+        SourceCurrency = exchangeRateInfo.SourceCurrency;
+        DestinationCurrency = exchangeRateInfo.DestinationCurrency;
+        Value = exchangeRateInfo.Value;
+        CurrencyDate = exchangeRateInfo.Date;
+        IsCurrent = isDateCurrent;
+    }
 
-        Id = x.Id;
-        Name = x.Name;
-        Value = x.Value;
-        IsActive = x.IsActive;
+    public override string ToString()
+    {
+        return $"1 {SourceCurrency} = {Value} {DestinationCurrency} ({CurrencyDate:d})";
     }
 }

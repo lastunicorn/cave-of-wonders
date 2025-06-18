@@ -14,21 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Presentation.ExchangeRateArea.Convert;
+using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
 using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.State;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pots;
 
-internal class StateView : IView<StateViewModel>
+internal class PotsView : IView<PotsViewModel>
 {
-    public void Display(StateViewModel stateViewModel)
+    public void Display(PotsViewModel stateViewModel)
     {
         DisplayCaveInstances(stateViewModel);
         DisplayConversionRates(stateViewModel);
     }
 
-    private void DisplayCaveInstances(StateViewModel stateViewModel)
+    private static void DisplayCaveInstances(PotsViewModel stateViewModel)
     {
         PotSnapshotControl potSnapshotControl = new()
         {
@@ -40,7 +40,7 @@ internal class StateView : IView<StateViewModel>
         potSnapshotControl.Display();
     }
 
-    private void DisplayConversionRates(StateViewModel stateViewModel)
+    private static void DisplayConversionRates(PotsViewModel stateViewModel)
     {
         Console.WriteLine();
 

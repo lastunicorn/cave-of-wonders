@@ -20,10 +20,16 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pots;
 
-[NamedCommand("pots", Description = "Display the current value of the pots.")]
-internal class PotsCommand : IConsoleCommand<PresentPotsViewModel>
+[NamedCommand("pots", Description = "Display the state of the pots for a specific date.")]
+internal class PotsCommand : IConsoleCommand<PotsViewModel>
 {
     private readonly IMediator mediator;
+
+    [NamedParameter("date", ShortName = 'd', IsOptional = true, Description = "The date for which to display the state of the cave. Default value = today")]
+    public DateTime? Date { get; set; }
+
+    [NamedParameter("currency", ShortName = 'c', IsOptional = true)]
+    public string Currency { get; set; }
 
     [NamedParameter("all", ShortName = 'a', IsOptional = true, Description = "Display all pots, including the inactive ones. Default = false.")]
     public bool IncludeInactivePots { get; set; }
@@ -33,21 +39,17 @@ internal class PotsCommand : IConsoleCommand<PresentPotsViewModel>
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
-    public async Task<PresentPotsViewModel> Execute()
+    public async Task<PotsViewModel> Execute()
     {
         PresentPotsRequest request = new()
         {
-            IncludeInactivePots = IncludeInactivePots
+            Date = Date,
+            Currency = Currency,
+            IncludeInactive = IncludeInactivePots
         };
 
         PresentPotsResponse response = await mediator.Send(request);
 
-        return new PresentPotsViewModel
-        {
-            Date = response.Date,
-            Pots = response.Pots
-                .Select(x => new PotInfoViewModel(x))
-                .ToList()
-        };
+        return new PotsViewModel(response);
     }
 }

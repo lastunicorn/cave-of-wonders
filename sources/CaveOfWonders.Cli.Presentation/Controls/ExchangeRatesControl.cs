@@ -14,25 +14,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.ConsoleTools.Controls;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
 
-public class ExchangeRateInfo
+internal class ExchangeRatesControl : BlockControl
 {
-    public string SourceCurrency { get; }
+    public List<ExchangeRateViewModel> ExchangeRates { get; set; }
 
-    public string DestinationCurrency { get; }
-
-    public DateTime Date { get; }
-
-    public decimal Value { get; }
-
-    internal ExchangeRateInfo(ExchangeRate conversionRate)
+    protected override void DoDisplayContent(ControlDisplay display)
     {
-        SourceCurrency = conversionRate.CurrencyPair.Currency1;
-        DestinationCurrency = conversionRate.CurrencyPair.Currency2;
-        Date = conversionRate.Date;
-        Value = conversionRate.Value;
+        display.WriteRow("Conversion Rates:");
+
+        foreach (ExchangeRateViewModel exchangeRate in ExchangeRates)
+        {
+            display.StartRow();
+            display.Write("  ");
+
+            ExchangeRateControl exchangeRateControl = new()
+            {
+                ViewModel = exchangeRate
+            };
+            exchangeRateControl.Display();
+
+            display.EndRow();
+        }
     }
 }

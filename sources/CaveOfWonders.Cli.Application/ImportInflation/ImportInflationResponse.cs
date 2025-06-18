@@ -26,7 +26,7 @@ public class ImportInflationResponse
 
     public int TotalCount => AddedCount + UpdatedCount;
 
-    public async Task AddResultsAsync(IAsyncEnumerable<AddOrUpdateResult> addOrUpdateResults)
+    internal async Task AddResultsAsync(IAsyncEnumerable<AddOrUpdateResult> addOrUpdateResults)
     {
         await foreach (AddOrUpdateResult addOrUpdateResult in addOrUpdateResults)
             AddResult(addOrUpdateResult);

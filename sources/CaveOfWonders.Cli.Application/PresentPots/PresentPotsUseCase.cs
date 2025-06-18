@@ -15,16 +15,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 
-internal class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPotsResponse>
+public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPotsResponse>
 {
     private readonly ISystemClock systemClock;
     private readonly IUnitOfWork unitOfWork;
+
+    private readonly List<ExchangeRate> usedExchangeRates = [];
 
     public PresentPotsUseCase(ISystemClock systemClock, IUnitOfWork unitOfWork)
     {
@@ -34,50 +37,119 @@ internal class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentP
 
     public async Task<PresentPotsResponse> Handle(PresentPotsRequest request, CancellationToken cancellationToken)
     {
+        DateTime currentDate = request.Date ?? systemClock.Today;
+        string defaultCurrency = request.Currency ?? "RON";
+
+        IEnumerable<PotInstance> potInstances = await RetrievePotInstancesFromStorage(currentDate, request.IncludeInactive);
+        List<PotInstanceInfo> potInstanceInfos = await ConvertToPotInstanceInfos(potInstances, currentDate, defaultCurrency);
+
         return new PresentPotsResponse
         {
-            Date = systemClock.Today,
-            Pots = await RetrievePots(request.IncludeInactivePots)
+            Date = currentDate,
+            PotInstances = potInstanceInfos,
+            ConversionRates = usedExchangeRates
+                .Select(x => new ExchangeRateInfo(x))
+                .ToList(),
+            Total = new CurrencyValue
+            {
+                Value = potInstanceInfos.Sum(x => x.NormalizedValue?.Value ?? 0),
+                Currency = defaultCurrency
+            }
         };
     }
 
-    private async Task<List<PotInfo>> RetrievePots(bool includeInactivePots)
+    private async Task<IEnumerable<PotInstance>> RetrievePotInstancesFromStorage(DateTime date, bool includeInactive)
     {
-        IEnumerable<Pot> pots = await unitOfWork.PotRepository.GetAll();
-
-        IEnumerable<PotInfo> potInfos = pots
-            .OrderBy(x => x.DisplayOrder)
-            .Select(ToPotInfo);
-
-        if (!includeInactivePots)
-        {
-            potInfos = potInfos
-                .Where(x => x.IsActive);
-        }
-
-        return potInfos.ToList();
+        IEnumerable<PotInstance> potInstances = await unitOfWork.PotRepository.GetInstances(date, DateMatchingMode.LastAvailable, includeInactive);
+        
+        return potInstances.OrderBy(x => x.Pot.DisplayOrder);
     }
 
-    private PotInfo ToPotInfo(Pot pot)
+    private async Task<List<PotInstanceInfo>> ConvertToPotInstanceInfos(IEnumerable<PotInstance> potInstances, DateTime currentDate, string defaultCurrency)
     {
-        bool isActive = pot.IsActive(systemClock.Today);
+        List<PotInstanceInfo> potInstanceInfos = [];
 
-        Gem lastGem = pot.GetLastGem();
-
-        CurrencyValue value = isActive && lastGem != null
-            ? new CurrencyValue
-            {
-                Currency = pot.Currency,
-                Value = lastGem.Value
-            }
-            : null;
-
-        return new PotInfo
+        foreach (PotInstance potInstance in potInstances)
         {
-            Id = pot.Id,
-            Name = pot.Name,
-            Value = value,
-            IsActive = isActive
+            PotInstanceInfo potInstanceInfo = await Convert(potInstance, currentDate, defaultCurrency);
+            potInstanceInfos.Add(potInstanceInfo);
+        }
+
+        return potInstanceInfos;
+    }
+
+    private async Task<PotInstanceInfo> Convert(PotInstance potInstance, DateTime currentDate, CurrencyId defaultCurrency)
+    {
+        PotInstanceInfo potInstanceInfo = new()
+        {
+            Id = potInstance.Pot.Id,
+            Name = potInstance.Pot.Name,
+            IsActive = potInstance.Pot.IsActive(currentDate),
+            OriginalValue = ComputeOriginalValue(potInstance)
+        };
+
+        potInstanceInfo.NormalizedValue = await ComputeNormalizedValue(currentDate, defaultCurrency, potInstanceInfo.OriginalValue);
+
+        return potInstanceInfo;
+    }
+
+    private static CurrencyValue ComputeOriginalValue(PotInstance potInstance)
+    {
+        if (potInstance.Gem != null)
+        {
+            return new CurrencyValue
+            {
+                Currency = potInstance.Pot.Currency,
+                Value = potInstance.Gem.Value,
+                Date = potInstance.Gem.Date
+            };
+        }
+
+        return null;
+    }
+
+    private async Task<CurrencyValue> ComputeNormalizedValue(DateTime currentDate, CurrencyId defaultCurrency, CurrencyValue originalValue)
+    {
+        if (originalValue.Currency != defaultCurrency)
+        {
+            CurrencyPair currencyPair = new()
+            {
+                Currency1 = originalValue.Currency,
+                Currency2 = defaultCurrency
+            };
+
+            ExchangeRate exchangeRate = await unitOfWork.ExchangeRateRepository.GetForLatestDayAvailable(currencyPair, currentDate, true);
+            return TryConvert(originalValue, defaultCurrency, exchangeRate);
+        }
+
+        if (originalValue.Value == 0)
+        {
+            return new CurrencyValue
+            {
+                Currency = defaultCurrency,
+                Value = 0,
+                Date = originalValue.Date
+            };
+        }
+
+        return originalValue;
+    }
+
+    private CurrencyValue TryConvert(CurrencyValue originalValue, CurrencyId destinationCurrency, ExchangeRate exchangeRate)
+    {
+        if (exchangeRate == null)
+            return null;
+
+        if (!usedExchangeRates.Contains(exchangeRate))
+            usedExchangeRates.Add(exchangeRate);
+
+        return new CurrencyValue
+        {
+            Currency = destinationCurrency,
+            Value = originalValue.Currency == exchangeRate.CurrencyPair.Currency1
+                ? exchangeRate.Convert(originalValue.Value)
+                : exchangeRate.ConvertBack(originalValue.Value),
+            Date = exchangeRate.Date
         };
     }
 }

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.State;
+using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
 using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
 
@@ -46,10 +46,9 @@ internal class ConvertView : IView<ConvertViewModel>
     {
         ExchangeRatesControl exchangeRatesControl = new()
         {
-            ExchangeRates = new List<ExchangeRateViewModel>
-            {
+            ExchangeRates = [
                 exchangeRateViewModel
-            },
+            ],
             ForegroundColor = ConsoleColor.DarkGray
         };
 

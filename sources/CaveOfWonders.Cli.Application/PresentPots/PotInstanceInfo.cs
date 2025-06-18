@@ -14,11 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.State;
-
-internal class PotInstanceViewModel
+public class PotInstanceInfo
 {
     public Guid Id { get; set; }
 
@@ -26,15 +24,7 @@ internal class PotInstanceViewModel
 
     public CurrencyValue OriginalValue { get; set; }
 
-    public bool IsValueActual { get; set; }
-
-    public bool IsValueAlreadyNormal { get; set; }
-
-    public DateTime? Date { get; set; }
-
     public CurrencyValue NormalizedValue { get; set; }
 
-    public bool IsNormalizedCurrent { get; set; }
-
-    public bool IsPotActive { get; set; }
+    public bool IsActive { get; set; }
 }

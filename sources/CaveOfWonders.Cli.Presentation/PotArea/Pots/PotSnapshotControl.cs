@@ -18,7 +18,7 @@ using DustInTheWind.CaveOfWonders.Cli.Application;
 using DustInTheWind.ConsoleTools.Controls;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.State;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pots;
 
 internal class PotSnapshotControl
 {
