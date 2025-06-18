@@ -14,29 +14,27 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 using DustInTheWind.CaveOfWonders.Infrastructure;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate
+namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
+
+[Serializable]
+internal class ExchangeRateNotFoundException : Exception
 {
-    [Serializable]
-    internal class ExchangeRateNotFoundException : Exception
+    private const string DefaultMessage = "Exchange rate for {0} and date {1:d} was not found.";
+
+    public ExchangeRateNotFoundException(CurrencyPair currencyPair, DateTime date)
+        : base(string.Format(DefaultMessage, currencyPair, date))
     {
-        private const string DefaultMessage = "Exchange rate for {0} and date {1:d} was not found.";
+    }
 
-        public ExchangeRateNotFoundException(CurrencyPair currencyPair, DateTime date)
-            : base(string.Format(DefaultMessage, currencyPair, date))
-        {
-        }
+    public ExchangeRateNotFoundException(IEnumerable<CurrencyPair> currencyPairs, DateTime date)
+        : base(string.Format(DefaultMessage, string.Join(", ", currencyPairs), date))
+    {
+    }
 
-        public ExchangeRateNotFoundException(IEnumerable<CurrencyPair> currencyPairs, DateTime date)
-            : base(string.Format(DefaultMessage, string.Join(", ", currencyPairs), date))
-        {
-        }
-
-        public ExchangeRateNotFoundException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
+    public ExchangeRateNotFoundException(string message, Exception innerException)
+        : base(message, innerException)
+    {
     }
 }
