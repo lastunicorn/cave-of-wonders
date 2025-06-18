@@ -35,15 +35,11 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
 
     public async Task<ImportInflationResponse> Handle(ImportInflationRequest request, CancellationToken cancellationToken)
     {
-        ImportInflationResponse response = new();
-
         IEnumerable<InsInflationRecordDto> inflationRecordDtos = await RetrieveInflationValues(request);
+        IAsyncEnumerable<AddOrUpdateResult> addOrUpdateResults = AddOrUpdateInflationRecordsToStore(inflationRecordDtos);
 
-        foreach (InsInflationRecordDto insInflationRecordDto in inflationRecordDtos)
-        {
-            AddOrUpdateResult result = await AddOrUpdateInflationRecordToStore(insInflationRecordDto);
-            response.Add(result);
-        }
+        ImportInflationResponse response = new();
+        await response.AddResultsAsync(addOrUpdateResults);
 
         await unitOfWork.SaveChanges();
 
@@ -65,6 +61,15 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
 
             default:
                 throw new InvalidImportSourceException(request.ImportSource);
+        }
+    }
+
+    private async IAsyncEnumerable<AddOrUpdateResult> AddOrUpdateInflationRecordsToStore(IEnumerable<InsInflationRecordDto> inflationRecordDtos)
+    {
+        foreach (InsInflationRecordDto insInflationRecordDto in inflationRecordDtos)
+        {
+            AddOrUpdateResult result = await AddOrUpdateInflationRecordToStore(insInflationRecordDto);
+            yield return result;
         }
     }
 

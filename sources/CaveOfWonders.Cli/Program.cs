@@ -21,7 +21,7 @@ using DustInTheWind.ConsoleTools.Commando.Setup.Autofac;
 
 namespace DustInTheWind.CaveOfWonders.Cli;
 
-internal class Program
+internal static class Program
 {
     public static async Task Main(string[] args)
     {

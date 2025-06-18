@@ -20,19 +20,19 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 
 public class ImportInflationResponse
 {
-    public int AddedCount { get; set; }
+    public int AddedCount { get; private set; }
 
-    public int UpdatedCount { get; set; }
+    public int UpdatedCount { get; private set; }
 
     public int TotalCount => AddedCount + UpdatedCount;
 
-    public void AddRange(IEnumerable<AddOrUpdateResult> results)
+    public async Task AddResultsAsync(IAsyncEnumerable<AddOrUpdateResult> addOrUpdateResults)
     {
-        foreach (AddOrUpdateResult result in results)
-            Add(result);
+        await foreach (AddOrUpdateResult addOrUpdateResult in addOrUpdateResults)
+            AddResult(addOrUpdateResult);
     }
 
-    public void Add(AddOrUpdateResult result)
+    private void AddResult(AddOrUpdateResult result)
     {
         switch (result)
         {
