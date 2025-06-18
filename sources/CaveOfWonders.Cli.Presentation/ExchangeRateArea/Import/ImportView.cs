@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Data;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.ConsoleTools.Controls;
 using DustInTheWind.ConsoleTools.Controls.Tables;
@@ -42,10 +41,8 @@ internal class ImportView : IView<ImportResultViewModel>
         Console.WriteLine();
 
         DataGrid dataGrid = DataGridTemplate.CreateNew();
-        dataGrid.Title = "Execute Report";
+        dataGrid.Title = "Report";
         dataGrid.DisplayBorderBetweenRows = true;
-        //dataGrid.HeaderRow.BackgroundColor = ConsoleColor.Gray;
-        //dataGrid.HeaderRow.ForegroundColor = ConsoleColor.Black;
 
         dataGrid.Columns.Add(new Column("Name")
         {
@@ -62,15 +59,15 @@ internal class ImportView : IView<ImportResultViewModel>
 
         dataGrid.HeaderRow.IsVisible = false;
 
-        ContentRow contentRowAdded = dataGrid.Rows.Add("Added", result.AddedCount.ToStringOrEmpty("-"), "New items that were added into the storage.");
+        ContentRow contentRowAdded = dataGrid.Rows.Add("Added", result.AddedCount.ToStringOrEmpty("-"), "New items - added into the storage.");
         if (result.AddedCount > 0)
             contentRowAdded[1].ForegroundColor = ConsoleColor.Green;
 
-        ContentRow contentRowUpdated = dataGrid.Rows.Add("Updated", result.ExistingUpdatedCount.ToStringOrEmpty("-"), "The items already exist in the storage, but with different values.\nValues were updated.");
+        ContentRow contentRowUpdated = dataGrid.Rows.Add("Updated", result.ExistingUpdatedCount.ToStringOrEmpty("-"), "Existing items - values needed to be updated.");
         if (result.ExistingUpdatedCount > 0)
             contentRowUpdated[1].ForegroundColor = ConsoleColor.Green;
 
-        dataGrid.Rows.Add("Existing", result.ExistingIdenticalCount.ToStringOrEmpty("-"), "The items already exist in the storage.\nNothing to do.");
+        dataGrid.Rows.Add("Existing", result.ExistingIdenticalCount.ToStringOrEmpty("-"), "Existing items - nothing to do.");
 
         if (result.NewDuplicateIdenticalCount > 0)
         {
