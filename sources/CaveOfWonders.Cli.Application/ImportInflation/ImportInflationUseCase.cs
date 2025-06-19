@@ -68,19 +68,13 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
     {
         foreach (InsInflationRecordDto insInflationRecordDto in inflationRecordDtos)
         {
-            AddOrUpdateResult result = await AddOrUpdateInflationRecordToStore(insInflationRecordDto);
-            yield return result;
+            InflationRecordDto inflationRecordDto = new()
+            {
+                Year = insInflationRecordDto.Year,
+                Value = insInflationRecordDto.Value
+            };
+
+            yield return await unitOfWork.InflationRecordRepository.AddOrUpdate(inflationRecordDto);
         }
-    }
-
-    private async Task<AddOrUpdateResult> AddOrUpdateInflationRecordToStore(InsInflationRecordDto insInflationRecordDto)
-    {
-        InflationRecordDto inflationRecordDto = new()
-        {
-            Year = insInflationRecordDto.Year,
-            Value = insInflationRecordDto.Value
-        };
-
-        return await unitOfWork.InflationRecordRepository.AddOrUpdate(inflationRecordDto);
     }
 }
