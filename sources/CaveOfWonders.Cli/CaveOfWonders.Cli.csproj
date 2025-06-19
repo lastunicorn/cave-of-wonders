@@ -35,12 +35,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <ItemGroup>
         <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess\CaveOfWonders.Adapters.DataAccess.Json.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CaveOfWonders.Adapters.FileAccess\CaveOfWonders.Adapters.FileAccess.csproj" />
+        <ProjectReference Include="..\CaveOfWonders.Adapters.FileAccess\CaveOfWonders.Adapters.FileAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Adapters.SystemAccess\CaveOfWonders.Adapters.SystemAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Cli.Application\CaveOfWonders.Cli.Application.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Cli.Presentation\CaveOfWonders.Cli.Presentation.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CaveOfWonders.Ports.BnrAccess\CaveOfWonders.Ports.BnrAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CaveOfWonders.Ports.FileAccess\CaveOfWonders.Ports.FileAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Ports.InsAccess\CaveOfWonders.Ports.InsAccess.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CaveOfWonders.Ports.LogAccess\CaveOfWonders.Ports.LogAccess.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CaveOfWonders.Ports.SheetsAccess\CaveOfWonders.Ports.SheetsAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Ports.SystemAccess\CaveOfWonders.Ports.SystemAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Adapters.BnrAccess\CaveOfWonders.Adapters.BnrAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Adapters.InsAccess\CaveOfWonders.Adapters.InsAccess.csproj" PrivateAssets="All" />
