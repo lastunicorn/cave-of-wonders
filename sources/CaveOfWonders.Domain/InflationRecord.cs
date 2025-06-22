@@ -14,15 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Domain;
+namespace DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
-
-public interface IInflationRecordRepository
+public class InflationRecord
 {
-    Task<IEnumerable<InflationRecord>> GetAll();
+    public int Year { get; set; }
 
-    Task Add(InflationRecord inflationRecordDto);
-
-    Task<AddOrUpdateResult> AddOrUpdate(InflationRecord inflationRecordDto);
+    public decimal Value { get; set; }
 }

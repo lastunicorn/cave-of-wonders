@@ -14,11 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
-public class InflationRecordDto
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
+
+[Serializable]
+internal class InsFileException : Exception
 {
-    public int Year { get; set; }
+    private const string DefaultMessage = "INS file could not be accessed. Either it does not exist or its content is invalid.";
 
-    public decimal Value { get; set; }
+    public InsFileException(Exception innerException)
+        : base(DefaultMessage, innerException)
+    {
+    }
 }

@@ -14,15 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 
-public interface IInflationRecordRepository
+[Serializable]
+internal class DataStorageException : Exception
 {
-    Task<IEnumerable<InflationRecord>> GetAll();
+    private const string DefaultMessage = "Data storage could not be accessed.";
 
-    Task Add(InflationRecord inflationRecordDto);
-
-    Task<AddOrUpdateResult> AddOrUpdate(InflationRecord inflationRecordDto);
+    public DataStorageException(Exception innerException)
+        : base(DefaultMessage, innerException)
+    {
+    }
 }

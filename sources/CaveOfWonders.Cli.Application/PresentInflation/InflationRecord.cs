@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentInflation;
 
 public class InflationRecord
@@ -24,7 +22,7 @@ public class InflationRecord
 
     public decimal Value { get; set; }
 
-    internal InflationRecord(InflationRecordDto inflationRecordDto)
+    internal InflationRecord(Domain.InflationRecord inflationRecordDto)
     {
         Year = inflationRecordDto.Year;
         Value = inflationRecordDto.Value;

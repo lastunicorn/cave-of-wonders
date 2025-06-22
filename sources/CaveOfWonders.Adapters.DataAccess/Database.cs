@@ -17,7 +17,6 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Infrastructure;
-using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
@@ -29,7 +28,7 @@ public class Database
 
     public List<ExchangeRate> ExchangeRates { get; } = new();
 
-    public List<InflationRecordDto> InflationRecords { get; } = new();
+    public List<InflationRecord> InflationRecords { get; } = new();
 
     public Database(string location)
     {
@@ -113,8 +112,8 @@ public class Database
 
         IEnumerable<JInflationRecord> jInflationRecords = await inflationRatesFile.Read();
 
-        IEnumerable<InflationRecordDto> inflationRecordDtos = jInflationRecords
-            .Select(x => new InflationRecordDto
+        IEnumerable<InflationRecord> inflationRecordDtos = jInflationRecords
+            .Select(x => new InflationRecord
             {
                 Year = x.Year,
                 Value = x.Value

@@ -34,7 +34,7 @@ internal class PresentInflationUseCase : IRequestHandler<PresentInflationRequest
 
     public async Task<PresentInflationResponse> Handle(PresentInflationRequest request, CancellationToken cancellationToken)
     {
-        IEnumerable<InflationRecordDto> inflationRecordDtos = await unitOfWork.InflationRecordRepository.GetAll();
+        IEnumerable<Domain.InflationRecord> inflationRecordDtos = await unitOfWork.InflationRecordRepository.GetAll();
 
         if (request.OutputPath != null)
             await WriteToFile(request.OutputPath, inflationRecordDtos);
@@ -47,7 +47,7 @@ internal class PresentInflationUseCase : IRequestHandler<PresentInflationRequest
         };
     }
 
-    private async Task WriteToFile(string outputPath, IEnumerable<InflationRecordDto> inflationRecordDtos)
+    private async Task WriteToFile(string outputPath, IEnumerable<Domain.InflationRecord> inflationRecordDtos)
     {
         Stream stream = fileSystem.CreateFile(outputPath);
         using InflationDocument inflationDocument = new(stream);

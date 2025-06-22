@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
@@ -27,13 +28,13 @@ public class InflationRecordRepository : IInflationRecordRepository
         this.database = database ?? throw new ArgumentNullException(nameof(database));
     }
 
-    public Task<IEnumerable<InflationRecordDto>> GetAll()
+    public Task<IEnumerable<InflationRecord>> GetAll()
     {
-        IEnumerable<InflationRecordDto> inflationRecords = database.InflationRecords;
+        IEnumerable<InflationRecord> inflationRecords = database.InflationRecords;
         return Task.FromResult(inflationRecords);
     }
 
-    public Task Add(InflationRecordDto inflationRecordDto)
+    public Task Add(InflationRecord inflationRecordDto)
     {
         if (inflationRecordDto == null) throw new ArgumentNullException(nameof(inflationRecordDto));
 
@@ -42,11 +43,11 @@ public class InflationRecordRepository : IInflationRecordRepository
         return Task.CompletedTask;
     }
 
-    public Task<AddOrUpdateResult> AddOrUpdate(InflationRecordDto inflationRecordDto)
+    public Task<AddOrUpdateResult> AddOrUpdate(InflationRecord inflationRecordDto)
     {
         if (inflationRecordDto == null) throw new ArgumentNullException(nameof(inflationRecordDto));
 
-        InflationRecordDto existingRecord = database.InflationRecords
+        InflationRecord existingRecord = database.InflationRecords
             .FirstOrDefault(x => x.Year == inflationRecordDto.Year);
 
         if (existingRecord == null)

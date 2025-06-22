@@ -14,11 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 using MediatR;
-using InflationRecordDto = DustInTheWind.CaveOfWonders.Ports.DataAccess.InflationRecordDto;
-using InsInflationRecordDto = DustInTheWind.CaveOfWonders.Ports.InsAccess.InflationRecordDto;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 
@@ -26,6 +25,7 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
 {
     private readonly IIns ins;
     private readonly IUnitOfWork unitOfWork;
+    private ImportInflationResponse response;
 
     public ImportInflationUseCase(IIns ins, IUnitOfWork unitOfWork)
     {
@@ -35,18 +35,17 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
 
     public async Task<ImportInflationResponse> Handle(ImportInflationRequest request, CancellationToken cancellationToken)
     {
-        IEnumerable<InsInflationRecordDto> inflationRecordDtos = await RetrieveInflationValues(request);
-        IAsyncEnumerable<AddOrUpdateResult> addOrUpdateResults = AddOrUpdateInflationRecordsToStore(inflationRecordDtos);
+        response = new ImportInflationResponse();
 
-        ImportInflationResponse response = new();
-        await response.AddResultsAsync(addOrUpdateResults);
+        IEnumerable<InflationRecordDto> inflationRecordDtos = await RetrieveInflationValues(request);
+        await AddOrUpdateInflationRecordsToStore(inflationRecordDtos);
 
         await unitOfWork.SaveChanges();
 
         return response;
     }
 
-    private async Task<IEnumerable<InsInflationRecordDto>> RetrieveInflationValues(ImportInflationRequest request)
+    private async Task<IEnumerable<InflationRecordDto>> RetrieveInflationValues(ImportInflationRequest request)
     {
         switch (request.ImportSource)
         {
@@ -54,21 +53,50 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
                 if (string.IsNullOrEmpty(request.SourceFilePath))
                     throw new InflationFileNotProvidedException();
 
-                return await ins.GetInflationValuesFromFile(request.SourceFilePath);
+                try
+                {
+                    return await ins.GetInflationValuesFromFile(request.SourceFilePath);
+                }
+                catch (Exception ex)
+                {
+                    throw new InsFileException(ex);
+                }
 
             case ImportSource.Web:
-                return await ins.GetInflationValuesFromWeb();
+                try
+                {
+                    return await ins.GetInflationValuesFromWeb();
+                }
+                catch (Exception ex)
+                {
+                    throw new InsWebPageException(ex);
+                }
 
             default:
                 throw new InvalidImportSourceException(request.ImportSource);
         }
     }
 
-    private async IAsyncEnumerable<AddOrUpdateResult> AddOrUpdateInflationRecordsToStore(IEnumerable<InsInflationRecordDto> inflationRecordDtos)
+    private async Task AddOrUpdateInflationRecordsToStore(IEnumerable<InflationRecordDto> inflationRecordDtos)
     {
-        foreach (InsInflationRecordDto insInflationRecordDto in inflationRecordDtos)
+        try
         {
-            InflationRecordDto inflationRecordDto = new()
+            IAsyncEnumerable<AddOrUpdateResult> results = AddOrUpdateInflationRecordsToStoreUnsafe(inflationRecordDtos);
+
+            await foreach (AddOrUpdateResult result in results)
+                response.AddResult(result);
+        }
+        catch (Exception ex)
+        {
+            throw new DataStorageException(ex);
+        }
+    }
+
+    private async IAsyncEnumerable<AddOrUpdateResult> AddOrUpdateInflationRecordsToStoreUnsafe(IEnumerable<InflationRecordDto> inflationRecordDtos)
+    {
+        foreach (InflationRecordDto insInflationRecordDto in inflationRecordDtos)
+        {
+            InflationRecord inflationRecordDto = new()
             {
                 Year = insInflationRecordDto.Year,
                 Value = insInflationRecordDto.Value

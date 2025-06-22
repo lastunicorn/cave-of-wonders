@@ -14,15 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 
-public interface IInflationRecordRepository
+[Serializable]
+internal class InsWebPageException : Exception
 {
-    Task<IEnumerable<InflationRecord>> GetAll();
+    private const string DefaultMessage = "INS web page could not be accessed or its content could not be parsed.";
 
-    Task Add(InflationRecord inflationRecordDto);
-
-    Task<AddOrUpdateResult> AddOrUpdate(InflationRecord inflationRecordDto);
+    public InsWebPageException(Exception innerException)
+        : base(DefaultMessage, innerException)
+    {
+    }
 }
