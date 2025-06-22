@@ -5,7 +5,7 @@ using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 using FluentAssertions;
 using Moq;
 
-namespace CaveOfWonders.Tests.ImportInflationTests;
+namespace CaveOfWonders.Tests.ImportInflationUseCaseTests;
 
 public class ImportSourceWebTests
 {

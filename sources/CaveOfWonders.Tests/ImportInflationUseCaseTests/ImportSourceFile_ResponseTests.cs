@@ -5,16 +5,16 @@ using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 using FluentAssertions;
 using Moq;
 
-namespace CaveOfWonders.Tests.ImportInflationTests;
+namespace CaveOfWonders.Tests.ImportInflationUseCaseTests;
 
-public class ImportSourceWeb_ResponseTests
+public class ImportSourceFile_ResponseTests
 {
     private readonly ImportInflationUseCase useCase;
     private readonly Mock<IIns> ins;
     private readonly Mock<IUnitOfWork> unitOfWork;
     private readonly Mock<IInflationRecordRepository> inflationRecordRepository;
 
-    public ImportSourceWeb_ResponseTests()
+    public ImportSourceFile_ResponseTests()
     {
         ins = new Mock<IIns>();
         unitOfWork = new Mock<IUnitOfWork>();
@@ -121,12 +121,13 @@ public class ImportSourceWeb_ResponseTests
     private async Task<ImportInflationResponse> ExecuteUseCase(List<InflationRecordDto> insRecords)
     {
         ins
-            .Setup(x => x.GetInflationValuesFromWeb())
+            .Setup(x => x.GetInflationValuesFromFile(It.IsAny<string>()))
             .ReturnsAsync(insRecords);
 
         ImportInflationRequest request = new()
         {
-            ImportSource = ImportSource.Web
+            ImportSource = ImportSource.File,
+            SourceFilePath = "file2"
         };
 
         return await useCase.Handle(request, CancellationToken.None);

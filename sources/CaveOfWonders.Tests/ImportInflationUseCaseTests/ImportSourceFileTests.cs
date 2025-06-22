@@ -6,7 +6,7 @@ using FluentAssertions;
 using FluentAssertions.Specialized;
 using Moq;
 
-namespace CaveOfWonders.Tests.ImportInflationTests;
+namespace CaveOfWonders.Tests.ImportInflationUseCaseTests;
 
 public class ImportSourceFileTests
 {
