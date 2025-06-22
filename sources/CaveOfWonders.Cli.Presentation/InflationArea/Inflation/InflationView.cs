@@ -26,7 +26,7 @@ internal class InflationView : IView<InflationViewModel>
     {
         if (viewModel.Records?.Count > 0)
         {
-            foreach (InflationRecord inflationRecord in viewModel.Records)
+            foreach (InflationRecordDto inflationRecord in viewModel.Records)
             {
                 Console.Write($"{inflationRecord.Year}: {inflationRecord.Value,6:N2} ");
                 DisplayChartLine(inflationRecord.Value);

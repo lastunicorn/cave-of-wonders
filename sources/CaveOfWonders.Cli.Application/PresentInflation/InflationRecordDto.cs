@@ -16,7 +16,15 @@
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentInflation;
 
-public class PresentInflationResponse
+public class InflationRecordDto
 {
-    public List<InflationRecordDto> InflationRecords { get; set; }
+    public int Year { get; set; }
+
+    public decimal Value { get; set; }
+
+    internal InflationRecordDto(Domain.InflationRecord inflationRecord)
+    {
+        Year = inflationRecord.Year;
+        Value = inflationRecord.Value;
+    }
 }

@@ -37,7 +37,7 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
     {
         response = new ImportInflationResponse();
 
-        IEnumerable<InflationRecordDto> inflationRecordDtos = await RetrieveInflationValues(request);
+        IEnumerable<Ports.InsAccess.InflationRecordDto> inflationRecordDtos = await RetrieveInflationValues(request);
         await AddOrUpdateInflationRecordsToStore(inflationRecordDtos);
 
         await unitOfWork.SaveChanges();
@@ -45,7 +45,7 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
         return response;
     }
 
-    private async Task<IEnumerable<InflationRecordDto>> RetrieveInflationValues(ImportInflationRequest request)
+    private async Task<IEnumerable<Ports.InsAccess.InflationRecordDto>> RetrieveInflationValues(ImportInflationRequest request)
     {
         switch (request.ImportSource)
         {
@@ -77,7 +77,7 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
         }
     }
 
-    private async Task AddOrUpdateInflationRecordsToStore(IEnumerable<InflationRecordDto> inflationRecordDtos)
+    private async Task AddOrUpdateInflationRecordsToStore(IEnumerable<Ports.InsAccess.InflationRecordDto> inflationRecordDtos)
     {
         try
         {
@@ -92,11 +92,11 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
         }
     }
 
-    private async IAsyncEnumerable<AddOrUpdateResult> AddOrUpdateInflationRecordsToStoreUnsafe(IEnumerable<InflationRecordDto> inflationRecordDtos)
+    private async IAsyncEnumerable<AddOrUpdateResult> AddOrUpdateInflationRecordsToStoreUnsafe(IEnumerable<Ports.InsAccess.InflationRecordDto> inflationRecordDtos)
     {
-        foreach (InflationRecordDto insInflationRecordDto in inflationRecordDtos)
+        foreach (Ports.InsAccess.InflationRecordDto insInflationRecordDto in inflationRecordDtos)
         {
-            InflationRecord inflationRecordDto = new()
+            Domain.InflationRecord inflationRecordDto = new()
             {
                 Year = insInflationRecordDto.Year,
                 Value = insInflationRecordDto.Value

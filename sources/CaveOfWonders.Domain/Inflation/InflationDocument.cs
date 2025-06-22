@@ -28,6 +28,11 @@ public sealed class InflationDocument : IDisposable
         streamWriter = new StreamWriter(stream);
     }
 
+    public async Task Write(InflationRecordLine inflationRecordLine)
+    {
+        await inflationRecordLine.Write(streamWriter);
+    }
+
     public async Task Write(IEnumerable<InflationRecordLine> inflationRecordLines)
     {
         foreach (InflationRecordLine inflationRecordLine in inflationRecordLines)

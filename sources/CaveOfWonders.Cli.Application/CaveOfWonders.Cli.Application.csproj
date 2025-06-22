@@ -42,7 +42,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="CaveOfWonders.Tests"/>
+        <InternalsVisibleTo Include="CaveOfWonders.Tests" />
     </ItemGroup>
 
 </Project>

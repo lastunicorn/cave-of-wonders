@@ -20,5 +20,4 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentInflation;
 
 public class PresentInflationRequest : IRequest<PresentInflationResponse>
 {
-    public string OutputPath { get; set; }
 }

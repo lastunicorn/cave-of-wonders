@@ -14,17 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentInflation;
+using DustInTheWind.ConsoleTools;
+using DustInTheWind.ConsoleTools.Commando;
 
-public class InflationRecord
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.InflationArea.ExportInflation;
+
+internal class ExportInflationView : IView<ExportInflationCommand>
 {
-    public int Year { get; set; }
-
-    public decimal Value { get; set; }
-
-    internal InflationRecord(Domain.InflationRecord inflationRecordDto)
+    public void Display(ExportInflationCommand viewModel)
     {
-        Year = inflationRecordDto.Year;
-        Value = inflationRecordDto.Value;
+        CustomConsole.WriteLineSuccess("Export succeeded.");
     }
 }

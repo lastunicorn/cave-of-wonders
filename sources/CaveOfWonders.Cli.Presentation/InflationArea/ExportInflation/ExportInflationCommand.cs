@@ -14,30 +14,31 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentInflation;
+using DustInTheWind.CaveOfWonders.Cli.Application.ExportInflation;
 using DustInTheWind.ConsoleTools.Commando;
 using MediatR;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.InflationArea.Inflation;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.InflationArea.ExportInflation;
 
-[NamedCommand("inflation", Description = "Display the inflation rates.")]
-internal class InflationCommand : IConsoleCommand<InflationViewModel>
+[NamedCommand("export-inflation", Description = "Exports the inflation information to a file on disk.")]
+internal class ExportInflationCommand : IConsoleCommand
 {
     private readonly IMediator mediator;
 
-    public InflationCommand(IMediator mediator)
+    [NamedParameter("output", ShortName = 'o', IsOptional = true, Description = "Path to the output file.")]
+    public string OutputPath { get; set; }
+
+    public ExportInflationCommand(IMediator mediator)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
-    public async Task<InflationViewModel> Execute()
+    public async Task Execute()
     {
-        PresentInflationRequest request = new();
-        PresentInflationResponse response = await mediator.Send(request);
-
-        return new InflationViewModel
+        ExportInflationRequest request = new()
         {
-            Records = response.InflationRecords
+            OutputPath = OutputPath
         };
+        await mediator.Send(request);
     }
 }
