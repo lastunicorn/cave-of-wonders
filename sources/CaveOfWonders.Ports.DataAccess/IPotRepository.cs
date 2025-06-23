@@ -24,10 +24,6 @@ public interface IPotRepository
 
     Task<IEnumerable<PotInstance>> GetInstances(DateTime date, DateMatchingMode dateMatchingMode, bool includeInactive);
 
-    Task<IEnumerable<Pot>> GetByName(string potName);
-
-    Task<Pot> GetById(Guid potId);
-
     Task<IEnumerable<Pot>> GetByPartialId(string partialPotId);
 
     Task<IEnumerable<Pot>> GetByIdOrName(string idOrName);

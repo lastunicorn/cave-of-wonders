@@ -47,32 +47,22 @@ public class PotRepository : IPotRepository
         return Task.FromResult(potSnapshots);
     }
 
-    public Task<IEnumerable<Pot>> GetByName(string potName)
-    {
-        IEnumerable<Pot> pot = database.Pots
-            .Where(x => x.Name?.Contains(potName, StringComparison.InvariantCultureIgnoreCase) ?? false);
-
-        return Task.FromResult(pot);
-    }
-
-    public Task<Pot> GetById(Guid potId)
-    {
-        Pot pot = database.Pots.FirstOrDefault(x => x.Id == potId);
-        return Task.FromResult(pot);
-    }
-
     public Task<IEnumerable<Pot>> GetByPartialId(string partialPotId)
     {
+        string idWithoutDashes = partialPotId.Trim().Replace("-", string.Empty);
+
         IEnumerable<Pot> pot = database.Pots
-            .Where(x => x.Id.ToString("D").Contains(partialPotId, StringComparison.InvariantCultureIgnoreCase));
+            .Where(x => x.Id.ToString("N").Contains(idWithoutDashes, StringComparison.InvariantCultureIgnoreCase));
 
         return Task.FromResult(pot);
     }
 
     public Task<IEnumerable<Pot>> GetByIdOrName(string idOrName)
     {
+        string idWithoutDashes = idOrName.Trim().Replace("-", string.Empty);
+
         IEnumerable<Pot> pots = database.Pots
-            .Where(x => x.Id.ToString("D").Contains(idOrName, StringComparison.InvariantCultureIgnoreCase) || (x.Name?.Contains(idOrName, StringComparison.InvariantCultureIgnoreCase) ?? false));
+            .Where(x => x.Id.ToString("N").Contains(idWithoutDashes, StringComparison.InvariantCultureIgnoreCase) || (x.Name?.Contains(idOrName, StringComparison.InvariantCultureIgnoreCase) ?? false));
 
         return Task.FromResult(pots);
     }

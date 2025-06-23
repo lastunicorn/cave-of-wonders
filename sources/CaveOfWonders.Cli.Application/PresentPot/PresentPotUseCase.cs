@@ -34,7 +34,7 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
 
     public async Task<PresentPotResponse> Handle(PresentPotRequest request, CancellationToken cancellationToken)
     {
-        IEnumerable<Pot> pots = await RetrievePot(request);
+        IEnumerable<Pot> pots = await RetrievePotsByIdOrName(request);
 
         PresentPotResponse response = new()
         {
@@ -46,82 +46,22 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
         return response;
     }
 
-    private async Task<IEnumerable<Pot>> RetrievePot(PresentPotRequest request)
+    private async Task<IEnumerable<Pot>> RetrievePotsByIdOrName(PresentPotRequest request)
     {
-        if (!string.IsNullOrWhiteSpace(request.PotId))
-        {
-            bool success = Guid.TryParse(request.PotId, out Guid potGuid);
-
-            if (success)
-            {
-                Pot pot = await unitOfWork.PotRepository.GetById(potGuid);
-                return [pot];
-            }
-
-            return await unitOfWork.PotRepository.GetByPartialId(request.PotId);
-        }
-
-        if (request.PotName != null)
-            return await unitOfWork.PotRepository.GetByName(request.PotName);
-
         bool isIdentifierSpecified = !string.IsNullOrWhiteSpace(request.PotIdentifier);
 
-        if (isIdentifierSpecified)
+        IEnumerable<Pot> pots = isIdentifierSpecified
+            ? await unitOfWork.PotRepository.GetByIdOrName(request.PotIdentifier)
+            : await unitOfWork.PotRepository.GetAll();
+
+        if (!request.IncludeInactivePots)
         {
-            IEnumerable<Pot> pots = await unitOfWork.PotRepository.GetByIdOrName(request.PotIdentifier);
-
-            if (!request.IncludeInactivePots)
-            {
-                DateTime today = systemClock.Today;
-
-                pots = pots.Where(x => x.IsActive(today));
-            }
-
-            pots = pots.OrderBy(x => x.DisplayOrder);
-
-            return pots;
-
-            //bool success = Guid.TryParse(request.PotIdentifier, out Guid potGuid);
-
-            //if (success)
-            //{
-            //    Pot pot = await unitOfWork.PotRepository.GetById(potGuid);
-            //    return new[] { pot };
-            //}
-
-            //List<Pot> pots = (await unitOfWork.PotRepository.GetByPartialId(request.PotIdentifier))
-            //    .ToList();
-
-            //if (pots.Count == 0)
-            //{
-            //    pots = (await unitOfWork.PotRepository.GetByName(request.PotIdentifier))
-            //        .ToList();
-            //}
-
-            //return pots;
+            DateTime today = systemClock.Today;
+            pots = pots.Where(x => x.IsActive(today));
         }
 
-        return await unitOfWork.PotRepository.GetAll();
+        pots = pots.OrderBy(x => x.DisplayOrder);
+
+        return pots;
     }
-
-    //private async Task<IEnumerable<Pot>> RetrievePot(PresentPotRequest request)
-    //{
-    //    if (!string.IsNullOrWhiteSpace(request.PotId))
-    //    {
-    //        bool success = Guid.TryParse(request.PotId, out Guid potGuid);
-
-    //        if (success)
-    //        {
-    //            Pot pot = await unitOfWork.PotRepository.GetById(potGuid);
-    //            return new[] { pot };
-    //        }
-
-    //        return await unitOfWork.PotRepository.GetByPartialId(request.PotId);
-    //    }
-
-    //    if (request.PotName != null)
-    //        return await unitOfWork.PotRepository.GetByName(request.PotName);
-
-    //    return await unitOfWork.PotRepository.GetAll();
-    //}
 }

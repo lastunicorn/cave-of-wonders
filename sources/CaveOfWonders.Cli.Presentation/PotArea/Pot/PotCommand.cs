@@ -25,12 +25,6 @@ internal class PotCommand : IConsoleCommand<PotCommandViewModel>
 {
     private readonly IMediator mediator;
 
-    [NamedParameter("name", ShortName = 'n', IsOptional = true, Description = "The name of the pot for which to display details.")]
-    public string PotName { get; set; }
-
-    [NamedParameter("Id", ShortName = 'i', IsOptional = true, Description = "The Id of the pot for which to display details. Partial Id (ex: first 8 characters) is allowed to be provided.")]
-    public string PotId { get; set; }
-
     [AnonymousParameter(DisplayName = "Pot Identifier", Order = 1, IsOptional = true, Description = "Name or id of the pot. Partial id is accepted.")]
     public string PotIdentifier { get; set; }
 
@@ -46,8 +40,6 @@ internal class PotCommand : IConsoleCommand<PotCommandViewModel>
     {
         PresentPotRequest request = new()
         {
-            PotName = PotName,
-            PotId = PotId,
             PotIdentifier = PotIdentifier,
             IncludeInactivePots = IncludeInactivePots
         };
