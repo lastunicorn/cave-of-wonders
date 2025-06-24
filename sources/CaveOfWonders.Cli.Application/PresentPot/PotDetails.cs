@@ -48,12 +48,13 @@ public class PotDetails
         Currency = pot.Currency;
         GemCount = pot.Gems.Count;
 
-        Gem lastGem = pot.Gems[pot.Gems.Count - 1];
-
-        LastGemDate = lastGem?.Date;
+        Gem lastGem = pot.Gems?.Count > 0
+            ? pot.Gems[^1]
+            : null;
 
         if (lastGem != null)
         {
+            LastGemDate = lastGem.Date;
             Value = new CurrencyValue
             {
                 Currency = pot.Currency,
