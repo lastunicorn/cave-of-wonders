@@ -33,7 +33,7 @@ internal class PotsViewModel
 
     public CurrencyValue Total { get; }
 
-    public List<CurrencyValue> CurrencyTotals { get; }
+    public List<CurrencyTotalOverview> CurrencyTotalOverviews { get; }
 
     public PotsViewModel(PresentPotsResponse presentStateResponse)
     {
@@ -63,6 +63,6 @@ internal class PotsViewModel
             .ToList();
 
         Total = presentStateResponse.Total;
-        CurrencyTotals = presentStateResponse.CurrencyTotals;
+        CurrencyTotalOverviews = presentStateResponse.CurrencyTotalOverviews;
     }
 }

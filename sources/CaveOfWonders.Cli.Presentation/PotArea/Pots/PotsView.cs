@@ -17,7 +17,6 @@
 using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
 using DustInTheWind.ConsoleTools.Commando;
 using System.Globalization;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pots;
 
@@ -32,20 +31,23 @@ internal class PotsView : IView<PotsViewModel>
         }
 
         DisplayCaveInstances(potsViewModel);
-        DisplayTotals(potsViewModel);
+
+        if (potsViewModel.CurrencyTotalOverviews?.Count > 1)
+            DisplayTotals(potsViewModel);
+
         DisplayConversionRates(potsViewModel);
     }
 
     private static void DisplayCaveInstances(PotsViewModel potsViewModel)
     {
-        PotsDataGrid potSnapshotControl = new()
+        PotsDataGrid potsDataGrid = new()
         {
             Date = potsViewModel.Date,
             Values = potsViewModel.Values,
             Total = potsViewModel.Total
         };
 
-        potSnapshotControl.Display();
+        potsDataGrid.Display();
     }
 
     private static void DisplayTotals(PotsViewModel potsViewModel)
@@ -55,7 +57,7 @@ internal class PotsView : IView<PotsViewModel>
         TotalsDataGrid totalsDataGrid = new()
         {
             Date = potsViewModel.Date,
-            Values = potsViewModel.CurrencyTotals,
+            Values = potsViewModel.CurrencyTotalOverviews,
             Total = potsViewModel.Total
         };
 

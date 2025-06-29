@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Cli.Application;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using DustInTheWind.ConsoleTools.Controls;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 
@@ -24,14 +25,14 @@ internal class TotalsDataGrid
 {
     public DateTime Date { get; set; }
 
-    public List<CurrencyValue> Values { get; set; }
+    public List<CurrencyTotalOverview> Values { get; set; }
 
     public CurrencyValue Total { get; set; }
 
     public void Display()
     {
         DataGrid dataGrid = DataGridTemplate.CreateNew();
-        dataGrid.Title = $"Totals - {Date:d} ({Total.Currency})";
+        dataGrid.Title = $"PotsAnalysis - {Date:d} ({Total.Currency})";
 
         AddColumns(dataGrid);
         AddRows(dataGrid);
@@ -42,7 +43,15 @@ internal class TotalsDataGrid
 
     private static void AddColumns(DataGrid dataGrid)
     {
-        dataGrid.Columns.Add(new Column("Value"));
+        dataGrid.Columns.Add(new Column("Currency")
+        {
+            ForegroundColor = ConsoleColor.DarkGray
+        });
+        
+        dataGrid.Columns.Add(new Column("Value")
+        {
+            CellHorizontalAlignment = HorizontalAlignment.Right
+        });
 
         dataGrid.Columns.Add(new Column("Normalized Value")
         {
@@ -58,13 +67,28 @@ internal class TotalsDataGrid
     private void AddRows(DataGrid dataGrid)
     {
         IEnumerable<ContentRow> rows = Values
-            .Select(static x =>
+            .Select(x =>
             {
                 ContentRow row = new();
 
-                string value = x.ToDisplayString();
-                ContentCell valueCell = row.AddCell(value);
+                // Currency Column
+                ContentCell currencyCell = row.AddCell(x.Value.Currency);
+                currencyCell.ForegroundColor = ConsoleColor.DarkGray;
+
+                // Value Column
+                string valueText = x.Value.ToDisplayString();
+                ContentCell valueCell = row.AddCell(valueText);
                 valueCell.HorizontalAlignment = HorizontalAlignment.Right;
+
+                // Normalized Value Column
+                string normalizedValueText = x.NormalizedValue.ToDisplayString();
+                ContentCell normalizedValueCell = row.AddCell(normalizedValueText);
+                normalizedValueCell.HorizontalAlignment = HorizontalAlignment.Right;
+
+                // Percentage Column
+                string percentageText = $"{x.Percentage:0.00}%";
+                ContentCell percentageCell = row.AddCell(percentageText);
+                percentageCell.HorizontalAlignment = HorizontalAlignment.Right;
 
                 return row;
             });

@@ -26,13 +26,14 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
 {
     private readonly ISystemClock systemClock;
     private readonly IUnitOfWork unitOfWork;
-
-    private readonly List<ExchangeRate> usedExchangeRates = [];
+    private readonly CurrenciesConvertor currenciesConverter;
 
     public PresentPotsUseCase(ISystemClock systemClock, IUnitOfWork unitOfWork)
     {
         this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+
+        currenciesConverter = new CurrenciesConvertor(unitOfWork);
     }
 
     public async Task<PresentPotsResponse> Handle(PresentPotsRequest request, CancellationToken cancellationToken)
@@ -43,41 +44,32 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
         IEnumerable<PotInstance> potInstances = await RetrievePotInstancesFromStorage(currentDate, request.IncludeInactive);
         List<PotInstanceInfo> potInstanceInfos = await ConvertToPotInstanceInfos(potInstances, currentDate, defaultCurrency);
 
-        List<CurrencyValue> currencyTotals = CalculateCurrencyTotals(potInstanceInfos);
+        PotsAnalysis potsAnalysis = new(currenciesConverter);
+        potsAnalysis.PotInstanceInfos = potInstanceInfos;
+        potsAnalysis.TargetDate = currentDate;
+        potsAnalysis.TargetCurrency = defaultCurrency;
+
+        await potsAnalysis.Calculate();
 
         return new PresentPotsResponse
         {
             Date = currentDate,
             PotInstances = potInstanceInfos,
-            ConversionRates = usedExchangeRates
+            ConversionRates = currenciesConverter.UsedExchangeRates
                 .Select(x => new ExchangeRateInfo(x))
                 .ToList(),
             Total = new CurrencyValue
             {
-                Value = potInstanceInfos.Sum(x => x.NormalizedValue?.Value ?? 0),
+                Value = potsAnalysis.TotalValue,
                 Currency = defaultCurrency
             },
-            CurrencyTotals = currencyTotals
+            CurrencyTotalOverviews = potsAnalysis.currencyTotalOverviews
         };
-    }
-
-    private static List<CurrencyValue> CalculateCurrencyTotals(List<PotInstanceInfo> potInstanceInfos)
-    {
-        return potInstanceInfos
-            .Where(x => x.IsActive && x.OriginalValue != null)
-            .GroupBy(x => x.OriginalValue.Currency)
-            .Select(x => new CurrencyValue
-            {
-                Currency = x.Key,
-                Value = x.Sum(x => x.OriginalValue?.Value ?? 0)
-            })
-            .ToList();
     }
 
     private async Task<IEnumerable<PotInstance>> RetrievePotInstancesFromStorage(DateTime date, bool includeInactive)
     {
         IEnumerable<PotInstance> potInstances = await unitOfWork.PotRepository.GetInstances(date, DateMatchingMode.LastAvailable, includeInactive);
-
         return potInstances.OrderBy(x => x.Pot.DisplayOrder);
     }
 
@@ -104,7 +96,7 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
             OriginalValue = ComputeOriginalValue(potInstance)
         };
 
-        potInstanceInfo.NormalizedValue = await ComputeNormalizedValue(currentDate, defaultCurrency, potInstanceInfo.OriginalValue);
+        potInstanceInfo.NormalizedValue = await currenciesConverter.Convert(potInstanceInfo.OriginalValue, defaultCurrency, currentDate);
 
         return potInstanceInfo;
     }
@@ -122,53 +114,5 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
         }
 
         return null;
-    }
-
-    private async Task<CurrencyValue> ComputeNormalizedValue(DateTime currentDate, CurrencyId defaultCurrency, CurrencyValue originalValue)
-    {
-        if (originalValue == null)
-            return null;
-
-        if (originalValue.Currency != defaultCurrency)
-        {
-            CurrencyPair currencyPair = new()
-            {
-                Currency1 = originalValue.Currency,
-                Currency2 = defaultCurrency
-            };
-
-            ExchangeRate exchangeRate = await unitOfWork.ExchangeRateRepository.GetForLatestDayAvailable(currencyPair, currentDate, true);
-            return TryConvert(originalValue, defaultCurrency, exchangeRate);
-        }
-
-        if (originalValue.Value == 0)
-        {
-            return new CurrencyValue
-            {
-                Currency = defaultCurrency,
-                Value = 0,
-                Date = originalValue.Date
-            };
-        }
-
-        return originalValue;
-    }
-
-    private CurrencyValue TryConvert(CurrencyValue originalValue, CurrencyId destinationCurrency, ExchangeRate exchangeRate)
-    {
-        if (exchangeRate == null)
-            return null;
-
-        if (!usedExchangeRates.Contains(exchangeRate))
-            usedExchangeRates.Add(exchangeRate);
-
-        return new CurrencyValue
-        {
-            Currency = destinationCurrency,
-            Value = originalValue.Currency == exchangeRate.CurrencyPair.Currency1
-                ? exchangeRate.Convert(originalValue.Value)
-                : exchangeRate.ConvertBack(originalValue.Value),
-            Date = exchangeRate.Date
-        };
     }
 }
