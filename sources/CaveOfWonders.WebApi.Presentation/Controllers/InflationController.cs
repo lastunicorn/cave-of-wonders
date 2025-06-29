@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CaveOfWonders.WebApi.Presentation.Controllers;
 
 [Route("inflation")]
+[ApiController]
 public class InflationController : ControllerBase
 {
     private readonly IMediator mediator;

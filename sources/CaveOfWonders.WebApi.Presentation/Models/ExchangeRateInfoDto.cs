@@ -17,17 +17,27 @@
 namespace CaveOfWonders.WebApi.Presentation.Models;
 
 /// <summary>
-/// Source options for inflation data import
+/// Exchange rate information for currency conversion
 /// </summary>
-public enum ImportSourceDto
+public class ExchangeRateInfoDto
 {
     /// <summary>
-    /// Import from a file
+    /// Source currency
     /// </summary>
-    File = 0,
+    public string SourceCurrency { get; set; } = string.Empty;
     
     /// <summary>
-    /// Import from web service
+    /// Destination currency
     /// </summary>
-    Web = 1
+    public string DestinationCurrency { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// Date of the exchange rate
+    /// </summary>
+    public DateTime Date { get; set; }
+    
+    /// <summary>
+    /// Exchange rate value
+    /// </summary>
+    public decimal Value { get; set; }
 }

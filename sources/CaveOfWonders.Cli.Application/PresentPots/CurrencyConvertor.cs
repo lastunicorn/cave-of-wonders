@@ -22,8 +22,14 @@ internal class CurrencyConvertor
 {
     private readonly ExchangeRate exchangeRate;
     private readonly bool isDirect;
+    private readonly DateTime date;
 
-    public DateTime Date => exchangeRate.Date;
+    public DateTime Date => exchangeRate?.Date ?? date;
+
+    public CurrencyConvertor(DateTime date)
+    {
+        this.date = date;
+    }
 
     public CurrencyConvertor(ExchangeRate exchangeRate, bool isDirect = true)
     {
@@ -33,6 +39,9 @@ internal class CurrencyConvertor
 
     public decimal Convert(decimal value)
     {
+        if (exchangeRate == null)
+            return 0;
+
         return isDirect
             ? exchangeRate.Convert(value)
             : exchangeRate.ConvertBack(value);

@@ -18,7 +18,6 @@ using CaveOfWonders.WebApi.Presentation.Models;
 using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
-using DustInTheWind.CaveOfWonders.Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +25,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CaveOfWonders.WebApi.Presentation.Controllers;
 
 [Route("exchange-rate")]
+[ApiController]
 public class ExchangeRateController : ControllerBase
 {
     private readonly IMediator mediator;
@@ -36,32 +36,25 @@ public class ExchangeRateController : ControllerBase
     }
 
     /// <summary>
-    /// Get exchange rates
+    /// Get exchange rates based on specified criteria.
     /// </summary>
     [HttpGet]
-    public async Task<ActionResult<PresentExchangeRateResponse>> GetExchangeRates([FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null, [FromQuery] string currency1 = null, [FromQuery] string currency2 = null)
+    [ProducesResponseType(typeof(ExchangeRateResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ExchangeRateResponseDto>> GetExchangeRates([FromQuery] ExchangeRateRequestDto requestDto)
     {
-        PresentExchangeRateRequest request = new()
-        {
-            StartDate = startDate,
-            EndDate = endDate
-        };
-
-        if (currency1 != null && currency2 != null)
-        {
-            CurrencyPairDto currencyPairDto = new()
-            {
-                Currency1 = currency1,
-                Currency2 = currency2
-            };
-
-            request.CurrencyPair = currencyPairDto.ToDomain();
-        }
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
         try
         {
+            PresentExchangeRateRequest request = requestDto.ToApplication();
             PresentExchangeRateResponse response = await mediator.Send(request);
-            return Ok(response);
+
+            ExchangeRateResponseDto responseDto = ExchangeRateResponseDto.FromApplication(response);
+            return Ok(responseDto);
         }
         catch (ExchangeRateNotFoundException ex)
         {
@@ -78,11 +71,17 @@ public class ExchangeRateController : ControllerBase
     }
 
     /// <summary>
-    /// Convert a value from one currency to another
+    /// Convert a value from one currency to another.
     /// </summary>
     [HttpGet("convert")]
-    public async Task<ActionResult<ConvertResponse>> Convert(ExchangeRateConvertRequestDto exchangeRateConvertRequestDto)
+    [ProducesResponseType(typeof(ExchangeRateConvertResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ExchangeRateConvertResponseDto>> Convert([FromQuery] ExchangeRateConvertRequestDto exchangeRateConvertRequestDto)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         try
         {
             ConvertRequest request = exchangeRateConvertRequestDto.ToApplication();
@@ -103,15 +102,24 @@ public class ExchangeRateController : ControllerBase
     }
 
     /// <summary>
-    /// Import exchange rates
+    /// Import exchange rates from various sources.
     /// </summary>
     [HttpPost("import")]
-    public async Task<ActionResult<ImportExchangeRatesResponse>> ImportExchangeRates([FromBody] ImportExchangeRatesRequest request)
+    [ProducesResponseType(typeof(ImportExchangeRatesResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ImportExchangeRatesResponseDto>> ImportExchangeRates([FromBody] ImportExchangeRatesRequestDto requestDto)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         try
         {
+            ImportExchangeRatesRequest request = requestDto.ToApplication();
             ImportExchangeRatesResponse response = await mediator.Send(request);
-            return Ok(response);
+
+            ImportExchangeRatesResponseDto responseDto = ImportExchangeRatesResponseDto.FromApplication(response);
+            return Ok(responseDto);
         }
         catch (BnrWebsiteAccessException ex)
         {

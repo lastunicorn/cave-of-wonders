@@ -20,24 +20,26 @@ using DustInTheWind.CaveOfWonders.Infrastructure;
 namespace CaveOfWonders.WebApi.Presentation.Models;
 
 /// <summary>
-/// Represents a pair of currencies for exchange rate operations
+/// Represents a currency pair for exchange rate operations
 /// </summary>
 public class CurrencyPairDto
 {
     /// <summary>
-    /// First currency in the pair
+    /// First currency in the pair (3-letter code)
     /// </summary>
     [Required]
+    [StringLength(3, MinimumLength = 3)]
     public string Currency1 { get; set; } = string.Empty;
 
     /// <summary>
-    /// Second currency in the pair
+    /// Second currency in the pair (3-letter code)
     /// </summary>
     [Required]
+    [StringLength(3, MinimumLength = 3)]
     public string Currency2 { get; set; } = string.Empty;
 
     /// <summary>
-    /// Converts the DTO to the domain model
+    /// Converts the DTO to the domain CurrencyPair
     /// </summary>
     public CurrencyPair ToDomain()
     {
@@ -49,13 +51,10 @@ public class CurrencyPairDto
     }
 
     /// <summary>
-    /// Creates a DTO from the domain model
+    /// Creates a DTO from a domain CurrencyPair
     /// </summary>
     public static CurrencyPairDto FromDomain(CurrencyPair currencyPair)
     {
-        if (currencyPair == null)
-            return null;
-            
         return new CurrencyPairDto
         {
             Currency1 = currencyPair.Currency1,

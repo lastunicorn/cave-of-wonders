@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CaveOfWonders.WebApi.Presentation.Controllers;
 
 [Route("pot")]
+[ApiController]
 public class PotController : ControllerBase
 {
     private readonly IMediator mediator;

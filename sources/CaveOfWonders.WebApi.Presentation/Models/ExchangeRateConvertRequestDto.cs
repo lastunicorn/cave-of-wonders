@@ -17,26 +17,51 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
 using DustInTheWind.CaveOfWonders.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace CaveOfWonders.WebApi.Presentation.Models;
 
+
+/// <summary>
+/// Request model for currency conversion
+/// </summary>
 public class ExchangeRateConvertRequestDto
 {
+    /// <summary>
+    /// Value to be converted
+    /// </summary>
     [FromQuery]
+    [Required]
     public decimal Value { get; set; }
 
+    /// <summary>
+    /// Source currency (3-letter code)
+    /// </summary>
     [FromQuery]
-    public string SourceCurrency { get; set; }
+    [Required]
+    [StringLength(3, MinimumLength = 3)]
+    public string SourceCurrency { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Destination currency (3-letter code)
+    /// </summary>
     [FromQuery]
-    public string DestinationCurrency { get; set; }
+    [Required]
+    [StringLength(3, MinimumLength = 3)]
+    public string DestinationCurrency { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Date of the exchange rate to use (defaults to latest available)
+    /// </summary>
     [FromQuery]
     public DateTime? Date { get; set; }
 
-    internal ConvertRequest ToApplication()
+    /// <summary>
+    /// Converts the DTO to the application request
+    /// </summary>
+    public ConvertRequest ToApplication()
     {
-        return new ConvertRequest()
+        return new ConvertRequest
         {
             InitialValue = Value,
             CurrencyPair = new CurrencyPair
@@ -48,3 +73,33 @@ public class ExchangeRateConvertRequestDto
         };
     }
 }
+
+
+//public class ExchangeRateConvertRequestDto
+//{
+//    [FromQuery]
+//    public decimal Value { get; set; }
+
+//    [FromQuery]
+//    public string SourceCurrency { get; set; }
+
+//    [FromQuery]
+//    public string DestinationCurrency { get; set; }
+
+//    [FromQuery]
+//    public DateTime? Date { get; set; }
+
+//    internal ConvertRequest ToApplication()
+//    {
+//        return new ConvertRequest()
+//        {
+//            InitialValue = Value,
+//            CurrencyPair = new CurrencyPair
+//            {
+//                Currency1 = SourceCurrency,
+//                Currency2 = DestinationCurrency
+//            },
+//            Date = Date
+//        };
+//    }
+//}

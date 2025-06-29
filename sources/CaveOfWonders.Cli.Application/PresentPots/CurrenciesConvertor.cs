@@ -72,10 +72,13 @@ internal class CurrenciesConvertor
         ExchangeRate exchangeRate = await unitOfWork.ExchangeRateRepository
             .GetForLatestDayAvailable(currencyPair, date, true);
 
+        if (exchangeRate == null)
+            return new CurrencyConvertor(date);
+
         if (!UsedExchangeRates.Contains(exchangeRate))
             UsedExchangeRates.Add(exchangeRate);
 
-        bool isDirect = sourceCurrency == exchangeRate.CurrencyPair.Currency1;
+        bool isDirect = sourceCurrency == exchangeRate?.CurrencyPair.Currency1;
 
         return new CurrencyConvertor(exchangeRate, isDirect);
     }

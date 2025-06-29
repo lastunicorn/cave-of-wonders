@@ -2,7 +2,7 @@
   "profiles": {
     "CaveOfWonders.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "pots"
+      "commandLineArgs": "pots -c eur"
     }
   }
 }

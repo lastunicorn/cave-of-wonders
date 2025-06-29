@@ -33,7 +33,7 @@ public class ImportInflationDto
     /// Source of inflation data: 0 = File, 1 = Web
     /// </summary>
     [Required]
-    public ImportSourceDto ImportSource { get; set; }
+    public InflationImportSourceDto ImportSource { get; set; }
 
     /// <summary>
     /// Converts the DTO to the application request
@@ -43,7 +43,7 @@ public class ImportInflationDto
         return new ImportInflationRequest
         {
             SourceFilePath = SourceFilePath,
-            ImportSource = ImportSource == ImportSourceDto.File 
+            ImportSource = ImportSource == InflationImportSourceDto.File 
                 ? DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation.ImportSource.File 
                 : DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation.ImportSource.Web
         };
