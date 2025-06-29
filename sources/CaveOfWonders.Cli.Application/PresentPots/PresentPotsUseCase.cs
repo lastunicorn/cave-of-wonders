@@ -43,6 +43,8 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
         IEnumerable<PotInstance> potInstances = await RetrievePotInstancesFromStorage(currentDate, request.IncludeInactive);
         List<PotInstanceInfo> potInstanceInfos = await ConvertToPotInstanceInfos(potInstances, currentDate, defaultCurrency);
 
+        List<CurrencyValue> currencyTotals = CalculateCurrencyTotals(potInstanceInfos);
+
         return new PresentPotsResponse
         {
             Date = currentDate,
@@ -54,14 +56,28 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
             {
                 Value = potInstanceInfos.Sum(x => x.NormalizedValue?.Value ?? 0),
                 Currency = defaultCurrency
-            }
+            },
+            CurrencyTotals = currencyTotals
         };
+    }
+
+    private static List<CurrencyValue> CalculateCurrencyTotals(List<PotInstanceInfo> potInstanceInfos)
+    {
+        return potInstanceInfos
+            .Where(x => x.IsActive && x.OriginalValue != null)
+            .GroupBy(x => x.OriginalValue.Currency)
+            .Select(x => new CurrencyValue
+            {
+                Currency = x.Key,
+                Value = x.Sum(x => x.OriginalValue?.Value ?? 0)
+            })
+            .ToList();
     }
 
     private async Task<IEnumerable<PotInstance>> RetrievePotInstancesFromStorage(DateTime date, bool includeInactive)
     {
         IEnumerable<PotInstance> potInstances = await unitOfWork.PotRepository.GetInstances(date, DateMatchingMode.LastAvailable, includeInactive);
-        
+
         return potInstances.OrderBy(x => x.Pot.DisplayOrder);
     }
 
@@ -110,6 +126,9 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
 
     private async Task<CurrencyValue> ComputeNormalizedValue(DateTime currentDate, CurrencyId defaultCurrency, CurrencyValue originalValue)
     {
+        if (originalValue == null)
+            return null;
+
         if (originalValue.Currency != defaultCurrency)
         {
             CurrencyPair currencyPair = new()

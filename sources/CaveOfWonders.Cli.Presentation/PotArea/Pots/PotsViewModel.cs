@@ -23,15 +23,17 @@ namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pots;
 
 internal class PotsViewModel
 {
-    public DateTime Date { get; set; }
-
-    public List<PotInstanceViewModel> Values { get; set; }
-
-    public List<ExchangeRateViewModel> ConversionRates { get; set; }
-
-    public CurrencyValue Total { get; set; }
-
     public CultureInfo Culture { get; set; }
+
+    public DateTime Date { get; }
+
+    public List<PotInstanceViewModel> Values { get; }
+
+    public List<ExchangeRateViewModel> ConversionRates { get; }
+
+    public CurrencyValue Total { get; }
+
+    public List<CurrencyValue> CurrencyTotals { get; }
 
     public PotsViewModel(PresentPotsResponse presentStateResponse)
     {
@@ -61,5 +63,6 @@ internal class PotsViewModel
             .ToList();
 
         Total = presentStateResponse.Total;
+        CurrencyTotals = presentStateResponse.CurrencyTotals;
     }
 }

@@ -42,4 +42,6 @@ public class PresentPotsResponse
     public List<ExchangeRateInfo> ConversionRates { get; set; }
 
     public CurrencyValue Total { get; set; }
+
+    public List<CurrencyValue> CurrencyTotals { get; set; } = new List<CurrencyValue>();
 }

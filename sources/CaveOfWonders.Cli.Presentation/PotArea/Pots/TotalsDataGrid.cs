@@ -20,18 +20,18 @@ using DustInTheWind.ConsoleTools.Controls.Tables;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pots;
 
-internal class PotsDataGrid
+internal class TotalsDataGrid
 {
     public DateTime Date { get; set; }
 
-    public List<PotInstanceViewModel> Values { get; set; }
+    public List<CurrencyValue> Values { get; set; }
 
     public CurrencyValue Total { get; set; }
 
     public void Display()
     {
         DataGrid dataGrid = DataGridTemplate.CreateNew();
-        dataGrid.Title = $"Pots - {Date:d} ({Total.Currency})";
+        dataGrid.Title = $"Totals - {Date:d} ({Total.Currency})";
 
         AddColumns(dataGrid);
         AddRows(dataGrid);
@@ -42,24 +42,14 @@ internal class PotsDataGrid
 
     private static void AddColumns(DataGrid dataGrid)
     {
-        dataGrid.Columns.Add(new Column("Id")
-        {
-            ForegroundColor = ConsoleColor.DarkGray
-        });
-
-        dataGrid.Columns.Add(new Column("Name"));
-
-        dataGrid.Columns.Add(new Column("Value")
-        {
-            CellHorizontalAlignment = HorizontalAlignment.Right
-        });
-
-        dataGrid.Columns.Add(new Column("Date")
-        {
-            CellHorizontalAlignment = HorizontalAlignment.Right
-        });
+        dataGrid.Columns.Add(new Column("Value"));
 
         dataGrid.Columns.Add(new Column("Normalized Value")
+        {
+            CellHorizontalAlignment = HorizontalAlignment.Right
+        });
+
+        dataGrid.Columns.Add(new Column("Percentage")
         {
             CellHorizontalAlignment = HorizontalAlignment.Right
         });
@@ -68,9 +58,15 @@ internal class PotsDataGrid
     private void AddRows(DataGrid dataGrid)
     {
         IEnumerable<ContentRow> rows = Values
-            .Select(static x => new PotInstanceRow
+            .Select(static x =>
             {
-                ViewModel = x
+                ContentRow row = new();
+
+                string value = x.ToDisplayString();
+                ContentCell valueCell = row.AddCell(value);
+                valueCell.HorizontalAlignment = HorizontalAlignment.Right;
+
+                return row;
             });
 
         dataGrid.Rows.AddRange(rows);
