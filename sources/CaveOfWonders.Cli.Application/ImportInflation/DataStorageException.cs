@@ -18,7 +18,7 @@
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 
 [Serializable]
-internal class DataStorageException : Exception
+public class DataStorageException : Exception
 {
     private const string DefaultMessage = "Data storage could not be accessed.";
 

@@ -19,7 +19,7 @@ using DustInTheWind.CaveOfWonders.Domain;
 namespace DustInTheWind.CaveOfWonders.Cli.Application.Convert;
 
 [Serializable]
-internal class ExchangeRateUnusableException : Exception
+public class ExchangeRateUnusableException : Exception
 {
     private const string DefaultMessage = "An exchange rate was found in the database, but could not be used for conversion. The value could not be converted. Exchange rate: {0}";
 

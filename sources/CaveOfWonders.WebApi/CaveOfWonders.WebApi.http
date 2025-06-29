@@ -1,0 +1,30 @@
+@CaveOfWonders.WebApi_HostAddress = https://localhost:7244
+
+### Get all inflation records
+GET {{CaveOfWonders.WebApi_HostAddress}}/api/Inflation
+Accept: application/json
+
+### Import inflation data from web
+POST {{CaveOfWonders.WebApi_HostAddress}}/api/Inflation/import
+Content-Type: application/json
+
+{
+  "importSource": 1
+}
+
+### Import inflation data from file
+POST {{CaveOfWonders.WebApi_HostAddress}}/api/Inflation/import
+Content-Type: application/json
+
+{
+  "sourceFilePath": "C:\\Temp\\inflation.csv",
+  "importSource": 0
+}
+
+### Export inflation data
+POST {{CaveOfWonders.WebApi_HostAddress}}/api/Inflation/export
+Content-Type: application/json
+
+{
+  "outputPath": "C:\\Temp\\inflation-export.csv"
+}

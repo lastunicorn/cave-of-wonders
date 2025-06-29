@@ -15,21 +15,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate
+namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
+
+[Serializable]
+public class CurrencyPairMissingException : Exception
 {
-    [Serializable]
-    internal class CurrencyPairMissingException : Exception
+    private const string DefaultMessage = "Currency pair value was not provided.";
+
+    public CurrencyPairMissingException()
+        : base(DefaultMessage)
     {
-        private const string DefaultMessage = "Currency pair value was not provided.";
+    }
 
-        public CurrencyPairMissingException()
-            : base(DefaultMessage)
-        {
-        }
-
-        public CurrencyPairMissingException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
+    public CurrencyPairMissingException(string message, Exception innerException)
+        : base(message, innerException)
+    {
     }
 }

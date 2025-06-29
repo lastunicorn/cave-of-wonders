@@ -32,7 +32,7 @@ public class ImportInflationResponse
             AddResult(addOrUpdateResult);
     }
 
-    public void AddResult(AddOrUpdateResult result)
+    internal void AddResult(AddOrUpdateResult result)
     {
         switch (result)
         {

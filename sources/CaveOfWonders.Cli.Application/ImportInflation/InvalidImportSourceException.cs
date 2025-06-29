@@ -19,7 +19,7 @@ using DustInTheWind.CaveOfWonders.Infrastructure;
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 
 [Serializable]
-internal class InvalidImportSourceException : Exception
+public class InvalidImportSourceException : Exception
 {
     private const string DefaultMessage = "The provided import source is not valid: {0}";
 

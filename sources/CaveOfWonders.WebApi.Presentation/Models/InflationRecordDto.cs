@@ -1,4 +1,4 @@
-﻿// Cave of Wonders
+// Cave of Wonders
 // Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -14,16 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
-
-[Serializable]
-public class InflationFileNotProvidedException : Exception
+namespace CaveOfWonders.WebApi.Presentation.Models
 {
-    private const string DefaultMessage = "The name of the text file containing inflation values was not provided.";
-
-    public InflationFileNotProvidedException()
-        : base(DefaultMessage)
+    /// <summary>
+    /// Represents an inflation record for a specific year
+    /// </summary>
+    public class InflationRecordDto
     {
+        /// <summary>
+        /// The year for which the inflation rate is recorded
+        /// </summary>
+        public int Year { get; set; }
+
+        /// <summary>
+        /// The inflation rate value
+        /// </summary>
+        public decimal Value { get; set; }
     }
 }

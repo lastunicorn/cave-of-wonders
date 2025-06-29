@@ -32,7 +32,7 @@ internal class TotalsDataGrid
     public void Display()
     {
         DataGrid dataGrid = DataGridTemplate.CreateNew();
-        dataGrid.Title = $"PotsAnalysis - {Date:d} ({Total.Currency})";
+        dataGrid.Title = $"Totals - {Date:d} ({Total.Currency})";
 
         AddColumns(dataGrid);
         AddRows(dataGrid);

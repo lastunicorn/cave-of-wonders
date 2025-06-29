@@ -18,7 +18,7 @@
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 
 [Serializable]
-internal class InsFileException : Exception
+public class InsFileException : Exception
 {
     private const string DefaultMessage = "INS file could not be accessed. Either it does not exist or its content is invalid.";
 

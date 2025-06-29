@@ -1,4 +1,4 @@
-﻿// Cave of Wonders
+// Cave of Wonders
 // Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -14,16 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
+using Microsoft.AspNetCore.Mvc;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
+namespace CaveOfWonders.WebApi.Presentation.Models;
 
-[Serializable]
-public class InflationFileNotProvidedException : Exception
+public class GetPotRequestDto
 {
-    private const string DefaultMessage = "The name of the text file containing inflation values was not provided.";
+    [FromRoute(Name = "potIdentifier")]
+    public string PotIdentifier { get; set; }
 
-    public InflationFileNotProvidedException()
-        : base(DefaultMessage)
+    [FromQuery]
+    public bool IncludeInactive { get; set; }
+
+    internal PresentPotRequest ToApplicationRequest()
     {
+        return new PresentPotRequest
+        {
+            PotIdentifier = PotIdentifier,
+            IncludeInactivePots = IncludeInactive
+        };
     }
 }

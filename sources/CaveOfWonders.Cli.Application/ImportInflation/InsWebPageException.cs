@@ -18,7 +18,7 @@
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 
 [Serializable]
-internal class InsWebPageException : Exception
+public class InsWebPageException : Exception
 {
     private const string DefaultMessage = "INS web page could not be accessed or its content could not be parsed.";
 

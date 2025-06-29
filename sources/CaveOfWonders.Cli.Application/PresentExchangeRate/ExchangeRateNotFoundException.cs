@@ -19,7 +19,7 @@ using DustInTheWind.CaveOfWonders.Infrastructure;
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 
 [Serializable]
-internal class ExchangeRateNotFoundException : Exception
+public class ExchangeRateNotFoundException : Exception
 {
     private const string DefaultMessage = "Exchange rate for {0} and date {1:d} was not found.";
 
