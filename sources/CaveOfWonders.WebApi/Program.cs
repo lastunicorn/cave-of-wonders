@@ -39,7 +39,7 @@ internal static class Program
 {
     public static void Main(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args);
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
         builder.Services.AddControllers().AddApplicationPart(typeof(PotController).Assembly);
@@ -54,7 +54,8 @@ internal static class Program
             });
 
             // Set the comments path for the Swagger JSON and UI.
-            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            Assembly assembly = typeof(PotController).Assembly;
+            string xmlFilename = $"{assembly.GetName().Name}.xml";
             options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
         });
 
@@ -63,8 +64,11 @@ internal static class Program
             config.RegisterServicesFromAssembly(typeof(PresentPotsRequest).Assembly));
 
         // Register application services
-        builder.Services.AddSingleton<Database>(sp => new Database(
-            builder.Configuration.GetValue<string>("Database:Path") ?? @"C:\Projects.pet\CaveOfWonders-db"));
+        builder.Services.AddSingleton(sp =>
+        {
+            string connectionString = builder.Configuration.GetValue<string>("Database:Path");
+            return new Database(connectionString);
+        });
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddSingleton<ISystemClock, SystemClock>();
         builder.Services.AddSingleton<IBnr, Bnr>();
@@ -73,7 +77,7 @@ internal static class Program
         builder.Services.AddScoped<ILog, Log>();
         builder.Services.AddSingleton<IFileSystem, FileSystem>();
 
-        var app = builder.Build();
+        WebApplication app = builder.Build();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())

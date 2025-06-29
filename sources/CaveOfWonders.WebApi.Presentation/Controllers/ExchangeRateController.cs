@@ -24,20 +24,35 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CaveOfWonders.WebApi.Presentation.Controllers;
 
+/// <summary>
+/// API controller for managing and retrieving exchange rates between currencies.
+/// Provides endpoints for retrieving, converting, and importing exchange rates.
+/// </summary>
 [Route("exchange-rate")]
 [ApiController]
 public class ExchangeRateController : ControllerBase
 {
     private readonly IMediator mediator;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExchangeRateController"/> class.
+    /// </summary>
+    /// <param name="mediator">The mediator used to send requests to the application layer.</param>
+    /// <exception cref="ArgumentNullException">Thrown when mediator is null.</exception>
     public ExchangeRateController(IMediator mediator)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
     /// <summary>
-    /// Get exchange rates based on specified criteria.
+    /// Retrieves exchange rates based on specified criteria such as date range, specific date, or currency pair.
     /// </summary>
+    /// <param name="requestDto">The request containing filter criteria for exchange rates.</param>
+    /// <returns>A collection of exchange rates matching the specified criteria.</returns>
+    /// <response code="200">Returns the exchange rates successfully retrieved.</response>
+    /// <response code="400">If the request is invalid or currency pair is missing.</response>
+    /// <response code="404">If no exchange rates are found for the specified criteria.</response>
+    /// <response code="500">If an unexpected error occurs while processing the request.</response>
     [HttpGet]
     [ProducesResponseType(typeof(ExchangeRateResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -71,8 +86,13 @@ public class ExchangeRateController : ControllerBase
     }
 
     /// <summary>
-    /// Convert a value from one currency to another.
+    /// Converts a monetary value from one currency to another using the latest or specified date exchange rate.
     /// </summary>
+    /// <param name="exchangeRateConvertRequestDto">The request containing the value to convert, source and destination currencies, and optional date.</param>
+    /// <returns>The converted value and details about the exchange rate used.</returns>
+    /// <response code="200">Returns the conversion result successfully calculated.</response>
+    /// <response code="400">If the request is invalid or the exchange rate is unusable.</response>
+    /// <response code="500">If an unexpected error occurs while processing the request.</response>
     [HttpGet("convert")]
     [ProducesResponseType(typeof(ExchangeRateConvertResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -102,8 +122,13 @@ public class ExchangeRateController : ControllerBase
     }
 
     /// <summary>
-    /// Import exchange rates from various sources.
+    /// Imports exchange rates from various sources such as the BNR website or files.
     /// </summary>
+    /// <param name="requestDto">The request containing import source details and optional parameters.</param>
+    /// <returns>A summary of the import operation including counts of added, updated, and duplicate records.</returns>
+    /// <response code="200">Returns the import operation summary if successful.</response>
+    /// <response code="400">If the request is invalid, BNR website access fails, or import file access fails.</response>
+    /// <response code="500">If an unexpected error occurs while processing the request.</response>
     [HttpPost("import")]
     [ProducesResponseType(typeof(ImportExchangeRatesResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

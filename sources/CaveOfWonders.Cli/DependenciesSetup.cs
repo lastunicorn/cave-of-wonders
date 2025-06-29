@@ -47,7 +47,11 @@ internal static class DependenciesSetup
         containerBuilder.RegisterMediatR(mediatRConfiguration);
 
         containerBuilder
-            .Register(context => new Database(@"C:\Projects.pet\CaveOfWonders-db"))
+            .Register(context =>
+            {
+                string connectionString = @"C:\Projects.pet\CaveOfWonders-db";
+                return new Database(connectionString);
+            })
             .AsSelf();
         containerBuilder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
 
