@@ -20,7 +20,7 @@ using DustInTheWind.ConsoleTools.Controls.Tables;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pots;
 
-internal class PotSnapshotControl
+internal class PotsDataGrid
 {
     public DateTime Date { get; set; }
 
@@ -31,7 +31,7 @@ internal class PotSnapshotControl
     public void Display()
     {
         DataGrid dataGrid = DataGridTemplate.CreateNew();
-        dataGrid.Title = $"State - {Date:d} ({Total.Currency})";
+        dataGrid.Title = $"Pots - {Date:d} ({Total.Currency})";
 
         AddColumns(dataGrid);
         AddRows(dataGrid);
@@ -70,40 +70,11 @@ internal class PotSnapshotControl
     private void AddRows(DataGrid dataGrid)
     {
         IEnumerable<ContentRow> rows = Values
-            .Select(CreateRow);
+            .Select(static x => new PotInstanceRow
+            {
+                ViewModel = x
+            });
 
         dataGrid.Rows.AddRange(rows);
-    }
-
-    private static ContentRow CreateRow(PotInstanceViewModel potInstanceViewModel)
-    {
-        string id = potInstanceViewModel.Id.ToString("D")[..8];
-        string name = potInstanceViewModel.Name;
-        string value = potInstanceViewModel.OriginalValue?.ToDisplayString();
-        string date = potInstanceViewModel.Date?.ToString("d");
-        string normalizedValue = potInstanceViewModel.NormalizedValue?.ToDisplayString();
-
-        ContentRow row = new(id, name, value, date, normalizedValue);
-
-        if (potInstanceViewModel.IsPotActive)
-        {
-            if (!potInstanceViewModel.IsValueActual)
-            {
-                row[2].ForegroundColor = ConsoleColor.DarkYellow;
-                row[3].ForegroundColor = ConsoleColor.DarkYellow;
-            }
-
-            if (!potInstanceViewModel.IsValueAlreadyNormal)
-                row[2].ForegroundColor = ConsoleColor.DarkGray;
-        }
-        else
-        {
-            row.ForegroundColor = ConsoleColor.DarkGray;
-        }
-
-        if (potInstanceViewModel.NormalizedValue?.Value != 0 && !potInstanceViewModel.IsValueAlreadyNormal && !potInstanceViewModel.IsNormalizedCurrent)
-            row[4].ForegroundColor = ConsoleColor.DarkYellow;
-
-        return row;
     }
 }

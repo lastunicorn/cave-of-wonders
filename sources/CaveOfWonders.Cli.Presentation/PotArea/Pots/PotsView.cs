@@ -15,22 +15,28 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
-using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
+using System.Globalization;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pots;
 
 internal class PotsView : IView<PotsViewModel>
 {
-    public void Display(PotsViewModel stateViewModel)
+    public void Display(PotsViewModel potsViewModel)
     {
-        DisplayCaveInstances(stateViewModel);
-        DisplayConversionRates(stateViewModel);
+        if (potsViewModel.Culture != null)
+        {
+            CultureInfo.CurrentCulture = potsViewModel.Culture;
+            CultureInfo.CurrentUICulture = potsViewModel.Culture;
+        }
+
+        DisplayCaveInstances(potsViewModel);
+        DisplayConversionRates(potsViewModel);
     }
 
     private static void DisplayCaveInstances(PotsViewModel stateViewModel)
     {
-        PotSnapshotControl potSnapshotControl = new()
+        PotsDataGrid potSnapshotControl = new()
         {
             Date = stateViewModel.Date,
             Values = stateViewModel.Values,

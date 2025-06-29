@@ -17,6 +17,7 @@
 using DustInTheWind.CaveOfWonders.Cli.Application;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
+using System.Globalization;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pots;
 
@@ -29,6 +30,8 @@ internal class PotsViewModel
     public List<ExchangeRateViewModel> ConversionRates { get; set; }
 
     public CurrencyValue Total { get; set; }
+
+    public CultureInfo Culture { get; set; }
 
     public PotsViewModel(PresentPotsResponse presentStateResponse)
     {

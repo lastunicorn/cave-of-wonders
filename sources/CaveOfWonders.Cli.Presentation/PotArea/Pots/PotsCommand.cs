@@ -17,6 +17,7 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using DustInTheWind.ConsoleTools.Commando;
 using MediatR;
+using System.Globalization;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pots;
 
@@ -34,6 +35,9 @@ internal class PotsCommand : IConsoleCommand<PotsViewModel>
     [NamedParameter("all", ShortName = 'a', IsOptional = true, Description = "Display all pots, including the inactive ones. Default = false.")]
     public bool IncludeInactivePots { get; set; }
 
+    [NamedParameter("culture", ShortName = 'u', IsOptional = true, Description = "The culture info used for displaying the data.")]
+    public CultureInfo Culture { get; set; }
+
     public PotsCommand(IMediator mediator)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -50,6 +54,9 @@ internal class PotsCommand : IConsoleCommand<PotsViewModel>
 
         PresentPotsResponse response = await mediator.Send(request);
 
-        return new PotsViewModel(response);
+        return new PotsViewModel(response)
+        {
+            Culture = Culture,
+        };
     }
 }
