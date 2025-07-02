@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
@@ -50,7 +51,7 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 
         GemImport gemImport = new()
         {
-            Pots = await RetrievePotsToPopulate(request.PotCategory),
+            Pots = await RetrievePotsToPopulate(),
             Overwrite = request.Overwrite,
             Log = log
         };
@@ -68,136 +69,20 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
         };
     }
 
-    private Task<PotCollection> RetrievePotsToPopulate(PotCategory potCategory)
+    private async Task<PotCollection> RetrievePotsToPopulate()
     {
-        return potCategory switch
-        {
-            PotCategory.Bcr => RetrieveBcrPotsToPopulate(),
-            PotCategory.Ing => RetrieveIngPotsToPopulate(),
-            PotCategory.Brd => RetrieveBrdPotsToPopulate(),
-            PotCategory.Bt => RetrieveBtPotsToPopulate(),
-            PotCategory.Revolut => RetrieveRevolutPotsToPopulate(),
-            PotCategory.Cash => RetrieveCashPotsToPopulate(),
-            PotCategory.Gold => RetrieveGoldPotsToPopulate(),
-            _ => throw new ArgumentOutOfRangeException(nameof(potCategory), potCategory, null)
-        };
-    }
+        PotCollection potCollection = new();
 
-    private async Task<PotCollection> RetrieveBcrPotsToPopulate()
-    {
-        PotCollection pots = new();
+        IEnumerable<Pot> pots = await unitOfWork.PotRepository.GetAll();
+        potCollection.AddRange(pots);
 
-        Pot currentAccountLeiPot = await GetPot(PotIds.Bcr.CurrentAccountLei);
-        pots.Add(currentAccountLeiPot, "current-account");
-
-        Pot savingsAccountLeiPot = await GetPot(PotIds.Bcr.SavingsAccountLei);
-        pots.Add(savingsAccountLeiPot, "savings-account");
-
-        Pot depositAccountLeiPot = await GetPot(PotIds.Bcr.DepositAccountLei);
-        pots.Add(depositAccountLeiPot, "deposit-account");
-
-        Pot currentAccountEuroPot = await GetPot(PotIds.Bcr.CurrentAccountEuro);
-        pots.Add(currentAccountEuroPot, "current-account-euro");
-
-        return pots;
-    }
-
-    private async Task<PotCollection> RetrieveIngPotsToPopulate()
-    {
-        PotCollection pots = new();
-
-        Pot currentAccountLeiPot = await GetPot(PotIds.Ing.CurrentAccountLei);
-        pots.Add(currentAccountLeiPot, "current-account");
-
-        Pot savingsAccountLeiPot = await GetPot(PotIds.Ing.SavingsAccountLei);
-        pots.Add(savingsAccountLeiPot, "savings-account");
-
-        Pot depositAccountParintiLeiPot = await GetPot(PotIds.Ing.DepositAccountParintiLei);
-        pots.Add(depositAccountParintiLeiPot, "deposit-account-parinti");
-
-        Pot depositAccountLeiPot = await GetPot(PotIds.Ing.DepositAccountLei);
-        pots.Add(depositAccountLeiPot, "deposit-account");
-
-        return pots;
-    }
-
-    private async Task<PotCollection> RetrieveBrdPotsToPopulate()
-    {
-        PotCollection pots = new();
-
-        Pot currentAccountLeiPot = await GetPot(PotIds.Brd.CurrentAccountLei);
-        pots.Add(currentAccountLeiPot, "current-account");
-
-        return pots;
-    }
-
-    private async Task<PotCollection> RetrieveBtPotsToPopulate()
-    {
-        PotCollection pots = new();
-
-        Pot currentAccountLeiPot = await GetPot(PotIds.Bt.CurrentAccountEuro);
-        pots.Add(currentAccountLeiPot, "current-account-euro");
-
-        return pots;
-    }
-
-    private async Task<PotCollection> RetrieveRevolutPotsToPopulate()
-    {
-        PotCollection pots = new();
-
-        Pot currentAccountLeiPot = await GetPot(PotIds.Revolut.CurrentAccountLei);
-        pots.Add(currentAccountLeiPot, "current-account");
-
-        Pot currentAccountEuroPot = await GetPot(PotIds.Revolut.CurrentAccountEuro);
-        pots.Add(currentAccountEuroPot, "current-account-euro");
-
-        Pot savingsAccountLeiPot = await GetPot(PotIds.Revolut.SavingsAccountLei);
-        pots.Add(savingsAccountLeiPot, "savings-account");
-
-        return pots;
-    }
-
-    private async Task<PotCollection> RetrieveCashPotsToPopulate()
-    {
-        PotCollection pots = new();
-
-        Pot currentAccountLeiPot = await GetPot(PotIds.Cash.Lei);
-        pots.Add(currentAccountLeiPot, "lei");
-
-        Pot currentAccountEuroPot = await GetPot(PotIds.Cash.Euro);
-        pots.Add(currentAccountEuroPot, "euro");
-
-        return pots;
-    }
-
-    private async Task<PotCollection> RetrieveGoldPotsToPopulate()
-    {
-        PotCollection pots = new();
-
-        Pot currentAccountLeiPot = await GetPot(PotIds.Gold.Bcr);
-        pots.Add(currentAccountLeiPot, "bcr");
-
-        return pots;
-    }
-
-    private async Task<Pot> GetPot(string potId)
-    {
-        IEnumerable<Pot> pots = await unitOfWork.PotRepository.GetByPartialId(potId);
-        return pots.Single();
+        return potCollection;
     }
 
     private IEnumerable<SheetValue> GetRecordsToImport(ImportGemsRequest request)
     {
-        return request.PotCategory switch
-        {
-            PotCategory.Bcr => sheets.GetBcrRecords(request.SourceFilePath),
-            PotCategory.Ing => sheets.GetIngRecords(request.SourceFilePath),
-            PotCategory.Brd => sheets.GetBrdRecords(request.SourceFilePath),
-            PotCategory.Bt => sheets.GetBtRecords(request.SourceFilePath),
-            PotCategory.Revolut => sheets.GetRevolutRecords(request.SourceFilePath),
-            PotCategory.Cash => sheets.GetCashRecords(request.SourceFilePath),
-            PotCategory.Gold => sheets.GetGoldRecords(request.SourceFilePath),
-            _ => throw new ArgumentOutOfRangeException()
-        };
+        SheetDescriptors sheetDescriptors = new();
+        ISheetDescriptor sheetDescriptor = sheetDescriptors.Get(request.PotCategory);
+        return sheets.GetRecords(request.SourceFilePath, sheetDescriptor);
     }
 }

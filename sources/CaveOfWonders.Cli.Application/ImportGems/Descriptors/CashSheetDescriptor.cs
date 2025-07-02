@@ -14,11 +14,27 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
+using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
-public enum ValueFormat
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
+
+internal class CashSheetDescriptor : ISheetDescriptor
 {
-    Lei,
-    Euro,
-    Grams
+    public ColumnDescriptor[] ColumnDescriptors { get; } =
+    {
+        new()
+        {
+            Index = 2,
+            DateIndex = 0,
+            Format = ValueFormat.Lei,
+            Key = new Guid("d7a02fd8-a048-4e88-9980-c1266bb9245a")
+        },
+        new()
+        {
+            Index = 3,
+            DateIndex = 0,
+            Format = ValueFormat.Euro,
+            Key = new Guid("3f25f32e-544e-4998-81e9-33475510c489")
+        }
+    };
 }

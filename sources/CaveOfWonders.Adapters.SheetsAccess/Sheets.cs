@@ -20,59 +20,9 @@ namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
 
 public class Sheets : ISheets
 {
-    public IEnumerable<SheetValue> GetBcrRecords(string location)
+    public IEnumerable<SheetValue> GetRecords(string location, ISheetDescriptor sheetDescriptor)
     {
-        if (location == null) throw new ArgumentNullException(nameof(location));
-
-        BcrSheetCsvFile bcrSheetCsvFile = new(location);
-        return bcrSheetCsvFile.Read();
-    }
-
-    public IEnumerable<SheetValue> GetIngRecords(string location)
-    {
-        if (location == null) throw new ArgumentNullException(nameof(location));
-
-        IngSheetCsvFile ingSheetCsvFile = new(location);
-        return ingSheetCsvFile.Read();
-    }
-
-    public IEnumerable<SheetValue> GetBrdRecords(string location)
-    {
-        if (location == null) throw new ArgumentNullException(nameof(location));
-
-        BrdSheetCsvFile brdSheetCsvFile = new(location);
-        return brdSheetCsvFile.Read();
-    }
-
-    public IEnumerable<SheetValue> GetBtRecords(string location)
-    {
-        if (location == null) throw new ArgumentNullException(nameof(location));
-
-        BtSheetCsvFile btSheetCsvFile = new(location);
-        return btSheetCsvFile.Read();
-    }
-
-    public IEnumerable<SheetValue> GetRevolutRecords(string location)
-    {
-        if (location == null) throw new ArgumentNullException(nameof(location));
-
-        RevolutSheetCsvFile revolutSheetCsvFile = new(location);
-        return revolutSheetCsvFile.Read();
-    }
-
-    public IEnumerable<SheetValue> GetCashRecords(string location)
-    {
-        if (location == null) throw new ArgumentNullException(nameof(location));
-
-        CashSheetCsvFile cashSheetCsvFile = new(location);
-        return cashSheetCsvFile.Read();
-    }
-
-    public IEnumerable<SheetValue> GetGoldRecords(string location)
-    {
-        if (location == null) throw new ArgumentNullException(nameof(location));
-
-        GoldSheetCsvFile goldSheetCsvFile = new(location);
-        return goldSheetCsvFile.Read();
+        SheetCsvFile sheetCsvFile = new(location, sheetDescriptor.ColumnDescriptors);
+        return sheetCsvFile.Read();
     }
 }

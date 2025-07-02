@@ -14,15 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
+namespace DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
-public class PotImportReport
+public interface ISheetDescriptor
 {
-    public string PotName { get; init; }
-    
-    public Guid PotId { get; init; }
-
-    public int SkipCount { get; set; }
-
-    public int AddCount { get; set; }
+    ColumnDescriptor[] ColumnDescriptors { get; }
 }

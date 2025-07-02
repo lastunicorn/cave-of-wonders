@@ -22,7 +22,7 @@ internal class GemAddReport
 {
     public GemAddStatus AddStatus { get; set; }
 
-    public string Key { get; set; }
+    public Guid Key { get; set; }
 
     public Pot Pot { get; set; }
 

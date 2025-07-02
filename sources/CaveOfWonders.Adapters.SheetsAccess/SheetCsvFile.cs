@@ -18,52 +18,22 @@ using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
 
-internal class BcrSheetCsvFile
+internal class SheetCsvFile
 {
-    private static readonly ColumnDescriptor[] ColumnDescriptors =
-    {
-        new()
-        {
-            Index = 2,
-            DateIndex = 0,
-            Format = ValueFormat.Lei,
-            Key = "current-account"
-        },
-        new()
-        {
-            Index = 3,
-            DateIndex = 0,
-            Format = ValueFormat.Lei,
-            Key = "savings-account"
-        },
-        new()
-        {
-            Index = 4,
-            DateIndex = 0,
-            Format = ValueFormat.Lei,
-            Key = "deposit-account"
-        },
-        new()
-        {
-            Index = 5,
-            DateIndex = 0,
-            Format = ValueFormat.Euro,
-            Key = "current-account-euro"
-        }
-    };
-
     private readonly string filePath;
+    private readonly ColumnDescriptor[] columnDescriptors;
 
-    public BcrSheetCsvFile(string filePath)
+    public SheetCsvFile(string filePath, ColumnDescriptor[] columnDescriptors)
     {
         this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
+        this.columnDescriptors = columnDescriptors ?? throw new ArgumentNullException(nameof(columnDescriptors));
     }
 
     public IEnumerable<SheetValue> Read()
     {
         return File.ReadLines(filePath)
             .Skip(1)
-            .Select(x => new SheetRecord(x, ColumnDescriptors))
+            .Select(x => new SheetRecord(x, columnDescriptors))
             .SelectMany(x => x.ParseCells());
     }
 }

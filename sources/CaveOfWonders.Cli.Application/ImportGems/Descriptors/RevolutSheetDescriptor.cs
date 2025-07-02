@@ -16,33 +16,32 @@
 
 using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
 
-internal class GoldSheetCsvFile
+internal class RevolutSheetDescriptor : ISheetDescriptor
 {
-    private static readonly ColumnDescriptor[] ColumnDescriptors =
+    public ColumnDescriptor[] ColumnDescriptors { get; } =
     {
         new()
         {
             Index = 2,
             DateIndex = 0,
-            Format = ValueFormat.Grams,
-            Key = "bcr"
+            Format = ValueFormat.Lei,
+            Key = new Guid("596569be-1a07-40eb-b86b-054738e0a4c3")
+        },
+        new()
+        {
+            Index = 3,
+            DateIndex = 0,
+            Format = ValueFormat.Euro,
+            Key = new Guid("50e27d7e-9175-4144-a852-a317c3c3a4e3")
+        },
+        new()
+        {
+            Index = 5,
+            DateIndex = 0,
+            Format = ValueFormat.Lei,
+            Key = new Guid("5eca3af2-3fee-4636-80aa-626cf7bb7bb0")
         }
     };
-
-    private readonly string filePath;
-
-    public GoldSheetCsvFile(string filePath)
-    {
-        this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
-    }
-
-    public IEnumerable<SheetValue> Read()
-    {
-        return File.ReadLines(filePath)
-            .Skip(1)
-            .Select(x => new SheetRecord(x, ColumnDescriptors))
-            .SelectMany(x => x.ParseCells());
-    }
 }

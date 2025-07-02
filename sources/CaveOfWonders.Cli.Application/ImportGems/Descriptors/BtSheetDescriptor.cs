@@ -16,33 +16,18 @@
 
 using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
 
-internal class BrdSheetCsvFile
+internal class BtSheetDescriptor : ISheetDescriptor
 {
-    private static readonly ColumnDescriptor[] ColumnDescriptors =
+    public ColumnDescriptor[] ColumnDescriptors { get; } =
     {
         new()
         {
             Index = 2,
             DateIndex = 0,
-            Format = ValueFormat.Lei,
-            Key = "current-account"
+            Format = ValueFormat.Euro,
+            Key = new Guid("889d781f-4967-4590-b143-d494ce121d2f")
         }
     };
-
-    private readonly string filePath;
-
-    public BrdSheetCsvFile(string filePath)
-    {
-        this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
-    }
-
-    public IEnumerable<SheetValue> Read()
-    {
-        return File.ReadLines(filePath)
-            .Skip(1)
-            .Select(x => new SheetRecord(x, ColumnDescriptors))
-            .SelectMany(x => x.ParseCells());
-    }
 }

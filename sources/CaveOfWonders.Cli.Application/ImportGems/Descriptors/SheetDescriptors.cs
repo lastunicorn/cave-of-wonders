@@ -16,33 +16,23 @@
 
 using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
 
-internal class BtSheetCsvFile
+internal class SheetDescriptors
 {
-    private static readonly ColumnDescriptor[] ColumnDescriptors =
+    private readonly Dictionary<PotCategory, ISheetDescriptor> descriptors = new()
     {
-        new()
-        {
-            Index = 2,
-            DateIndex = 0,
-            Format = ValueFormat.Euro,
-            Key = "current-account-euro"
-        }
+        { PotCategory.Bcr, new BcrSheetDescriptor() },
+        { PotCategory.Ing, new IngSheetDescriptor() },
+        { PotCategory.Brd, new BrdSheetDescriptor() },
+        { PotCategory.Bt, new BtSheetDescriptor() },
+        { PotCategory.Revolut, new RevolutSheetDescriptor() },
+        { PotCategory.Cash, new CashSheetDescriptor() },
+        { PotCategory.Gold, new GoldSheetDescriptor() }
     };
 
-    private readonly string filePath;
-
-    public BtSheetCsvFile(string filePath)
+    public ISheetDescriptor Get(PotCategory potCategory)
     {
-        this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
-    }
-
-    public IEnumerable<SheetValue> Read()
-    {
-        return File.ReadLines(filePath)
-            .Skip(1)
-            .Select(x => new SheetRecord(x, ColumnDescriptors))
-            .SelectMany(x => x.ParseCells());
+        return descriptors[potCategory];
     }
 }

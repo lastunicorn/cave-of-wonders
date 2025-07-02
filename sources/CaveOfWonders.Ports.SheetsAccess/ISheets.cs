@@ -35,17 +35,5 @@ namespace DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
 public interface ISheets
 {
-    IEnumerable<SheetValue> GetBcrRecords(string location);
-
-    IEnumerable<SheetValue> GetIngRecords(string location);
-
-    IEnumerable<SheetValue> GetBrdRecords(string location);
-
-    IEnumerable<SheetValue> GetBtRecords(string location);
-
-    IEnumerable<SheetValue> GetRevolutRecords(string location);
-
-    IEnumerable<SheetValue> GetCashRecords(string location);
-
-    IEnumerable<SheetValue> GetGoldRecords(string location);
+    IEnumerable<SheetValue> GetRecords(string location, ISheetDescriptor sheetDescriptor);
 }

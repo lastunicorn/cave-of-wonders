@@ -18,7 +18,7 @@ namespace DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
 public class SheetValue
 {
-    public string Key { get; set; }
+    public Guid Key { get; set; }
 
     public DateTime Date { get; set; }
 

@@ -16,54 +16,39 @@
 
 using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
 
-internal class IngSheetCsvFile
+internal class IngSheetDescriptor : ISheetDescriptor
 {
-    private static readonly ColumnDescriptor[] ColumnDescriptors =
+    public ColumnDescriptor[] ColumnDescriptors { get; } =
     {
         new()
         {
             Index = 2,
             DateIndex = 0,
             Format = ValueFormat.Lei,
-            Key = "current-account"
+            Key = new Guid("0d74863c-5e66-4b92-9c90-29e313807beb")
         },
         new()
         {
             Index = 3,
             DateIndex = 0,
             Format = ValueFormat.Lei,
-            Key = "savings-account"
+            Key = new Guid("be127619-7f87-47f6-ab6d-87598c721121")
         },
         new()
         {
             Index = 4,
             DateIndex = 0,
             Format = ValueFormat.Lei,
-            Key = "deposit-account-parinti"
+            Key = new Guid("076ae4d3-a919-48ec-94f2-d1c295e5533f")
         },
         new()
         {
             Index = 5,
             DateIndex = 0,
             Format = ValueFormat.Lei,
-            Key = "deposit-account"
+            Key = new Guid("03d7ac58-1bb5-447d-ae28-43a3e1120e69")
         }
     };
-
-    private readonly string filePath;
-
-    public IngSheetCsvFile(string filePath)
-    {
-        this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
-    }
-
-    public IEnumerable<SheetValue> Read()
-    {
-        return File.ReadLines(filePath)
-            .Skip(1)
-            .Select(x => new SheetRecord(x, ColumnDescriptors))
-            .SelectMany(x => x.ParseCells());
-    }
 }

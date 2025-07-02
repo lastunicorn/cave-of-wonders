@@ -20,14 +20,16 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
 
 internal class PotCollection
 {
-    private readonly Dictionary<string, Pot> pots = new();
+    private readonly Dictionary<Guid, Pot> pots = [];
 
-    public void Add(Pot pot, string key)
+    internal void AddRange(IEnumerable<Pot> pots)
     {
-        if (key == null) throw new ArgumentNullException(nameof(key));
-        if (pot == null) throw new ArgumentNullException(nameof(pot));
+        ArgumentNullException.ThrowIfNull(pots);
 
-        pots.Add(key, pot);
+        IEnumerable<Pot> potsNotNull = pots.Where(x => x != null);
+
+        foreach (Pot pot in potsNotNull)
+            this.pots.TryAdd(pot.Id, pot);
     }
 
     public void ClearGems()
@@ -36,7 +38,7 @@ internal class PotCollection
             pot.Gems.Clear();
     }
 
-    public GemAddReport AddGem(string key, Gem gem)
+    public GemAddReport AddGem(Guid key, Gem gem)
     {
         if (gem == null) throw new ArgumentNullException(nameof(gem));
 

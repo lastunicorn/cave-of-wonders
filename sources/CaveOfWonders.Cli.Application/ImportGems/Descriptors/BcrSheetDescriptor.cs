@@ -16,47 +16,39 @@
 
 using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
 
-internal class RevolutSheetCsvFile
+internal class BcrSheetDescriptor : ISheetDescriptor
 {
-    private static readonly ColumnDescriptor[] ColumnDescriptors =
+    public ColumnDescriptor[] ColumnDescriptors { get; } =
     {
         new()
         {
             Index = 2,
             DateIndex = 0,
             Format = ValueFormat.Lei,
-            Key = "current-account"
+            Key = new Guid("e1e5eb84-5588-4521-9827-7818a265ba83")
         },
         new()
         {
             Index = 3,
             DateIndex = 0,
-            Format = ValueFormat.Euro,
-            Key = "current-account-euro"
+            Format = ValueFormat.Lei,
+            Key = new Guid("aeb2e61c-8aa3-4cae-9f99-bd1183932994")
+        },
+        new()
+        {
+            Index = 4,
+            DateIndex = 0,
+            Format = ValueFormat.Lei,
+            Key = new Guid("8f938853-de17-4c07-a582-cf40bb7afd25")
         },
         new()
         {
             Index = 5,
             DateIndex = 0,
-            Format = ValueFormat.Lei,
-            Key = "savings-account"
+            Format = ValueFormat.Euro,
+            Key = new Guid("ff463ade-ec2c-4c1e-b00c-9eb47c96914b")
         }
     };
-
-    private readonly string filePath;
-
-    public RevolutSheetCsvFile(string filePath)
-    {
-        this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
-    }
-
-    public IEnumerable<SheetValue> Read()
-    {
-        return File.ReadLines(filePath)
-            .Skip(1)
-            .Select(x => new SheetRecord(x, ColumnDescriptors))
-            .SelectMany(x => x.ParseCells());
-    }
 }
