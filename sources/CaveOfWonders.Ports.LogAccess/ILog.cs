@@ -18,5 +18,7 @@ namespace DustInTheWind.CaveOfWonders.Ports.LogAccess;
 
 public interface ILog
 {
+    void WriteSeparator();
+
     void WriteInfo(string text);
 }

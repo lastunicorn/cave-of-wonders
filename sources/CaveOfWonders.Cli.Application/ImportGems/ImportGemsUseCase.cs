@@ -38,7 +38,7 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 
     public async Task<ImportGemsResponse> Handle(ImportGemsRequest request, CancellationToken cancellationToken)
     {
-        log.WriteInfo(new string('-', 100));
+        log.WriteSeparator();
         log.WriteInfo($"---> Starting import of {request.PotCategory.ToDisplayString()} Sheet.");
         log.WriteInfo($"---> Import from file: {request.SourceFilePath}");
 
@@ -60,7 +60,7 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 
         await unitOfWork.SaveChanges();
 
-        log.WriteInfo(new string('-', 100));
+        log.WriteSeparator();
 
         return new ImportGemsResponse
         {

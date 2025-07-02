@@ -40,6 +40,11 @@ public sealed class Log : ILog, IDisposable, IAsyncDisposable
         streamWriter = new StreamWriter(filePath, fileStreamOptions);
     }
 
+    public void WriteSeparator()
+    {
+        WriteInfo(new string('-', 100));
+    }
+
     public void WriteInfo(string text)
     {
         DateTime now = DateTime.Now;
