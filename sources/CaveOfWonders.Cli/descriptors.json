@@ -70,6 +70,46 @@
     ]
   },
   {
+    "name": "Revolut",
+    "columns": [
+      {
+        "pot-id": "596569be-1a07-40eb-b86b-054738e0a4c3",
+        "value-index": 2,
+        "date-index": 0
+      },
+      {
+        "pot-id": "50e27d7e-9175-4144-a852-a317c3c3a4e3",
+        "value-index": 3,
+        "date-index": 0
+      },
+      {
+        "pot-id": "5eca3af2-3fee-4636-80aa-626cf7bb7bb0",
+        "value-index": 5,
+        "date-index": 0
+      },
+      {
+        "pot-id": "478e7ff2-d5c6-45f2-8efb-bfc1128a6f16",
+        "value-index": 6,
+        "date-index": 0
+      }
+    ]
+  },
+  {
+    "name": "Salt",
+    "columns": [
+      {
+        "pot-id": "9b19a400-8446-4ce8-b821-ce5c526eb123",
+        "value-index": 2,
+        "date-index": 0
+      },
+      {
+        "pot-id": "92fd42e3-b3e6-425e-8bc9-86b060c9b134",
+        "value-index": 3,
+        "date-index": 0
+      }
+    ]
+  },
+  {
     "name": "Cash",
     "columns": [
       {
@@ -95,36 +135,6 @@
     ]
   },
   {
-    "name": "Revolut",
-    "columns": [
-      {
-        "pot-id": "596569be-1a07-40eb-b86b-054738e0a4c3",
-        "value-index": 2,
-        "date-index": 0
-      },
-      {
-        "pot-id": "50e27d7e-9175-4144-a852-a317c3c3a4e3",
-        "value-index": 3,
-        "date-index": 0
-      },
-      {
-        "pot-id": "5eca3af2-3fee-4636-80aa-626cf7bb7bb0",
-        "value-index": 5,
-        "date-index": 0
-      }
-    ]
-  },
-  {
-    "name": "Salt",
-    "columns": [
-      {
-        "pot-id": "9b19a400-8446-4ce8-b821-ce5c526eb123",
-        "value-index": 2,
-        "date-index": 0
-      }
-    ]
-  },
-  {
     "name": "XTB",
     "columns": [
       {
@@ -135,6 +145,16 @@
       {
         "pot-id": "f39128a9-775b-4a9e-9196-5517d1f4b8a6",
         "value-index": 3,
+        "date-index": 0
+      }
+    ]
+  },
+  {
+    "name": "Salt Depozite",
+    "columns": [
+      {
+        "pot-id": "a8a1db83-c1e0-4feb-85fa-47c681a2afe8",
+        "value-index": 2,
         "date-index": 0
       }
     ]

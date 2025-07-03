@@ -18,7 +18,7 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.CreatePot;
 
-public class CreatePotRequest : IRequest
+public class CreatePotRequest : IRequest<CreatePotResponse>
 {
     public string Name { get; set; }
     

@@ -52,12 +52,13 @@ internal class CreatePotCommand : IConsoleCommand<CreatePotViewModel>
             Currency = Currency
         };
 
-        await mediator.Send(request);
+        CreatePotResponse response = await mediator.Send(request);
         
         return new CreatePotViewModel
         {
             PotName = Name,
-            Currency = Currency
+            Currency = Currency,
+            PotId = response.PotId
         };
     }
 }

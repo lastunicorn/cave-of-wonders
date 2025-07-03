@@ -21,7 +21,7 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.CreatePot;
 
-public class CreatePotUseCase : IRequestHandler<CreatePotRequest>
+public class CreatePotUseCase : IRequestHandler<CreatePotRequest, CreatePotResponse>
 {
     private readonly IUnitOfWork unitOfWork;
     private readonly ISystemClock systemClock;
@@ -32,7 +32,7 @@ public class CreatePotUseCase : IRequestHandler<CreatePotRequest>
         this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
     }
 
-    public async Task Handle(CreatePotRequest request, CancellationToken cancellationToken)
+    public async Task<CreatePotResponse> Handle(CreatePotRequest request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request.Name))
             throw new PotNameNotSpecifiedException();
@@ -53,6 +53,11 @@ public class CreatePotUseCase : IRequestHandler<CreatePotRequest>
         {
             await unitOfWork.PotRepository.Add(pot);
             await unitOfWork.SaveChanges();
+            
+            return new CreatePotResponse
+            {
+                PotId = pot.Id
+            };
         }
         catch (Exception ex)
         {

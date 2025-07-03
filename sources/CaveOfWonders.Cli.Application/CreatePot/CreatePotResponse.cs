@@ -14,11 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.CreatePot;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.CreatePot;
 
-internal class CreatePotViewModel
+public class CreatePotResponse
 {
-    public string PotName { get; set; }
-    public string Currency { get; set; }
     public Guid PotId { get; set; }
 }

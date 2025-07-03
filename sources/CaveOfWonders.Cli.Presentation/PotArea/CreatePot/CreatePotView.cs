@@ -24,5 +24,6 @@ internal class CreatePotView : ViewBase<CreatePotViewModel>
     public override void Display(CreatePotViewModel viewModel)
     {
         CustomConsole.WriteLineSuccess($"Pot '{viewModel.PotName}' with currency '{viewModel.Currency}' created successfully.");
+        CustomConsole.WriteLineSuccess($"Pot ID: {viewModel.PotId}");
     }
 }
