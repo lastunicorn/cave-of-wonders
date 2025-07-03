@@ -162,7 +162,7 @@ public class Database
     {
         PotsDirectory potsDirectory = new(databaseDirectoryPath);
 
-        if (potsDirectory.Exists)
+        if (!potsDirectory.Exists)
             potsDirectory.Create();
 
         foreach (Pot pot in Pots)

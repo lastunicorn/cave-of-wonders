@@ -24,8 +24,6 @@ internal class GemImport
 {
     public PotCollection Pots { get; set; }
 
-    public bool Overwrite { get; set; }
-
     public ILog Log { get; set; }
 
     public ImportReport Report { get; private set; }
@@ -33,9 +31,6 @@ internal class GemImport
     public void Execute(IEnumerable<SheetValue> sheetValues)
     {
         Report = new ImportReport();
-
-        if (Overwrite)
-            Pots.ClearGems();
 
         foreach (SheetValue sheetValue in sheetValues)
         {

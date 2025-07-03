@@ -45,13 +45,13 @@ internal class PotsViewModel
                 Id = x.Id,
                 Name = x.Name,
                 OriginalValue = x.IsActive
-                    ? x.OriginalValue
+                    ? x.Value
                     : null,
-                IsValueActual = x.OriginalValue.Date == presentStateResponse.Date,
-                IsValueAlreadyNormal = x.OriginalValue?.Currency == x.NormalizedValue?.Currency,
+                IsValueActual = x.Value?.Date == presentStateResponse.Date,
+                IsValueAlreadyNormal = x.Value?.Currency == x.NormalizedValue?.Currency,
                 IsNormalizedCurrent = x.NormalizedValue?.Date == Date,
                 Date = x.IsActive
-                    ? x.OriginalValue?.Date
+                    ? x.Value?.Date
                     : null,
                 NormalizedValue = x.NormalizedValue,
                 IsPotActive = x.IsActive

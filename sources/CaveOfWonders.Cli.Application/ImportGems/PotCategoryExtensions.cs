@@ -27,6 +27,9 @@ internal static class PotCategoryExtensions
             PotCategory.Brd => "BRD",
             PotCategory.Bt => "BT",
             PotCategory.Revolut => "Revolut",
+            PotCategory.Cash => "Cash",
+            PotCategory.Gold => "Gold",
+            PotCategory.Xtb => "XTB",
             _ => throw new ArgumentOutOfRangeException(nameof(potCategory), potCategory, null)
         };
     }

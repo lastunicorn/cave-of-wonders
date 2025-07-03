@@ -52,6 +52,7 @@ internal class ImportGemsCommand : IConsoleCommand<ImportGemsViewModel>
                 ImportCategory.Revolut => PotCategory.Revolut,
                 ImportCategory.Cash => PotCategory.Cash,
                 ImportCategory.Gold => PotCategory.Gold,
+                ImportCategory.Xtb => PotCategory.Xtb,
                 _ => throw new ArgumentOutOfRangeException()
             },
             SourceFilePath = SourceCsvFilePath,

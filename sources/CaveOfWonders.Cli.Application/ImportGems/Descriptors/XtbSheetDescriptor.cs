@@ -14,17 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.ImportGems;
+using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
-internal enum ImportCategory
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
+
+internal class XtbSheetDescriptor : ISheetDescriptor
 {
-    Unspecified = 0,
-    Bcr,
-    Ing,
-    Brd,
-    Bt,
-    Revolut,
-    Cash,
-    Gold,
-    Xtb
+    public ColumnDescriptor[] ColumnDescriptors { get; } =
+    {
+        new()
+        {
+            Index = 3,
+            DateIndex = 0,
+            Format = ValueFormat.Euro,
+            Key = new Guid("f39128a9-775b-4a9e-9196-5517d1f4b8a6")
+        },
+    };
 }

@@ -38,6 +38,17 @@ internal class PotCollection
             pot.Gems.Clear();
     }
 
+    public void ClearGems(IEnumerable<Guid> potIds)
+    {
+        foreach (Guid potId in potIds)
+        {
+            bool success = pots.TryGetValue(potId, out Pot pot);
+
+            if (success)
+                pot.Gems.Clear();
+        }
+    }
+
     public GemAddReport AddGem(Guid key, Gem gem)
     {
         if (gem == null) throw new ArgumentNullException(nameof(gem));

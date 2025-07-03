@@ -49,14 +49,24 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 
         log.WriteInfo($"---> Import type: {importTypeDescription}");
 
+        SheetDescriptors sheetDescriptors = new();
+        ISheetDescriptor sheetDescriptor = sheetDescriptors.Get(request.PotCategory);
+
+        PotCollection potCollection = await RetrievePotsToPopulate();
+
+        if (request.Overwrite)
+        {
+            IEnumerable<Guid> potIds = sheetDescriptor.ColumnDescriptors.Select(x => x.Key);
+            potCollection.ClearGems(potIds);
+        }
+
         GemImport gemImport = new()
         {
-            Pots = await RetrievePotsToPopulate(),
-            Overwrite = request.Overwrite,
+            Pots = potCollection,
             Log = log
         };
 
-        IEnumerable<SheetValue> sheetsValues = GetRecordsToImport(request);
+        IEnumerable<SheetValue> sheetsValues = sheets.GetRecords(request.SourceFilePath, sheetDescriptor);
         gemImport.Execute(sheetsValues);
 
         await unitOfWork.SaveChanges();
@@ -77,12 +87,5 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
         potCollection.AddRange(pots);
 
         return potCollection;
-    }
-
-    private IEnumerable<SheetValue> GetRecordsToImport(ImportGemsRequest request)
-    {
-        SheetDescriptors sheetDescriptors = new();
-        ISheetDescriptor sheetDescriptor = sheetDescriptors.Get(request.PotCategory);
-        return sheets.GetRecords(request.SourceFilePath, sheetDescriptor);
     }
 }

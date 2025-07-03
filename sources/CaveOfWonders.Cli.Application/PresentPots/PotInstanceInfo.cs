@@ -22,7 +22,7 @@ public class PotInstanceInfo
 
     public string Name { get; set; }
 
-    public CurrencyValue OriginalValue { get; set; }
+    public CurrencyValue Value { get; set; }
 
     public CurrencyValue NormalizedValue { get; set; }
 

@@ -28,7 +28,8 @@ internal class SheetDescriptors
         { PotCategory.Bt, new BtSheetDescriptor() },
         { PotCategory.Revolut, new RevolutSheetDescriptor() },
         { PotCategory.Cash, new CashSheetDescriptor() },
-        { PotCategory.Gold, new GoldSheetDescriptor() }
+        { PotCategory.Gold, new GoldSheetDescriptor() },
+        { PotCategory.Xtb, new XtbSheetDescriptor() }
     };
 
     public ISheetDescriptor Get(PotCategory potCategory)

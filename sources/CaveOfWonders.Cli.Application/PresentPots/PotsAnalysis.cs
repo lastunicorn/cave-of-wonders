@@ -45,15 +45,15 @@ internal class PotsAnalysis
     {
         // Group pot instances by currency and calculate the sum for each currency
         IEnumerable<IGrouping<string, PotInstanceInfo>> currencyGroups = PotInstanceInfos
-            .Where(x => x.OriginalValue != null)
-            .GroupBy(x => x.OriginalValue.Currency);
+            .Where(x => x.Value != null)
+            .GroupBy(x => x.Value.Currency);
 
         List<CurrencyTotalOverview> overviews = [];
 
         foreach (IGrouping<string, PotInstanceInfo> group in currencyGroups)
         {
             string currency = group.Key;
-            decimal value = group.Sum(x => x.OriginalValue?.Value ?? 0);
+            decimal value = group.Sum(x => x.Value?.Value ?? 0);
 
             CurrencyValue currencyValue = new()
             {

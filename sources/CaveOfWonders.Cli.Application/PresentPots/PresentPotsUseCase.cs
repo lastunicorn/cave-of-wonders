@@ -93,10 +93,10 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
             Id = potInstance.Pot.Id,
             Name = potInstance.Pot.Name,
             IsActive = potInstance.Pot.IsActive(currentDate),
-            OriginalValue = ComputeOriginalValue(potInstance)
+            Value = ComputeOriginalValue(potInstance)
         };
 
-        potInstanceInfo.NormalizedValue = await currenciesConverter.Convert(potInstanceInfo.OriginalValue, defaultCurrency, currentDate);
+        potInstanceInfo.NormalizedValue = await currenciesConverter.Convert(potInstanceInfo.Value, defaultCurrency, currentDate);
 
         return potInstanceInfo;
     }

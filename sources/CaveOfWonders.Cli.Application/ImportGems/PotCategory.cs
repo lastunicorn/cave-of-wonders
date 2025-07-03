@@ -24,5 +24,6 @@ public enum PotCategory
     Bt,
     Revolut,
     Cash,
-    Gold
+    Gold,
+    Xtb
 }
