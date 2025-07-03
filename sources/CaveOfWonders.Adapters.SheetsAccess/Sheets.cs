@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
+using Newtonsoft.Json;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
 
@@ -23,5 +24,14 @@ public class Sheets : ISheets
     public IExcelSpreadsheet GetExcelSpreadsheet(string filePath)
     {
         return new ExcelSpreadsheet(filePath);
+    }
+
+    public IEnumerable<SheetDescriptor> GetDescriptors(string location)
+    {
+        string json = File.ReadAllText(location);
+        List<JSheetDescriptor> jSheetDescriptors = JsonConvert.DeserializeObject<List<JSheetDescriptor>>(json);
+
+        return jSheetDescriptors
+            .Select(x => x.ToSheetDescriptor());
     }
 }

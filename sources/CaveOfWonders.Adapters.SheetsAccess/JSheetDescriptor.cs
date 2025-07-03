@@ -14,22 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
-
-internal class BtSheetDescriptor : ISheetDescriptor
+internal class JSheetDescriptor
 {
-    public string Name => "BT";
+    public string Name { get; set; }
 
-    public ColumnDescriptor[] ColumnDescriptors { get; } =
-    {
-        new()
-        {
-            Index = 2,
-            DateIndex = 0,
-            Format = ValueFormat.Euro,
-            Key = new Guid("889d781f-4967-4590-b143-d494ce121d2f")
-        }
-    };
+    public List<JColumnDescriptor> Columns { get; set; }
 }

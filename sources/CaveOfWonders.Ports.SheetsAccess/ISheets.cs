@@ -21,4 +21,6 @@ namespace DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 public interface ISheets
 {
     IExcelSpreadsheet GetExcelSpreadsheet(string filePath);
+
+    IEnumerable<SheetDescriptor> GetDescriptors(string location);
 }

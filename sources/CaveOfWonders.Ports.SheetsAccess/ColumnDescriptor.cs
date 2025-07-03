@@ -22,7 +22,5 @@ public class ColumnDescriptor
 
     public int DateIndex { get; set; }
 
-    public ValueFormat Format { get; set; }
-
     public Guid Key { get; set; }
 }

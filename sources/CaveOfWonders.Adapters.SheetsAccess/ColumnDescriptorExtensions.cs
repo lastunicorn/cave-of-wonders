@@ -16,34 +16,28 @@
 
 using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
+namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
 
-internal class RevolutSheetDescriptor : ISheetDescriptor
+internal static class ColumnDescriptorExtensions
 {
-    public string Name => "Revolut";
-
-    public ColumnDescriptor[] ColumnDescriptors { get; } =
+    public static ColumnDescriptor ToColumnDescriptor(this JColumnDescriptor jColumnDescriptor)
     {
-        new()
+        return new ColumnDescriptor
         {
-            Index = 2,
-            DateIndex = 0,
-            Format = ValueFormat.Lei,
-            Key = new Guid("596569be-1a07-40eb-b86b-054738e0a4c3")
-        },
-        new()
+            Index = jColumnDescriptor.Index,
+            DateIndex = jColumnDescriptor.DateIndex,
+            Key = jColumnDescriptor.PotId
+        };
+    }
+
+    public static SheetDescriptor ToSheetDescriptor(this JSheetDescriptor jSheetDescriptor)
+    {
+        return new SheetDescriptor
         {
-            Index = 3,
-            DateIndex = 0,
-            Format = ValueFormat.Euro,
-            Key = new Guid("50e27d7e-9175-4144-a852-a317c3c3a4e3")
-        },
-        new()
-        {
-            Index = 5,
-            DateIndex = 0,
-            Format = ValueFormat.Lei,
-            Key = new Guid("5eca3af2-3fee-4636-80aa-626cf7bb7bb0")
-        }
-    };
+            Name = jSheetDescriptor.Name,
+            ColumnDescriptors = jSheetDescriptor.Columns?
+                .Select(x => x.ToColumnDescriptor())
+                .ToList()
+        };
+    }
 }

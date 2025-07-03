@@ -22,3 +22,10 @@ public interface ISheetDescriptor
 
     ColumnDescriptor[] ColumnDescriptors { get; }
 }
+
+public class SheetDescriptor
+{
+    public string Name { get; set; }
+
+    public List<ColumnDescriptor> ColumnDescriptors { get; set; }
+}

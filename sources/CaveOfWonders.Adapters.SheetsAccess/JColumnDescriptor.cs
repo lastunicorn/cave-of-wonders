@@ -14,22 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
+using Newtonsoft.Json;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
+namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
 
-internal class GoldSheetDescriptor : ISheetDescriptor
+internal class JColumnDescriptor
 {
-    public string Name => "Gold";
+    [JsonProperty("pot-id")]
+    public Guid PotId { get; set; }
 
-    public ColumnDescriptor[] ColumnDescriptors { get; } =
-    {
-        new()
-        {
-            Index = 2,
-            DateIndex = 0,
-            Format = ValueFormat.Grams,
-            Key = new Guid("bf646f1e-75a8-4ef9-a29a-96e34bda6122")
-        }
-    };
+    [JsonProperty("value-index")]
+    public int Index { get; set; }
+
+    [JsonProperty("date-index")]
+    public int DateIndex { get; set; }
 }

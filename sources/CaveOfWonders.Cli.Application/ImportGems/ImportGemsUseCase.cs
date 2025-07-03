@@ -15,7 +15,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
-using DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
@@ -49,17 +48,7 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 
         log.WriteInfo($"---> Import type: {importTypeDescription}");
 
-        ISheetDescriptor[] sheetDescriptors = [
-            new BcrSheetDescriptor(),
-            new IngSheetDescriptor(),
-            new BrdSheetDescriptor(),
-            new BtSheetDescriptor() ,
-            new RevolutSheetDescriptor() ,
-            new CashSheetDescriptor() ,
-            new GoldSheetDescriptor() ,
-            new XtbSheetDescriptor()
-        ];
-
+        List<SheetDescriptor> sheetDescriptors = GetSheetDescriptors();
         PotCollection potCollection = await RetrievePotsToPopulate();
 
         if (request.Overwrite)
@@ -89,6 +78,24 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
         {
             Report = gemImport.Report.ToList()
         };
+    }
+
+    private List<SheetDescriptor> GetSheetDescriptors()
+    {
+        return sheets.GetDescriptors("descriptors.json")
+            .ToList();
+
+        //return [
+        //    new BcrSheetDescriptor(),
+        //    new IngSheetDescriptor(),
+        //    new BrdSheetDescriptor(),
+        //    new BtSheetDescriptor(),
+        //    new RevolutSheetDescriptor(),
+        //    new CashSheetDescriptor(),
+        //    new GoldSheetDescriptor(),
+        //    new XtbSheetDescriptor(),
+        //    new SaltSheetDescriptor()
+        //];
     }
 
     private async Task<PotCollection> RetrievePotsToPopulate()
