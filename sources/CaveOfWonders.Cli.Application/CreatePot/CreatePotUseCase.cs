@@ -40,12 +40,14 @@ public class CreatePotUseCase : IRequestHandler<CreatePotRequest, CreatePotRespo
         if (string.IsNullOrWhiteSpace(request.Currency))
             throw new PotCurrencyNotSpecifiedException();
 
+        DateTime startDate = request.StartDate ?? systemClock.Today;
+        
         Pot pot = new()
         {
             Id = Guid.NewGuid(),
             Name = request.Name,
             Description = request.Description,
-            StartDate = request.StartDate ?? systemClock.Today,
+            StartDate = startDate,
             Currency = request.Currency
         };
 
@@ -56,7 +58,11 @@ public class CreatePotUseCase : IRequestHandler<CreatePotRequest, CreatePotRespo
             
             return new CreatePotResponse
             {
-                PotId = pot.Id
+                PotId = pot.Id,
+                Name = pot.Name,
+                Description = pot.Description,
+                StartDate = pot.StartDate,
+                Currency = pot.Currency
             };
         }
         catch (Exception ex)

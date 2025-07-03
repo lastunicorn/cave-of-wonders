@@ -19,6 +19,12 @@ namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.CreatePot;
 internal class CreatePotViewModel
 {
     public string PotName { get; set; }
+
     public string Currency { get; set; }
+
     public Guid PotId { get; set; }
+
+    public string Description { get; set; }
+
+    public DateTime StartDate { get; set; }
 }

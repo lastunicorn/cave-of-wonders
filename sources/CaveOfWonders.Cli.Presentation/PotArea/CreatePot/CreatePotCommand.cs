@@ -56,8 +56,10 @@ internal class CreatePotCommand : IConsoleCommand<CreatePotViewModel>
         
         return new CreatePotViewModel
         {
-            PotName = Name,
-            Currency = Currency,
+            PotName = response.Name,
+            Description = response.Description,
+            StartDate = response.StartDate,
+            Currency = response.Currency,
             PotId = response.PotId
         };
     }

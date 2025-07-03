@@ -135,6 +135,16 @@
     ]
   },
   {
+    "name": "Quanloop",
+    "columns": [
+      {
+        "pot-id": "f0486ffe-888e-4fe3-99fd-30caccd00979",
+        "value-index": 2,
+        "date-index": 0
+      }
+    ]
+  },
+  {
     "name": "XTB",
     "columns": [
       {
@@ -155,6 +165,31 @@
       {
         "pot-id": "a8a1db83-c1e0-4feb-85fa-47c681a2afe8",
         "value-index": 2,
+        "date-index": 0
+      }
+    ]
+  },
+  {
+    "name": "Titluri de stat",
+    "columns": [
+      {
+        "pot-id": "bf9659ed-f12f-4d40-a872-318c2619e633",
+        "value-index": 3,
+        "date-index": 0
+      },
+      {
+        "pot-id": "fc93eae3-0abf-4960-813b-8dab1de4fa48",
+        "value-index": 4,
+        "date-index": 0
+      },
+      {
+        "pot-id": "dfa7764b-3556-4159-b9d2-135db26b8f84",
+        "value-index": 6,
+        "date-index": 0
+      },
+      {
+        "pot-id": "68f4dd4d-d629-41fa-b0e9-eac7f0db599e",
+        "value-index": 7,
         "date-index": 0
       }
     ]
