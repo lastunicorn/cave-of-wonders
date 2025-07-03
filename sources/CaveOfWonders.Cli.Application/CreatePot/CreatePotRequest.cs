@@ -1,4 +1,4 @@
-﻿// Cave of Wonders
+// Cave of Wonders
 // Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -14,19 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Domain;
+using MediatR;
 
-namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.CreatePot;
 
-public interface IPotRepository
+public class CreatePotRequest : IRequest
 {
-    Task<IEnumerable<Pot>> GetAll();
-
-    Task<IEnumerable<PotInstance>> GetInstances(DateTime date, DateMatchingMode dateMatchingMode, bool includeInactive);
-
-    Task<IEnumerable<Pot>> GetByPartialId(string partialPotId);
-
-    Task<IEnumerable<Pot>> GetByIdOrName(string idOrName);
+    public string Name { get; set; }
     
-    Task Add(Pot pot);
+    public string Description { get; set; }
+    
+    public DateTime? StartDate { get; set; }
+    
+    public string Currency { get; set; }
 }

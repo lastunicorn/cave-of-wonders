@@ -66,4 +66,13 @@ public class PotRepository : IPotRepository
 
         return Task.FromResult(pots);
     }
+
+    public Task Add(Pot pot)
+    {
+        if (pot == null)
+            throw new ArgumentNullException(nameof(pot));
+            
+        database.Pots.Add(pot);
+        return Task.CompletedTask;
+    }
 }

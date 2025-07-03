@@ -1,4 +1,4 @@
-﻿// Cave of Wonders
+// Cave of Wonders
 // Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -14,19 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Domain;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.CreatePot;
 
-namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
-
-public interface IPotRepository
+public class PotCurrencyNotSpecifiedException : Exception
 {
-    Task<IEnumerable<Pot>> GetAll();
+    private const string DefaultMessage = "Pot currency not specified.";
 
-    Task<IEnumerable<PotInstance>> GetInstances(DateTime date, DateMatchingMode dateMatchingMode, bool includeInactive);
-
-    Task<IEnumerable<Pot>> GetByPartialId(string partialPotId);
-
-    Task<IEnumerable<Pot>> GetByIdOrName(string idOrName);
-    
-    Task Add(Pot pot);
+    public PotCurrencyNotSpecifiedException()
+        : base(DefaultMessage)
+    {
+    }
 }
