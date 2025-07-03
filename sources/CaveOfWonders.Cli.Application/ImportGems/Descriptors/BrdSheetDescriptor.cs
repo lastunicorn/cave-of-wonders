@@ -20,6 +20,8 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
 
 internal class BrdSheetDescriptor : ISheetDescriptor
 {
+    public string Name => "BRD";
+
     public ColumnDescriptor[] ColumnDescriptors { get; } =
     {
         new()

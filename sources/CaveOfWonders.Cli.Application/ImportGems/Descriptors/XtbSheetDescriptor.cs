@@ -20,6 +20,8 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
 
 internal class XtbSheetDescriptor : ISheetDescriptor
 {
+    public string Name => "XTB";
+
     public ColumnDescriptor[] ColumnDescriptors { get; } =
     {
         new()

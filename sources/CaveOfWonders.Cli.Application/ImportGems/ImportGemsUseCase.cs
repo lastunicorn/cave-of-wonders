@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
 using DustInTheWind.CaveOfWonders.Domain;
@@ -40,8 +41,7 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
     public async Task<ImportGemsResponse> Handle(ImportGemsRequest request, CancellationToken cancellationToken)
     {
         log.WriteSeparator();
-        log.WriteInfo($"---> Starting import of {request.PotCategory.ToDisplayString()} Sheet.");
-        log.WriteInfo($"---> Import from file: {request.SourceFilePath}");
+        log.WriteInfo($"---> Starting import from file: {request.SourceFilePath}");
 
         string importTypeDescription = request.Overwrite
             ? "overwrite"
@@ -49,14 +49,24 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 
         log.WriteInfo($"---> Import type: {importTypeDescription}");
 
-        SheetDescriptors sheetDescriptors = new();
-        ISheetDescriptor sheetDescriptor = sheetDescriptors.Get(request.PotCategory);
+        ISheetDescriptor[] sheetDescriptors = [
+            new BcrSheetDescriptor(),
+            new IngSheetDescriptor(),
+            new BrdSheetDescriptor(),
+            new BtSheetDescriptor() ,
+            new RevolutSheetDescriptor() ,
+            new CashSheetDescriptor() ,
+            new GoldSheetDescriptor() ,
+            new XtbSheetDescriptor()
+        ];
 
         PotCollection potCollection = await RetrievePotsToPopulate();
 
         if (request.Overwrite)
         {
-            IEnumerable<Guid> potIds = sheetDescriptor.ColumnDescriptors.Select(x => x.Key);
+            IEnumerable<Guid> potIds = sheetDescriptors
+                .SelectMany(x => x.ColumnDescriptors.Select(x => x.Key));
+
             potCollection.ClearGems(potIds);
         }
 
@@ -66,7 +76,9 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
             Log = log
         };
 
-        IEnumerable<SheetValue> sheetsValues = sheets.GetRecords(request.SourceFilePath, sheetDescriptor);
+        using IExcelSpreadsheet excelSpreadsheet = sheets.GetExcelSpreadsheet(request.SourceFilePath);
+        IEnumerable<SheetValue> sheetsValues = excelSpreadsheet.Read(sheetDescriptors);
+
         gemImport.Execute(sheetsValues);
 
         await unitOfWork.SaveChanges();

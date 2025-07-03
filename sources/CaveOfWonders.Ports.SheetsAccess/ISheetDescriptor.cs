@@ -18,5 +18,7 @@ namespace DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
 public interface ISheetDescriptor
 {
+    string Name { get; }
+
     ColumnDescriptor[] ColumnDescriptors { get; }
 }

@@ -14,26 +14,34 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
+using System.Data;
+using System.Globalization;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
 
-internal class SheetCsvFile
+internal static class DataRowExtensions
 {
-    private readonly string filePath;
-    private readonly ColumnDescriptor[] columnDescriptors;
-
-    public SheetCsvFile(string filePath, ColumnDescriptor[] columnDescriptors)
+    public static DateTime GetDate(this DataRow row, int index)
     {
-        this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
-        this.columnDescriptors = columnDescriptors ?? throw new ArgumentNullException(nameof(columnDescriptors));
+        object value = row[index];
+        return value == DBNull.Value
+            ? DateTime.MinValue
+            : Convert.ToDateTime(value, CultureInfo.InvariantCulture);
     }
 
-    public IEnumerable<SheetValue> Read()
+    public static float GetFloat(this DataRow row, int index)
     {
-        return File.ReadLines(filePath)
-            .Skip(1)
-            .Select(x => new SheetRecord(x, columnDescriptors))
-            .SelectMany(x => x.ParseCells());
+        object value = row[index];
+        return value == DBNull.Value
+            ? 0f
+            : Convert.ToSingle(value, CultureInfo.InvariantCulture);
+    }
+
+    public static decimal GetDecimal(this DataRow row, int index)
+    {
+        object value = row[index];
+        return value == DBNull.Value
+            ? 0m
+            : Convert.ToDecimal(value, CultureInfo.InvariantCulture);
     }
 }

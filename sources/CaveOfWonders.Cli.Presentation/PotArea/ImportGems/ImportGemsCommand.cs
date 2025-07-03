@@ -28,9 +28,6 @@ internal class ImportGemsCommand : IConsoleCommand<ImportGemsViewModel>
     [NamedParameter("source-file", ShortName = 'f', Description = "The full name of the csv file.")]
     public string SourceCsvFilePath { get; set; }
 
-    [NamedParameter("import-category", ShortName = 'c', Description = "The sheet from the ods file that wos exported.\nPossible values: bcr, ing, brd, bt, revolut, cash, gold.")]
-    public ImportCategory ImportCategory { get; set; }
-
     [NamedParameter("overwrite", ShortName = 'x', IsOptional = true, Description = "If specified, the entire pot will be cleared and populated with the current imported gems.")]
     public bool Overwrite { get; set; }
 
@@ -43,18 +40,6 @@ internal class ImportGemsCommand : IConsoleCommand<ImportGemsViewModel>
     {
         ImportGemsRequest request = new()
         {
-            PotCategory = ImportCategory switch
-            {
-                ImportCategory.Bcr => PotCategory.Bcr,
-                ImportCategory.Ing => PotCategory.Ing,
-                ImportCategory.Brd => PotCategory.Brd,
-                ImportCategory.Bt => PotCategory.Bt,
-                ImportCategory.Revolut => PotCategory.Revolut,
-                ImportCategory.Cash => PotCategory.Cash,
-                ImportCategory.Gold => PotCategory.Gold,
-                ImportCategory.Xtb => PotCategory.Xtb,
-                _ => throw new ArgumentOutOfRangeException()
-            },
             SourceFilePath = SourceCsvFilePath,
             Overwrite = Overwrite
         };

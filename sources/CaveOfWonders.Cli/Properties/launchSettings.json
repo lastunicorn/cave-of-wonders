@@ -2,7 +2,7 @@
   "profiles": {
     "CaveOfWonders.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "import-gems -f c:\\Temp\\delme\\finanțe-bcr.csv -c bcr -x"
+      "commandLineArgs": "import-gems -f c:\\Temp\\finanțe.xlsx -c ing -x"
     }
   }
 }

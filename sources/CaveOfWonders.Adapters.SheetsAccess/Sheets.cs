@@ -20,9 +20,8 @@ namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
 
 public class Sheets : ISheets
 {
-    public IEnumerable<SheetValue> GetRecords(string location, ISheetDescriptor sheetDescriptor)
+    public IExcelSpreadsheet GetExcelSpreadsheet(string filePath)
     {
-        SheetCsvFile sheetCsvFile = new(location, sheetDescriptor.ColumnDescriptors);
-        return sheetCsvFile.Read();
+        return new ExcelSpreadsheet(filePath);
     }
 }

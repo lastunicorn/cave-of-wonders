@@ -18,8 +18,10 @@ using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
 
-internal class BcrSheetDescriptor : ISheetDescriptor
+public class BcrSheetDescriptor : ISheetDescriptor
 {
+    public string Name => "BCR";
+
     public ColumnDescriptor[] ColumnDescriptors { get; } =
     {
         new()

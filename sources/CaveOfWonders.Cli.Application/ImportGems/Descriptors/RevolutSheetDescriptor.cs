@@ -20,6 +20,8 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
 
 internal class RevolutSheetDescriptor : ISheetDescriptor
 {
+    public string Name => "Revolut";
+
     public ColumnDescriptor[] ColumnDescriptors { get; } =
     {
         new()

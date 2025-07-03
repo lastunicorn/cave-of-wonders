@@ -20,8 +20,6 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;
 
 public class ImportGemsRequest : IRequest<ImportGemsResponse>
 {
-    public PotCategory PotCategory { get; set; }
-
     public string SourceFilePath { get; set; }
 
     public bool Overwrite { get; set; }

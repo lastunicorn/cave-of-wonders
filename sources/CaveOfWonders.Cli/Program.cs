@@ -14,10 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
 using DustInTheWind.CaveOfWonders.Cli.Presentation;
+using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.ConsoleTools.Commando.Setup.Autofac;
+using Newtonsoft.Json.Linq;
 
 namespace DustInTheWind.CaveOfWonders.Cli;
 
@@ -25,6 +28,8 @@ internal static class Program
 {
     public static async Task Main(string[] args)
     {
+        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
         ConsoleTools.Commando.Application application = ApplicationBuilder.Create()
             .ConfigureServices(DependenciesSetup.Configure)
             .RegisterCommandsFrom(typeof(PresentationAssemblyHandle).Assembly)
@@ -38,4 +43,4 @@ internal static class Program
     {
         CustomConsole.WriteError(e.Exception);
     }
-} 
+}

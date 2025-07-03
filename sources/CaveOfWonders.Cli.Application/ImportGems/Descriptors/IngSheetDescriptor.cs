@@ -20,9 +20,11 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
 
 internal class IngSheetDescriptor : ISheetDescriptor
 {
+    public string Name => "ING";
+
     public ColumnDescriptor[] ColumnDescriptors { get; } =
     {
-        new()
+    new ()
         {
             Index = 2,
             DateIndex = 0,

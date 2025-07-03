@@ -20,6 +20,8 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Descriptors;
 
 internal class CashSheetDescriptor : ISheetDescriptor
 {
+    public string Name => "Cash";
+
     public ColumnDescriptor[] ColumnDescriptors { get; } =
     {
         new()
