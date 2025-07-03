@@ -21,7 +21,7 @@ using MediatR;
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.CreatePot;
 
 [NamedCommand("create-pot", Description = "Create a new pot.")]
-internal class CreatePotCommand : IConsoleCommand
+internal class CreatePotCommand : IConsoleCommand<CreatePotViewModel>
 {
     private readonly IMediator mediator;
 
@@ -42,7 +42,7 @@ internal class CreatePotCommand : IConsoleCommand
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
-    public async Task Execute()
+    public async Task<CreatePotViewModel> Execute()
     {
         CreatePotRequest request = new()
         {
@@ -54,6 +54,10 @@ internal class CreatePotCommand : IConsoleCommand
 
         await mediator.Send(request);
         
-        Console.WriteLine($"Pot '{Name}' created successfully.");
+        return new CreatePotViewModel
+        {
+            PotName = Name,
+            Currency = Currency
+        };
     }
 }
