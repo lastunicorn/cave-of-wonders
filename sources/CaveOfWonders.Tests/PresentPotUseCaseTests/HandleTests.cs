@@ -1,5 +1,5 @@
-﻿using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
+﻿using DustInTheWind.CaveOfWonders.Cli.Application;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
