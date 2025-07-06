@@ -36,9 +36,15 @@ internal class ImportReportDataGrid : DataGrid
             ForegroundColor = ConsoleColor.Green
         });
 
-        _ = Columns.Add(new Column("Skipped")
+        _ = Columns.Add(new Column("Skipped\n(exists)")
         {
             CellHorizontalAlignment = DustInTheWind.ConsoleTools.Controls.HorizontalAlignment.Right
+        });
+
+        _ = Columns.Add(new Column("Skipped\n(pot not active)")
+        {
+            CellHorizontalAlignment = DustInTheWind.ConsoleTools.Controls.HorizontalAlignment.Right,
+            ForegroundColor = ConsoleColor.DarkYellow
         });
     }
 
@@ -51,17 +57,26 @@ internal class ImportReportDataGrid : DataGrid
     private static ContentRow CreateRow(PotImportReport potImportReport)
     {
         string id = potImportReport.PotId.ToString("N")[..8];
-        
+
         string potName = potImportReport.PotName;
-        
+
         string addedCount = potImportReport.AddCount == 0
             ? string.Empty
             : potImportReport.AddCount.ToString();
-        
-        string skippedCount = potImportReport.SkipCount == 0
-            ? string.Empty
-            : potImportReport.SkipCount.ToString();
 
-        return new ContentRow(id, potName, addedCount, skippedCount);
+        string skippedCount = potImportReport.SkipExistsCount == 0
+            ? string.Empty
+            : potImportReport.SkipExistsCount.ToString();
+
+        string skippedNotActiveCount = potImportReport.SkipNotActiveCount == 0
+            ? string.Empty
+            : potImportReport.SkipNotActiveCount.ToString();
+
+        ContentRow contentRow = new(id, potName, addedCount, skippedCount, skippedNotActiveCount);
+
+        if (potName == null)
+            contentRow.ForegroundColor = ConsoleColor.DarkRed;
+
+        return contentRow;
     }
 }

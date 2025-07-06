@@ -22,7 +22,9 @@ public class PotImportReport
     
     public Guid PotId { get; init; }
 
-    public int SkipCount { get; set; }
+    public int SkipExistsCount { get; set; }
+
+    public int SkipNotActiveCount { get; set; }
 
     public int AddCount { get; set; }
 }

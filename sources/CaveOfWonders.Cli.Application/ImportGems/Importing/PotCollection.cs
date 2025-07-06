@@ -29,7 +29,7 @@ internal class PotCollection
         IEnumerable<Pot> potsNotNull = pots.Where(x => x != null);
 
         foreach (Pot pot in potsNotNull)
-            this.pots.TryAdd(pot.Id, pot);
+            this.pots.Add(pot.Id, pot);
     }
 
     public void ClearGems()
@@ -51,16 +51,27 @@ internal class PotCollection
 
     public GemAddReport AddGem(Guid key, Gem gem)
     {
-        if (gem == null) throw new ArgumentNullException(nameof(gem));
+        ArgumentNullException.ThrowIfNull(gem);
 
-        bool success = pots.TryGetValue(key, out Pot pot);
+        bool potExists = pots.TryGetValue(key, out Pot pot);
 
-        if (!success)
+        if (!potExists)
         {
             return new GemAddReport
             {
                 AddStatus = GemAddStatus.PotNotFound,
                 Key = key,
+                Gem = gem
+            };
+        }
+
+        if (!pot.IsActive(gem.Date))
+        {
+            return new GemAddReport
+            {
+                AddStatus = GemAddStatus.PotNotActive,
+                Key = key,
+                Pot = pot,
                 Gem = gem
             };
         }

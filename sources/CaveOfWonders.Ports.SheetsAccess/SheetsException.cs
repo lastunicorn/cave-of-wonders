@@ -14,12 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
+namespace DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
-internal enum GemAddStatus
+[Serializable]
+public class SheetsException : Exception
 {
-    PotNotFound,
-    PotNotActive,
-    GemAlreadyExists,
-    Success
+    public SheetsException()
+    {
+    }
+
+    public SheetsException(string message)
+        : base(message)
+    {
+    }
+
+    public SheetsException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
 }

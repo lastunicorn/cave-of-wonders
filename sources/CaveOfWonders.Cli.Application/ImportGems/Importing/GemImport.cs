@@ -54,7 +54,19 @@ internal class GemImport
             case GemAddStatus.PotNotFound:
             {
                 Gem gem = gemAddReport.Gem;
+
+                Report.GetOrCreateReport(gemAddReport.Key).SkipExistsCount++;
                 Log.WriteInfo($"Gem skipped - Pot unknown for key '{gemAddReport.Key}'. Date = {gem.Date:yyyy-MM-dd}; Value = {gem.Value}");
+                break;
+            }
+
+            case (GemAddStatus.PotNotActive):
+            {
+                Pot pot = gemAddReport.Pot;
+                Gem gem = gemAddReport.Gem;
+
+                Report.GetOrCreateReport(pot).SkipNotActiveCount++;
+                Log.WriteInfo($"Gem skipped - Pot '{pot.Name}' ({pot.Id:D}) is not active for date {gem.Date:yyyy-MM-dd}; Value = {gem.Value}");
                 break;
             }
 
@@ -63,7 +75,7 @@ internal class GemImport
                 Pot pot = gemAddReport.Pot;
                 Gem gem = gemAddReport.Gem;
 
-                Report[pot].SkipCount++;
+                Report.GetOrCreateReport(pot).SkipExistsCount++;
                 Log.WriteInfo($"Gem skipped - Pot '{pot.Name}' ({pot.Id:D}); Date = {gem.Date:yyyy-MM-dd}; Value = {gem.Value}");
                 break;
             }
@@ -73,8 +85,9 @@ internal class GemImport
                 Pot pot = gemAddReport.Pot;
                 Gem gem = gemAddReport.Gem;
 
-                Report[pot].AddCount++;
+                Report.GetOrCreateReport(pot).AddCount++;
                 Log.WriteInfo($"Gem added - Pot '{pot.Name}' ({pot.Id:D}); Date = {gem.Date:yyyy-MM-dd}; Value = {gem.Value}");
+
                 break;
             }
 
@@ -92,7 +105,7 @@ internal class GemImport
             string potName = potImportReport.PotName;
             Guid potId = potImportReport.PotId;
             int addCount = potImportReport.AddCount;
-            int skipCount = potImportReport.SkipCount;
+            int skipCount = potImportReport.SkipExistsCount;
 
             Log.WriteInfo($"Imported gems into {potName} ({potId:D}). Added: {addCount}; Skipped: {skipCount}");
         }

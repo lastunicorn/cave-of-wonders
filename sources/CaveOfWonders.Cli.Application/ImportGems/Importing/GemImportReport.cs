@@ -21,28 +21,45 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
 
 public class GemImportReport : IEnumerable<PotImportReport>
 {
-    private readonly List<PotImportReport> potImportReports = new();
+    private readonly List<PotImportReport> potImportReports = [];
 
-    public PotImportReport this[Pot pot]
+    public PotImportReport GetOrCreateReport(Pot pot)
     {
-        get
+        PotImportReport potImportReport = potImportReports.FirstOrDefault(x => x.PotId == pot.Id);
+
+        return potImportReport ?? CreateAndAddNewReportFor(pot);
+    }
+
+    private PotImportReport CreateAndAddNewReportFor(Pot pot)
+    {
+        PotImportReport potImportReport = new()
         {
-            PotImportReport potImportReport = potImportReports
-                .FirstOrDefault(x => x.PotId == pot.Id);
+            PotId = pot.Id,
+            PotName = pot.Name
+        };
 
-            if (potImportReport == null)
-            {
-                potImportReport = new PotImportReport
-                {
-                    PotId = pot.Id,
-                    PotName = pot.Name
-                };
+        potImportReports.Add(potImportReport);
 
-                potImportReports.Add(potImportReport);
-            }
+        return potImportReport;
+    }
 
-            return potImportReport;
-        }
+    public PotImportReport GetOrCreateReport(Guid potId)
+    {
+        PotImportReport potImportReport = potImportReports.FirstOrDefault(x => x.PotId == potId);
+
+        return potImportReport ?? CreateAndAddNewReportFor(potId);
+    }
+
+    private PotImportReport CreateAndAddNewReportFor(Guid potId)
+    {
+        PotImportReport potImportReport = new()
+        {
+            PotId = potId
+        };
+
+        potImportReports.Add(potImportReport);
+
+        return potImportReport;
     }
 
     public IEnumerator<PotImportReport> GetEnumerator()

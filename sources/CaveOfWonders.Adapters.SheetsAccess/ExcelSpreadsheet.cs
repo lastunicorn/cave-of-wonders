@@ -17,6 +17,7 @@
 using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 using ExcelDataReader;
 using System.Data;
+using System.Globalization;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
 
@@ -33,34 +34,57 @@ public sealed class ExcelSpreadsheet : IExcelSpreadsheet
     public IEnumerable<SheetValue> Read(IEnumerable<SheetMapping> sheetDescriptors)
     {
         return sheetDescriptors
-            .SelectMany(x => ReadSheet(reader, x));
+            .SelectMany(x =>
+            {
+                DataTable dataTable = GetDataTable(x.Name);
+                return ReadSheet(dataTable, x);
+            });
     }
 
-    private IEnumerable<SheetValue> ReadSheet(IExcelDataReader reader, SheetMapping sheetDescriptor)
+    private DataTable GetDataTable(string sheetName)
     {
-        DataSet dataSet = reader.AsDataSet(new ExcelDataSetConfiguration
+        ExcelDataSetConfiguration configuration = new()
         {
             ConfigureDataTable = (_) => new ExcelDataTableConfiguration
             {
-                UseHeaderRow = true // Set to false if no headers
+                UseHeaderRow = true
             }
-        });
+        };
 
-        DataTable sheet = dataSet.Tables[sheetDescriptor.Name];
+        DataSet dataSet = reader.AsDataSet(configuration);
+        DataTable dataTable = dataSet.Tables[sheetName];
 
-        if (sheet == null)
-            throw new Exception($"Sheet '{sheetDescriptor.Name}' not found.");
+        if (dataTable == null)
+            throw new SheetsException($"Sheet '{sheetName}' not found.");
 
+        return dataTable;
+    }
 
-        foreach (DataRow row in sheet.Rows)
+    private static IEnumerable<SheetValue> ReadSheet(DataTable dataTable, SheetMapping sheetDescriptor)
+    {
+        foreach (DataRow row in dataTable.Rows)
         {
             foreach (ColumnMappings columnDescriptor in sheetDescriptor.ColumnDescriptors)
             {
+                object valueRaw = row[columnDescriptor.Index];
+
+                if (valueRaw == DBNull.Value)
+                    continue;
+
+                decimal value = Convert.ToDecimal(valueRaw, CultureInfo.InvariantCulture);
+
+                object dateRaw = row[columnDescriptor.DateIndex];
+
+                if (dateRaw == DBNull.Value)
+                    throw new SheetsException($"Date value missing in column {columnDescriptor.DateIndex} for value in column {columnDescriptor.Index} ({value}) in sheet '{sheetDescriptor.Name}'.");
+
+                DateTime date = Convert.ToDateTime(dateRaw, CultureInfo.InvariantCulture);
+
                 yield return new SheetValue
                 {
                     Key = columnDescriptor.Key,
-                    Date = row.GetDate(columnDescriptor.DateIndex),
-                    Value = row.GetDecimal(columnDescriptor.Index)
+                    Date = date,
+                    Value = value
                 };
             }
         }
