@@ -1,0 +1,50 @@
+<div class="pot-list-container">
+    <h2>Pot Collection</h2>
+
+    <div *ngIf="loading()" class="loading">
+        Loading pots...
+    </div>
+
+    <div *ngIf="error()" class="error-message">
+        {{ error() }}
+        <button (click)="loadPots()" class="retry-button">Retry</button>
+    </div>
+
+    <div *ngIf="!loading() && !error() && pots().length === 0" class="empty-message">
+        No pots found.
+    </div>
+    
+    <!-- Debug information to verify data -->
+    <div class="debug-info">
+        <h3>Debug Information</h3>
+        <p>Loading state: <strong>{{loading()}}</strong></p>
+        <p>Number of pots: <strong>{{pots().length}}</strong></p>
+        <p>Error state: <strong>{{error() || 'None'}}</strong></p>
+        <button (click)="loadPots()" class="retry-button">Reload Data</button>
+    </div>
+
+    <!-- ALWAYS SHOW POTS FOR DEBUGGING -->
+    <div class="pot-grid">
+        <div *ngFor="let pot of pots(); let i = index" class="pot-card">
+            <h3>{{ i + 1 }}. {{ pot.name }}</h3>
+            <p *ngIf="pot.description">{{ pot.description }}</p>
+            <div class="pot-details">
+                <div *ngIf="pot.type" class="detail-item">
+                    <span class="label">Type:</span> {{ pot.type }}
+                </div>
+                <div *ngIf="pot.size" class="detail-item">
+                    <span class="label">Size:</span> {{ pot.size }}
+                </div>
+                <div *ngIf="pot.material" class="detail-item">
+                    <span class="label">Material:</span> {{ pot.material }}
+                </div>
+                <div *ngIf="pot.color" class="detail-item">
+                    <span class="label">Color:</span> {{ pot.color }}
+                </div>
+                <div *ngIf="pot.createdDate" class="detail-item">
+                    <span class="label">Created:</span> {{ pot.createdDate | date }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

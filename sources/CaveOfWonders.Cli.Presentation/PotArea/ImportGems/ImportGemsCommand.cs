@@ -25,8 +25,11 @@ internal class ImportGemsCommand : IConsoleCommand<ImportGemsViewModel>
 {
     private readonly IMediator mediator;
 
-    [NamedParameter("source-file", ShortName = 'f', Description = "The full name of the csv file.")]
-    public string SourceCsvFilePath { get; set; }
+    [NamedParameter("source-file", ShortName = 'f', Description = "The full path of the xlsx file.")]
+    public string SourceFilePath { get; set; }
+
+    [NamedParameter("mappings-file", ShortName = 'm', Description = "The full path of the mappings file. This file specify which column from the spreadsheet to be imported in which pot.")]
+    public string MappingsFilePath { get; set; }
 
     [NamedParameter("overwrite", ShortName = 'x', IsOptional = true, Description = "If specified, the entire pot will be cleared and populated with the current imported gems.")]
     public bool Overwrite { get; set; }
@@ -40,7 +43,8 @@ internal class ImportGemsCommand : IConsoleCommand<ImportGemsViewModel>
     {
         ImportGemsRequest request = new()
         {
-            SourceFilePath = SourceCsvFilePath,
+            SourceFilePath = SourceFilePath,
+            MappingsFilePath = MappingsFilePath,
             Overwrite = Overwrite
         };
 

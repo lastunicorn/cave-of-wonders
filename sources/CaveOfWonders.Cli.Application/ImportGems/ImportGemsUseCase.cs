@@ -39,6 +39,12 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 
     public Task<ImportGemsResponse> Handle(ImportGemsRequest request, CancellationToken cancellationToken)
     {
+        if (request.SourceFilePath is null)
+            throw new SourceFileNotProvidedException();
+
+        if(request.MappingsFilePath is null)
+            throw new SheetMappingsNotProvidedException();
+
         string sourceFilePath = request.SourceFilePath;
         string importType = request.Overwrite
                 ? "overwrite"
@@ -46,7 +52,7 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 
         return log.ExecuteInfo($"Starting import from file: {sourceFilePath}; Import type: {importType};", async () =>
         {
-            List<SheetMapping> sheetMappings = GetSheetMappings();
+            List<SheetMapping> sheetMappings = GetSheetMappings(request.MappingsFilePath);
             PotCollection potCollection = await RetrievePotsToPopulate();
 
             if (request.Overwrite)
@@ -87,9 +93,9 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
         return gemImport.Report;
     }
 
-    private List<SheetMapping> GetSheetMappings()
+    private List<SheetMapping> GetSheetMappings(string sheetMappingsPath)
     {
-        return sheets.GetMappings("descriptors.json")
+        return sheets.GetMappings(sheetMappingsPath)
             .ToList();
     }
 

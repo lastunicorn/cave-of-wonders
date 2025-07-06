@@ -1,0 +1,92 @@
+.pot-list-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.loading,
+.error-message,
+.empty-message {
+    padding: 20px;
+    text-align: center;
+    margin: 20px 0;
+    border-radius: 4px;
+}
+
+.loading {
+    background-color: #e8f5e9;
+    color: #388e3c;
+}
+
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.retry-button {
+    background-color: #c62828;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.empty-message {
+    background-color: #e3f2fd;
+    color: #1565c0;
+}
+
+.debug-info {
+    background-color: #fffde7;
+    border: 1px solid #ffd54f;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.pot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.pot-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.pot-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.pot-card h3 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.pot-details {
+    margin-top: 15px;
+}
+
+.detail-item {
+    margin-bottom: 5px;
+}
+
+.label {
+    font-weight: bold;
+    color: #555;
+}

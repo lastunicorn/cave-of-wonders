@@ -16,8 +16,6 @@
 
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
 using DustInTheWind.ConsoleTools.Commando;
-using DustInTheWind.ConsoleTools.Controls;
-using DustInTheWind.ConsoleTools.Controls.Tables;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.ImportGems;
 
@@ -30,41 +28,26 @@ internal class ImportGemsView : IView<ImportGemsViewModel>
 
     private static void DisplayReports(IEnumerable<PotImportReport> report)
     {
-        DataGrid dataGrid = DataGridTemplate.CreateNew();
-
-        dataGrid.Columns.Add(new Column("Id")
+        ImportReportDataGrid dataGrid = new()
         {
-            ForegroundColor = ConsoleColor.DarkGray
-        });
-        dataGrid.Columns.Add("Pot");
-        dataGrid.Columns.Add(new Column("Added")
-        {
-            CellHorizontalAlignment = HorizontalAlignment.Right
-        });
-        dataGrid.Columns.Add(new Column("Skipped")
-        {
-            CellHorizontalAlignment = HorizontalAlignment.Right
-        });
+            Title = "Import Gems Report",
+            TitleRow =
+            {
+                BackgroundColor = ConsoleColor.Gray,
+                ForegroundColor = ConsoleColor.Black
+            },
+            Border =
+            {
+                ForegroundColor = ConsoleColor.DarkGray
+            },
+            HeaderRow =
+            {
+                ForegroundColor = ConsoleColor.White
+            },
+        };
 
-        IEnumerable<ContentRow> rows = report
-            .Select(CreateRow);
-
-        dataGrid.Rows.AddRange(rows);
+        dataGrid.AddRows(report);
 
         dataGrid.Display();
-    }
-
-    private static ContentRow CreateRow(PotImportReport potImportReport)
-    {
-        string id = potImportReport.PotId.ToString("N")[..8];
-        string potName = potImportReport.PotName;
-        string addedCount = potImportReport.AddCount == 0
-            ? string.Empty
-            : potImportReport.AddCount.ToString();
-        string skippedCount = potImportReport.SkipCount == 0
-            ? string.Empty
-            : potImportReport.SkipCount.ToString();
-
-        return new ContentRow(id, potName, addedCount, skippedCount);
     }
 }

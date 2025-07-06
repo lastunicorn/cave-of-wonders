@@ -14,15 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using MediatR;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;
-
-public class ImportGemsRequest : IRequest<ImportGemsResponse>
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems
 {
-    public string SourceFilePath { get; set; }
-
-    public string MappingsFilePath { get; set; }
-
-    public bool Overwrite { get; set; }
+    [Serializable]
+    internal class SheetMappingsNotProvidedException : Exception
+    {
+        public SheetMappingsNotProvidedException()
+        {
+        }
+    }
 }
