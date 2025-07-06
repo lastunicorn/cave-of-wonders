@@ -1,6 +1,21 @@
 <div class="pot-list-container">
     <h2>Pot Collection</h2>
 
+    <div class="filter-controls">
+        <div class="currency-filter">
+            <label for="currency-select">Filter by Currency:</label>
+            <select 
+                id="currency-select" 
+                [(ngModel)]="selectedCurrency" 
+                (ngModelChange)="onCurrencyChange()"
+                class="currency-dropdown">
+                @for (currency of currencies; track currency.code) {
+                    <option [value]="currency.code">{{ currency.label }}</option>
+                }
+            </select>
+        </div>
+    </div>
+
     <div *ngIf="loading()" class="loading">
         Loading pots...
     </div>

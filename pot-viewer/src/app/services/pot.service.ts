@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PotResponse } from '../models/pot-response.model';
 
@@ -12,7 +12,13 @@ export class PotService {
     constructor(private http: HttpClient) {
     }
 
-    getPots(): Observable<PotResponse> {
-        return this.http.get<PotResponse>(this.apiUrl);
+    getPots(currency?: string): Observable<PotResponse> {
+        let params = new HttpParams();
+        
+        if (currency) {
+            params = params.set('Currency', currency);
+        }
+        
+        return this.http.get<PotResponse>(this.apiUrl, { params });
     }
 }

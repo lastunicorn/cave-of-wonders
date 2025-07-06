@@ -4,6 +4,42 @@
     margin: 0 auto;
 }
 
+.filter-controls {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.currency-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.currency-filter label {
+    font-weight: 500;
+    color: #333;
+}
+
+.currency-dropdown {
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    background-color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.currency-dropdown:hover, 
+.currency-dropdown:focus {
+    border-color: #1565c0;
+    outline: none;
+}
+
 h2 {
     color: #333;
     margin-bottom: 20px;
