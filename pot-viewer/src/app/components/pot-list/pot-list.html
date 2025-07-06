@@ -10,6 +10,69 @@
         <button (click)="loadPots()" class="retry-button">Retry</button>
     </div>
 
+    <!-- Summary Section -->
+    <div class="summary-section" *ngIf="totalValue()">
+        <div class="summary-card total-value">
+            <h3>Total Value</h3>
+            <div class="total-amount">
+                <span class="currency">{{ totalValue()?.currency }}</span>
+                <span class="amount">{{ totalValue()?.value | number:'1.2-2' }}</span>
+            </div>
+            <div class="last-updated" *ngIf="responseDate()">
+                As of {{ responseDate() | date:'mediumDate' }}
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <h3>Account Summary</h3>
+            <div class="summary-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Total Accounts:</span>
+                    <span class="stat-value">{{ potInstances().length }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Active Accounts:</span>
+                    <span class="stat-value">{{ getActivePotCount() }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Currency Breakdown -->
+    <div class="currency-breakdown" *ngIf="currencyOverviews().length > 0">
+        <h3>Currency Breakdown</h3>
+        <div class="currency-overview-grid">
+            <div *ngFor="let overview of currencyOverviews()" class="currency-card">
+                <div class="currency-header">
+                    <span class="currency-code">{{ overview.value && overview.value.currency || 'Unknown' }}</span>
+                    <span class="percentage">{{ overview.percentage | number:'1.2-2' }}%</span>
+                </div>
+                <div class="currency-value" *ngIf="overview.value?.value">
+                    {{ overview.value.value | number:'1.2-2' }}
+                </div>
+                <div class="normalized-value"
+                    *ngIf="overview.normalizedValue?.value && overview.normalizedValue?.currency !== overview.value?.currency">
+                    {{ overview.normalizedValue.currency }} {{ overview.normalizedValue.value | number:'1.2-2' }}
+                </div>
+                <div class="percentage-bar">
+                    <div class="percentage-fill" [style.width.%]="overview.percentage"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conversion Rates -->
+    <div class="conversion-rates" *ngIf="conversionRates().length > 0">
+        <h3>Conversion Rates</h3>
+        <div class="rates-grid">
+            <div *ngFor="let rate of conversionRates()" class="rate-card">
+                <div class="rate-pair">{{ rate.sourceCurrency }} → {{ rate.destinationCurrency }}</div>
+                <div class="rate-value">{{ rate.value }}</div>
+                <div class="rate-date">{{ rate.date | date:'mediumDate' }}</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Debug information to verify data -->
     <div class="debug-info">
         <h3>Debug Information</h3>
@@ -23,21 +86,31 @@
     <div class="pot-accounts-section" *ngIf="potInstances().length > 0">
         <h3>Your Pot Accounts</h3>
         <div class="pot-accounts-grid">
-            <div *ngFor="let account of potInstances(); let i = index" class="account-card" [class.inactive]="!account.isActive">
+            <div *ngFor="let account of potInstances(); let i = index" class="account-card"
+                [class.inactive]="!account.isActive">
                 <div class="account-status" [class.active]="account.isActive" [class.inactive]="!account.isActive">
                     {{ account.isActive ? 'Active' : 'Inactive' }}
                 </div>
                 <h3>{{ account.name }}</h3>
                 <div class="account-balance">
-                    <span class="currency">{{ account.currency }}</span>
-                    <span class="amount">{{ account.balance | number:'1.2-2' }}</span>
+                    <span class="currency">{{ account.value.currency }}</span>
+                    <span class="amount">{{ account.value.value | number:'1.2-2' }}</span>
+                </div>
+                <div *ngIf="account.normalizedValue && account.normalizedValue.currency !== account.value.currency"
+                    class="normalized-value">
+                    <span class="label">Normalized Value:</span>
+                    <span class="currency">{{ account.normalizedValue.currency }}</span>
+                    <span class="amount">{{ account.normalizedValue.value | number:'1.2-2' }}</span>
                 </div>
                 <div class="account-details">
                     <div *ngIf="account.accountNumber" class="detail-item">
                         <span class="label">Account:</span> {{ account.accountNumber }}
                     </div>
-                    <div *ngIf="account.lastUpdated" class="detail-item">
-                        <span class="label">Last Updated:</span> {{ account.lastUpdated | date:'medium' }}
+                    <div *ngIf="account.value.date" class="detail-item">
+                        <span class="label">Value Date:</span> {{ account.value.date | date:'mediumDate' }}
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">ID:</span> {{ account.id }}
                     </div>
                 </div>
             </div>
