@@ -80,21 +80,10 @@ public class PotController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<PresentPotResponse>> GetPot(GetPotRequestDto getPotRequestDto)
     {
-        try
-        {
-            PresentPotRequest request = getPotRequestDto.ToApplicationRequest();
-            PresentPotResponse response = await mediator.Send(request);
+        PresentPotRequest request = getPotRequestDto.ToApplicationRequest();
+        PresentPotResponse response = await mediator.Send(request);
 
-            GetPotResponseDto responseDto = GetPotResponseDto.FromApplicationResponse(response);
-            return Ok(responseDto);
-        }
-        catch (PotIdentifierNotSpecifiedException)
-        {
-            return BadRequest("Pot identifier is required");
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
-        }
+        GetPotResponseDto responseDto = GetPotResponseDto.FromApplicationResponse(response);
+        return Ok(responseDto);
     }
 }

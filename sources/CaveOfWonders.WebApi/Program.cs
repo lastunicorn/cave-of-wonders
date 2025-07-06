@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Reflection;
 using CaveOfWonders.WebApi.Presentation.Controllers;
+using CaveOfWonders.WebApi.Presentation.ErrorHandlers;
 using DustInTheWind.CaveOfWonders.Adapters.BnrAccess;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 using DustInTheWind.CaveOfWonders.Adapters.FileAccess;
@@ -31,7 +31,10 @@ using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 using DustInTheWind.CaveOfWonders.Ports.LogAccess;
 using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
+using DustInTheWind.ErrorFlow.AspNetCore;
+using DustInTheWind.ErrorFlow.AspNetCore.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace DustInTheWind.CaveOfWonders.WebApi;
 
@@ -87,7 +90,15 @@ internal static class Program
             });
         });
 
+        builder.Services.AddErrorFlow(options =>
+        {
+            options.AddErrorHandlersFromAssemblyContaining<DefaultErrorHandler>();
+            options.AddDefaultErrorHandler<DefaultErrorHandler>();
+        });
+
         WebApplication app = builder.Build();
+
+        app.UseErrorFlow();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
