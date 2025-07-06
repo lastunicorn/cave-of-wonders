@@ -10,39 +10,35 @@
         <button (click)="loadPots()" class="retry-button">Retry</button>
     </div>
 
-    <div *ngIf="!loading() && !error() && pots().length === 0" class="empty-message">
-        No pots found.
-    </div>
-    
     <!-- Debug information to verify data -->
     <div class="debug-info">
         <h3>Debug Information</h3>
         <p>Loading state: <strong>{{loading()}}</strong></p>
-        <p>Number of pots: <strong>{{pots().length}}</strong></p>
+        <p>Number of pot instances: <strong>{{potInstances().length}}</strong></p>
         <p>Error state: <strong>{{error() || 'None'}}</strong></p>
         <button (click)="loadPots()" class="retry-button">Reload Data</button>
     </div>
 
-    <!-- ALWAYS SHOW POTS FOR DEBUGGING -->
-    <div class="pot-grid">
-        <div *ngFor="let pot of pots(); let i = index" class="pot-card">
-            <h3>{{ i + 1 }}. {{ pot.name }}</h3>
-            <p *ngIf="pot.description">{{ pot.description }}</p>
-            <div class="pot-details">
-                <div *ngIf="pot.type" class="detail-item">
-                    <span class="label">Type:</span> {{ pot.type }}
+    <!-- Display the pot accounts (instances) -->
+    <div class="pot-accounts-section" *ngIf="potInstances().length > 0">
+        <h3>Your Pot Accounts</h3>
+        <div class="pot-accounts-grid">
+            <div *ngFor="let account of potInstances(); let i = index" class="account-card" [class.inactive]="!account.isActive">
+                <div class="account-status" [class.active]="account.isActive" [class.inactive]="!account.isActive">
+                    {{ account.isActive ? 'Active' : 'Inactive' }}
                 </div>
-                <div *ngIf="pot.size" class="detail-item">
-                    <span class="label">Size:</span> {{ pot.size }}
+                <h3>{{ account.name }}</h3>
+                <div class="account-balance">
+                    <span class="currency">{{ account.currency }}</span>
+                    <span class="amount">{{ account.balance | number:'1.2-2' }}</span>
                 </div>
-                <div *ngIf="pot.material" class="detail-item">
-                    <span class="label">Material:</span> {{ pot.material }}
-                </div>
-                <div *ngIf="pot.color" class="detail-item">
-                    <span class="label">Color:</span> {{ pot.color }}
-                </div>
-                <div *ngIf="pot.createdDate" class="detail-item">
-                    <span class="label">Created:</span> {{ pot.createdDate | date }}
+                <div class="account-details">
+                    <div *ngIf="account.accountNumber" class="detail-item">
+                        <span class="label">Account:</span> {{ account.accountNumber }}
+                    </div>
+                    <div *ngIf="account.lastUpdated" class="detail-item">
+                        <span class="label">Last Updated:</span> {{ account.lastUpdated | date:'medium' }}
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Pot } from '../models/pot.model';
+import { PotResponse } from '../models/pot-response.model';
 
 @Injectable({
     providedIn: 'root'
@@ -12,11 +12,7 @@ export class PotService {
     constructor(private http: HttpClient) {
     }
 
-    getPots(): Observable<Pot[]> {
-        return this.http.get<Pot[]>(this.apiUrl);
-    }
-
-    getPot(id: number): Observable<Pot> {
-        return this.http.get<Pot>(`${this.apiUrl}/${id}`);
+    getPots(): Observable<PotResponse> {
+        return this.http.get<PotResponse>(this.apiUrl);
     }
 }

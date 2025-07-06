@@ -77,6 +77,16 @@ internal static class Program
         builder.Services.AddScoped<ILog, Log>();
         builder.Services.AddSingleton<IFileSystem, FileSystem>();
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAngularApp", builder =>
+            {
+                builder.WithOrigins("http://localhost:4200")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+        });
+
         WebApplication app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -87,6 +97,8 @@ internal static class Program
         }
 
         app.UseHttpsRedirection();
+
+        app.UseCors("AllowAngularApp");
         app.UseAuthorization();
         app.MapControllers();
 
