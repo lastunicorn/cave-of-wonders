@@ -113,8 +113,8 @@
                 </div>
                 <div *ngIf="account.normalizedValue && account.normalizedValue.currency !== account.value.currency"
                     class="normalized-value">
-                    <span class="label">Normalized Value:</span>
-                    <span class="currency">{{ account.normalizedValue.currency }}</span>
+                    <span class="label">Normalized Value: </span>
+                    <span class="currency">{{ account.normalizedValue.currency }} </span>
                     <span class="amount">{{ account.normalizedValue.value | number:'1.2-2' }}</span>
                 </div>
                 <div class="account-details">
