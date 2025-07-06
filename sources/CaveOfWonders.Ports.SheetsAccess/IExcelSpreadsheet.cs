@@ -20,5 +20,5 @@ namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
 
 public interface IExcelSpreadsheet : IDisposable
 {
-    IEnumerable<SheetValue> Read(IEnumerable<SheetDescriptor> sheetDescriptors);
+    IEnumerable<SheetValue> Read(IEnumerable<SheetMapping> sheetDescriptors);
 }

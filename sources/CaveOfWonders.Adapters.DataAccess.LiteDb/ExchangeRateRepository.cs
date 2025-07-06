@@ -168,7 +168,7 @@ public class ExchangeRateRepository : IExchangeRateRepository
         throw new NotImplementedException();
     }
 
-    public Task<ImportReport> Import(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken)
+    public Task<ExchangeRateImportReport> Import(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken)
     {
         ImportProcedure importProcedure = new(dbContext.ExchangeRates);
         importProcedure.Execute(exchangeRates);

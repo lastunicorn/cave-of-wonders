@@ -22,5 +22,5 @@ public interface ISheets
 {
     IExcelSpreadsheet GetExcelSpreadsheet(string filePath);
 
-    IEnumerable<SheetDescriptor> GetDescriptors(string location);
+    IEnumerable<SheetMapping> GetMappings(string location);
 }

@@ -26,10 +26,10 @@ public class Sheets : ISheets
         return new ExcelSpreadsheet(filePath);
     }
 
-    public IEnumerable<SheetDescriptor> GetDescriptors(string location)
+    public IEnumerable<SheetMapping> GetMappings(string location)
     {
         string json = File.ReadAllText(location);
-        List<JSheetDescriptor> jSheetDescriptors = JsonConvert.DeserializeObject<List<JSheetDescriptor>>(json);
+        List<JSheetMapping> jSheetDescriptors = JsonConvert.DeserializeObject<List<JSheetMapping>>(json);
 
         return jSheetDescriptors
             .Select(x => x.ToSheetDescriptor());

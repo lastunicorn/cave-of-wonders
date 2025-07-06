@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
 
-internal class JColumnDescriptor
+internal class JColumnMapping
 {
     [JsonProperty("pot-id")]
     public Guid PotId { get; set; }

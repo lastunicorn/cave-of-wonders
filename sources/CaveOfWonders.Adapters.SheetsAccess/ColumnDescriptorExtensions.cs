@@ -20,9 +20,9 @@ namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
 
 internal static class ColumnDescriptorExtensions
 {
-    public static ColumnDescriptor ToColumnDescriptor(this JColumnDescriptor jColumnDescriptor)
+    public static ColumnMappings ToColumnDescriptor(this JColumnMapping jColumnDescriptor)
     {
-        return new ColumnDescriptor
+        return new ColumnMappings
         {
             Index = jColumnDescriptor.Index,
             DateIndex = jColumnDescriptor.DateIndex,
@@ -30,9 +30,9 @@ internal static class ColumnDescriptorExtensions
         };
     }
 
-    public static SheetDescriptor ToSheetDescriptor(this JSheetDescriptor jSheetDescriptor)
+    public static SheetMapping ToSheetDescriptor(this JSheetMapping jSheetDescriptor)
     {
-        return new SheetDescriptor
+        return new SheetMapping
         {
             Name = jSheetDescriptor.Name,
             ColumnDescriptors = jSheetDescriptor.Columns?

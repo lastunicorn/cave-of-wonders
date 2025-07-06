@@ -19,7 +19,7 @@ using DustInTheWind.CaveOfWonders.Domain;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
 
-public class ImportReport : IEnumerable<PotImportReport>
+public class GemImportReport : IEnumerable<PotImportReport>
 {
     private readonly List<PotImportReport> potImportReports = new();
 

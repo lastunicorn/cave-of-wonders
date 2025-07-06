@@ -36,7 +36,7 @@ public class ImportExchangeRatesResponse
 
     public List<DuplicateReportResponseDto> Duplicates { get; } = new();
 
-    internal ImportExchangeRatesResponse(ImportReport report)
+    internal ImportExchangeRatesResponse(ExchangeRateImportReport report)
     {
         TotalCount = report.TotalCount;
         AddedCount = report.AddedCount;

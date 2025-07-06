@@ -38,7 +38,7 @@ internal class ImportExchangeRatesUseCase : IRequestHandler<ImportExchangeRatesR
     public async Task<ImportExchangeRatesResponse> Handle(ImportExchangeRatesRequest request, CancellationToken cancellationToken)
     {
         IEnumerable<ExchangeRate> exchangeRates = await GetExchangeRatesFromSource(request, cancellationToken);
-        ImportReport report = await unitOfWork.ExchangeRateRepository.Import(exchangeRates, cancellationToken);
+        ExchangeRateImportReport report = await unitOfWork.ExchangeRateRepository.Import(exchangeRates, cancellationToken);
 
         await unitOfWork.SaveChanges();
 

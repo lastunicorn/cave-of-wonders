@@ -14,13 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
 
-public class ColumnDescriptor
+internal class JSheetMapping
 {
-    public int Index { get; set; }
+    public string Name { get; set; }
 
-    public int DateIndex { get; set; }
-
-    public Guid Key { get; set; }
+    public List<JColumnMapping> Columns { get; set; }
 }

@@ -30,13 +30,13 @@ public sealed class ExcelSpreadsheet : IExcelSpreadsheet
         reader = ExcelReaderFactory.CreateReader(stream);
     }
 
-    public IEnumerable<SheetValue> Read(IEnumerable<SheetDescriptor> sheetDescriptors)
+    public IEnumerable<SheetValue> Read(IEnumerable<SheetMapping> sheetDescriptors)
     {
         return sheetDescriptors
             .SelectMany(x => ReadSheet(reader, x));
     }
 
-    private IEnumerable<SheetValue> ReadSheet(IExcelDataReader reader, SheetDescriptor sheetDescriptor)
+    private IEnumerable<SheetValue> ReadSheet(IExcelDataReader reader, SheetMapping sheetDescriptor)
     {
         DataSet dataSet = reader.AsDataSet(new ExcelDataSetConfiguration
         {
@@ -54,7 +54,7 @@ public sealed class ExcelSpreadsheet : IExcelSpreadsheet
 
         foreach (DataRow row in sheet.Rows)
         {
-            foreach (ColumnDescriptor columnDescriptor in sheetDescriptor.ColumnDescriptors)
+            foreach (ColumnMappings columnDescriptor in sheetDescriptor.ColumnDescriptors)
             {
                 yield return new SheetValue
                 {

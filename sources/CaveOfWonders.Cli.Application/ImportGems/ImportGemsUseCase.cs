@@ -37,65 +37,60 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
         this.log = log ?? throw new ArgumentNullException(nameof(log));
     }
 
-    public async Task<ImportGemsResponse> Handle(ImportGemsRequest request, CancellationToken cancellationToken)
+    public Task<ImportGemsResponse> Handle(ImportGemsRequest request, CancellationToken cancellationToken)
     {
-        log.WriteSeparator();
-        log.WriteInfo($"---> Starting import from file: {request.SourceFilePath}");
+        string sourceFilePath = request.SourceFilePath;
+        string importType = request.Overwrite
+                ? "overwrite"
+                : "append";
 
-        string importTypeDescription = request.Overwrite
-            ? "overwrite"
-            : "append";
-
-        log.WriteInfo($"---> Import type: {importTypeDescription}");
-
-        List<SheetDescriptor> sheetDescriptors = GetSheetDescriptors();
-        PotCollection potCollection = await RetrievePotsToPopulate();
-
-        if (request.Overwrite)
+        return log.ExecuteInfo($"Starting import from file: {sourceFilePath}; Import type: {importType};", async () =>
         {
-            IEnumerable<Guid> potIds = sheetDescriptors
-                .SelectMany(x => x.ColumnDescriptors.Select(x => x.Key));
+            List<SheetMapping> sheetMappings = GetSheetMappings();
+            PotCollection potCollection = await RetrievePotsToPopulate();
 
-            potCollection.ClearGems(potIds);
-        }
+            if (request.Overwrite)
+                ClearPots(potCollection, sheetMappings);
 
+            GemImportReport importReport = DoImport(request.SourceFilePath, potCollection, sheetMappings);
+
+            await unitOfWork.SaveChanges();
+
+            return new ImportGemsResponse
+            {
+                Report = importReport.ToList()
+            };
+        });
+    }
+
+    private static void ClearPots(PotCollection potCollection, List<SheetMapping> sheetDescriptors)
+    {
+        IEnumerable<Guid> potIds = sheetDescriptors
+            .SelectMany(x => x.ColumnDescriptors.Select(x => x.Key));
+
+        potCollection.ClearGems(potIds);
+    }
+
+    private GemImportReport DoImport(string sourceFilePath, PotCollection potCollection, List<SheetMapping> sheetDescriptors)
+    {
         GemImport gemImport = new()
         {
             Pots = potCollection,
             Log = log
         };
 
-        using IExcelSpreadsheet excelSpreadsheet = sheets.GetExcelSpreadsheet(request.SourceFilePath);
+        using IExcelSpreadsheet excelSpreadsheet = sheets.GetExcelSpreadsheet(sourceFilePath);
         IEnumerable<SheetValue> sheetsValues = excelSpreadsheet.Read(sheetDescriptors);
 
         gemImport.Execute(sheetsValues);
 
-        await unitOfWork.SaveChanges();
-
-        log.WriteSeparator();
-
-        return new ImportGemsResponse
-        {
-            Report = gemImport.Report.ToList()
-        };
+        return gemImport.Report;
     }
 
-    private List<SheetDescriptor> GetSheetDescriptors()
+    private List<SheetMapping> GetSheetMappings()
     {
-        return sheets.GetDescriptors("descriptors.json")
+        return sheets.GetMappings("descriptors.json")
             .ToList();
-
-        //return [
-        //    new BcrSheetDescriptor(),
-        //    new IngSheetDescriptor(),
-        //    new BrdSheetDescriptor(),
-        //    new BtSheetDescriptor(),
-        //    new RevolutSheetDescriptor(),
-        //    new CashSheetDescriptor(),
-        //    new GoldSheetDescriptor(),
-        //    new XtbSheetDescriptor(),
-        //    new SaltSheetDescriptor()
-        //];
     }
 
     private async Task<PotCollection> RetrievePotsToPopulate()

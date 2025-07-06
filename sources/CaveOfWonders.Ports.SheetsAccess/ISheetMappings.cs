@@ -14,17 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Ports.LogAccess;
+namespace DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
-public interface ILog
+public interface ISheetMappings
 {
-    void WriteSeparator();
+    string Name { get; }
 
-    void WriteInfo(string text);
-
-    void ExecuteInfo(string title, Action action);
-
-    Task ExecuteInfo(string title, Func<Task> action);
-
-    Task<T> ExecuteInfo<T>(string title, Func<Task<T>> action);
+    ColumnMappings[] ColumnDescriptors { get; }
 }

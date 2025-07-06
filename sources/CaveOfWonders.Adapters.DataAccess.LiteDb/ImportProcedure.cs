@@ -28,7 +28,7 @@ internal class ImportProcedure
 
     private BucketCollection<DateTime, ExchangeRateDbEntity> scheduledItems = new();
 
-    public ImportReport Report { get; private set; }
+    public ExchangeRateImportReport Report { get; private set; }
 
     public ImportProcedure(ILiteCollection<ExchangeRateDbEntity> exchangeRatesCollection)
     {
@@ -37,7 +37,7 @@ internal class ImportProcedure
 
     public void Execute(IEnumerable<ExchangeRate> exchangeRates)
     {
-        Report = new ImportReport();
+        Report = new ExchangeRateImportReport();
         scheduledItems = new BucketCollection<DateTime, ExchangeRateDbEntity>();
 
         foreach (ExchangeRate exchangeRate in exchangeRates)

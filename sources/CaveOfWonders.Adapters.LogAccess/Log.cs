@@ -63,4 +63,49 @@ public sealed class Log : ILog, IDisposable, IAsyncDisposable
         if (streamWriter != null)
             await streamWriter.DisposeAsync();
     }
+
+    public void ExecuteInfo(string title, Action action)
+    {
+        WriteSeparator();
+        WriteInfo(title);
+
+        try
+        {
+            action?.Invoke();
+        }
+        finally
+        {
+            WriteSeparator();
+        }
+    }
+
+    public Task ExecuteInfo(string title, Func<Task> action)
+    {
+        WriteSeparator();
+        WriteInfo(title);
+
+        try
+        {
+            return action?.Invoke();
+        }
+        finally
+        {
+            WriteSeparator();
+        }
+    }
+
+    public Task<T> ExecuteInfo<T>(string title, Func<Task<T>> action)
+    {
+        WriteSeparator();
+        WriteInfo(title);
+
+        try
+        {
+            return action?.Invoke();
+        }
+        finally
+        {
+            WriteSeparator();
+        }
+    }
 }

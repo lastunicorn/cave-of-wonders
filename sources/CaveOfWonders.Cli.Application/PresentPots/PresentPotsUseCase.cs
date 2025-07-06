@@ -44,10 +44,12 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
         IEnumerable<PotInstance> potInstances = await RetrievePotInstancesFromStorage(currentDate, request.IncludeInactive);
         List<PotInstanceInfo> potInstanceInfos = await ConvertToPotInstanceInfos(potInstances, currentDate, defaultCurrency);
 
-        PotsAnalysis potsAnalysis = new(currenciesConverter);
-        potsAnalysis.PotInstanceInfos = potInstanceInfos;
-        potsAnalysis.TargetDate = currentDate;
-        potsAnalysis.TargetCurrency = defaultCurrency;
+        PotsAnalysis potsAnalysis = new(currenciesConverter)
+        {
+            PotInstanceInfos = potInstanceInfos,
+            TargetDate = currentDate,
+            TargetCurrency = defaultCurrency
+        };
 
         await potsAnalysis.Calculate();
 

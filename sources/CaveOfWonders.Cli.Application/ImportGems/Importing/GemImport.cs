@@ -26,11 +26,11 @@ internal class GemImport
 
     public ILog Log { get; set; }
 
-    public ImportReport Report { get; private set; }
+    public GemImportReport Report { get; private set; }
 
     public void Execute(IEnumerable<SheetValue> sheetValues)
     {
-        Report = new ImportReport();
+        Report = new GemImportReport();
 
         foreach (SheetValue sheetValue in sheetValues)
         {

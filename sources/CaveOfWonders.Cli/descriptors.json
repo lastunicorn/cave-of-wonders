@@ -106,6 +106,11 @@
         "pot-id": "92fd42e3-b3e6-425e-8bc9-86b060c9b134",
         "value-index": 3,
         "date-index": 0
+      },
+      {
+        "pot-id": "db9d6c8d-8a53-4dc2-afce-7d2e38651968",
+        "value-index": 5,
+        "date-index": 0
       }
     ]
   },
@@ -135,10 +140,40 @@
     ]
   },
   {
+    "name": "Teletrade",
+    "columns": [
+      {
+        "pot-id": "6de5480c-750b-4201-b6f1-676573312f74",
+        "value-index": 2,
+        "date-index": 0
+      }
+    ]
+  },
+  {
     "name": "Quanloop",
     "columns": [
       {
         "pot-id": "f0486ffe-888e-4fe3-99fd-30caccd00979",
+        "value-index": 2,
+        "date-index": 0
+      }
+    ]
+  },
+  {
+    "name": "Mintos",
+    "columns": [
+      {
+        "pot-id": "8d8edb92-2082-4cba-8fc5-4535a29c78ff",
+        "value-index": 2,
+        "date-index": 0
+      }
+    ]
+  },
+  {
+    "name": "PeerBerry",
+    "columns": [
+      {
+        "pot-id": "dc45ea9a-5714-43af-9689-85abe3fa82e6",
         "value-index": 2,
         "date-index": 0
       }
@@ -164,6 +199,16 @@
     "columns": [
       {
         "pot-id": "a8a1db83-c1e0-4feb-85fa-47c681a2afe8",
+        "value-index": 2,
+        "date-index": 0
+      }
+    ]
+  },
+  {
+    "name": "Pilonul 2",
+    "columns": [
+      {
+        "pot-id": "5a9b8b1e-e883-4bb9-b6a9-b002f1693b9b",
         "value-index": 2,
         "date-index": 0
       }

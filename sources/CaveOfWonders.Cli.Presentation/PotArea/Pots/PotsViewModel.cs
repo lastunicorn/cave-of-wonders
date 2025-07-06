@@ -35,11 +35,11 @@ internal class PotsViewModel
 
     public List<CurrencyTotalOverview> CurrencyTotalOverviews { get; }
 
-    public PotsViewModel(PresentPotsResponse presentStateResponse)
+    public PotsViewModel(PresentPotsResponse presentPotsResponse)
     {
-        Date = presentStateResponse.Date;
+        Date = presentPotsResponse.Date;
 
-        Values = presentStateResponse.PotInstances
+        Values = presentPotsResponse.PotInstances
             .Select(x => new PotInstanceViewModel
             {
                 Id = x.Id,
@@ -47,7 +47,7 @@ internal class PotsViewModel
                 OriginalValue = x.IsActive
                     ? x.Value
                     : null,
-                IsValueActual = x.Value?.Date == presentStateResponse.Date,
+                IsValueActual = x.Value?.Date == presentPotsResponse.Date,
                 IsValueAlreadyNormal = x.Value?.Currency == x.NormalizedValue?.Currency,
                 IsNormalizedCurrent = x.NormalizedValue?.Date == Date,
                 Date = x.IsActive
@@ -58,11 +58,11 @@ internal class PotsViewModel
             })
             .ToList();
 
-        ConversionRates = presentStateResponse.ConversionRates
-            .Select(x => new ExchangeRateViewModel(x, x.Date == presentStateResponse.Date))
+        ConversionRates = presentPotsResponse.ConversionRates
+            .Select(x => new ExchangeRateViewModel(x, x.Date == presentPotsResponse.Date))
             .ToList();
 
-        Total = presentStateResponse.Total;
-        CurrencyTotalOverviews = presentStateResponse.CurrencyTotalOverviews;
+        Total = presentPotsResponse.Total;
+        CurrencyTotalOverviews = presentPotsResponse.CurrencyTotalOverviews;
     }
 }
