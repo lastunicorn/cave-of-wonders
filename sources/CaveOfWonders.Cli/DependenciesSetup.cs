@@ -32,6 +32,7 @@ using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR.Extensions.Autofac.DependencyInjection;
 using MediatR.Extensions.Autofac.DependencyInjection.Builder;
+using Microsoft.Extensions.Configuration;
 
 namespace DustInTheWind.CaveOfWonders.Cli;
 
@@ -48,10 +49,17 @@ internal static class DependenciesSetup
         containerBuilder
             .Register(context =>
             {
-                string connectionString = @"C:\Projects.pet\CaveOfWonders-db";
+                IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
+                    .SetBasePath(AppContext.BaseDirectory)
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false);
+
+                IConfiguration configuration = configurationBuilder.Build();
+                string connectionString = configuration.GetConnectionString("DefaultConnection");
+
                 return new Database(connectionString);
             })
             .AsSelf();
+
         containerBuilder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
 
         containerBuilder.RegisterType<SystemClock>().As<ISystemClock>();
