@@ -21,22 +21,41 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb;
 
 public sealed class DbContext : IDisposable
 {
-    private const string DatabaseFilePath = "database.db";
     private readonly LiteDatabase db;
+    private ILiteCollection<ExchangeRateDbEntity> exchangeRates;
+    private ILiteCollection<PotDbEntity> pots;
 
-    internal ILiteCollection<ExchangeRateDbEntity> ExchangeRates { get; }
-    
-    internal ILiteCollection<PotDbEntity> Pots { get; }
-
-    public DbContext()
+    internal ILiteCollection<ExchangeRateDbEntity> ExchangeRates
     {
-        db = new LiteDatabase(DatabaseFilePath);
+        get
+        {
+            if (exchangeRates == null)
+            {
+                exchangeRates = db.GetCollection<ExchangeRateDbEntity>("exchange-rates");
+                exchangeRates.EnsureIndex(static x => x.Date);
+            }
 
-        ExchangeRates = db.GetCollection<ExchangeRateDbEntity>();
-        ExchangeRates.EnsureIndex(static x => x.Date);
-        
-        Pots = db.GetCollection<PotDbEntity>("pots");
-        Pots.EnsureIndex(static x => x.Name);
+            return exchangeRates;
+        }
+    }
+
+    internal ILiteCollection<PotDbEntity> Pots
+    {
+        get
+        {
+            if (pots == null)
+            {
+                pots = db.GetCollection<PotDbEntity>("pots");
+                pots.EnsureIndex(static x => x.Name);
+            }
+
+            return pots;
+        }
+    }
+
+    public DbContext(string filePath)
+    {
+        db = new LiteDatabase(filePath);
     }
 
     public void Dispose()

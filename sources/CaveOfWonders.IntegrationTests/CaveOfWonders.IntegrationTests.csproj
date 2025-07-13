@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 Cave of Wonders
 Copyright (C) 2023-2025 Dust in the Wind
 
@@ -23,20 +23,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <ImplicitUsings>enable</ImplicitUsings>
         <AssemblyName>DustInTheWind.$(MSBuildProjectName)</AssemblyName>
         <RootNamespace>DustInTheWind.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="LiteDB" Version="5.0.21" />
+        <PackageReference Include="coverlet.collector" Version="6.0.0" />
+        <PackageReference Include="FluentAssertions" Version="8.4.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+        <PackageReference Include="xunit" Version="2.5.3" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CaveOfWonders.Domain\CaveOfWonders.Domain.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CaveOfWonders.Infrastructure\CaveOfWonders.Infrastructure.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj" PrivateAssets="All" />
+        <Using Include="Xunit" />
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="DustInTheWind.CaveOfWonders.IntegrationTests"/>
+        <Folder Include="Adapters\DataAccess\Json\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess.LiteDb\CaveOfWonders.Adapters.DataAccess.LiteDb.csproj" />
+      <ProjectReference Include="..\CaveOfWonders.Domain\CaveOfWonders.Domain.csproj" />
     </ItemGroup>
 
 </Project>
