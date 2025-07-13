@@ -14,38 +14,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentInflation;
-
 namespace CaveOfWonders.WebApi.Presentation.Models;
 
 /// <summary>
-/// Response DTO containing inflation records
+/// Details about a duplicate exchange rate record
 /// </summary>
-public class InflationResponseDto
+public class DuplicateReportDto
 {
     /// <summary>
-    /// List of inflation records
+    /// Date of the exchange rate
     /// </summary>
-    public List<InflationRecordDto> InflationRecords { get; set; } = [];
+    public DateTime Date { get; set; }
 
     /// <summary>
-    /// Creates a response DTO from the application response
+    /// Currency pair identifier
     /// </summary>
-    public static InflationResponseDto FromApplicationResponse(PresentInflationResponse response)
-    {
-        InflationResponseDto dto = new();
-        
-        foreach (var record in response.InflationRecords)
-        {
-            InflationRecordDto inflationRecordDto = new()
-            {
-                Year = record.Year,
-                Value = record.Value
-            };
+    public string CurrencyPair { get; set; } = string.Empty;
 
-            dto.InflationRecords.Add(inflationRecordDto);
-        }
+    /// <summary>
+    /// Value of the first duplicate record
+    /// </summary>
+    public decimal Value1 { get; set; }
 
-        return dto;
-    }
+    /// <summary>
+    /// Value of the second duplicate record
+    /// </summary>
+    public decimal Value2 { get; set; }
 }

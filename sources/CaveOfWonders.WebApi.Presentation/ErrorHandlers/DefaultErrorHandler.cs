@@ -9,6 +9,6 @@ public class DefaultErrorHandler : JsonErrorHandler<Exception, string>
  
     protected override string BuildHttpResponseBody(Exception ex)
     {
-        return "An unexpected error occurred. Please try again later.";
+        return "An unexpected error occurred.";
     }
 }

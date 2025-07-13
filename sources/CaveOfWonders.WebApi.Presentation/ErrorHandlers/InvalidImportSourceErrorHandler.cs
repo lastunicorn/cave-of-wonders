@@ -14,20 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace CaveOfWonders.WebApi.Presentation.Models;
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
+using DustInTheWind.ErrorFlow.AspNetCore;
+using System.Net;
 
-/// <summary>
-/// Represents an inflation record for a specific year
-/// </summary>
-public class InflationRecordDto
+namespace CaveOfWonders.WebApi.Presentation.ErrorHandlers;
+
+internal class InvalidImportSourceErrorHandler : JsonErrorHandler<InvalidImportSourceException, string>
 {
-    /// <summary>
-    /// The year for which the inflation rate is recorded
-    /// </summary>
-    public int Year { get; set; }
+    protected override HttpStatusCode HttpStatusCode => HttpStatusCode.BadRequest;
 
-    /// <summary>
-    /// The inflation rate value
-    /// </summary>
-    public decimal Value { get; set; }
+    protected override string BuildHttpResponseBody(InvalidImportSourceException ex)
+    {
+        return $"Invalid import source: {ex.Message}";
+    }
 }

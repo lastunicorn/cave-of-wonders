@@ -3,7 +3,8 @@ using DustInTheWind.ErrorFlow.AspNetCore;
 using System.Net;
 
 namespace CaveOfWonders.WebApi.Presentation.ErrorHandlers;
-public class PotIdentifierNotSpecifiedErrorHandler : JsonErrorHandler<PotIdentifierNotSpecifiedException, string>
+
+internal class PotIdentifierNotSpecifiedErrorHandler : JsonErrorHandler<PotIdentifierNotSpecifiedException, string>
 {
     protected override HttpStatusCode HttpStatusCode => HttpStatusCode.BadRequest;
 

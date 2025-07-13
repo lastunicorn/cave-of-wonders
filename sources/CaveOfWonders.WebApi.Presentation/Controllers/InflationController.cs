@@ -77,37 +77,10 @@ public class InflationController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        try
-        {
-            ImportInflationRequest request = importInflationDto.ToApplicationRequest();
-            ImportInflationResponse response = await mediator.Send(request);
+        ImportInflationRequest request = importInflationDto.ToApplicationRequest();
+        ImportInflationResponse response = await mediator.Send(request);
 
-            ImportInflationResponseDto responseDto = ImportInflationResponseDto.FromApplicationResponse(response);
-            return Ok(responseDto);
-        }
-        catch (InflationFileNotProvidedException)
-        {
-            return BadRequest("Inflation file path not provided");
-        }
-        catch (InvalidImportSourceException ex)
-        {
-            return BadRequest($"Invalid import source: {ex.Message}");
-        }
-        catch (InsWebPageException ex)
-        {
-            return BadRequest($"Failed to access INS web page: {ex.Message}");
-        }
-        catch (InsFileException ex)
-        {
-            return BadRequest($"Failed to process INS file: {ex.Message}");
-        }
-        catch (DataStorageException ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, $"Failed to store data: {ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
-        }
+        ImportInflationResponseDto responseDto = ImportInflationResponseDto.FromApplicationResponse(response);
+        return Ok(responseDto);
     }
 }

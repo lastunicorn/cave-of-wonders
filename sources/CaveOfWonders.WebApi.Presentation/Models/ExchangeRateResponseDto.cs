@@ -16,77 +16,48 @@
 
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 
-namespace CaveOfWonders.WebApi.Presentation.Models
+namespace CaveOfWonders.WebApi.Presentation.Models;
+
+/// <summary>
+/// Response model containing exchange rates information
+/// </summary>
+public class ExchangeRateResponseDto
 {
     /// <summary>
-    /// Response model containing exchange rates information
+    /// Exchange rates grouped by date
     /// </summary>
-    public class ExchangeRateResponseDto
+    public List<DailyExchangeRatesDto> DailyExchangeRates { get; set; } = new();
+    
+    /// <summary>
+    /// Any comments or notes about the exchange rates
+    /// </summary>
+    public string Comments { get; set; }
+    
+    /// <summary>
+    /// Creates a response DTO from the application response
+    /// </summary>
+    public static ExchangeRateResponseDto FromApplication(PresentExchangeRateResponse response)
     {
-        /// <summary>
-        /// Exchange rates grouped by date
-        /// </summary>
-        public List<DailyExchangeRatesDto> DailyExchangeRates { get; set; } = new();
-        
-        /// <summary>
-        /// Any comments or notes about the exchange rates
-        /// </summary>
-        public string? Comments { get; set; }
-        
-        /// <summary>
-        /// Creates a response DTO from the application response
-        /// </summary>
-        public static ExchangeRateResponseDto FromApplication(PresentExchangeRateResponse response)
+        ExchangeRateResponseDto dto = new()
         {
-            ExchangeRateResponseDto dto = new()
-            {
-                DailyExchangeRates = response.DailyExchangeRates?.Select(x => new DailyExchangeRatesDto
-                {
-                    Date = x.Date,
-                    ExchangeRates = x.ExchangeRates.Select(er => new ExchangeRateForCurrencyDto
+            DailyExchangeRates = response.DailyExchangeRates?
+                .Select(x => new DailyExchangeRatesDto
                     {
-                        CurrencyPair = er.CurrencyPair,
-                        Value = er.Value
-                    }).ToList()
-                }).ToList() ?? new List<DailyExchangeRatesDto>()
-            };
+                        Date = x.Date,
+                        ExchangeRates = x.ExchangeRates
+                            .Select(er => new ExchangeRateForCurrencyDto
+                            {
+                                CurrencyPair = er.CurrencyPair,
+                                Value = er.Value
+                            })
+                            .ToList()
+                    })
+                .ToList() ?? []
+        };
 
-            if (response.Comments != null)
-                dto.Comments = response.Comments.ToString();
+        if (response.Comments != null)
+            dto.Comments = response.Comments.ToString();
 
-            return dto;
-        }
-    }
-    
-    /// <summary>
-    /// Exchange rates for a specific date
-    /// </summary>
-    public class DailyExchangeRatesDto
-    {
-        /// <summary>
-        /// The date for which exchange rates are provided
-        /// </summary>
-        public DateTime Date { get; set; }
-        
-        /// <summary>
-        /// List of exchange rates for different currency pairs
-        /// </summary>
-        public List<ExchangeRateForCurrencyDto> ExchangeRates { get; set; } = new();
-    }
-    
-    /// <summary>
-    /// Exchange rate information for a specific currency pair
-    /// </summary>
-    public class ExchangeRateForCurrencyDto
-    {
-        /// <summary>
-        /// Currency pair identifier
-        /// </summary>
-        public string CurrencyPair { get; set; } = string.Empty;
-        
-        /// <summary>
-        /// Exchange rate value
-        /// </summary>
-        public decimal Value { get; set; }
+        return dto;
     }
 }

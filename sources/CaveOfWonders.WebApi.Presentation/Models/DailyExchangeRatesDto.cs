@@ -14,38 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentInflation;
-
 namespace CaveOfWonders.WebApi.Presentation.Models;
 
 /// <summary>
-/// Response DTO containing inflation records
+/// Exchange rates for a specific date
 /// </summary>
-public class InflationResponseDto
+public class DailyExchangeRatesDto
 {
     /// <summary>
-    /// List of inflation records
+    /// The date for which exchange rates are provided
     /// </summary>
-    public List<InflationRecordDto> InflationRecords { get; set; } = [];
-
+    public DateTime Date { get; set; }
+    
     /// <summary>
-    /// Creates a response DTO from the application response
+    /// List of exchange rates for different currency pairs
     /// </summary>
-    public static InflationResponseDto FromApplicationResponse(PresentInflationResponse response)
-    {
-        InflationResponseDto dto = new();
-        
-        foreach (var record in response.InflationRecords)
-        {
-            InflationRecordDto inflationRecordDto = new()
-            {
-                Year = record.Year,
-                Value = record.Value
-            };
-
-            dto.InflationRecords.Add(inflationRecordDto);
-        }
-
-        return dto;
-    }
+    public List<ExchangeRateForCurrencyDto> ExchangeRates { get; set; } = [];
 }

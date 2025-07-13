@@ -102,23 +102,12 @@ public class ExchangeRateController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        try
-        {
-            ConvertRequest request = exchangeRateConvertRequestDto.ToApplication();
-            ConvertResponse response = await mediator.Send(request);
+        ConvertRequest request = exchangeRateConvertRequestDto.ToApplication();
+        ConvertResponse response = await mediator.Send(request);
 
-            ExchangeRateConvertResponseDto responseDto = ExchangeRateConvertResponseDto.FromApplication(response);
+        ExchangeRateConvertResponseDto responseDto = ExchangeRateConvertResponseDto.FromApplication(response);
 
-            return Ok(responseDto);
-        }
-        catch (ExchangeRateUnusableException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
-        }
+        return Ok(responseDto);
     }
 
     /// <summary>
@@ -138,25 +127,10 @@ public class ExchangeRateController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        try
-        {
-            ImportExchangeRatesRequest request = requestDto.ToApplication();
-            ImportExchangeRatesResponse response = await mediator.Send(request);
+        ImportExchangeRatesRequest request = requestDto.ToApplication();
+        ImportExchangeRatesResponse response = await mediator.Send(request);
 
-            ImportExchangeRatesResponseDto responseDto = ImportExchangeRatesResponseDto.FromApplication(response);
-            return Ok(responseDto);
-        }
-        catch (BnrWebsiteAccessException ex)
-        {
-            return BadRequest($"Failed to access BNR website: {ex.Message}");
-        }
-        catch (ImportFileAccessException ex)
-        {
-            return BadRequest($"Failed to access import file: {ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
-        }
+        ImportExchangeRatesResponseDto responseDto = ImportExchangeRatesResponseDto.FromApplication(response);
+        return Ok(responseDto);
     }
 }
