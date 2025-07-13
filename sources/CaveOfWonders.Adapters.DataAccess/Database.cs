@@ -24,11 +24,11 @@ public class Database
 {
     private readonly string databaseDirectoryPath;
 
-    public List<Pot> Pots { get; } = new();
+    public List<Pot> Pots { get; } = [];
 
-    public List<ExchangeRate> ExchangeRates { get; } = new();
+    public List<ExchangeRate> ExchangeRates { get; } = [];
 
-    public List<InflationRecord> InflationRecords { get; } = new();
+    public List<InflationRecord> InflationRecords { get; } = [];
 
     public Database(string location)
     {
@@ -98,6 +98,9 @@ public class Database
                     Date = x.Date,
                     Value = x.Value
                 });
+
+            if (jPot.Labels != null)
+                pot.Labels.AddRange(jPot.Labels);
 
             pot.Gems.AddRange(gems);
 
@@ -175,6 +178,7 @@ public class Database
                 StartDate = pot.StartDate,
                 EndDate = pot.EndDate,
                 Currency = pot.Currency,
+                Labels = pot.Labels?.ToList(),
                 Gems = pot.Gems
                     .Select(x => new JGem
                     {

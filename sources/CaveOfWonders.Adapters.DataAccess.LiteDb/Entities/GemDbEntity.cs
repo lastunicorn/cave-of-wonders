@@ -1,4 +1,4 @@
-﻿// Cave of Wonders
+// Cave of Wonders
 // Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -14,23 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.Entities;
 
-internal class JPot
+internal class GemDbEntity
 {
-    public string Name { get; set; }
+    public DateTime Date { get; set; }
 
-    public string Description { get; set; }
-
-    public uint DisplayOrder { get; set; }
-
-    public DateTime StartDate { get; set; }
-
-    public DateTime? EndDate { get; set; }
-
-    public string Currency { get; set; }
-    
-    public List<string> Labels { get; set; }
-
-    public List<JGem> Gems { get; set; }
+    public decimal Value { get; set; }
 }

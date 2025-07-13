@@ -37,6 +37,8 @@ public class PotDetails
     public DateTime? LastGemDate { get; set; }
 
     public CurrencyValue Value { get; set; }
+    
+    public List<string> Labels { get; }
 
     internal PotDetails(Pot pot)
     {
@@ -47,6 +49,7 @@ public class PotDetails
         EndDate = pot.EndDate;
         Currency = pot.Currency;
         GemCount = pot.Gems.Count;
+        Labels = pot.Labels?.ToList() ?? [];
 
         Gem lastGem = pot.Gems?.Count > 0
             ? pot.Gems[^1]

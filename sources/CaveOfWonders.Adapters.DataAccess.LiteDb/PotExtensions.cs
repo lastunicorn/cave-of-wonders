@@ -1,4 +1,4 @@
-﻿// Cave of Wonders
+// Cave of Wonders
 // Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -14,23 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
+using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
-internal class JPot
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb;
+
+internal static class PotExtensions
 {
-    public string Name { get; set; }
-
-    public string Description { get; set; }
-
-    public uint DisplayOrder { get; set; }
-
-    public DateTime StartDate { get; set; }
-
-    public DateTime? EndDate { get; set; }
-
-    public string Currency { get; set; }
-    
-    public List<string> Labels { get; set; }
-
-    public List<JGem> Gems { get; set; }
+    public static Gem GetGem(this Pot pot, DateTime date, DateMatchingMode dateMatchingMode)
+    {
+        return dateMatchingMode switch
+        {
+            DateMatchingMode.Exact => pot.Gems.FirstOrDefault(z => z.Date == date),
+            DateMatchingMode.LastAvailable => pot.Gems
+                .Where(z => z.Date <= date)
+                .MaxBy(z => z.Date),
+            _ => throw new ArgumentOutOfRangeException(nameof(dateMatchingMode))
+        };
+    }
 }

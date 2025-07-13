@@ -40,6 +40,8 @@ internal class PotDetailsViewModel
     public DateTime? LastGemDate { get; }
 
     public CurrencyValue Value { get; }
+    
+    public List<string> Labels { get; }
 
     public PotDetailsViewModel(PotDetails potDetails)
     {
@@ -55,6 +57,7 @@ internal class PotDetailsViewModel
         GemCount = potDetails.GemCount;
         LastGemDate = potDetails.LastGemDate;
         Value = potDetails.Value;
+        Labels = potDetails.Labels.ToList();
 
         IsActive = potDetails.EndDate == null || potDetails.EndDate >= DateTime.Today;
     }

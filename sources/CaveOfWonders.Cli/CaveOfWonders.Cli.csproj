@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <PackageReference Include="ConsoleTools.Commando" Version="2.1.0" />
         <PackageReference Include="ConsoleTools.Commando.Setup.Autofac" Version="2.1.0" />
         <PackageReference Include="MediatR" Version="13.0.0" />
-        <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" Version="12.3.0" />
+        <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" Version="13.0.0" />
     </ItemGroup>
 
     <ItemGroup>

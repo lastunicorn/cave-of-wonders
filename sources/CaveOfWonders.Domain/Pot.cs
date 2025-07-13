@@ -33,6 +33,8 @@ public class Pot
     public string Currency { get; set; }
 
     public List<Gem> Gems { get; } = [];
+    
+    public List<string> Labels { get; } = [];
 
     public bool IsActive(DateTime date)
     {

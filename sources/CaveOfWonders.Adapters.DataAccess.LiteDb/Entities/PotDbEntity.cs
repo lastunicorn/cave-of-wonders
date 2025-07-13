@@ -1,4 +1,4 @@
-﻿// Cave of Wonders
+// Cave of Wonders
 // Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -14,10 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.Entities;
 
-internal class JPot
+internal class PotDbEntity
 {
+    public Guid Id { get; set; }
+
     public string Name { get; set; }
 
     public string Description { get; set; }
@@ -30,7 +32,7 @@ internal class JPot
 
     public string Currency { get; set; }
     
-    public List<string> Labels { get; set; }
+    public List<string> Labels { get; set; } = [];
 
-    public List<JGem> Gems { get; set; }
+    public List<GemDbEntity> Gems { get; set; } = [];
 }

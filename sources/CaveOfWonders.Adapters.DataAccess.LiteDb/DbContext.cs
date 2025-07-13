@@ -25,13 +25,18 @@ public sealed class DbContext : IDisposable
     private readonly LiteDatabase db;
 
     internal ILiteCollection<ExchangeRateDbEntity> ExchangeRates { get; }
+    
+    internal ILiteCollection<PotDbEntity> Pots { get; }
 
     public DbContext()
     {
         db = new LiteDatabase(DatabaseFilePath);
 
         ExchangeRates = db.GetCollection<ExchangeRateDbEntity>();
-        ExchangeRates.EnsureIndex(x => x.Date);
+        ExchangeRates.EnsureIndex(static x => x.Date);
+        
+        Pots = db.GetCollection<PotDbEntity>("pots");
+        Pots.EnsureIndex(static x => x.Name);
     }
 
     public void Dispose()

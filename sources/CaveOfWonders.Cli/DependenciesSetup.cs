@@ -39,8 +39,7 @@ internal static class DependenciesSetup
 {
     public static void Configure(ContainerBuilder containerBuilder)
     {
-        MediatRConfiguration mediatRConfiguration = MediatRConfigurationBuilder
-            .Create(typeof(PresentPotsRequest).Assembly)
+        MediatRConfiguration mediatRConfiguration = MediatRConfigurationBuilder.Create("", typeof(PresentPotsRequest).Assembly)
             .WithAllOpenGenericHandlerTypesRegistered()
             .Build();
 
