@@ -36,7 +36,7 @@ public class PotRepository : IPotRepository
 
     public Task<IEnumerable<PotInstance>> GetInstances(DateTime date, DateMatchingMode dateMatchingMode, bool includeInactive)
     {
-        IEnumerable<PotInstance> potSnapshots = database.Pots
+        IEnumerable<PotInstance> potInstances = database.Pots
             .Where(x => includeInactive || x.IsActive(date))
             .Select(x => new PotInstance
             {
@@ -44,7 +44,7 @@ public class PotRepository : IPotRepository
                 Gem = x.GetGem(date, dateMatchingMode)
             });
 
-        return Task.FromResult(potSnapshots);
+        return Task.FromResult(potInstances);
     }
 
     public Task<IEnumerable<Pot>> GetByPartialId(string partialPotId)

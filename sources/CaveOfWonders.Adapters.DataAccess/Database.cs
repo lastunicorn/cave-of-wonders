@@ -37,6 +37,9 @@ public class Database
 
     public async Task Load()
     {
+        if (!Directory.Exists(databaseDirectoryPath))
+            Directory.CreateDirectory(databaseDirectoryPath);
+
         await LoadExchangeRates();
         await LoadPots();
         await LoadInflationRates();
@@ -75,6 +78,9 @@ public class Database
 
         PotsDirectory potsDirectory = new(databaseDirectoryPath);
 
+        if (!potsDirectory.Exists)
+            return;
+
         IEnumerable<PotFile> potFiles = potsDirectory.EnumeratePotFiles();
 
         foreach (PotFile potFile in potFiles)
@@ -112,6 +118,9 @@ public class Database
     {
         string filePath = Path.Combine(databaseDirectoryPath, "inflation-rates.json");
         InflationRatesFile inflationRatesFile = new(filePath);
+
+        if (!inflationRatesFile.Exists)
+            return;
 
         IEnumerable<JInflationRecord> jInflationRecords = await inflationRatesFile.Read();
 

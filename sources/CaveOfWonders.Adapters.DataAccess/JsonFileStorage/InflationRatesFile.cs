@@ -22,6 +22,8 @@ internal class InflationRatesFile
 {
     private readonly string filePath;
 
+    public bool Exists => File.Exists(filePath);
+
     public InflationRatesFile(string filePath)
     {
         this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));

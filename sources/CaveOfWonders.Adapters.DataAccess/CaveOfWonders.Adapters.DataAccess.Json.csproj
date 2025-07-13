@@ -35,4 +35,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <ProjectReference Include="..\CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj" PrivateAssets="All" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="DustInTheWind.CaveOfWonders.IntegrationTests"/>
+    </ItemGroup>
+
 </Project>

@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 Cave of Wonders
 Copyright (C) 2023-2025 Dust in the Wind
 
@@ -41,12 +41,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Adapters\DataAccess\Json\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess.LiteDb\CaveOfWonders.Adapters.DataAccess.LiteDb.csproj" />
+      <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess\CaveOfWonders.Adapters.DataAccess.Json.csproj" />
       <ProjectReference Include="..\CaveOfWonders.Domain\CaveOfWonders.Domain.csproj" />
+      <ProjectReference Include="..\CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj" />
     </ItemGroup>
 
 </Project>
