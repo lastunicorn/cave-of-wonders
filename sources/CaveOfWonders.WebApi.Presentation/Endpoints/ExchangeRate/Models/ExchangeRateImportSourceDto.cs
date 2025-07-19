@@ -14,20 +14,26 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace CaveOfWonders.WebApi.Presentation.Models;
-
-/// <summary>
-/// Source options for inflation data import
-/// </summary>
-public enum InflationImportSourceDto
+namespace CaveOfWonders.WebApi.Presentation.Controllers.ExchangeRate.Models
 {
     /// <summary>
-    /// Import from a file
+    /// Source options for exchange rate data import
     /// </summary>
-    File = 0,
-    
-    /// <summary>
-    /// Import from web service
-    /// </summary>
-    Web = 1
+    public enum ExchangeRateImportSourceDto
+    {
+        /// <summary>
+        /// Import from BNR website (National Bank of Romania)
+        /// </summary>
+        BnrWebsite = 0,
+
+        /// <summary>
+        /// Import from BNR file
+        /// </summary>
+        BnrFile = 1,
+
+        /// <summary>
+        /// Import from NBR file
+        /// </summary>
+        BnrNbrFile = 2
+    }
 }

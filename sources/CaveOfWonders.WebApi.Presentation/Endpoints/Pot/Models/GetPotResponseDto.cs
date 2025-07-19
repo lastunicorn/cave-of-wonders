@@ -14,20 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace CaveOfWonders.WebApi.Presentation.Models;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 
-/// <summary>
-/// Represents an inflation record for a specific year
-/// </summary>
-public class InflationRecordDto
+namespace CaveOfWonders.WebApi.Presentation.Controllers.Pot.Models;
+
+public class GetPotResponseDto
 {
-    /// <summary>
-    /// The year for which the inflation rate is recorded
-    /// </summary>
-    public int Year { get; set; }
+    public List<PotDetails> Pots { get; set; }
 
-    /// <summary>
-    /// The inflation rate value
-    /// </summary>
-    public decimal Value { get; set; }
+    internal static GetPotResponseDto From(PresentPotResponse response)
+    {
+        return new GetPotResponseDto
+        {
+            Pots = response.Pots
+        };
+    }
 }

@@ -19,7 +19,7 @@ using DustInTheWind.CaveOfWonders.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
-namespace CaveOfWonders.WebApi.Presentation.Models;
+namespace CaveOfWonders.WebApi.Presentation.Controllers.ExchangeRate.Models;
 
 
 /// <summary>
@@ -73,33 +73,3 @@ public class ExchangeRateConvertRequestDto
         };
     }
 }
-
-
-//public class ExchangeRateConvertRequestDto
-//{
-//    [FromQuery]
-//    public decimal Value { get; set; }
-
-//    [FromQuery]
-//    public string SourceCurrency { get; set; }
-
-//    [FromQuery]
-//    public string DestinationCurrency { get; set; }
-
-//    [FromQuery]
-//    public DateTime? Date { get; set; }
-
-//    internal ConvertRequest ToApplication()
-//    {
-//        return new ConvertRequest()
-//        {
-//            InitialValue = Value,
-//            CurrencyPair = new CurrencyPair
-//            {
-//                Currency1 = SourceCurrency,
-//                Currency2 = DestinationCurrency
-//            },
-//            Date = Date
-//        };
-//    }
-//}

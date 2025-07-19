@@ -17,7 +17,7 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CaveOfWonders.WebApi.Presentation.Models;
+namespace CaveOfWonders.WebApi.Presentation.Controllers.ExchangeRate.Models;
 
 /// <summary>
 /// Request model for retrieving exchange rates
@@ -72,7 +72,7 @@ public class ExchangeRateRequestDto
     [FromQuery]
     public uint? Month { get; set; }
 
-    internal PresentExchangeRateRequest ToApplication()
+    internal PresentExchangeRateRequest ToApplicationRequest()
     {
         PresentExchangeRateRequest request = new()
         {

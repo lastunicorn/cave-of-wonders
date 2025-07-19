@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using CaveOfWonders.WebApi.Presentation.Models;
+using CaveOfWonders.WebApi.Presentation.Controllers.Pot.Models;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CaveOfWonders.WebApi.Presentation.Controllers;
+namespace CaveOfWonders.WebApi.Presentation.Controllers.Pot;
 
 /// <summary>
 /// API controller for managing and retrieving financial pots (money containers).
@@ -51,8 +51,8 @@ public class PotController : ControllerBase
     /// <returns>A collection of pots with their values and metadata.</returns>
     /// <response code="200">Returns the list of pots successfully retrieved.</response>
     [HttpGet]
-    [ProducesResponseType(typeof(PresentPotsResponse), StatusCodes.Status200OK)]
-    public async Task<ActionResult<PresentPotsResponse>> GetPots(GetPotsRequestDto getPotsRequestDto)
+    [ProducesResponseType(typeof(GetPotsResponseDto), StatusCodes.Status200OK)]
+    public async Task<ActionResult<GetPotsResponseDto>> GetPots(GetPotsRequestDto getPotsRequestDto)
     {
         PresentPotsRequest request = new()
         {
@@ -62,7 +62,9 @@ public class PotController : ControllerBase
         };
 
         PresentPotsResponse response = await mediator.Send(request);
-        return Ok(response);
+
+        GetPotsResponseDto responseDto = GetPotsResponseDto.From(response);
+        return Ok(responseDto);
     }
 
     /// <summary>
@@ -78,12 +80,12 @@ public class PotController : ControllerBase
     [ProducesResponseType(typeof(GetPotResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<PresentPotResponse>> GetPot(GetPotRequestDto getPotRequestDto)
+    public async Task<ActionResult<GetPotResponseDto>> GetPot(GetPotRequestDto getPotRequestDto)
     {
         PresentPotRequest request = getPotRequestDto.ToApplicationRequest();
         PresentPotResponse response = await mediator.Send(request);
 
-        GetPotResponseDto responseDto = GetPotResponseDto.FromApplicationResponse(response);
+        GetPotResponseDto responseDto = GetPotResponseDto.From(response);
         return Ok(responseDto);
     }
 }

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using CaveOfWonders.WebApi.Presentation.Models;
+using CaveOfWonders.WebApi.Presentation.Controllers.ExchangeRate.Models;
 using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
@@ -22,7 +22,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CaveOfWonders.WebApi.Presentation.Controllers;
+namespace CaveOfWonders.WebApi.Presentation.Controllers.ExchangeRate;
 
 /// <summary>
 /// API controller for managing and retrieving exchange rates between currencies.
@@ -65,7 +65,7 @@ public class ExchangeRateController : ControllerBase
 
         try
         {
-            PresentExchangeRateRequest request = requestDto.ToApplication();
+            PresentExchangeRateRequest request = requestDto.ToApplicationRequest();
             PresentExchangeRateResponse response = await mediator.Send(request);
 
             ExchangeRateResponseDto responseDto = ExchangeRateResponseDto.FromApplication(response);
@@ -105,7 +105,7 @@ public class ExchangeRateController : ControllerBase
         ConvertRequest request = exchangeRateConvertRequestDto.ToApplication();
         ConvertResponse response = await mediator.Send(request);
 
-        ExchangeRateConvertResponseDto responseDto = ExchangeRateConvertResponseDto.FromApplication(response);
+        ExchangeRateConvertResponseDto responseDto = ExchangeRateConvertResponseDto.FromApplicationResponse(response);
 
         return Ok(responseDto);
     }
@@ -127,7 +127,7 @@ public class ExchangeRateController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        ImportExchangeRatesRequest request = requestDto.ToApplication();
+        ImportExchangeRatesRequest request = requestDto.ToApplicationRequest();
         ImportExchangeRatesResponse response = await mediator.Send(request);
 
         ImportExchangeRatesResponseDto responseDto = ImportExchangeRatesResponseDto.FromApplication(response);

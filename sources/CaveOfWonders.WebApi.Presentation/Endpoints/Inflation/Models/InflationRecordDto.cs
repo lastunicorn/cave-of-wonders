@@ -14,20 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace CaveOfWonders.WebApi.Presentation.Models;
+namespace CaveOfWonders.WebApi.Presentation.Controllers.Inflation.Models;
 
 /// <summary>
-/// Exchange rates for a specific date
+/// Represents an inflation record for a specific year
 /// </summary>
-public class DailyExchangeRatesDto
+public class InflationRecordDto
 {
     /// <summary>
-    /// The date for which exchange rates are provided
+    /// The year for which the inflation rate is recorded
     /// </summary>
-    public DateTime Date { get; set; }
-    
+    public int Year { get; set; }
+
     /// <summary>
-    /// List of exchange rates for different currency pairs
+    /// The inflation rate value
     /// </summary>
-    public List<ExchangeRateForCurrencyDto> ExchangeRates { get; set; } = [];
+    public decimal Value { get; set; }
 }

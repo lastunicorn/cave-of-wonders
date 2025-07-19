@@ -16,7 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentInflation;
 
-namespace CaveOfWonders.WebApi.Presentation.Models;
+namespace CaveOfWonders.WebApi.Presentation.Controllers.Inflation.Models;
 
 /// <summary>
 /// Response DTO containing inflation records

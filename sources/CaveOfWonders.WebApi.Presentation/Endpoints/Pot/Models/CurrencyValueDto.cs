@@ -14,30 +14,40 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace CaveOfWonders.WebApi.Presentation.Models;
+using DustInTheWind.CaveOfWonders.Cli.Application;
+
+namespace CaveOfWonders.WebApi.Presentation.Controllers.Pot.Models;
 
 /// <summary>
-/// Details about an updated exchange rate record
+/// Represents a monetary value with its currency and date
 /// </summary>
-public class UpdateReportDto
+public class CurrencyValueDto
 {
     /// <summary>
-    /// Date of the exchange rate
+    /// The monetary value
+    /// </summary>
+    public decimal Value { get; set; }
+
+    /// <summary>
+    /// The currency code (e.g., USD, EUR, RON)
+    /// </summary>
+    public string Currency { get; set; }
+
+    /// <summary>
+    /// The date when this value was recorded or is valid
     /// </summary>
     public DateTime Date { get; set; }
 
-    /// <summary>
-    /// Currency pair identifier
-    /// </summary>
-    public string CurrencyPair { get; set; } = string.Empty;
+    internal static CurrencyValueDto From(CurrencyValue currencyValue)
+    {
+        if (currencyValue == null)
+            return null;
 
-    /// <summary>
-    /// Original value before update
-    /// </summary>
-    public decimal OldValue { get; set; }
-
-    /// <summary>
-    /// New value after update
-    /// </summary>
-    public decimal NewValue { get; set; }
+        return new CurrencyValueDto
+        {
+            Value = currencyValue.Value,
+            Currency = currencyValue.Currency,
+            Date = currencyValue.Date
+        };
+    }
 }

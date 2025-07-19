@@ -14,30 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace CaveOfWonders.WebApi.Presentation.Models;
+namespace CaveOfWonders.WebApi.Presentation.Controllers.ExchangeRate.Models;
 
 /// <summary>
-/// Details about a duplicate exchange rate record
+/// Exchange rates for a specific date
 /// </summary>
-public class DuplicateReportDto
+public class DailyExchangeRatesDto
 {
     /// <summary>
-    /// Date of the exchange rate
+    /// The date for which exchange rates are provided
     /// </summary>
     public DateTime Date { get; set; }
-
+    
     /// <summary>
-    /// Currency pair identifier
+    /// List of exchange rates for different currency pairs
     /// </summary>
-    public string CurrencyPair { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Value of the first duplicate record
-    /// </summary>
-    public decimal Value1 { get; set; }
-
-    /// <summary>
-    /// Value of the second duplicate record
-    /// </summary>
-    public decimal Value2 { get; set; }
+    public List<ExchangeRateForCurrencyDto> ExchangeRates { get; set; } = [];
 }

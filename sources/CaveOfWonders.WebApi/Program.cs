@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using CaveOfWonders.WebApi.Presentation.Controllers;
+using CaveOfWonders.WebApi.Presentation.Controllers.Pot;
 using CaveOfWonders.WebApi.Presentation.ErrorHandlers;
 using DustInTheWind.CaveOfWonders.Adapters.BnrAccess;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;

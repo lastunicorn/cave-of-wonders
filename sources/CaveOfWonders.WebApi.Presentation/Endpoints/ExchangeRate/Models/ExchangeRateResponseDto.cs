@@ -16,7 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 
-namespace CaveOfWonders.WebApi.Presentation.Models;
+namespace CaveOfWonders.WebApi.Presentation.Controllers.ExchangeRate.Models;
 
 /// <summary>
 /// Response model containing exchange rates information

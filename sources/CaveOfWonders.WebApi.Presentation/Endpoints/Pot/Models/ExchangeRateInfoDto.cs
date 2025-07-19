@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace CaveOfWonders.WebApi.Presentation.Models;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
+
+namespace CaveOfWonders.WebApi.Presentation.Controllers.Pot.Models;
 
 /// <summary>
 /// Exchange rate information for currency conversion
@@ -24,12 +26,12 @@ public class ExchangeRateInfoDto
     /// <summary>
     /// Source currency
     /// </summary>
-    public string SourceCurrency { get; set; } = string.Empty;
+    public string SourceCurrency { get; set; }
     
     /// <summary>
     /// Destination currency
     /// </summary>
-    public string DestinationCurrency { get; set; } = string.Empty;
+    public string DestinationCurrency { get; set; }
     
     /// <summary>
     /// Date of the exchange rate
@@ -40,4 +42,15 @@ public class ExchangeRateInfoDto
     /// Exchange rate value
     /// </summary>
     public decimal Value { get; set; }
+
+    internal static ExchangeRateInfoDto From(ExchangeRateInfo exchangeRateInfo)
+    {
+        return new ExchangeRateInfoDto
+        {
+            SourceCurrency = exchangeRateInfo.SourceCurrency,
+            DestinationCurrency = exchangeRateInfo.DestinationCurrency,
+            Date = exchangeRateInfo.Date,
+            Value = exchangeRateInfo.Value
+        };
+    }
 }

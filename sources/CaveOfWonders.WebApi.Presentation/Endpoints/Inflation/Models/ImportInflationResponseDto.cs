@@ -33,7 +33,7 @@
 
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 
-namespace CaveOfWonders.WebApi.Presentation.Models;
+namespace CaveOfWonders.WebApi.Presentation.Controllers.Inflation.Models;
 
 /// <summary>
 /// Response DTO for inflation data import operation

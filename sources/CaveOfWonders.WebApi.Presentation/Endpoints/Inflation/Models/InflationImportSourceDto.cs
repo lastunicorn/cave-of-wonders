@@ -14,19 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
+namespace CaveOfWonders.WebApi.Presentation.Controllers.Inflation.Models;
 
-namespace CaveOfWonders.WebApi.Presentation.Models;
-
-public class GetPotResponseDto
+/// <summary>
+/// Source options for inflation data import
+/// </summary>
+public enum InflationImportSourceDto
 {
-    public List<PotDetails> Pots { get; set; }
-
-    internal static GetPotResponseDto FromApplicationResponse(PresentPotResponse response)
-    {
-        return new GetPotResponseDto
-        {
-            Pots = response.Pots
-        };
-    }
+    /// <summary>
+    /// Import from a file
+    /// </summary>
+    File = 0,
+    
+    /// <summary>
+    /// Import from web service
+    /// </summary>
+    Web = 1
 }

@@ -17,7 +17,7 @@
 using System.ComponentModel.DataAnnotations;
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
 
-namespace CaveOfWonders.WebApi.Presentation.Models
+namespace CaveOfWonders.WebApi.Presentation.Controllers.ExchangeRate.Models
 {
     /// <summary>
     /// Request model for importing exchange rates
@@ -43,7 +43,7 @@ namespace CaveOfWonders.WebApi.Presentation.Models
         /// <summary>
         /// Converts the DTO to the application request model
         /// </summary>
-        public ImportExchangeRatesRequest ToApplication()
+        public ImportExchangeRatesRequest ToApplicationRequest()
         {
             return new ImportExchangeRatesRequest
             {
@@ -63,26 +63,5 @@ namespace CaveOfWonders.WebApi.Presentation.Models
                 _ => throw new ArgumentOutOfRangeException(nameof(source), $"Unsupported import source: {source}")
             };
         }
-    }
-
-    /// <summary>
-    /// Source options for exchange rate data import
-    /// </summary>
-    public enum ExchangeRateImportSourceDto
-    {
-        /// <summary>
-        /// Import from BNR website (National Bank of Romania)
-        /// </summary>
-        BnrWebsite = 0,
-
-        /// <summary>
-        /// Import from BNR file
-        /// </summary>
-        BnrFile = 1,
-
-        /// <summary>
-        /// Import from NBR file
-        /// </summary>
-        BnrNbrFile = 2
     }
 }
