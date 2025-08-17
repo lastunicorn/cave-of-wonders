@@ -14,31 +14,31 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using CaveOfWonders.WebApi.Presentation.Endpoints.Pot.Models;
+using CaveOfWonders.WebApi.Presentation.Endpoints.Pots.Models;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CaveOfWonders.WebApi.Presentation.Endpoints.Pot;
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.Pots;
 
 /// <summary>
 /// API controller for managing and retrieving financial pots (money containers).
 /// Provides endpoints for retrieving all pots and specific pot details.
 /// </summary>
-[Route("pot")]
+[Route("pots")]
 [ApiController]
-public class PotController : ControllerBase
+public class PotsController : ControllerBase
 {
     private readonly IMediator mediator;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PotController"/> class.
+    /// Initializes a new instance of the <see cref="PotsController"/> class.
     /// </summary>
     /// <param name="mediator">The mediator used to send requests to the application layer.</param>
     /// <exception cref="ArgumentNullException">Thrown when mediator is null.</exception>
-    public PotController(IMediator mediator)
+    public PotsController(IMediator mediator)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
@@ -50,9 +50,9 @@ public class PotController : ControllerBase
     /// currency for value conversion, and flag to include inactive pots.</param>
     /// <returns>A collection of pots with their values and metadata.</returns>
     /// <response code="200">Returns the list of pots successfully retrieved.</response>
-    [HttpGet]
-    [ProducesResponseType(typeof(GetPotsResponseDto), StatusCodes.Status200OK)]
-    public async Task<ActionResult<GetPotsResponseDto>> GetPots(GetPotsRequestDto getPotsRequestDto)
+    [HttpGet("summary")]
+    [ProducesResponseType(typeof(GetSummaryPotsResponseDto), StatusCodes.Status200OK)]
+    public async Task<GetSummaryPotsResponseDto> GetSummaryPots(GetSummaryPotsRequestDto getPotsRequestDto)
     {
         PresentPotsRequest request = new()
         {
@@ -63,12 +63,11 @@ public class PotController : ControllerBase
 
         PresentPotsResponse response = await mediator.Send(request);
 
-        GetPotsResponseDto responseDto = GetPotsResponseDto.From(response);
-        return Ok(responseDto);
+        return GetSummaryPotsResponseDto.From(response);
     }
 
     /// <summary>
-    /// Retrieves detailed information about a specific financial pot by its identifier.
+    /// Retrieves detailed information about all pots matching the specified identifier.
     /// </summary>
     /// <param name="getPotRequestDto">Request parameters including the pot identifier, 
     /// optional date for historical values, and currency for value conversion.</param>
@@ -76,16 +75,41 @@ public class PotController : ControllerBase
     /// <response code="200">Returns the pot details successfully retrieved.</response>
     /// <response code="400">If the pot identifier is not specified.</response>
     /// <response code="500">If an unexpected error occurs while processing the request.</response>
-    [HttpGet("{potIdentifier}")]
-    [ProducesResponseType(typeof(GetPotResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(FindPotResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<GetPotResponseDto>> GetPot(GetPotRequestDto getPotRequestDto)
+    public async Task<FindPotResponseDto> FindPot(FindPotRequestDto getPotRequestDto)
     {
-        PresentPotRequest request = getPotRequestDto.ToApplicationRequest();
+        PresentPotRequest request = new()
+        {
+            PotIdentifier = getPotRequestDto.PotIdentifier,
+            IncludeInactivePots = getPotRequestDto.IncludeInactive
+        };
         PresentPotResponse response = await mediator.Send(request);
 
-        GetPotResponseDto responseDto = GetPotResponseDto.From(response);
-        return Ok(responseDto);
+        return FindPotResponseDto.From(response);
+    }
+
+    /// <summary>
+    /// Retrieves detailed information about a specific financial pot by its identifier.
+    /// </summary>
+    /// <param name="potIdentifier">The pot identifier.</param>
+    /// <returns>Detailed information about the requested pot.</returns>
+    /// <response code="200">Returns the pot details successfully retrieved.</response>
+    /// <response code="400">If the pot identifier is not specified.</response>
+    /// <response code="500">If an unexpected error occurs while processing the request.</response>
+    [HttpGet("{potIdentifier}")]
+    [ProducesResponseType(typeof(PotDetailsApiDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<PotDetailsApiDto> GetPot(string potIdentifier)
+    {
+        PresentPotRequest request = new()
+        {
+            PotIdentifier = potIdentifier
+        };
+        PresentPotResponse response = await mediator.Send(request);
+
+        return PotDetailsApiDto.From(response.Pots.FirstOrDefault());
     }
 }

@@ -16,7 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 
-namespace CaveOfWonders.WebApi.Presentation.Endpoints.Pot.Models;
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.Pots.Models;
 
 /// <summary>
 /// Information about a pot instance at a specific point in time

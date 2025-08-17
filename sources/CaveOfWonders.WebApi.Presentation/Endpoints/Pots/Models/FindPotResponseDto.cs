@@ -14,18 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using Microsoft.AspNetCore.Mvc;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 
-namespace CaveOfWonders.WebApi.Presentation.Endpoints.Pot.Models;
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.Pots.Models;
 
-public class GetPotsRequestDto
+public class FindPotResponseDto
 {
-    [FromQuery]
-    public DateTime? Date { get; set; }
+    public List<PotDetailsApiDto> Pots { get; set; }
 
-    [FromQuery]
-    public string Currency { get; set; }
-
-    [FromQuery]
-    public bool IncludeInactive { get; set; }
+    internal static FindPotResponseDto From(PresentPotResponse response)
+    {
+        return new FindPotResponseDto
+        {
+            Pots = response.Pots
+                .Select(x=> PotDetailsApiDto.From(x))
+                .ToList()
+        };
+    }
 }

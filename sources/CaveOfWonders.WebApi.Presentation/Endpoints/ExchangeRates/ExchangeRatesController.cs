@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRate.Models;
+using CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRates.ErrorHandlers;
 using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
@@ -28,18 +29,18 @@ namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRate;
 /// API controller for managing and retrieving exchange rates between currencies.
 /// Provides endpoints for retrieving, converting, and importing exchange rates.
 /// </summary>
-[Route("exchange-rate")]
+[Route("exchange-rates")]
 [ApiController]
-public class ExchangeRateController : ControllerBase
+public class ExchangeRatesController : ControllerBase
 {
     private readonly IMediator mediator;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeRateController"/> class.
+    /// Initializes a new instance of the <see cref="ExchangeRatesController"/> class.
     /// </summary>
     /// <param name="mediator">The mediator used to send requests to the application layer.</param>
     /// <exception cref="ArgumentNullException">Thrown when mediator is null.</exception>
-    public ExchangeRateController(IMediator mediator)
+    public ExchangeRatesController(IMediator mediator)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
@@ -58,31 +59,12 @@ public class ExchangeRateController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ExchangeRateResponseDto>> GetExchangeRates([FromQuery] ExchangeRateRequestDto requestDto)
+    public async Task<ExchangeRateResponseDto> GetExchangeRates([FromQuery] ExchangeRateRequestDto requestDto)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        PresentExchangeRateRequest request = requestDto.ToApplicationRequest();
+        PresentExchangeRateResponse response = await mediator.Send(request);
 
-        try
-        {
-            PresentExchangeRateRequest request = requestDto.ToApplicationRequest();
-            PresentExchangeRateResponse response = await mediator.Send(request);
-
-            ExchangeRateResponseDto responseDto = ExchangeRateResponseDto.FromApplication(response);
-            return Ok(responseDto);
-        }
-        catch (ExchangeRateNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (CurrencyPairMissingException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
-        }
+        return ExchangeRateResponseDto.FromApplication(response);
     }
 
     /// <summary>

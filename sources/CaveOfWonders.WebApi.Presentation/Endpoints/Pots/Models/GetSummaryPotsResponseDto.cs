@@ -16,12 +16,12 @@
 
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 
-namespace CaveOfWonders.WebApi.Presentation.Endpoints.Pot.Models;
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.Pots.Models;
 
 /// <summary>
 /// Response containing all financial pots with their values and metadata
 /// </summary>
-public class GetPotsResponseDto
+public class GetSummaryPotsResponseDto
 {
     /// <summary>
     /// Date for which the pot values are calculated
@@ -48,9 +48,9 @@ public class GetPotsResponseDto
     /// </summary>
     public List<CurrencyTotalOverviewDto> CurrencyTotalOverviews { get; set; }
 
-    internal static GetPotsResponseDto From(PresentPotsResponse response)
+    internal static GetSummaryPotsResponseDto From(PresentPotsResponse response)
     {
-        return new GetPotsResponseDto
+        return new GetSummaryPotsResponseDto
         {
             Date = response.Date,
             PotInstances = response.PotInstances?

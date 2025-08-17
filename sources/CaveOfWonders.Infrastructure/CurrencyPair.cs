@@ -102,4 +102,22 @@ public readonly struct CurrencyPair : IEquatable<CurrencyPair>
     {
         return currencyPair.ToString();
     }
+
+    public static implicit operator CurrencyPair((CurrencyId currency1, CurrencyId currency2) tuple)
+    {
+        return new CurrencyPair(tuple.currency1, tuple.currency2);
+    }
+
+    public static implicit operator CurrencyPair((string currency1, string currency2) tuple)
+    {
+        return new CurrencyPair(tuple.currency1, tuple.currency2);
+    }
+
+    public static implicit operator CurrencyPair?((string currency1, string currency2) tuple)
+    {
+        if (tuple.currency1 == null || tuple.currency2 == null)
+            return null;
+
+        return new CurrencyPair(tuple.currency1, tuple.currency2);
+    }
 }

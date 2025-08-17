@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using CaveOfWonders.WebApi.Presentation.Endpoints.Pot.Models;
+using CaveOfWonders.WebApi.Presentation.Endpoints.Pots.Models;
 using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
 
 namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRate.Models;

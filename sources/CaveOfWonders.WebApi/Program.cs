@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using CaveOfWonders.WebApi.Presentation.Endpoints.Pot;
+using CaveOfWonders.WebApi.Presentation.Endpoints.Pots;
 using CaveOfWonders.WebApi.Presentation.ErrorHandlers;
 using DustInTheWind.CaveOfWonders.Adapters.BnrAccess;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
@@ -45,7 +45,7 @@ internal static class Program
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-        builder.Services.AddControllers().AddApplicationPart(typeof(PotController).Assembly);
+        builder.Services.AddControllers().AddApplicationPart(typeof(PotsController).Assembly);
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
@@ -57,7 +57,7 @@ internal static class Program
             });
 
             // Set the comments path for the Swagger JSON and UI.
-            Assembly assembly = typeof(PotController).Assembly;
+            Assembly assembly = typeof(PotsController).Assembly;
             string xmlFilename = $"{assembly.GetName().Name}.xml";
             options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
         });
