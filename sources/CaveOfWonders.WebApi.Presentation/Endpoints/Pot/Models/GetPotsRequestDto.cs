@@ -16,7 +16,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace CaveOfWonders.WebApi.Presentation.Controllers.Pot.Models;
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.Pot.Models;
 
 public class GetPotsRequestDto
 {

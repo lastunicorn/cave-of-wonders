@@ -19,7 +19,7 @@ using DustInTheWind.CaveOfWonders.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
-namespace CaveOfWonders.WebApi.Presentation.Controllers.ExchangeRate.Models;
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRate.Models;
 
 
 /// <summary>

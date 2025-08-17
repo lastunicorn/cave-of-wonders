@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using CaveOfWonders.WebApi.Presentation.Controllers.Pot.Models;
+using CaveOfWonders.WebApi.Presentation.Endpoints.Pot.Models;
 using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
 
-namespace CaveOfWonders.WebApi.Presentation.Controllers.ExchangeRate.Models;
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRate.Models;
 
 /// <summary>
 /// Response model for currency conversion

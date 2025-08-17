@@ -16,7 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 
-namespace CaveOfWonders.WebApi.Presentation.Controllers.Pot.Models;
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.Pot.Models;
 
 /// <summary>
 /// Exchange rate information for currency conversion

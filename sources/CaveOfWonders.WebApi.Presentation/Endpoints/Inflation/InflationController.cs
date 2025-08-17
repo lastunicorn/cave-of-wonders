@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using CaveOfWonders.WebApi.Presentation.Controllers.Inflation.Models;
+using CaveOfWonders.WebApi.Presentation.Endpoints.Inflation.Models;
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentInflation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CaveOfWonders.WebApi.Presentation.Controllers.Inflation;
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.Inflation;
 
 /// <summary>
 /// API controller for managing and retrieving inflation data.

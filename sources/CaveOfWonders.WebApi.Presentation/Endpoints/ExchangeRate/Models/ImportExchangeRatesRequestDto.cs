@@ -17,7 +17,7 @@
 using System.ComponentModel.DataAnnotations;
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
 
-namespace CaveOfWonders.WebApi.Presentation.Controllers.ExchangeRate.Models
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRate.Models
 {
     /// <summary>
     /// Request model for importing exchange rates

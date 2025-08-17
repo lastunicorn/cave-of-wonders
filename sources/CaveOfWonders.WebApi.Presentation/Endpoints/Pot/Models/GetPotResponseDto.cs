@@ -16,7 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 
-namespace CaveOfWonders.WebApi.Presentation.Controllers.Pot.Models;
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.Pot.Models;
 
 public class GetPotResponseDto
 {

@@ -16,7 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Cli.Application;
 
-namespace CaveOfWonders.WebApi.Presentation.Controllers.Pot.Models;
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.Pot.Models;
 
 /// <summary>
 /// Represents a monetary value with its currency and date

@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using CaveOfWonders.WebApi.Presentation.Controllers.Pot.Models;
+using CaveOfWonders.WebApi.Presentation.Endpoints.Pot.Models;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CaveOfWonders.WebApi.Presentation.Controllers.Pot;
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.Pot;
 
 /// <summary>
 /// API controller for managing and retrieving financial pots (money containers).
