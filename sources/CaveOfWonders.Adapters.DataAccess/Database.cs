@@ -55,7 +55,9 @@ public class Database
 
         foreach (ExchangeRatesFile exchangeRatesFile in exchangeRateFiles)
         {
-            List<JExchangeRate> jExchangeRates = await exchangeRatesFile.ReadAll();
+            List<JExchangeRate> jExchangeRates = (await exchangeRatesFile.ReadAll())
+                .OrderByDescending(x => x.Date)
+                .ToList();
 
             IEnumerable<ExchangeRate> exchangeRates = jExchangeRates
                 .Select(x => new ExchangeRate

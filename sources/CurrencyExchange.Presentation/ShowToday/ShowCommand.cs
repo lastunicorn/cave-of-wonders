@@ -25,13 +25,13 @@ public class ShowCommand : IConsoleCommand<PresentTodayResponse>
 {
     private readonly IMediator mediator;
 
-    [NamedParameter("today", ShortName = 't', IsOptional = true, Description = "If this flag is set, the exchange rate for today is displayed.")]
+    [NamedParameter("today", ShortName = 't', IsMandatory = false, Description = "If this flag is set, the exchange rate for today is displayed.")]
     public bool Today { get; set; }
 
-    [NamedParameter("date", ShortName = 'd', IsOptional = true, Description = "The date for which to display the exchange rate.")]
+    [NamedParameter("date", ShortName = 'd', IsMandatory = false, Description = "The date for which to display the exchange rate.")]
     public List<string> Date { get; set; }
 
-    [NamedParameter("currency", ShortName = 'c', IsOptional = true, Description = "The currency pair to be displayed. Ex: EUR/RON")]
+    [NamedParameter("currency", ShortName = 'c', IsMandatory = false, Description = "The currency pair to be displayed. Ex: EUR/RON")]
     public string CurrencyPair { get; set; }
 
     public ShowCommand(IMediator mediator)

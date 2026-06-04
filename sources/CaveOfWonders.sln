@@ -55,6 +55,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Adapters.BnrA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaveOfWonders.Adapters.DataAccess.LiteDb", "CaveOfWonders.Adapters.DataAccess.LiteDb\CaveOfWonders.Adapters.DataAccess.LiteDb.csproj", "{008BDCC9-005A-45FA-B400-761419AD5F44}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaveOfWonders.DataTypes", "CaveOfWonders.DataTypes\CaveOfWonders.DataTypes.csproj", "{08B8E506-B27A-41FC-80E2-35C7ED2F5224}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -149,6 +151,10 @@ Global
 		{008BDCC9-005A-45FA-B400-761419AD5F44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{008BDCC9-005A-45FA-B400-761419AD5F44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{008BDCC9-005A-45FA-B400-761419AD5F44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08B8E506-B27A-41FC-80E2-35C7ED2F5224}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08B8E506-B27A-41FC-80E2-35C7ED2F5224}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08B8E506-B27A-41FC-80E2-35C7ED2F5224}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08B8E506-B27A-41FC-80E2-35C7ED2F5224}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

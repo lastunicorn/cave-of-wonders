@@ -16,8 +16,6 @@
 
 using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
-using DustInTheWind.ConsoleTools.Controls;
-using DustInTheWind.ConsoleTools.Controls.Tables;
 using DustInTheWind.CurrencyExchange.Application.PresentToday;
 
 namespace DustInTheWind.CurrencyExchange.Presentation.ShowToday;
@@ -27,120 +25,32 @@ internal class ShowTodayView : IView<PresentTodayResponse>
     public void Display(PresentTodayResponse response)
     {
         if (response.ExchangeRatesByDates != null)
-        {
-            DisplayByDates(response.ExchangeRatesByDates);
-        }
+            Display(response.ExchangeRatesByDates);
 
         if (response.ExchangeRatesByCurrencies != null)
-        {
-            DisplayByCurrencies(response.ExchangeRatesByCurrencies);
-        }
+            Display(response.ExchangeRatesByCurrencies);
 
         if (response.ExchangeRatesByDates == null && response.ExchangeRatesByCurrencies == null)
-        {
             CustomConsole.WriteLineWarning("There are no exchange rates for the date and/or currencies specified.");
-        }
     }
 
-    private void DisplayByDates(List<ExchangeRatesByDateCollection> exchangeRatesByDates)
+    private static void Display(List<ExchangeRatesByDateCollection> exchangeRatesByDate)
     {
-        DataGrid dataGrid = new("Exchange Rates")
+        ExchangeRatesByDateControl exchangeRatesByDateControl = new()
         {
-            TitleRow =
-            {
-                BackgroundColor = ConsoleColor.Gray,
-                ForegroundColor = ConsoleColor.Black
-            },
-            Border =
-            {
-                Template = BorderTemplate.SingleLineBorderTemplate
-            }
+            Items = exchangeRatesByDate
         };
 
-        dataGrid.Columns.Add("Currency");
-
-        foreach (ExchangeRatesByDateCollection exchangeRatesByDateCollection in exchangeRatesByDates)
-        {
-            dataGrid.Columns.Add(new Column(exchangeRatesByDateCollection.Date.ToString("d")));
-            int columnIndex = dataGrid.Columns.Count - 1;
-
-            foreach (ContentRow dataGridRow in dataGrid.Rows)
-                dataGridRow.AddCell(string.Empty);
-
-            foreach (ExchangeRateForCurrency exchangeRateForCurrency in exchangeRatesByDateCollection.ExchangeRates)
-            {
-                ContentRow contentRow = dataGrid.Rows.FirstOrDefault(x => x[0].Content == exchangeRateForCurrency.CurrencyPair);
-
-                if (contentRow != null)
-                {
-                    contentRow[columnIndex].Content = new MultilineText(exchangeRateForCurrency.Value);
-                }
-                else
-                {
-                    contentRow = new ContentRow();
-                    dataGrid.Rows.Add(contentRow);
-
-                    contentRow.AddCell(exchangeRateForCurrency.CurrencyPair);
-
-                    for (int i = 1; i < dataGrid.Columns.Count - 1; i++)
-                        contentRow.AddCell(string.Empty);
-
-                    contentRow.AddCell(exchangeRateForCurrency.Value);
-                }
-            }
-        }
-
-        dataGrid.Display();
+        exchangeRatesByDateControl.Display();
     }
 
-    private void DisplayByCurrencies(List<ExchangeRatesByCurrencyCollection> exchangeRatesByCurrencies)
+    private static void Display(List<ExchangeRatesByCurrencyCollection> exchangeRatesByCurrency)
     {
-        DataGrid dataGrid = new("Exchange Rates")
+        ExchangeRatesByCurrencyControl exchangeRatesByCurrencyControl = new()
         {
-            TitleRow =
-            {
-                BackgroundColor = ConsoleColor.Gray,
-                ForegroundColor = ConsoleColor.Black
-            },
-            Border =
-            {
-                Template = BorderTemplate.SingleLineBorderTemplate
-            }
+            Items = exchangeRatesByCurrency
         };
 
-        dataGrid.Columns.Add("Date");
-
-        foreach (ExchangeRatesByCurrencyCollection exchangeRatesByCurrencyCollection in exchangeRatesByCurrencies)
-        {
-            dataGrid.Columns.Add(exchangeRatesByCurrencyCollection.CurrencyPair);
-            int columnIndex = dataGrid.Columns.Count - 1;
-
-            foreach (ContentRow dataGridRow in dataGrid.Rows)
-                dataGridRow.AddCell(string.Empty);
-
-            foreach (ExchangeRateForDate exchangeRateForDate in exchangeRatesByCurrencyCollection.ExchangeRates)
-            {
-                ContentRow contentRow = dataGrid.Rows.FirstOrDefault(x => x[0].Content == exchangeRateForDate.Date.ToString("d"));
-
-                if (contentRow != null)
-                {
-                    contentRow[columnIndex].Content = new MultilineText(exchangeRateForDate.Value);
-                }
-                else
-                {
-                    contentRow = new ContentRow();
-                    dataGrid.Rows.Add(contentRow);
-
-                    contentRow.AddCell(exchangeRateForDate.Date.ToString("d"));
-
-                    for (int i = 1; i < dataGrid.Columns.Count - 1; i++)
-                        contentRow.AddCell(string.Empty);
-
-                    contentRow.AddCell(exchangeRateForDate.Value);
-                }
-            }
-        }
-
-        dataGrid.Display();
+        exchangeRatesByCurrencyControl.Display();
     }
 }

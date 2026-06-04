@@ -41,8 +41,7 @@ public class Ins : IIns
     {
         ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
-
-        HttpClient httpClient = new(new HttpClientHandler()
+        HttpClient httpClient = new(new HttpClientHandler
         {
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
         });
@@ -79,7 +78,7 @@ public class Ins : IIns
 
     private IEnumerable<InflationRecordDto> EnumerateInflationRecords(Stream stream)
     {
-        HtmlAgilityPack.HtmlDocument htmlDocument = new();
+        HtmlDocument htmlDocument = new();
         htmlDocument.Load(stream);
 
         HtmlNodeCollection trNodes = htmlDocument.DocumentNode.SelectNodes("//article//table/tbody/tr");
@@ -92,11 +91,6 @@ public class Ins : IIns
                 yield return inflationRecordDto;
         }
 
-
-
-
-
-
         //XmlTextReader xmlTextReader = new XmlTextReader(stream);
 
         //xmlTextReader.MoveToContent();
@@ -107,7 +101,6 @@ public class Ins : IIns
         //    {
         //    }
         //}
-
 
         //XmlDocument xmlDocument = new();
         //xmlDocument.Load(stream);
@@ -176,7 +169,7 @@ public class Ins : IIns
             InflationRecordDto inflationRecordDto = new()
             {
                 Year = year,
-                Value = value
+                Value = value - 100
             };
 
             return inflationRecordDto;
