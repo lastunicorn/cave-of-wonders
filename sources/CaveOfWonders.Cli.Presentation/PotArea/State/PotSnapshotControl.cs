@@ -46,24 +46,32 @@ internal class PotSnapshotControl
     {
         dataGrid.Columns.Add(new Column("Id")
         {
-            ForegroundColor = ConsoleColor.DarkGray
+            ForegroundColor = ConsoleColor.DarkGray,
+            CellContentOverflow = CellContentOverflow.PreserveOverflow
         });
 
         dataGrid.Columns.Add(new Column("Name"));
 
         dataGrid.Columns.Add(new Column("Value")
         {
-            CellHorizontalAlignment = HorizontalAlignment.Right
+            CellHorizontalAlignment = HorizontalAlignment.Right,
+            CellContentOverflow = CellContentOverflow.PreserveOverflow
         });
 
         dataGrid.Columns.Add(new Column("Date")
         {
-            CellHorizontalAlignment = HorizontalAlignment.Right
+            CellHorizontalAlignment = HorizontalAlignment.Right,
+            CellContentOverflow = CellContentOverflow.PreserveOverflow
         });
 
         dataGrid.Columns.Add(new Column("Normalized Value")
         {
-            CellHorizontalAlignment = HorizontalAlignment.Right
+            CellHorizontalAlignment = HorizontalAlignment.Right,
+            CellContentOverflow = CellContentOverflow.PreserveOverflow,
+            HeaderCell =
+            {
+                ContentOverflow = CellContentOverflow.WrapWord
+            }
         });
     }
 
