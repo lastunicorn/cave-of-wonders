@@ -35,9 +35,6 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
 
     public async Task<PresentExchangeRateResponse> Handle(PresentExchangeRateRequest request, CancellationToken cancellationToken)
     {
-        //if (string.IsNullOrEmpty(request.CurrencyPair))
-        //    throw new Exception("Currency pair value was not provided.");
-
         CurrencyPair currencyPair = request.CurrencyPair;
 
         response = new PresentExchangeRateResponse
@@ -47,8 +44,10 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
 
         if (request.Today)
             await RetrieveForToday(currencyPair);
-        else if (request.Date != null)
-            await RetrieveByDate(currencyPair, request.Date.Value);
+        else if (request.Date != null && !currencyPair.IsEmpty)
+            await RetrieveByDate(request.Date.Value, currencyPair);
+        else if (request.Date != null && currencyPair.IsEmpty)
+            await RetrieveByDate(request.Date.Value);
         else if (request.Year != null)
             await RetrieveByYear(currencyPair, request.Year.Value, request.Month);
         else if (request.StartDate != null || request.EndDate != null)
@@ -61,14 +60,26 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
 
     private Task RetrieveForToday(CurrencyPair currencyPair)
     {
-        // If currency pair provided        => 1 currency; multiple dates       => display by currency
-        // If currency pair NOT provided    => multiple currencies; multiple dates       => display by currency
+        // If currency pair provided        => 1 currency; multiple dates               => display by currency
+        // If currency pair NOT provided    => multiple currencies; multiple dates      => display by currency
 
         DateTime dateTime = systemClock.Today;
-        return RetrieveByDate(currencyPair, dateTime);
+
+        return currencyPair.IsEmpty
+            ? RetrieveByDate(dateTime)
+            : RetrieveByDate(dateTime, currencyPair);
     }
 
-    private async Task RetrieveByDate(CurrencyPair currencyPair, DateTime date)
+    private async Task RetrieveByDate(DateTime date)
+    {
+        IEnumerable<ExchangeRate> exchangeRates = await unitOfWork.ExchangeRateRepository.Get(date);
+
+        response.ExchangeRates = exchangeRates
+            .Select(x => new ExchangeRateResponseDto(x))
+            .ToList();
+    }
+
+    private async Task RetrieveByDate(DateTime date, CurrencyPair currencyPair)
     {
         ExchangeRate exchangeRate = await unitOfWork.ExchangeRateRepository.GetLatest(currencyPair, date);
 
@@ -86,7 +97,7 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
 
     private async Task RetrieveByYear(CurrencyPair currencyPair, uint year, uint? month)
     {
-        if (string.IsNullOrEmpty(currencyPair))
+        if (currencyPair.IsEmpty)
             throw new Exception("Currency pair value was not provided.");
 
         response.ExchangeRates = (await unitOfWork.ExchangeRateRepository.GetByYear(currencyPair, year, month))
@@ -96,6 +107,9 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
 
     private async Task RetrieveByDateInterval(CurrencyPair currencyPair, DateTime? startDate, DateTime? endDate)
     {
+        if (currencyPair.IsEmpty)
+            throw new Exception("Currency pair value was not provided.");
+
         response.ExchangeRates = (await unitOfWork.ExchangeRateRepository.GetByDateInterval(currencyPair, startDate, endDate))
             .Select(x => new ExchangeRateResponseDto(x))
             .ToList();
@@ -103,6 +117,9 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
 
     private async Task RetrieveAll(CurrencyPair currencyPair)
     {
+        if (currencyPair.IsEmpty)
+            throw new Exception("Currency pair value was not provided.");
+
         response.ExchangeRates = (await unitOfWork.ExchangeRateRepository.Get(currencyPair))
             .Select(x => new ExchangeRateResponseDto(x))
             .ToList();

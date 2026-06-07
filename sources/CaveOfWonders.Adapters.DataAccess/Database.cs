@@ -77,6 +77,9 @@ public class Database
 
         PotsDirectory potsDirectory = new(databaseDirectoryPath);
 
+        if (!potsDirectory.Exists)
+            return;
+
         IEnumerable<PotFile> potFiles = potsDirectory.EnumeratePotFiles();
 
         foreach (PotFile potFile in potFiles)
