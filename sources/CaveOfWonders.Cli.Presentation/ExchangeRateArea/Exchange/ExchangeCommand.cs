@@ -25,25 +25,25 @@ public class ExchangeCommand : IConsoleCommand<PresentExchangeRateResponse>
 {
     private readonly IMediator mediator;
 
-    [AnonymousParameter(Order = 1, DisplayName = "Currency", IsOptional = true, Description = "The currency pair to be displayed. Ex: EUR/RON")]
+    [AnonymousParameter(Order = 1, DisplayName = "Currency", IsMandatory = false, Description = "The currency pair to be displayed. Ex: EUR/RON")]
     public string CurrencyPair { get; set; }
 
-    [NamedParameter("today", ShortName = 't', IsOptional = true, Description = "If this flag is set, the exchange rate for today is displayed.")]
+    [NamedParameter("today", ShortName = 't', IsMandatory = false, Description = "If this flag is set, the exchange rate for today is displayed.")]
     public bool Today { get; set; }
 
-    [NamedParameter("date", ShortName = 'd', IsOptional = true, Description = "The date for which to display the exchange rate.")]
+    [NamedParameter("date", ShortName = 'd', IsMandatory = false, Description = "The date for which to display the exchange rate.")]
     public DateTime? Date { get; set; }
 
-    [NamedParameter("start-date", ShortName = 's', IsOptional = true, Description = "Works together with end-date to specify a time interval for which to return exchange rates.")]
+    [NamedParameter("start-date", ShortName = 's', IsMandatory = false, Description = "Works together with end-date to specify a time interval for which to return exchange rates.")]
     public DateTime? StartDate { get; set; }
 
-    [NamedParameter("end-date", ShortName = 'e', IsOptional = true, Description = "Works together with start-date to specify a time interval for which to return exchange rates.")]
+    [NamedParameter("end-date", ShortName = 'e', IsMandatory = false, Description = "Works together with start-date to specify a time interval for which to return exchange rates.")]
     public DateTime? EndDate { get; set; }
 
-    [NamedParameter("year", ShortName = 'y', IsOptional = true, Description = "Specify the year for which to return exchange rate values. Works together with the optional month.")]
+    [NamedParameter("year", ShortName = 'y', IsMandatory = false, Description = "Specify the year for which to return exchange rate values. Works together with the optional month.")]
     public uint? Year { get; set; }
 
-    [NamedParameter("month", ShortName = 'm', IsOptional = true, Description = "Specify the month of the year for which to return exchange rate values. If year is not specified, this value is ignored.")]
+    [NamedParameter("month", ShortName = 'm', IsMandatory = false, Description = "Specify the month of the year for which to return exchange rate values. If year is not specified, this value is ignored.")]
     public uint? Month { get; set; }
 
     public ExchangeCommand(IMediator mediator)
