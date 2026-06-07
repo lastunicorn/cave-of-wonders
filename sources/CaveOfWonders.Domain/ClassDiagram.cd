@@ -3,29 +3,23 @@
   <Class Name="DustInTheWind.CaveOfWonders.Domain.Pot">
     <Position X="3.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAIAAAgAAAAEAAAAAQgCAAAAAAAAAAAAECAAAA=</HashCode>
+      <HashCode>AAACQAAIAAAgAAAAEAAAAAQgCAAAAAAAAAAAAECAAAA=</HashCode>
       <FileName>Pot.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DustInTheWind.CaveOfWonders.Domain.Gem">
     <Position X="5.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAgAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAIABAAAgAAAAAiA=</HashCode>
       <FileName>Gem.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="DustInTheWind.CaveOfWonders.Domain.PotSnapshot">
+  <Class Name="DustInTheWind.CaveOfWonders.Domain.PotInstance">
     <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAACAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>PotSnapshot.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="DustInTheWind.CaveOfWonders.Domain.ConversionRate">
-    <Position X="9.25" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAIQAAAAAAAgAAAAhAAAgAAAACAA=</HashCode>
-      <FileName>ConversionRate.cs</FileName>
+      <FileName>PotInstance.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />
