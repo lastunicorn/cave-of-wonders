@@ -33,7 +33,7 @@ using MediatR.Extensions.Autofac.DependencyInjection.Builder;
 
 namespace DustInTheWind.CaveOfWonders.Cli;
 
-internal class DependenciesSetup
+internal class Setup
 {
     public static void Configure(ContainerBuilder containerBuilder)
     {

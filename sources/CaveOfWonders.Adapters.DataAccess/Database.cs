@@ -24,11 +24,11 @@ public class Database
 {
     private readonly string databaseDirectoryPath;
 
-    public List<Pot> Pots { get; } = new();
+    public List<Pot> Pots { get; } = [];
 
-    public List<ExchangeRate> ExchangeRates { get; } = new();
+    public List<ExchangeRate> ExchangeRates { get; } = [];
 
-    public List<InflationRecordDto> InflationRecords { get; } = new();
+    public List<InflationRecordDto> InflationRecords { get; } = [];
 
     public Database(string location)
     {

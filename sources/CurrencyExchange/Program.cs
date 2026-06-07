@@ -26,7 +26,7 @@ internal class Program
     public static async Task Main(string[] args)
     {
         ConsoleTools.Commando.Application application = ApplicationBuilder.Create()
-            .ConfigureServices(DependenciesSetup.Configure)
+            .ConfigureServices(Setup.Configure)
             .RegisterCommandsFrom(typeof(ShowCommand).Assembly)
             .HandleExceptions(HandlerApplicationException)
             .Build();
