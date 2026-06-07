@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,37 +17,46 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using DustInTheWind.ConsoleTools.Commando;
 using MediatR;
+using System.Globalization;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pots;
 
-[NamedCommand("pots", Description = "Display the current value of the pots.")]
-internal class PotsCommand : IConsoleCommand<PresentPotsViewModel>
+[NamedCommand("pots", Description = "Display the state of the pots for a specific date.")]
+internal class PotsCommand : IConsoleCommand<PotsViewModel>
 {
     private readonly IMediator mediator;
 
-    [NamedParameter("all", ShortName = 'a', IsOptional = true, Description = "Display all pots, including the inactive ones. Default = false.")]
+    [NamedParameter("date", ShortName = 'd', IsMandatory = false, Description = "The date for which to display the state of the cave. Default value = today")]
+    public DateTime? Date { get; set; }
+
+    [NamedParameter("currency", ShortName = 'c', IsMandatory = false)]
+    public string Currency { get; set; }
+
+    [NamedParameter("all", ShortName = 'a', IsMandatory = false, Description = "Display all pots, including the inactive ones. Default = false.")]
     public bool IncludeInactivePots { get; set; }
+
+    [NamedParameter("culture", ShortName = 'u', IsMandatory = false, Description = "The culture info used for displaying the data.")]
+    public CultureInfo Culture { get; set; }
 
     public PotsCommand(IMediator mediator)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
-    public async Task<PresentPotsViewModel> Execute()
+    public async Task<PotsViewModel> Execute()
     {
         PresentPotsRequest request = new()
         {
-            IncludeInactivePots = IncludeInactivePots
+            Date = Date,
+            Currency = Currency,
+            IncludeInactive = IncludeInactivePots
         };
 
         PresentPotsResponse response = await mediator.Send(request);
 
-        return new PresentPotsViewModel
+        return new PotsViewModel(response)
         {
-            Date = response.Date,
-            Pots = response.Pots
-                .Select(x => new PotInfoViewModel(x))
-                .ToList()
+            Culture = Culture,
         };
     }
 }

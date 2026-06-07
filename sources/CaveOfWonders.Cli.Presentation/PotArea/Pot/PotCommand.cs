@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,16 +25,10 @@ internal class PotCommand : IConsoleCommand<PotCommandViewModel>
 {
     private readonly IMediator mediator;
 
-    [NamedParameter("name", ShortName = 'n', IsOptional = true, Description = "The name of the pot for which to display details.")]
-    public string PotName { get; set; }
-
-    [NamedParameter("Id", ShortName = 'i', IsOptional = true, Description = "The Id of the pot for which to display details. Partial Id (ex: first 8 characters) is allowed to be provided.")]
-    public string PotId { get; set; }
-
-    [AnonymousParameter(DisplayName = "Pot Identifier", Order = 1, IsOptional = true, Description = "Name or id of the pot. Partial id is accepted.")]
+    [AnonymousParameter(DisplayName = "Pot Identifier", Order = 1, IsMandatory = false, Description = "Name or id of the pot. Partial id is accepted.")]
     public string PotIdentifier { get; set; }
 
-    [NamedParameter("all", ShortName = 'a', IsOptional = true, Description = "Display all pots, including the inactive ones. Default = false.")]
+    [NamedParameter("all", ShortName = 'a', IsMandatory = false, Description = "Display all pots, including the inactive ones. Default = false.")]
     public bool IncludeInactivePots { get; set; }
 
     public PotCommand(IMediator mediator)
@@ -46,8 +40,6 @@ internal class PotCommand : IConsoleCommand<PotCommandViewModel>
     {
         PresentPotRequest request = new()
         {
-            PotName = PotName,
-            PotId = PotId,
             PotIdentifier = PotIdentifier,
             IncludeInactivePots = IncludeInactivePots
         };

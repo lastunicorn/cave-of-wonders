@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,13 +14,38 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 
 public class ImportInflationResponse
 {
-    public int AddedCount { get; set; }
-    
-    public int UpdatedCount { get; set; }
-    
-    public int TotalCount { get; set; }
+    public int AddedCount { get; private set; }
+
+    public int UpdatedCount { get; private set; }
+
+    public int TotalCount => AddedCount + UpdatedCount;
+
+    internal async Task AddResultsAsync(IAsyncEnumerable<AddOrUpdateResult> addOrUpdateResults)
+    {
+        await foreach (AddOrUpdateResult addOrUpdateResult in addOrUpdateResults)
+            AddResult(addOrUpdateResult);
+    }
+
+    internal void AddResult(AddOrUpdateResult result)
+    {
+        switch (result)
+        {
+            case AddOrUpdateResult.Added:
+                AddedCount++;
+                break;
+
+            case AddOrUpdateResult.Updated:
+                UpdatedCount++;
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(result), result, null);
+        }
+    }
 }

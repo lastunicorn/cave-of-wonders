@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,13 +16,13 @@
 
 using System.Text.RegularExpressions;
 
-namespace DustInTheWind.CaveOfWonders.Domain;
+namespace DustInTheWind.CaveOfWonders.Infrastructure;
 
 public readonly struct CurrencyPair : IEquatable<CurrencyPair>
 {
     private static readonly Regex Regex = new(@"^(.{3})[\/| ]?(.{3})$", RegexOptions.Singleline);
 
-    public static CurrencyPair Empty = new();
+    public static CurrencyPair Empty { get; } = new();
 
     public CurrencyId Currency1 { get; init; }
 
@@ -101,5 +101,23 @@ public readonly struct CurrencyPair : IEquatable<CurrencyPair>
     public static implicit operator string(CurrencyPair currencyPair)
     {
         return currencyPair.ToString();
+    }
+
+    public static implicit operator CurrencyPair((CurrencyId currency1, CurrencyId currency2) tuple)
+    {
+        return new CurrencyPair(tuple.currency1, tuple.currency2);
+    }
+
+    public static implicit operator CurrencyPair((string currency1, string currency2) tuple)
+    {
+        return new CurrencyPair(tuple.currency1, tuple.currency2);
+    }
+
+    public static implicit operator CurrencyPair?((string currency1, string currency2) tuple)
+    {
+        if (tuple.currency1 == null || tuple.currency2 == null)
+            return null;
+
+        return new CurrencyPair(tuple.currency1, tuple.currency2);
     }
 }

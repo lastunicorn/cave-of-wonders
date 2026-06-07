@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -37,6 +37,8 @@ public class PotDetails
     public DateTime? LastGemDate { get; set; }
 
     public CurrencyValue Value { get; set; }
+    
+    public List<string> Labels { get; }
 
     internal PotDetails(Pot pot)
     {
@@ -47,13 +49,15 @@ public class PotDetails
         EndDate = pot.EndDate;
         Currency = pot.Currency;
         GemCount = pot.Gems.Count;
+        Labels = pot.Labels?.ToList() ?? [];
 
-        Gem lastGem = pot.Gems.Last();
-
-        LastGemDate = lastGem?.Date;
+        Gem lastGem = pot.Gems?.Count > 0
+            ? pot.Gems[^1]
+            : null;
 
         if (lastGem != null)
         {
+            LastGemDate = lastGem.Date;
             Value = new CurrencyValue
             {
                 Currency = pot.Currency,

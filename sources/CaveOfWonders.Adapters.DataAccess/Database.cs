@@ -16,7 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
 using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Infrastructure;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
@@ -28,7 +28,7 @@ public class Database
 
     public List<ExchangeRate> ExchangeRates { get; } = [];
 
-    public List<InflationRecordDto> InflationRecords { get; } = [];
+    public List<InflationRecord> InflationRecords { get; } = [];
 
     public Database(string location)
     {
@@ -37,6 +37,9 @@ public class Database
 
     public async Task Load()
     {
+        if (!Directory.Exists(databaseDirectoryPath))
+            Directory.CreateDirectory(databaseDirectoryPath);
+
         await LoadExchangeRates();
         await LoadPots();
         await LoadInflationRates();
@@ -104,6 +107,9 @@ public class Database
                     Value = x.Value
                 });
 
+            if (jPot.Labels != null)
+                pot.Labels.AddRange(jPot.Labels);
+
             pot.Gems.AddRange(gems);
 
             Pots.Add(pot);
@@ -115,10 +121,13 @@ public class Database
         string filePath = Path.Combine(databaseDirectoryPath, "inflation-rates.json");
         InflationRatesFile inflationRatesFile = new(filePath);
 
+        if (!inflationRatesFile.Exists)
+            return;
+
         IEnumerable<JInflationRecord> jInflationRecords = await inflationRatesFile.Read();
 
-        IEnumerable<InflationRecordDto> inflationRecordDtos = jInflationRecords
-            .Select(x => new InflationRecordDto
+        IEnumerable<InflationRecord> inflationRecordDtos = jInflationRecords
+            .Select(x => new InflationRecord
             {
                 Year = x.Year,
                 Value = x.Value
@@ -167,7 +176,7 @@ public class Database
     {
         PotsDirectory potsDirectory = new(databaseDirectoryPath);
 
-        if (potsDirectory.Exists)
+        if (!potsDirectory.Exists)
             potsDirectory.Create();
 
         foreach (Pot pot in Pots)
@@ -180,6 +189,7 @@ public class Database
                 StartDate = pot.StartDate,
                 EndDate = pot.EndDate,
                 Currency = pot.Currency,
+                Labels = pot.Labels?.ToList(),
                 Gems = pot.Gems
                     .Select(x => new JGem
                     {

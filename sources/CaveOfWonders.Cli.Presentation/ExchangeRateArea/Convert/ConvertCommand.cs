@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
-using DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.State;
+using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
+using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.ConsoleTools.Commando;
 using MediatR;
 
@@ -26,16 +27,16 @@ internal class ConvertCommand : IConsoleCommand<ConvertViewModel>
 {
     private readonly IMediator mediator;
 
-    [AnonymousParameter(Order = 1, DisplayName = "value", IsOptional = false, Description = "The value to be converted.")]
+    [AnonymousParameter(Order = 1, DisplayName = "value", IsMandatory = true, Description = "The value to be converted.")]
     public decimal InitialValue { get; set; }
 
-    [AnonymousParameter(Order = 2, DisplayName = "source currency", IsOptional = false, Description = "The currency of the value to be converted.")]
+    [AnonymousParameter(Order = 2, DisplayName = "source currency", IsMandatory = true, Description = "The currency of the value to be converted.")]
     public string SourceCurrencyId { get; set; }
 
-    [AnonymousParameter(Order = 3, DisplayName = "destination currency", IsOptional = false, Description = "The destination currency.")]
+    [AnonymousParameter(Order = 3, DisplayName = "destination currency", IsMandatory = true, Description = "The destination currency.")]
     public string DestinationCurrencyId { get; set; }
 
-    [NamedParameter("date", ShortName = 'd', IsOptional = true, Description = "The date of the exchange rate to use for conversion.")]
+    [NamedParameter("date", ShortName = 'd', IsMandatory = false, Description = "The date of the exchange rate to use for conversion.")]
     public DateTime? Date { get; set; }
 
     public ConvertCommand(IMediator mediator)
@@ -48,8 +49,11 @@ internal class ConvertCommand : IConsoleCommand<ConvertViewModel>
         ConvertRequest request = new()
         {
             InitialValue = InitialValue,
-            SourceCurrency = SourceCurrencyId,
-            DestinationCurrency = DestinationCurrencyId,
+            CurrencyPair = new CurrencyPair
+            {
+                Currency1 = SourceCurrencyId,
+                Currency2 = DestinationCurrencyId
+            },
             Date = Date
         };
 
@@ -59,8 +63,8 @@ internal class ConvertCommand : IConsoleCommand<ConvertViewModel>
         {
             InitialValue = response.InitialValue,
             ConvertedValue = response.ConvertedValue,
-            SourceCurrency = response.SourceCurrency,
-            DestinationCurrency = response.DestinationCurrency,
+            SourceCurrency = response.ExchangeRate.SourceCurrency,
+            DestinationCurrency = response.ExchangeRate.DestinationCurrency,
             ExchangeRate = new ExchangeRateViewModel(response.ExchangeRate, response.IsDateCurrent)
         };
     }

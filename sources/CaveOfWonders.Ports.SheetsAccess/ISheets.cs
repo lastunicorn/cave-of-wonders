@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,21 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CsvParser.Ports.SheetsAccess;
+using DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
+
+namespace DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
 public interface ISheets
 {
-    IEnumerable<SheetValue> GetBcrRecords(string location);
+    IExcelSpreadsheet GetExcelSpreadsheet(string filePath);
 
-    IEnumerable<SheetValue> GetIngRecords(string location);
-
-    IEnumerable<SheetValue> GetBrdRecords(string location);
-
-    IEnumerable<SheetValue> GetBtRecords(string location);
-
-    IEnumerable<SheetValue> GetRevolutRecords(string location);
-
-    IEnumerable<SheetValue> GetCashRecords(string location);
-
-    IEnumerable<SheetValue> GetGoldRecords(string location);
+    IEnumerable<SheetMapping> GetMappings(string location);
 }

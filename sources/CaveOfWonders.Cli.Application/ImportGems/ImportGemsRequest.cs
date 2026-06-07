@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,9 +20,9 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;
 
 public class ImportGemsRequest : IRequest<ImportGemsResponse>
 {
-    public PotCategory PotCategory { get; set; }
-
     public string SourceFilePath { get; set; }
+
+    public string MappingsFilePath { get; set; }
 
     public bool Overwrite { get; set; }
 }

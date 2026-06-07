@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,15 +20,15 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.InflationArea.ImportInflation;
 
-[NamedCommand("import-inflation")]
+[NamedCommand("import-inflation", Description = "Imports Romanian annual inflation values from the INSS web page or a file.")]
 internal class ImportInflationCommand : IConsoleCommand<InflationViewModel>
 {
     private readonly IMediator mediator;
 
-    [NamedParameter("source-type", ShortName = 't', IsOptional = true, Description = "The source of the imported data. (file - text file; web - html webpage from https://insse.ro)")]
+    [NamedParameter("source-type", ShortName = 't', IsMandatory = false, Description = "The source of the imported data. (file - text file; web - html webpage from https://insse.ro)")]
     public InflationImportSourceType ImportSourceType { get; set; } = InflationImportSourceType.Web;
 
-    [NamedParameter("source-file", ShortName = 'f', IsOptional = true)]
+    [NamedParameter("source-file", ShortName = 'f', IsMandatory = false)]
     public string SourceFile { get; set; }
 
     public ImportInflationCommand(IMediator mediator)

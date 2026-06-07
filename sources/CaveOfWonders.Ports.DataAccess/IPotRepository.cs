@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,11 +24,9 @@ public interface IPotRepository
 
     Task<IEnumerable<PotInstance>> GetInstances(DateTime date, DateMatchingMode dateMatchingMode, bool includeInactive);
 
-    Task<IEnumerable<Pot>> GetByName(string potName);
-
-    Task<Pot> GetById(Guid potId);
-
     Task<IEnumerable<Pot>> GetByPartialId(string partialPotId);
 
     Task<IEnumerable<Pot>> GetByIdOrName(string idOrName);
+    
+    Task Add(Pot pot);
 }

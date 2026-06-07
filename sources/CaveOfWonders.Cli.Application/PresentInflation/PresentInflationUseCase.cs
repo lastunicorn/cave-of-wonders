@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Ports.FileAccess;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentInflation;
@@ -30,13 +32,21 @@ internal class PresentInflationUseCase : IRequestHandler<PresentInflationRequest
 
     public async Task<PresentInflationResponse> Handle(PresentInflationRequest request, CancellationToken cancellationToken)
     {
-        IEnumerable<InflationRecordDto> inflationRecordDtos = await unitOfWork.InflationRecordRepository.GetAll();
+        IEnumerable<InflationRecord> inflationRecords = await RetrieveInflationRecordsFromStorage();
 
         return new PresentInflationResponse
         {
-            InflationRecords = inflationRecordDtos
-                .Select(x => new InflationRecord(x))
+            InflationRecords = inflationRecords
+                .Select(x => new InflationRecordDto(x))
                 .ToList()
         };
+    }
+
+    private async Task<IEnumerable<InflationRecord>> RetrieveInflationRecordsFromStorage()
+    {
+        IEnumerable<InflationRecord> inflationRecords = await unitOfWork.InflationRecordRepository.GetAll();
+
+        return inflationRecords
+            .OrderBy(x => x.Year);
     }
 }

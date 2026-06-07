@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,7 +34,10 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
 
     public async Task<PresentPotResponse> Handle(PresentPotRequest request, CancellationToken cancellationToken)
     {
-        IEnumerable<Pot> pots = await RetrievePot(request);
+        if (string.IsNullOrWhiteSpace(request.PotIdentifier))
+            throw new PotIdentifierNotSpecifiedException();
+
+        IEnumerable<Pot> pots = await RetrievePots(request);
 
         PresentPotResponse response = new()
         {
@@ -46,82 +49,34 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
         return response;
     }
 
-    private async Task<IEnumerable<Pot>> RetrievePot(PresentPotRequest request)
+    private async Task<IEnumerable<Pot>> RetrievePots(PresentPotRequest request)
     {
-        if (!string.IsNullOrWhiteSpace(request.PotId))
+        try
         {
-            bool success = Guid.TryParse(request.PotId, out Guid potGuid);
-
-            if (success)
-            {
-                Pot pot = await unitOfWork.PotRepository.GetById(potGuid);
-                return new[] { pot };
-            }
-
-            return await unitOfWork.PotRepository.GetByPartialId(request.PotId);
-        }
-
-        if (request.PotName != null)
-            return await unitOfWork.PotRepository.GetByName(request.PotName);
-
-        bool isIdentifierSpecified = !string.IsNullOrWhiteSpace(request.PotIdentifier);
-
-        if (isIdentifierSpecified)
-        {
-            IEnumerable<Pot> pots = await unitOfWork.PotRepository.GetByIdOrName(request.PotIdentifier);
+            IEnumerable<Pot> pots = await RetrievePotsByIdOrName(request.PotIdentifier);
 
             if (!request.IncludeInactivePots)
             {
                 DateTime today = systemClock.Today;
-
                 pots = pots.Where(x => x.IsActive(today));
             }
 
             pots = pots.OrderBy(x => x.DisplayOrder);
 
             return pots;
-
-            //bool success = Guid.TryParse(request.PotIdentifier, out Guid potGuid);
-
-            //if (success)
-            //{
-            //    Pot pot = await unitOfWork.PotRepository.GetById(potGuid);
-            //    return new[] { pot };
-            //}
-
-            //List<Pot> pots = (await unitOfWork.PotRepository.GetByPartialId(request.PotIdentifier))
-            //    .ToList();
-
-            //if (pots.Count == 0)
-            //{
-            //    pots = (await unitOfWork.PotRepository.GetByName(request.PotIdentifier))
-            //        .ToList();
-            //}
-
-            //return pots;
         }
-
-        return await unitOfWork.PotRepository.GetAll();
+        catch (Exception ex)
+        {
+            throw new StorageInaccessibleException(ex);
+        }
     }
 
-    //private async Task<IEnumerable<Pot>> RetrievePot(PresentPotRequest request)
-    //{
-    //    if (!string.IsNullOrWhiteSpace(request.PotId))
-    //    {
-    //        bool success = Guid.TryParse(request.PotId, out Guid potGuid);
+    private async Task<IEnumerable<Pot>> RetrievePotsByIdOrName(string potIdentifier)
+    {
+        bool isIdentifierSpecified = !string.IsNullOrWhiteSpace(potIdentifier);
 
-    //        if (success)
-    //        {
-    //            Pot pot = await unitOfWork.PotRepository.GetById(potGuid);
-    //            return new[] { pot };
-    //        }
-
-    //        return await unitOfWork.PotRepository.GetByPartialId(request.PotId);
-    //    }
-
-    //    if (request.PotName != null)
-    //        return await unitOfWork.PotRepository.GetByName(request.PotName);
-
-    //    return await unitOfWork.PotRepository.GetAll();
-    //}
+        return isIdentifierSpecified
+            ? await unitOfWork.PotRepository.GetByIdOrName(potIdentifier)
+            : await unitOfWork.PotRepository.GetAll();
+    }
 }

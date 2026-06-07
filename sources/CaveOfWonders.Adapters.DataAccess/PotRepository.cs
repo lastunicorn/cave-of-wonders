@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ public class PotRepository : IPotRepository
 
     public Task<IEnumerable<PotInstance>> GetInstances(DateTime date, DateMatchingMode dateMatchingMode, bool includeInactive)
     {
-        IEnumerable<PotInstance> potSnapshots = database.Pots
+        IEnumerable<PotInstance> potInstances = database.Pots
             .Where(x => includeInactive || x.IsActive(date))
             .Select(x => new PotInstance
             {
@@ -44,36 +44,35 @@ public class PotRepository : IPotRepository
                 Gem = x.GetGem(date, dateMatchingMode)
             });
 
-        return Task.FromResult(potSnapshots);
-    }
-
-    public Task<IEnumerable<Pot>> GetByName(string potName)
-    {
-        IEnumerable<Pot> pot = database.Pots
-            .Where(x => x.Name?.Contains(potName, StringComparison.InvariantCultureIgnoreCase) ?? false);
-
-        return Task.FromResult(pot);
-    }
-
-    public Task<Pot> GetById(Guid potId)
-    {
-        Pot pot = database.Pots.FirstOrDefault(x => x.Id == potId);
-        return Task.FromResult(pot);
+        return Task.FromResult(potInstances);
     }
 
     public Task<IEnumerable<Pot>> GetByPartialId(string partialPotId)
     {
+        string idWithoutDashes = partialPotId.Trim().Replace("-", string.Empty);
+
         IEnumerable<Pot> pot = database.Pots
-            .Where(x => x.Id.ToString("D").Contains(partialPotId, StringComparison.InvariantCultureIgnoreCase));
+            .Where(x => x.Id.ToString("N").Contains(idWithoutDashes, StringComparison.InvariantCultureIgnoreCase));
 
         return Task.FromResult(pot);
     }
 
     public Task<IEnumerable<Pot>> GetByIdOrName(string idOrName)
     {
+        string idWithoutDashes = idOrName.Trim().Replace("-", string.Empty);
+
         IEnumerable<Pot> pots = database.Pots
-            .Where(x => x.Id.ToString("D").Contains(idOrName, StringComparison.InvariantCultureIgnoreCase) || (x.Name?.Contains(idOrName, StringComparison.InvariantCultureIgnoreCase) ?? false));
+            .Where(x => x.Id.ToString("N").Contains(idWithoutDashes, StringComparison.InvariantCultureIgnoreCase) || (x.Name?.Contains(idOrName, StringComparison.InvariantCultureIgnoreCase) ?? false));
 
         return Task.FromResult(pots);
+    }
+
+    public Task Add(Pot pot)
+    {
+        if (pot == null)
+            throw new ArgumentNullException(nameof(pot));
+            
+        database.Pots.Add(pot);
+        return Task.CompletedTask;
     }
 }

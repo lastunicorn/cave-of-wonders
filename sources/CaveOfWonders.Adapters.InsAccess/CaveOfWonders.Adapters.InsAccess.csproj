@@ -1,6 +1,6 @@
 <!--
-Currency Exchange
-Copyright (C) 2023 Dust in the Wind
+Cave of Wonders
+Copyright (C) 2023-2025 Dust in the Wind
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,6 +27,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <ItemGroup>
       <PackageReference Include="HtmlAgilityPack" Version="1.11.63" />
+      <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.8" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.8" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.8" />
     </ItemGroup>
 
     <ItemGroup>

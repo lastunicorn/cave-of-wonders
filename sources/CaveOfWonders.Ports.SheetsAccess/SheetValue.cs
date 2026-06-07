@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CsvParser.Ports.SheetsAccess;
+namespace DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
 public class SheetValue
 {
-    public string Key { get; set; }
+    public Guid Key { get; set; }
 
     public DateTime Date { get; set; }
 

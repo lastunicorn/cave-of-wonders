@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,22 +15,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Infrastructure;
 
 namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
 public interface IExchangeRateRepository
 {
-    Task<IEnumerable<ExchangeRate>> Get(CurrencyPair currencyPair);
+    Task<IEnumerable<ExchangeRate>> Get(CurrencyPair[] currencyPairs);
 
     Task<IEnumerable<ExchangeRate>> Get(DateTime date);
 
     Task<IEnumerable<ExchangeRate>> Get(CurrencyPair currencyPair, List<DateTime> dates);
 
-    Task<ExchangeRate> GetLatest(CurrencyPair currencyPair, DateTime date, bool allowInverted = false);
+    Task<ExchangeRate> GetForLatestDayAvailable(CurrencyPair currencyPair, DateTime date, bool allowInverted = false);
 
-    Task<IEnumerable<ExchangeRate>> GetByDateInterval(CurrencyPair currencyPair, DateTime? startDate, DateTime? endDate);
+    Task<IEnumerable<ExchangeRate>> GetForLatestDayAvailable(CurrencyPair[] currencyPairs, DateTime date, bool allowInverted = false);
 
-    Task<IEnumerable<ExchangeRate>> GetByYear(CurrencyPair currencyPair, uint year, uint? month);
+    Task<IEnumerable<ExchangeRate>> GetByDateInterval(CurrencyPair[] currencyPairs, DateTime? startDate, DateTime? endDate);
 
-    Task<ImportReport> Import(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken);
+    Task<IEnumerable<ExchangeRate>> GetByYear(CurrencyPair[] currencyPairs, uint year, uint? month);
+
+    Task<ExchangeRateImportReport> Import(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken);
 }

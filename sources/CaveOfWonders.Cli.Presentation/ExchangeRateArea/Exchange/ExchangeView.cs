@@ -26,65 +26,18 @@ internal class ExchangeView : IView<PresentExchangeRateResponse>
 {
     public void Display(PresentExchangeRateResponse response)
     {
-        if (response.ExchangeRates.Count == 0)
-            CustomConsole.WriteLineWarning($"There are no exchange rates for {response.CurrencyPair} and the specified dates.");
+        if (response.DailyExchangeRates.Count == 0 || response.DailyExchangeRates.All(x => x.ExchangeRates.Count == 0))
+            CustomConsole.WriteLineWarning($"There are no exchange rates.");
         else
-            DisplayValues(response);
+            DisplayExchangeRates(response);
 
         if (response.Comments != null)
             CustomConsole.WriteLineWarning(response.Comments);
     }
 
-    //private static void DisplayValues(PresentExchangeRateResponse response)
-    //{
-    //    DataGrid dataGrid = new("Exchange Rates")
-    //    {
-    //        TitleRow =
-    //        {
-    //            BackgroundColor = ConsoleColor.Gray,
-    //            ForegroundColor = ConsoleColor.Black
-    //        }
-    //    };
-
-    //    dataGrid.Columns.Add("Date");
-    //    dataGrid.Columns.Add("Currency");
-    //    dataGrid.Columns.Add("Value");
-
-    //    foreach (ExchangeRateResponseDto exchangeRateResponseDto in response.ExchangeRates)
-    //    {
-    //        string date = exchangeRateResponseDto.Date.ToString("d", CultureInfo.CurrentCulture);
-    //        string currency = exchangeRateResponseDto.CurrencyPair.ToString();
-    //        string value = exchangeRateResponseDto.Value.ToString(CultureInfo.CurrentCulture);
-    //        dataGrid.Rows.Add(date, currency, value);
-    //    }
-
-    //    dataGrid.Display();
-    //}
-
-    private static void DisplayValues(PresentExchangeRateResponse response)
+    private static void DisplayExchangeRates(PresentExchangeRateResponse response)
     {
-        DataGrid dataGrid = new("Exchange Rates")
-        {
-            TitleRow =
-            {
-                BackgroundColor = ConsoleColor.Gray,
-                ForegroundColor = ConsoleColor.Black
-            }
-        };
-
-        dataGrid.Columns.Add("Date");
-        dataGrid.Columns.Add("Currency");
-        dataGrid.Columns.Add("Value");
-
-        foreach (ExchangeRateResponseDto exchangeRateResponseDto in response.ExchangeRates)
-        {
-            string date = exchangeRateResponseDto.Date.ToString("d", CultureInfo.CurrentCulture);
-            string currency = exchangeRateResponseDto.CurrencyPair.ToString();
-            string value = exchangeRateResponseDto.Value.ToString(CultureInfo.CurrentCulture);
-            
-            dataGrid.Rows.Add(date, currency, value);
-        }
-
+        ExchangeRatesDataGrid dataGrid = new(response);
         dataGrid.Display();
     }
 }

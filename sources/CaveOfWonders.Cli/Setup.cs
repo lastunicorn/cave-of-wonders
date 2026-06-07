@@ -15,38 +15,51 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using Autofac;
-using CsvParser.Ports.LogAccess;
 using DustInTheWind.CaveOfWonders.Adapters.BnrAccess;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
+using DustInTheWind.CaveOfWonders.Adapters.FileAccess;
 using DustInTheWind.CaveOfWonders.Adapters.InsAccess;
+using DustInTheWind.CaveOfWonders.Adapters.LogAccess;
+using DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
 using DustInTheWind.CaveOfWonders.Adapters.SystemAccess;
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using DustInTheWind.CaveOfWonders.Ports.BnrAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Ports.FileAccess;
 using DustInTheWind.CaveOfWonders.Ports.InsAccess;
+using DustInTheWind.CaveOfWonders.Ports.LogAccess;
+using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
-using DustInTheWind.CsvParser.Adapters.LogAccess;
-using DustInTheWind.CsvParser.Adapters.SheetsAccess;
-using DustInTheWind.CsvParser.Ports.SheetsAccess;
 using MediatR.Extensions.Autofac.DependencyInjection;
 using MediatR.Extensions.Autofac.DependencyInjection.Builder;
+using Microsoft.Extensions.Configuration;
 
 namespace DustInTheWind.CaveOfWonders.Cli;
 
-internal class Setup
+internal static class DependenciesSetup
 {
     public static void Configure(ContainerBuilder containerBuilder)
     {
-        MediatRConfiguration mediatRConfiguration = MediatRConfigurationBuilder
-            .Create(typeof(PresentStateRequest).Assembly)
+        MediatRConfiguration mediatRConfiguration = MediatRConfigurationBuilder.Create("", typeof(PresentPotsRequest).Assembly)
             .WithAllOpenGenericHandlerTypesRegistered()
             .Build();
 
         containerBuilder.RegisterMediatR(mediatRConfiguration);
 
         containerBuilder
-            .Register(context => new Database(@"db"))
+            .Register(context =>
+            {
+                IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
+                    .SetBasePath(AppContext.BaseDirectory)
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false);
+
+                IConfiguration configuration = configurationBuilder.Build();
+                string connectionString = configuration.GetConnectionString("DefaultConnection");
+
+                return new Database(connectionString);
+            })
             .AsSelf();
+
         containerBuilder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
 
         containerBuilder.RegisterType<SystemClock>().As<ISystemClock>();
@@ -54,5 +67,6 @@ internal class Setup
         containerBuilder.RegisterType<Ins>().As<IIns>();
         containerBuilder.RegisterType<Sheets>().As<ISheets>();
         containerBuilder.RegisterType<Log>().As<ILog>().InstancePerLifetimeScope();
+        containerBuilder.RegisterType<FileSystem>().As<IFileSystem>().SingleInstance();
     }
 }

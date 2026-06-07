@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,18 +20,18 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.ExchangeRateArea.Import;
 
-[NamedCommand("import-exchange", Description = "Import exchange rates from local files or directly from the BNR website.")]
+[NamedCommand("import-exchange", Description = "Execute exchange rates from local files or directly from the BNR website.")]
 internal class ImportCommand : IConsoleCommand<ImportResultViewModel>
 {
     private readonly IMediator mediator;
 
-    [NamedParameter("source-type", ShortName = 's', IsOptional = false, Description = "The source of the imported data. (bnr - bnr file; nbr - nbr file; web - nbr file from BNR website)")]
+    [NamedParameter("source-type", ShortName = 's', IsMandatory = true, Description = "The source of the imported data. (bnr - bnr file; nbr - nbr file; web - nbr file from BNR website)")]
     public ImportSourceType SourceType { get; set; }
 
-    [NamedParameter("file", ShortName = 'f', IsOptional = true, Description = "The full name of the file containing the exchange rates. Used by bnr and nbr imports.")]
+    [NamedParameter("file", ShortName = 'f', IsMandatory = false, Description = "The full name of the file containing the exchange rates. Used by bnr and nbr imports.")]
     public string SourceFilePath { get; set; }
 
-    [NamedParameter("year", ShortName = 'y', IsOptional = true, Description = "The year to be imported. Used by web import.")]
+    [NamedParameter("year", ShortName = 'y', IsMandatory = false, Description = "The year to be imported. Used by web import.")]
     public int? Year { get; set; }
 
     public ImportCommand(IMediator mediator)

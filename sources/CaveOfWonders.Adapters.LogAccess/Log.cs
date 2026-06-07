@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using CsvParser.Ports.LogAccess;
+using DustInTheWind.CaveOfWonders.Ports.LogAccess;
 
-namespace DustInTheWind.CsvParser.Adapters.LogAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.LogAccess;
 
 public sealed class Log : ILog, IDisposable, IAsyncDisposable
 {
@@ -40,6 +40,11 @@ public sealed class Log : ILog, IDisposable, IAsyncDisposable
         streamWriter = new StreamWriter(filePath, fileStreamOptions);
     }
 
+    public void WriteSeparator()
+    {
+        WriteInfo(new string('-', 100));
+    }
+
     public void WriteInfo(string text)
     {
         DateTime now = DateTime.Now;
@@ -57,5 +62,50 @@ public sealed class Log : ILog, IDisposable, IAsyncDisposable
     {
         if (streamWriter != null)
             await streamWriter.DisposeAsync();
+    }
+
+    public void ExecuteInfo(string title, Action action)
+    {
+        WriteSeparator();
+        WriteInfo(title);
+
+        try
+        {
+            action?.Invoke();
+        }
+        finally
+        {
+            WriteSeparator();
+        }
+    }
+
+    public Task ExecuteInfo(string title, Func<Task> action)
+    {
+        WriteSeparator();
+        WriteInfo(title);
+
+        try
+        {
+            return action?.Invoke();
+        }
+        finally
+        {
+            WriteSeparator();
+        }
+    }
+
+    public Task<T> ExecuteInfo<T>(string title, Func<Task<T>> action)
+    {
+        WriteSeparator();
+        WriteInfo(title);
+
+        try
+        {
+            return action?.Invoke();
+        }
+        finally
+        {
+            WriteSeparator();
+        }
     }
 }

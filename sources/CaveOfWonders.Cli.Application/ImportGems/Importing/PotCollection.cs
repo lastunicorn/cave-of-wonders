@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,18 +16,20 @@
 
 using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CsvParser.Application.Importing;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
 
 internal class PotCollection
 {
-    private readonly Dictionary<string, Pot> pots = new();
+    private readonly Dictionary<Guid, Pot> pots = [];
 
-    public void Add(Pot pot, string key)
+    internal void AddRange(IEnumerable<Pot> pots)
     {
-        if (key == null) throw new ArgumentNullException(nameof(key));
-        if (pot == null) throw new ArgumentNullException(nameof(pot));
+        ArgumentNullException.ThrowIfNull(pots);
 
-        pots.Add(key, pot);
+        IEnumerable<Pot> potsNotNull = pots.Where(x => x != null);
+
+        foreach (Pot pot in potsNotNull)
+            this.pots.Add(pot.Id, pot);
     }
 
     public void ClearGems()
@@ -36,18 +38,40 @@ internal class PotCollection
             pot.Gems.Clear();
     }
 
-    public GemAddReport AddGem(string key, Gem gem)
+    public void ClearGems(IEnumerable<Guid> potIds)
     {
-        if (gem == null) throw new ArgumentNullException(nameof(gem));
+        foreach (Guid potId in potIds)
+        {
+            bool success = pots.TryGetValue(potId, out Pot pot);
 
-        bool success = pots.TryGetValue(key, out Pot pot);
+            if (success)
+                pot.Gems.Clear();
+        }
+    }
 
-        if (!success)
+    public GemAddReport AddGem(Guid key, Gem gem)
+    {
+        ArgumentNullException.ThrowIfNull(gem);
+
+        bool potExists = pots.TryGetValue(key, out Pot pot);
+
+        if (!potExists)
         {
             return new GemAddReport
             {
                 AddStatus = GemAddStatus.PotNotFound,
                 Key = key,
+                Gem = gem
+            };
+        }
+
+        if (!pot.IsActive(gem.Date))
+        {
+            return new GemAddReport
+            {
+                AddStatus = GemAddStatus.PotNotActive,
+                Key = key,
+                Pot = pot,
                 Gem = gem
             };
         }

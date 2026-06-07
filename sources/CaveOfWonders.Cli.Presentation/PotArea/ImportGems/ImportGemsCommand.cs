@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,13 +25,13 @@ internal class ImportGemsCommand : IConsoleCommand<ImportGemsViewModel>
 {
     private readonly IMediator mediator;
 
-    [NamedParameter("source-file", ShortName = 'f', Description = "The full name of the csv file.")]
-    public string SourceCsvFilePath { get; set; }
+    [NamedParameter("source-file", ShortName = 'f', Description = "The full path of the xlsx file.")]
+    public string SourceFilePath { get; set; }
 
-    [NamedParameter("import-category", ShortName = 'c', Description = "The sheet from the ods file that wos exported.\nPossible values: bcr, ing, brd, bt, revolut, cash, gold.")]
-    public ImportCategory ImportCategory { get; set; }
+    [NamedParameter("mappings-file", ShortName = 'm', Description = "The full path of the mappings file. This file specify which column from the spreadsheet to be imported in which pot.")]
+    public string MappingsFilePath { get; set; }
 
-    [NamedParameter("overwrite", ShortName = 'x', IsOptional = true, Description = "If specified, the entire pot will be cleared and populated with the current imported gems.")]
+    [NamedParameter("overwrite", ShortName = 'x', IsMandatory = false, Description = "If specified, the entire pot will be cleared and populated with the current imported gems.")]
     public bool Overwrite { get; set; }
 
     public ImportGemsCommand(IMediator mediator)
@@ -43,18 +43,8 @@ internal class ImportGemsCommand : IConsoleCommand<ImportGemsViewModel>
     {
         ImportGemsRequest request = new()
         {
-            PotCategory = ImportCategory switch
-            {
-                ImportCategory.Bcr => PotCategory.Bcr,
-                ImportCategory.Ing => PotCategory.Ing,
-                ImportCategory.Brd => PotCategory.Brd,
-                ImportCategory.Bt => PotCategory.Bt,
-                ImportCategory.Revolut => PotCategory.Revolut,
-                ImportCategory.Cash => PotCategory.Cash,
-                ImportCategory.Gold => PotCategory.Gold,
-                _ => throw new ArgumentOutOfRangeException()
-            },
-            SourceFilePath = SourceCsvFilePath,
+            SourceFilePath = SourceFilePath,
+            MappingsFilePath = MappingsFilePath,
             Overwrite = Overwrite
         };
 

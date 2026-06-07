@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,8 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentState;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
@@ -26,7 +28,6 @@ internal class ConvertUseCase : IRequestHandler<ConvertRequest, ConvertResponse>
 {
     private readonly IUnitOfWork unitOfWork;
     private readonly ISystemClock systemClock;
-    private ConvertResponse response;
 
     public ConvertUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
     {
@@ -36,58 +37,33 @@ internal class ConvertUseCase : IRequestHandler<ConvertRequest, ConvertResponse>
 
     public async Task<ConvertResponse> Handle(ConvertRequest request, CancellationToken cancellationToken)
     {
-        response = new ConvertResponse();
+        DateTime dateOfExchangeRate = request.Date ?? systemClock.Today;
+        ExchangeRate exchangeRate = await RetrieveExchangeRate(request.CurrencyPair, dateOfExchangeRate);
 
-        ExchangeRate exchangeRate = await RetrieveExchangeRate(request);
-        Convert(request, exchangeRate);
-
-        return response;
+        return new ConvertResponse
+        {
+            InitialValue = request.InitialValue,
+            ConvertedValue = exchangeRate.Convert(request.InitialValue),
+            ExchangeRate = new ExchangeRateInfo(exchangeRate),
+            IsDateCurrent = exchangeRate.Date == dateOfExchangeRate
+        };
     }
 
-    private async Task<ExchangeRate> RetrieveExchangeRate(ConvertRequest request)
+    private async Task<ExchangeRate> RetrieveExchangeRate(CurrencyPair currencyPair, DateTime date)
     {
-        CurrencyPair currencyPair = new()
-        {
-            Currency1 = request.SourceCurrency,
-            Currency2 = request.DestinationCurrency
-        };
-
-        DateTime date = request.Date ?? systemClock.Today;
-
-        ExchangeRate exchangeRate = await unitOfWork.ExchangeRateRepository.GetLatest(currencyPair, date, true);
+        ExchangeRate exchangeRate = await unitOfWork.ExchangeRateRepository.GetForLatestDayAvailable(currencyPair, date, true);
 
         if (exchangeRate == null)
-            throw new Exception($"There is no exchange rate for the specific currency pair: {request.SourceCurrency} {request.DestinationCurrency}");
+            throw new ExchangeRateNotFoundException(currencyPair, date);
 
-        response.IsDateCurrent = exchangeRate.Date == date;
+        ConversionAbility conversionAbility = exchangeRate.AnalyzeConversionAbility(currencyPair.Currency1, currencyPair.Currency2);
 
-        return exchangeRate;
-    }
-
-    private void Convert(ConvertRequest request, ExchangeRate exchangeRate)
-    {
-        ConversionAbility conversionAbility = exchangeRate.AnalyzeConversionAbility(request.SourceCurrency, request.DestinationCurrency);
-
-        switch (conversionAbility)
+        return conversionAbility switch
         {
-            case ConversionAbility.None:
-                throw new Exception($"An exchange rate was found in the database, but could not be used for conversion. The value could not be converted. Exchange rate: {exchangeRate}");
-
-            case ConversionAbility.ConvertDirect:
-                break;
-
-            case ConversionAbility.ConvertReverse:
-                exchangeRate = exchangeRate.Invert();
-                break;
-
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-
-        response.SourceCurrency = exchangeRate.CurrencyPair.Currency1;
-        response.DestinationCurrency = exchangeRate.CurrencyPair.Currency2;
-        response.InitialValue = request.InitialValue;
-        response.ConvertedValue = exchangeRate.Convert(request.InitialValue);
-        response.ExchangeRate = new ExchangeRateInfo(exchangeRate);
+            ConversionAbility.None => throw new ExchangeRateUnusableException(exchangeRate),
+            ConversionAbility.ConvertDirect => exchangeRate,
+            ConversionAbility.ConvertReverse => exchangeRate.Invert(),
+            _ => throw new ArgumentOutOfRangeException(),
+        };
     }
 }

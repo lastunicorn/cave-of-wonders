@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,28 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using CsvParser.Ports.LogAccess;
 using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CsvParser.Ports.SheetsAccess;
+using DustInTheWind.CaveOfWonders.Ports.LogAccess;
+using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
-namespace DustInTheWind.CsvParser.Application.Importing;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
 
 internal class GemImport
 {
     public PotCollection Pots { get; set; }
 
-    public bool Overwrite { get; set; }
-
     public ILog Log { get; set; }
 
-    public ImportReport Report { get; private set; }
+    public GemImportReport Report { get; private set; }
 
-    public void Import(IEnumerable<SheetValue> sheetValues)
+    public void Execute(IEnumerable<SheetValue> sheetValues)
     {
-        Report = new ImportReport();
-
-        if (Overwrite)
-            Pots.ClearGems();
+        Report = new GemImportReport();
 
         foreach (SheetValue sheetValue in sheetValues)
         {
@@ -59,7 +54,19 @@ internal class GemImport
             case GemAddStatus.PotNotFound:
             {
                 Gem gem = gemAddReport.Gem;
+
+                Report.GetOrCreateReport(gemAddReport.Key).SkipExistsCount++;
                 Log.WriteInfo($"Gem skipped - Pot unknown for key '{gemAddReport.Key}'. Date = {gem.Date:yyyy-MM-dd}; Value = {gem.Value}");
+                break;
+            }
+
+            case (GemAddStatus.PotNotActive):
+            {
+                Pot pot = gemAddReport.Pot;
+                Gem gem = gemAddReport.Gem;
+
+                Report.GetOrCreateReport(pot).SkipNotActiveCount++;
+                Log.WriteInfo($"Gem skipped - Pot '{pot.Name}' ({pot.Id:D}) is not active for date {gem.Date:yyyy-MM-dd}; Value = {gem.Value}");
                 break;
             }
 
@@ -68,7 +75,7 @@ internal class GemImport
                 Pot pot = gemAddReport.Pot;
                 Gem gem = gemAddReport.Gem;
 
-                Report[pot].SkipCount++;
+                Report.GetOrCreateReport(pot).SkipExistsCount++;
                 Log.WriteInfo($"Gem skipped - Pot '{pot.Name}' ({pot.Id:D}); Date = {gem.Date:yyyy-MM-dd}; Value = {gem.Value}");
                 break;
             }
@@ -78,8 +85,9 @@ internal class GemImport
                 Pot pot = gemAddReport.Pot;
                 Gem gem = gemAddReport.Gem;
 
-                Report[pot].AddCount++;
+                Report.GetOrCreateReport(pot).AddCount++;
                 Log.WriteInfo($"Gem added - Pot '{pot.Name}' ({pot.Id:D}); Date = {gem.Date:yyyy-MM-dd}; Value = {gem.Value}");
+
                 break;
             }
 
@@ -97,7 +105,7 @@ internal class GemImport
             string potName = potImportReport.PotName;
             Guid potId = potImportReport.PotId;
             int addCount = potImportReport.AddCount;
-            int skipCount = potImportReport.SkipCount;
+            int skipCount = potImportReport.SkipExistsCount;
 
             Log.WriteInfo($"Imported gems into {potName} ({potId:D}). Added: {addCount}; Skipped: {skipCount}");
         }

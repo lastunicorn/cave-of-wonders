@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ internal class PotView : ViewBase<PotCommandViewModel>
         }
     }
 
-    private void DisplayPotDetails(PotDetailsViewModel potDetailsViewModel)
+    private static void DisplayPotDetails(PotDetailsViewModel potDetailsViewModel)
     {
         DataGrid dataGrid = DataGridTemplate.CreateNew();
         dataGrid.Title = potDetailsViewModel.Name;
@@ -66,6 +66,7 @@ internal class PotView : ViewBase<PotCommandViewModel>
         dataGrid.Rows.Add("StartDate", potDetailsViewModel.StartDate.ToString("d"));
         dataGrid.Rows.Add("EndDate", potDetailsViewModel.EndDate?.ToString("d") ?? string.Empty);
         dataGrid.Rows.Add("Currency", potDetailsViewModel.Currency);
+        dataGrid.Rows.Add("Labels", string.Join(", ", potDetailsViewModel.Labels));
         dataGrid.Rows.Add("Gem Count", potDetailsViewModel.GemCount);
         dataGrid.Rows.Add("Last Gem", $"{potDetailsViewModel.LastGemDate:d} ({potDetailsViewModel.Value.ToDisplayString()})");
 

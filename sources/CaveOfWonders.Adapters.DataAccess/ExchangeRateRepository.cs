@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
@@ -28,10 +29,12 @@ public class ExchangeRateRepository : IExchangeRateRepository
         this.database = database ?? throw new ArgumentNullException(nameof(database));
     }
 
-    public Task<IEnumerable<ExchangeRate>> Get(CurrencyPair currencyPair)
+    public Task<IEnumerable<ExchangeRate>> Get(CurrencyPair[] currencyPairs)
     {
-        IEnumerable<ExchangeRate> exchangeRates = database.ExchangeRates
-            .Where(x => x.CurrencyPair == currencyPair);
+        IEnumerable<ExchangeRate> exchangeRates = database.ExchangeRates;
+
+        if (currencyPairs != null && currencyPairs.Length > 0)
+            exchangeRates = exchangeRates.Where(x => currencyPairs.Contains(x.CurrencyPair));
 
         return Task.FromResult(exchangeRates);
     }
@@ -53,7 +56,7 @@ public class ExchangeRateRepository : IExchangeRateRepository
         return Task.FromResult(exchangeRates);
     }
 
-    public Task<ExchangeRate> GetLatest(CurrencyPair currencyPair, DateTime date, bool allowInverted = false)
+    public Task<ExchangeRate> GetForLatestDayAvailable(CurrencyPair currencyPair, DateTime date, bool allowInverted = false)
     {
         CurrencyPair invertedCurrencyPair = currencyPair.Invert();
 
@@ -76,12 +79,36 @@ public class ExchangeRateRepository : IExchangeRateRepository
         return Task.FromResult(exchangeRate);
     }
 
-    public Task<IEnumerable<ExchangeRate>> GetByDateInterval(CurrencyPair currencyPair, DateTime? startDate, DateTime? endDate)
+    public Task<IEnumerable<ExchangeRate>> GetForLatestDayAvailable(CurrencyPair[] currencyPairs, DateTime date, bool allowInverted = false)
     {
-        string currencyPairAsString = currencyPair.ToString();
+        IEnumerable<ExchangeRate> exchangeRates = database.ExchangeRates;
 
-        IEnumerable<ExchangeRate> exchangeRates = database.ExchangeRates
-            .Where(x => x.CurrencyPair == currencyPairAsString);
+        if (currencyPairs != null && currencyPairs.Length > 0)
+        {
+            CurrencyPair[] currencyPairsAll = ExpandCurrencyPairs(currencyPairs, allowInverted);
+            exchangeRates = exchangeRates.Where(x => currencyPairsAll.Contains(x.CurrencyPair));
+        }
+
+        exchangeRates = exchangeRates.Where(x => x.Date <= date);
+
+        IGrouping<DateTime, ExchangeRate> exchangeRatesByDate = exchangeRates
+            .GroupBy(x => x.Date)
+            .OrderByDescending(x => x.Key)
+            .FirstOrDefault();
+
+        IEnumerable<ExchangeRate> exchangeRatesFinal = exchangeRatesByDate == null
+            ? []
+            : exchangeRatesByDate;
+
+        return Task.FromResult(exchangeRatesFinal);
+    }
+
+    public Task<IEnumerable<ExchangeRate>> GetByDateInterval(CurrencyPair[] currencyPairs, DateTime? startDate, DateTime? endDate)
+    {
+        IEnumerable<ExchangeRate> exchangeRates = database.ExchangeRates;
+
+        if (currencyPairs != null && currencyPairs.Length > 0)
+            exchangeRates = exchangeRates.Where(x => currencyPairs.Contains(x.CurrencyPair));
 
         if (startDate != null)
             exchangeRates = exchangeRates.Where(x => x.Date >= startDate.Value);
@@ -94,12 +121,14 @@ public class ExchangeRateRepository : IExchangeRateRepository
         return Task.FromResult(exchangeRates);
     }
 
-    public Task<IEnumerable<ExchangeRate>> GetByYear(CurrencyPair currencyPair, uint year, uint? month)
+    public Task<IEnumerable<ExchangeRate>> GetByYear(CurrencyPair[] currencyPairs, uint year, uint? month)
     {
-        string currencyPairAsString = currencyPair.ToString();
+        IEnumerable<ExchangeRate> exchangeRates = database.ExchangeRates;
 
-        IEnumerable<ExchangeRate> exchangeRates = database.ExchangeRates
-            .Where(x => x.CurrencyPair == currencyPairAsString && x.Date.Year == year);
+        if (currencyPairs != null && currencyPairs.Length > 0)
+            exchangeRates = exchangeRates.Where(x => currencyPairs.Contains(x.CurrencyPair));
+
+        exchangeRates = exchangeRates.Where(x => x.Date.Year == year);
 
         if (month != null)
             exchangeRates = exchangeRates.Where(x => x.Date.Month == month.Value);
@@ -109,11 +138,31 @@ public class ExchangeRateRepository : IExchangeRateRepository
         return Task.FromResult(exchangeRates);
     }
 
-    public Task<ImportReport> Import(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken)
+    public Task<ExchangeRateImportReport> Import(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken)
     {
         ImportProcedure importProcedure = new(database.ExchangeRates);
         importProcedure.Execute(exchangeRates);
 
         return Task.FromResult(importProcedure.Report);
+    }
+
+    private static CurrencyPair[] ExpandCurrencyPairs(CurrencyPair[] currencyPairs, bool allowInverted)
+    {
+        if (currencyPairs == null)
+            return [];
+
+        if (allowInverted)
+        {
+            return currencyPairs
+                .SelectMany(x => new[] { x, x.Invert() })
+                .Distinct()
+                .ToArray();
+        }
+        else
+        {
+            return currencyPairs
+                .Distinct()
+                .ToArray();
+        }
     }
 }

@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ internal class InflationView : IView<InflationViewModel>
     {
         if (viewModel.Records?.Count > 0)
         {
-            foreach (InflationRecord inflationRecord in viewModel.Records)
+            foreach (InflationRecordDto inflationRecord in viewModel.Records)
             {
                 Console.Write($"{inflationRecord.Year}: {inflationRecord.Value,6:N2} ");
                 DisplayChartLine(inflationRecord.Value);

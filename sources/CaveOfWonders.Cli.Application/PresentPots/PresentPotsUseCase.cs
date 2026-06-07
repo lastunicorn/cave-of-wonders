@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,69 +15,106 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 
-internal class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPotsResponse>
+public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPotsResponse>
 {
     private readonly ISystemClock systemClock;
     private readonly IUnitOfWork unitOfWork;
+    private readonly CurrenciesConvertor currenciesConverter;
 
     public PresentPotsUseCase(ISystemClock systemClock, IUnitOfWork unitOfWork)
     {
         this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+
+        currenciesConverter = new CurrenciesConvertor(unitOfWork);
     }
 
     public async Task<PresentPotsResponse> Handle(PresentPotsRequest request, CancellationToken cancellationToken)
     {
+        DateTime currentDate = request.Date ?? systemClock.Today;
+        string defaultCurrency = request.Currency ?? "RON";
+
+        IEnumerable<PotInstance> potInstances = await RetrievePotInstancesFromStorage(currentDate, request.IncludeInactive);
+        List<PotInstanceInfo> potInstanceInfos = await ConvertToPotInstanceInfos(potInstances, currentDate, defaultCurrency);
+
+        PotsAnalysis potsAnalysis = new(currenciesConverter)
+        {
+            PotInstanceInfos = potInstanceInfos,
+            TargetDate = currentDate,
+            TargetCurrency = defaultCurrency
+        };
+
+        await potsAnalysis.Calculate();
+
         return new PresentPotsResponse
         {
-            Date = systemClock.Today,
-            Pots = await RetrievePots(request.IncludeInactivePots)
+            Date = currentDate,
+            PotInstances = potInstanceInfos,
+            ConversionRates = currenciesConverter.UsedExchangeRates
+                .Select(x => new ExchangeRateInfo(x))
+                .ToList(),
+            Total = new CurrencyValue
+            {
+                Value = potsAnalysis.TotalValue,
+                Currency = defaultCurrency
+            },
+            CurrencyTotalOverviews = potsAnalysis.currencyTotalOverviews
         };
     }
 
-    private async Task<List<PotInfo>> RetrievePots(bool includeInactivePots)
+    private async Task<IEnumerable<PotInstance>> RetrievePotInstancesFromStorage(DateTime date, bool includeInactive)
     {
-        IEnumerable<Pot> pots = await unitOfWork.PotRepository.GetAll();
+        IEnumerable<PotInstance> potInstances = await unitOfWork.PotRepository.GetInstances(date, DateMatchingMode.LastAvailable, includeInactive);
+        return potInstances.OrderBy(x => x.Pot.DisplayOrder);
+    }
 
-        IEnumerable<PotInfo> potInfos = pots
-            .OrderBy(x => x.DisplayOrder)
-            .Select(ToPotInfo);
+    private async Task<List<PotInstanceInfo>> ConvertToPotInstanceInfos(IEnumerable<PotInstance> potInstances, DateTime currentDate, string defaultCurrency)
+    {
+        List<PotInstanceInfo> potInstanceInfos = [];
 
-        if (!includeInactivePots)
+        foreach (PotInstance potInstance in potInstances)
         {
-            potInfos = potInfos
-                .Where(x => x.IsActive);
+            PotInstanceInfo potInstanceInfo = await Convert(potInstance, currentDate, defaultCurrency);
+            potInstanceInfos.Add(potInstanceInfo);
         }
 
-        return potInfos.ToList();
+        return potInstanceInfos;
     }
 
-    private PotInfo ToPotInfo(Pot pot)
+    private async Task<PotInstanceInfo> Convert(PotInstance potInstance, DateTime currentDate, CurrencyId defaultCurrency)
     {
-        bool isActive = pot.IsActive(systemClock.Today);
-
-        Gem lastGem = pot.GetLastGem();
-
-        CurrencyValue value = isActive && lastGem != null
-            ? new CurrencyValue
-            {
-                Currency = pot.Currency,
-                Value = lastGem.Value
-            }
-            : null;
-
-        return new PotInfo
+        PotInstanceInfo potInstanceInfo = new()
         {
-            Id = pot.Id,
-            Name = pot.Name,
-            Value = value,
-            IsActive = isActive
+            Id = potInstance.Pot.Id,
+            Name = potInstance.Pot.Name,
+            IsActive = potInstance.Pot.IsActive(currentDate),
+            Value = ComputeOriginalValue(potInstance)
         };
+
+        potInstanceInfo.NormalizedValue = await currenciesConverter.Convert(potInstanceInfo.Value, defaultCurrency, currentDate);
+
+        return potInstanceInfo;
+    }
+
+    private static CurrencyValue ComputeOriginalValue(PotInstance potInstance)
+    {
+        if (potInstance.Gem != null)
+        {
+            return new CurrencyValue
+            {
+                Currency = potInstance.Pot.Currency,
+                Value = potInstance.Gem.Value,
+                Date = potInstance.Gem.Date
+            };
+        }
+
+        return null;
     }
 }

@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,9 +18,7 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 
 public class PresentExchangeRateResponse
 {
-    public string CurrencyPair { get; set; }
+    public List<DailyExchangeRates> DailyExchangeRates { get; set; }
 
-    public List<ExchangeRateResponseDto> ExchangeRates { get; set; }
-
-    public string Comments { get; set; }
+    public INote Comments { get; set; }
 }

@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,13 +16,13 @@
 
 using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CsvParser.Application.Importing;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
 
 internal class GemAddReport
 {
     public GemAddStatus AddStatus { get; set; }
 
-    public string Key { get; set; }
+    public Guid Key { get; set; }
 
     public Pot Pot { get; set; }
 

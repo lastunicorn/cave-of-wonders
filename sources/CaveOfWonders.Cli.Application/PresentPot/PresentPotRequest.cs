@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,10 +20,6 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 
 public class PresentPotRequest : IRequest<PresentPotResponse>
 {
-    public string PotName { get; set; }
-
-    public string PotId { get; set; }
-
     public string PotIdentifier { get; set; }
 
     public bool IncludeInactivePots { get; set; }

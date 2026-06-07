@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,65 +14,24 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CsvParser.Ports.SheetsAccess;
+using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
+using Newtonsoft.Json;
 
-namespace DustInTheWind.CsvParser.Adapters.SheetsAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
 
 public class Sheets : ISheets
 {
-    public IEnumerable<SheetValue> GetBcrRecords(string location)
+    public IExcelSpreadsheet GetExcelSpreadsheet(string filePath)
     {
-        if (location == null) throw new ArgumentNullException(nameof(location));
-
-        BcrSheetCsvFile bcrSheetCsvFile = new(location);
-        return bcrSheetCsvFile.Read();
+        return new ExcelSpreadsheet(filePath);
     }
 
-    public IEnumerable<SheetValue> GetIngRecords(string location)
+    public IEnumerable<SheetMapping> GetMappings(string location)
     {
-        if (location == null) throw new ArgumentNullException(nameof(location));
+        string json = File.ReadAllText(location);
+        List<JSheetMapping> jSheetDescriptors = JsonConvert.DeserializeObject<List<JSheetMapping>>(json);
 
-        IngSheetCsvFile ingSheetCsvFile = new(location);
-        return ingSheetCsvFile.Read();
-    }
-
-    public IEnumerable<SheetValue> GetBrdRecords(string location)
-    {
-        if (location == null) throw new ArgumentNullException(nameof(location));
-
-        BrdSheetCsvFile brdSheetCsvFile = new(location);
-        return brdSheetCsvFile.Read();
-    }
-
-    public IEnumerable<SheetValue> GetBtRecords(string location)
-    {
-        if (location == null) throw new ArgumentNullException(nameof(location));
-
-        BtSheetCsvFile btSheetCsvFile = new(location);
-        return btSheetCsvFile.Read();
-    }
-
-    public IEnumerable<SheetValue> GetRevolutRecords(string location)
-    {
-        if (location == null) throw new ArgumentNullException(nameof(location));
-
-        RevolutSheetCsvFile revolutSheetCsvFile = new(location);
-        return revolutSheetCsvFile.Read();
-    }
-
-    public IEnumerable<SheetValue> GetCashRecords(string location)
-    {
-        if (location == null) throw new ArgumentNullException(nameof(location));
-
-        CashSheetCsvFile cashSheetCsvFile = new(location);
-        return cashSheetCsvFile.Read();
-    }
-
-    public IEnumerable<SheetValue> GetGoldRecords(string location)
-    {
-        if (location == null) throw new ArgumentNullException(nameof(location));
-
-        GoldSheetCsvFile goldSheetCsvFile = new(location);
-        return goldSheetCsvFile.Read();
+        return jSheetDescriptors
+            .Select(x => x.ToSheetDescriptor());
     }
 }

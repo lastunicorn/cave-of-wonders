@@ -1,5 +1,5 @@
 ﻿// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
+// Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ public class ImportExchangeRatesResponse
 
     public List<DuplicateReportResponseDto> Duplicates { get; } = new();
 
-    internal ImportExchangeRatesResponse(ImportReport report)
+    internal ImportExchangeRatesResponse(ExchangeRateImportReport report)
     {
         TotalCount = report.TotalCount;
         AddedCount = report.AddedCount;
