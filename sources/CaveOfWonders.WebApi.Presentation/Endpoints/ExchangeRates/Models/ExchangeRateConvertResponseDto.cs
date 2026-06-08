@@ -17,7 +17,7 @@
 using CaveOfWonders.WebApi.Presentation.Endpoints.Pots.Models;
 using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
 
-namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRate.Models;
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRates.Models;
 
 /// <summary>
 /// Response model for currency conversion

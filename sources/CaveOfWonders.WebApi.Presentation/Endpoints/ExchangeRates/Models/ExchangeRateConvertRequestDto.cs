@@ -15,11 +15,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
-using DustInTheWind.CaveOfWonders.Infrastructure;
+using DustInTheWind.CaveOfWonders.DataTypes;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
-namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRate.Models;
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRates.Models;
 
 
 /// <summary>

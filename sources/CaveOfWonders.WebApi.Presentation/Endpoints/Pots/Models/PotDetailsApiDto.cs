@@ -14,7 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
+using DustInTheWind.CaveOfWonders.Cli.Application;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
+
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.Pots.Models;
 
 public class PotDetailsApiDto
 {

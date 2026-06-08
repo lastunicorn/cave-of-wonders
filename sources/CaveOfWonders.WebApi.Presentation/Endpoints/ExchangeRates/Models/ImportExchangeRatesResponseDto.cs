@@ -16,7 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
 
-namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRate.Models;
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRates.Models;
 
 /// <summary>
 /// Response model for the import exchange rates operation

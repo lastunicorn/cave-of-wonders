@@ -1,5 +1,6 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;

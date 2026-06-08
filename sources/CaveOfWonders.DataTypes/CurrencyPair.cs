@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace DustInTheWind.CaveOfWonders.Infrastructure;
+namespace DustInTheWind.CaveOfWonders.DataTypes;
 
 public readonly struct CurrencyPair : IEquatable<CurrencyPair>
 {

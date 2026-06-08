@@ -17,7 +17,7 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRate.Models;
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRates.Models;
 
 /// <summary>
 /// Request model for retrieving exchange rates

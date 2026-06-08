@@ -1,4 +1,4 @@
-﻿using DustInTheWind.CaveOfWonders.Infrastructure;
+﻿using DustInTheWind.CaveOfWonders.DataTypes;
 
 namespace DustInTheWind.CaveOfWonders.Domain;
 

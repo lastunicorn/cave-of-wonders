@@ -16,7 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
 using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
-using DustInTheWind.CaveOfWonders.Infrastructure;
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.ConsoleTools.Commando;
 using MediatR;
 

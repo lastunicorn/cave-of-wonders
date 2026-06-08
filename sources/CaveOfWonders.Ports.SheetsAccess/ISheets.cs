@@ -1,6 +1,4 @@
-﻿using DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
-
-namespace DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
+﻿namespace DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 
 public interface ISheets
 {

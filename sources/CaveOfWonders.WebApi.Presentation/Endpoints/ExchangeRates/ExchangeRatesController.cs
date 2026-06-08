@@ -14,8 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRate.Models;
-using CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRates.ErrorHandlers;
+using CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRates.Models;
 using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
@@ -23,7 +22,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRate;
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRates;
 
 /// <summary>
 /// API controller for managing and retrieving exchange rates between currencies.

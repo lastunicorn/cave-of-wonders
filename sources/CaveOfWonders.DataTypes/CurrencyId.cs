@@ -1,4 +1,4 @@
-﻿namespace DustInTheWind.CaveOfWonders.Infrastructure;
+﻿namespace DustInTheWind.CaveOfWonders.DataTypes;
 
 public readonly struct CurrencyId
 {

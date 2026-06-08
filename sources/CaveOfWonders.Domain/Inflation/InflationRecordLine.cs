@@ -1,4 +1,6 @@
-﻿public class InflationRecordLine
+﻿namespace DustInTheWind.CaveOfWonders.Domain.Inflation;
+
+public class InflationRecordLine
 {
     private readonly int year;
     private readonly decimal value;

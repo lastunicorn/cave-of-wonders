@@ -1,4 +1,5 @@
-﻿using DustInTheWind.CaveOfWonders.Domain;
+﻿using DustInTheWind.CaveOfWonders.DataTypes;
+using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Infrastructure;
 
 namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;

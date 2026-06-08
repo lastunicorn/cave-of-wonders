@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.ComponentModel.DataAnnotations;
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
+using System.ComponentModel.DataAnnotations;
 
-namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRate.Models
+namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRates.Models
 {
     /// <summary>
     /// Request model for importing exchange rates
