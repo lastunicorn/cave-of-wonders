@@ -3,7 +3,6 @@ using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 using FluentAssertions;
-using FluentAssertions.Specialized;
 using Moq;
 
 namespace CaveOfWonders.Tests.ImportInflationUseCaseTests;
