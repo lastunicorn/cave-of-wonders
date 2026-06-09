@@ -5,7 +5,7 @@ namespace DustInTheWind.CaveOfWonders.Adapters.BnrAccess;
 
 public class BnrService : IBnrService
 {
-    public async Task<IEnumerable<BnrExchangeRate>> GetExchangeRatesFromNbr(string filePath, CancellationToken cancellationToken)
+    public async Task<IEnumerable<BnrExchangeRate>> GetExchangeRatesFromFile(string filePath, CancellationToken cancellationToken)
     {
         await using FileStream fileStream = File.OpenRead(filePath);
         ExchangeRatesDocument document = await ExchangeRatesDocument.LoadAsync(fileStream);
@@ -14,7 +14,7 @@ public class BnrService : IBnrService
             .SelectMany(x => x.ToExchangeRates(document.ReferenceCurrency));
     }
 
-    public async Task<IEnumerable<BnrExchangeRate>> GetExchangeRatesFromNbrOnline(int year, CancellationToken cancellationToken)
+    public async Task<IEnumerable<BnrExchangeRate>> GetExchangeRatesFromOnline(int year, CancellationToken cancellationToken)
     {
         ExchangeRatesDocument document = await ExchangeRatesOnlineDocument.LoadForYear(year, cancellationToken);
 

@@ -63,7 +63,7 @@ internal class ImportExchangeRatesUseCase : IRequestHandler<ImportExchangeRatesR
 
         try
         {
-            return await bnrService.GetExchangeRatesFromNbrOnline(year, cancellationToken);
+            return await bnrService.GetExchangeRatesFromOnline(year, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -75,7 +75,7 @@ internal class ImportExchangeRatesUseCase : IRequestHandler<ImportExchangeRatesR
     {
         try
         {
-            return await bnrService.GetExchangeRatesFromNbr(request.SourceFilePath, cancellationToken);
+            return await bnrService.GetExchangeRatesFromFile(request.SourceFilePath, cancellationToken);
         }
         catch (Exception ex)
         {
