@@ -1,6 +1,6 @@
 ﻿namespace DustInTheWind.CaveOfWonders.Ports.BnrAccess;
 
-public interface IBnr
+public interface IBnrService
 {
     Task<IEnumerable<BnrExchangeRate>> GetExchangeRatesFrom(string filePath, CancellationToken cancellationToken);
 

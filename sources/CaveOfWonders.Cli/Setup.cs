@@ -47,7 +47,7 @@ internal static class DependenciesSetup
         containerBuilder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
 
         containerBuilder.RegisterType<SystemClock>().As<ISystemClock>();
-        containerBuilder.RegisterType<Bnr>().As<IBnr>();
+        containerBuilder.RegisterType<BnrService>().As<IBnrService>();
         containerBuilder.RegisterType<InsService>().As<IInsService>();
         containerBuilder.RegisterType<Sheets>().As<ISheets>();
         containerBuilder.RegisterType<Log>().As<ILog>().InstancePerLifetimeScope();

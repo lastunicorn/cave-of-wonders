@@ -24,13 +24,13 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
 
 internal class ImportExchangeRatesUseCase : IRequestHandler<ImportExchangeRatesRequest, ImportExchangeRatesResponse>
 {
-    private readonly IBnr bnr;
+    private readonly IBnrService bnrService;
     private readonly IUnitOfWork unitOfWork;
     private readonly ISystemClock systemClock;
 
-    public ImportExchangeRatesUseCase(IBnr bnr, IUnitOfWork unitOfWork, ISystemClock systemClock)
+    public ImportExchangeRatesUseCase(IBnrService bnrService, IUnitOfWork unitOfWork, ISystemClock systemClock)
     {
-        this.bnr = bnr ?? throw new ArgumentNullException(nameof(bnr));
+        this.bnrService = bnrService ?? throw new ArgumentNullException(nameof(bnrService));
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
     }
@@ -64,7 +64,7 @@ internal class ImportExchangeRatesUseCase : IRequestHandler<ImportExchangeRatesR
 
         try
         {
-            return await bnr.GetExchangeRatesFromNbrOnline(year, cancellationToken);
+            return await bnrService.GetExchangeRatesFromNbrOnline(year, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -76,7 +76,7 @@ internal class ImportExchangeRatesUseCase : IRequestHandler<ImportExchangeRatesR
     {
         try
         {
-            return await bnr.GetExchangeRatesFrom(request.SourceFilePath, cancellationToken);
+            return await bnrService.GetExchangeRatesFrom(request.SourceFilePath, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -88,7 +88,7 @@ internal class ImportExchangeRatesUseCase : IRequestHandler<ImportExchangeRatesR
     {
         try
         {
-            return await bnr.GetExchangeRatesFromNbr(request.SourceFilePath, cancellationToken);
+            return await bnrService.GetExchangeRatesFromNbr(request.SourceFilePath, cancellationToken);
         }
         catch (Exception ex)
         {
