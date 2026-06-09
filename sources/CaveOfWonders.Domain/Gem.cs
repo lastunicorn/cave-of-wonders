@@ -2,7 +2,7 @@
 
 public class Gem : IEquatable<Gem>
 {
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     public decimal Value { get; set; }
 

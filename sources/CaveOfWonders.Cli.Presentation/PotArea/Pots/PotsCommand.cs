@@ -27,7 +27,7 @@ internal class PotsCommand : IConsoleCommand<PotsViewModel>
     private readonly IMediator mediator;
 
     [NamedParameter("date", ShortName = 'd', IsMandatory = false, Description = "The date for which to display the state of the cave. Default value = today")]
-    public DateTime? Date { get; set; }
+    public DateOnly? Date { get; set; }
 
     [NamedParameter("currency", ShortName = 'c', IsMandatory = false)]
     public string Currency { get; set; }

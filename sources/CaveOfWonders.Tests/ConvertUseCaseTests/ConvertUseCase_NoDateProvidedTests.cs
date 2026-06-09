@@ -2,7 +2,6 @@ using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using FluentAssertions;
@@ -52,7 +51,7 @@ public class ConvertUseCase_NoDateProvidedTests
     {
         systemClock
             .SetupGet(x => x.Today)
-            .Returns(new DateTime(2000, 12, 04));
+            .Returns(new DateOnly(2000, 12, 04));
 
         ConvertRequest convertRequest = new()
         {
@@ -67,7 +66,7 @@ public class ConvertUseCase_NoDateProvidedTests
         catch { }
 
         CurrencyPair expectedCurrencyPair = new("EURRON");
-        DateTime expectedDate = new(2000, 12, 04);
+        DateOnly expectedDate = new(2000, 12, 04);
 
         exchangeRateRepository.Verify(x => x.GetForLatestDayAvailable(expectedCurrencyPair, expectedDate, true), Times.Once);
     }
@@ -77,10 +76,10 @@ public class ConvertUseCase_NoDateProvidedTests
     {
         systemClock
             .SetupGet(x => x.Today)
-            .Returns(new DateTime(2000, 12, 04));
+            .Returns(new DateOnly(2000, 12, 04));
 
         exchangeRateRepository
-            .Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateTime>(), It.IsAny<bool>()))
+            .Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>()))
             .Returns(Task.FromResult(null as ExchangeRate));
 
         ConvertRequest convertRequest = new()
@@ -99,15 +98,15 @@ public class ConvertUseCase_NoDateProvidedTests
     {
         systemClock
             .SetupGet(x => x.Today)
-            .Returns(new DateTime(2000, 12, 04));
+            .Returns(new DateOnly(2000, 12, 04));
 
         exchangeRateRepository
-            .Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateTime>(), It.IsAny<bool>()))
+            .Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>()))
             .Returns(Task.FromResult(new ExchangeRate()
             {
                 Value = 2,
                 CurrencyPair = new CurrencyPair("EURRON"),
-                Date = new DateTime(2000, 12, 04)
+                Date = new DateOnly(2000, 12, 04)
             }));
 
         ConvertRequest convertRequest = new()
@@ -125,7 +124,7 @@ public class ConvertUseCase_NoDateProvidedTests
         response.ExchangeRate.SourceCurrency.Should().Be("EUR");
         response.ExchangeRate.DestinationCurrency.Should().Be("RON");
         response.ExchangeRate.Value.Should().Be(2);
-        response.ExchangeRate.Date.Should().Be(new DateTime(2000, 12, 04));
+        response.ExchangeRate.Date.Should().Be(new DateOnly(2000, 12, 04));
     }
 
     [Fact]
@@ -133,15 +132,15 @@ public class ConvertUseCase_NoDateProvidedTests
     {
         systemClock
             .SetupGet(x => x.Today)
-            .Returns(new DateTime(2000, 12, 04));
+            .Returns(new DateOnly(2000, 12, 04));
 
         exchangeRateRepository
-            .Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateTime>(), It.IsAny<bool>()))
+            .Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>()))
             .Returns(Task.FromResult(new ExchangeRate()
             {
                 Value = 2,
                 CurrencyPair = new CurrencyPair("EURRON"),
-                Date = new DateTime(2000, 12, 01)
+                Date = new DateOnly(2000, 12, 01)
             }));
 
         ConvertRequest convertRequest = new()
@@ -159,6 +158,6 @@ public class ConvertUseCase_NoDateProvidedTests
         response.ExchangeRate.SourceCurrency.Should().Be("EUR");
         response.ExchangeRate.DestinationCurrency.Should().Be("RON");
         response.ExchangeRate.Value.Should().Be(2);
-        response.ExchangeRate.Date.Should().Be(new DateTime(2000, 12, 01));
+        response.ExchangeRate.Date.Should().Be(new DateOnly(2000, 12, 01));
     }
 }

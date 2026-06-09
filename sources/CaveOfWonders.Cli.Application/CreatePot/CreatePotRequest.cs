@@ -24,7 +24,7 @@ public class CreatePotRequest : IRequest<CreatePotResponse>
     
     public string Description { get; set; }
     
-    public DateTime? StartDate { get; set; }
+    public DateOnly? StartDate { get; set; }
     
     public string Currency { get; set; }
 }

@@ -24,7 +24,7 @@ public class DailyExchangeRatesDto
     /// <summary>
     /// The date for which exchange rates are provided
     /// </summary>
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
     
     /// <summary>
     /// List of exchange rates for different currency pairs

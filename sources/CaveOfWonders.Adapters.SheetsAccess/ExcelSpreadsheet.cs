@@ -62,7 +62,7 @@ public sealed class ExcelSpreadsheet : IExcelSpreadsheet
                 if (dateRaw == DBNull.Value)
                     throw new SheetsException($"Date value missing in column {columnDescriptor.DateIndex} for value in column {columnDescriptor.Index} ({value}) in sheet '{sheetDescriptor.Name}'.");
 
-                DateTime date = Convert.ToDateTime(dateRaw, CultureInfo.InvariantCulture);
+                DateOnly date = DateOnly.FromDateTime(Convert.ToDateTime(dateRaw, CultureInfo.InvariantCulture));
 
                 yield return new SheetValue
                 {

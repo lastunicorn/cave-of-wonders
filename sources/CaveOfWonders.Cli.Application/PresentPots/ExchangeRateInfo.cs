@@ -24,7 +24,7 @@ public class ExchangeRateInfo
 
     public string DestinationCurrency { get; }
 
-    public DateTime Date { get; }
+    public DateOnly Date { get; }
 
     public decimal Value { get; }
 

@@ -16,7 +16,6 @@
 
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
@@ -49,7 +48,7 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
         if (request.Today)
             await RetrieveForToday(currencyPairs);
         else if (request.Date != null)
-            await RetrieveByDate(currencyPairs, request.Date.Value.Date);
+            await RetrieveByDate(currencyPairs, request.Date.Value);
         else if (request.Year != null)
             await RetrieveByYear(currencyPairs, request.Year.Value, request.Month);
         else if (request.StartDate != null || request.EndDate != null)
@@ -65,18 +64,18 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
         // If currency pair provided        => 1 currency; multiple dates       => display by currency
         // If currency pair NOT provided    => multiple currencies; multiple dates       => display by currency
 
-        DateTime dateTime = systemClock.Today;
+        DateOnly dateTime = systemClock.Today;
         return RetrieveByDate(currencyPairs, dateTime);
     }
 
-    private async Task RetrieveByDate(CurrencyPair[] currencyPairs, DateTime date)
+    private async Task RetrieveByDate(CurrencyPair[] currencyPairs, DateOnly date)
     {
         IEnumerable<ExchangeRate> exchangeRates = await unitOfWork.ExchangeRateRepository.GetForLatestDayAvailable(currencyPairs, date);
 
         if (exchangeRates == null)
             throw new ExchangeRateNotFoundException(currencyPairs, date);
 
-        DateTime? actualDate = exchangeRates
+        DateOnly? actualDate = exchangeRates
             .FirstOrDefault()?.Date;
 
         DailyExchangeRates dailyExchangeRates = new()
@@ -122,7 +121,7 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
             .ToList();
     }
 
-    private async Task RetrieveByDateInterval(CurrencyPair[] currencyPairs, DateTime? startDate, DateTime? endDate)
+    private async Task RetrieveByDateInterval(CurrencyPair[] currencyPairs, DateOnly? startDate, DateOnly? endDate)
     {
         response.DailyExchangeRates = (await unitOfWork.ExchangeRateRepository.GetByDateInterval(currencyPairs, startDate, endDate))
             .GroupBy(x => x.Date)

@@ -22,5 +22,5 @@ public class CurrencyValue
 
     public string Currency { get; set; }
 
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 }

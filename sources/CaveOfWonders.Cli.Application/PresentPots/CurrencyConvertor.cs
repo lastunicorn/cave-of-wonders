@@ -22,11 +22,11 @@ internal class CurrencyConvertor
 {
     private readonly ExchangeRate exchangeRate;
     private readonly bool isDirect;
-    private readonly DateTime date;
+    private readonly DateOnly date;
 
-    public DateTime Date => exchangeRate?.Date ?? date;
+    public DateOnly Date => exchangeRate?.Date ?? date;
 
-    public CurrencyConvertor(DateTime date)
+    public CurrencyConvertor(DateOnly date)
     {
         this.date = date;
     }

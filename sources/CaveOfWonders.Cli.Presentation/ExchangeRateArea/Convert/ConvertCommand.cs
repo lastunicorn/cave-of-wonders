@@ -37,7 +37,7 @@ internal class ConvertCommand : IConsoleCommand<ConvertViewModel>
     public string DestinationCurrencyId { get; set; }
 
     [NamedParameter("date", ShortName = 'd', IsMandatory = false, Description = "The date of the exchange rate to use for conversion.")]
-    public DateTime? Date { get; set; }
+    public DateOnly? Date { get; set; }
 
     public ConvertCommand(IMediator mediator)
     {

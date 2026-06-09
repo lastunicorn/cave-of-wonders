@@ -26,7 +26,7 @@ public class GetSummaryPotsResponseDto
     /// <summary>
     /// Date for which the pot values are calculated
     /// </summary>
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     /// <summary>
     /// List of pot instances with their current values

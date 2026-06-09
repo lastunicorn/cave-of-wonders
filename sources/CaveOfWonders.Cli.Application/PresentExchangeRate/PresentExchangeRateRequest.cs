@@ -24,11 +24,11 @@ public class PresentExchangeRateRequest : IRequest<PresentExchangeRateResponse>
 
     public bool Today { get; set; }
 
-    public DateTime? Date { get; set; }
+    public DateOnly? Date { get; set; }
 
-    public DateTime? StartDate { get; set; }
+    public DateOnly? StartDate { get; set; }
 
-    public DateTime? EndDate { get; set; }
+    public DateOnly? EndDate { get; set; }
 
     public uint? Year { get; set; }
 

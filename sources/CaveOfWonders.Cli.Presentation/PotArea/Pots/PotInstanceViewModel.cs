@@ -47,7 +47,7 @@ internal class PotInstanceViewModel
 
     public bool IsValueAlreadyNormal { get; set; }
 
-    public DateTime? Date { get; set; }
+    public DateOnly? Date { get; set; }
 
     public CurrencyValue NormalizedValue { get; set; }
 

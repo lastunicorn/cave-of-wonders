@@ -10,15 +10,15 @@ public class BnrService : IBnrService
         await using FileStream fileStream = File.OpenRead(filePath);
         ExchangeRatesDocument document = await ExchangeRatesDocument.LoadAsync(fileStream);
 
-        return document.Cubes
+        return document.DailyExchangeRates
             .SelectMany(x => x.ToExchangeRates(document.ReferenceCurrency));
     }
 
     public async Task<IEnumerable<BnrExchangeRate>> GetExchangeRatesFromOnline(int year, CancellationToken cancellationToken)
     {
-        ExchangeRatesDocument document = await ExchangeRatesOnlineDocument.LoadForYear(year, cancellationToken);
+        ExchangeRatesDocument document = await ExchangeRatesOnlineDocument.LoadByYear(year, cancellationToken);
 
-        return document.Cubes
+        return document.DailyExchangeRates
             .SelectMany(x => x.ToExchangeRates(document.ReferenceCurrency));
     }
 }

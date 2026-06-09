@@ -6,7 +6,7 @@ public interface IPotRepository
 {
     Task<IEnumerable<Pot>> GetAll();
 
-    Task<IEnumerable<PotInstance>> GetInstances(DateTime date, DateMatchingMode dateMatchingMode, bool includeInactive);
+    Task<IEnumerable<PotInstance>> GetInstances(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive);
 
     Task<IEnumerable<Pot>> GetByPartialId(string partialPotId);
 

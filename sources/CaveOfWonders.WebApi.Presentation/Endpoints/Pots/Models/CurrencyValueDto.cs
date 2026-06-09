@@ -36,7 +36,7 @@ public class CurrencyValueDto
     /// <summary>
     /// The date when this value was recorded or is valid
     /// </summary>
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     internal static CurrencyValueDto From(CurrencyValue currencyValue)
     {

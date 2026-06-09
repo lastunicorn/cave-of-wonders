@@ -4,7 +4,7 @@ namespace DustInTheWind.CaveOfWonders.Domain;
 
 public class ExchangeRate : IEquatable<ExchangeRate>
 {
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     public CurrencyPair CurrencyPair { get; set; }
 

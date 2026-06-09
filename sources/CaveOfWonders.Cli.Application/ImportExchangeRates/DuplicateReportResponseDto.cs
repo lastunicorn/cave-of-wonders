@@ -20,7 +20,7 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
 
 public class DuplicateReportResponseDto
 {
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     public string CurrencyPair { get; set; }
 

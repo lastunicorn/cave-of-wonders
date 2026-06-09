@@ -38,7 +38,7 @@ public class GetAllTests
                     Name = "Test Pot",
                     Description = "This is a test pot",
                     DisplayOrder = 1,
-                    StartDate = new DateTime(2023, 1, 1),
+                    StartDate = new DateOnly(2023, 1, 1),
                     Currency = "USD"
                 };
 
@@ -60,7 +60,7 @@ public class GetAllTests
                 pot.Name.Should().Be("Test Pot");
                 pot.Description.Should().Be("This is a test pot");
                 pot.DisplayOrder.Should().Be(1);
-                pot.StartDate.Should().Be(new DateTime(2023, 1, 1));
+                pot.StartDate.Should().Be(new DateOnly(2023, 1, 1));
                 pot.Currency.Should().Be("USD");
             })
             .Execute();
@@ -77,7 +77,7 @@ public class GetAllTests
                     Id = Guid.NewGuid(),
                     Name = "Test Pot 1",
                     DisplayOrder = 1,
-                    StartDate = new DateTime(2023, 1, 1),
+                    StartDate = new DateOnly(2023, 1, 1),
                     Currency = "USD"
                 };
 
@@ -86,7 +86,7 @@ public class GetAllTests
                     Id = Guid.NewGuid(),
                     Name = "Test Pot 2",
                     DisplayOrder = 2,
-                    StartDate = new DateTime(2023, 2, 1),
+                    StartDate = new DateOnly(2023, 2, 1),
                     Currency = "EUR"
                 };
 
@@ -95,7 +95,7 @@ public class GetAllTests
                     Id = Guid.NewGuid(),
                     Name = "Test Pot 3",
                     DisplayOrder = 3,
-                    StartDate = new DateTime(2023, 3, 1),
+                    StartDate = new DateOnly(2023, 3, 1),
                     Currency = "GBP"
                 };
 
@@ -142,18 +142,18 @@ public class GetAllTests
                     Id = Guid.NewGuid(),
                     Name = "Test Pot with Gems",
                     DisplayOrder = 1,
-                    StartDate = new DateTime(2023, 1, 1),
+                    StartDate = new DateOnly(2023, 1, 1),
                     Currency = "USD",
                     Gems =
                     [
                         new GemDbEntity
                         {
-                            Date = new DateTime(2023, 1, 15),
+                            Date = new DateOnly(2023, 1, 15),
                             Value = 100.50m
                         },
                         new GemDbEntity
                         {
-                            Date = new DateTime(2023, 2, 15),
+                            Date = new DateOnly(2023, 2, 15),
                             Value = 120.75m
                         }
                     ]
@@ -174,8 +174,8 @@ public class GetAllTests
                 pots.Should().HaveCount(1);
                 Pot pot = pots.First();
                 pot.Gems.Should().HaveCount(2);
-                pot.Gems.Should().ContainSingle(x => x.Date == new DateTime(2023, 1, 15) && x.Value == 100.50m);
-                pot.Gems.Should().ContainSingle(x => x.Date == new DateTime(2023, 2, 15) && x.Value == 120.75m);
+                pot.Gems.Should().ContainSingle(x => x.Date == new DateOnly(2023, 1, 15) && x.Value == 100.50m);
+                pot.Gems.Should().ContainSingle(x => x.Date == new DateOnly(2023, 2, 15) && x.Value == 120.75m);
             })
             .Execute();
     }
@@ -191,7 +191,7 @@ public class GetAllTests
                     Id = Guid.NewGuid(),
                     Name = "Test Pot with Labels",
                     DisplayOrder = 1,
-                    StartDate = new DateTime(2023, 1, 1),
+                    StartDate = new DateOnly(2023, 1, 1),
                     Currency = "USD",
                     Labels = [
                         "Savings",

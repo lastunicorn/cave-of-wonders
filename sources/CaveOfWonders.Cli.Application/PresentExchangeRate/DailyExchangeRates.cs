@@ -18,7 +18,7 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 
 public class DailyExchangeRates
 {
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     public List<ExchangeRateForCurrency> ExchangeRates { get; set; }
 }

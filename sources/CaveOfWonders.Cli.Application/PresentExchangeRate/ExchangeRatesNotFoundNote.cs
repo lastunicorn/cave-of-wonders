@@ -15,7 +15,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.DataTypes;
-using DustInTheWind.CaveOfWonders.Infrastructure;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 
@@ -23,7 +22,7 @@ public class ExchangeRatesNotFoundNote : INote
 {
     public List<CurrencyPair> CurrencyPairs { get; set; }
     
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     public override string ToString()
     {

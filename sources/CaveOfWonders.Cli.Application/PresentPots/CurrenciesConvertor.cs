@@ -16,7 +16,6 @@
 
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
@@ -32,7 +31,7 @@ internal class CurrenciesConvertor
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
 
-    public async Task<CurrencyValue> Convert(CurrencyValue originalValue, CurrencyId destinationCurrency, DateTime destinationDate)
+    public async Task<CurrencyValue> Convert(CurrencyValue originalValue, CurrencyId destinationCurrency, DateOnly destinationDate)
     {
         if (originalValue == null)
             return null;
@@ -62,7 +61,7 @@ internal class CurrenciesConvertor
         return originalValue;
     }
 
-    private async Task<CurrencyConvertor> GetConverter(CurrencyId sourceCurrency, CurrencyId destinationCurrency, DateTime date)
+    private async Task<CurrencyConvertor> GetConverter(CurrencyId sourceCurrency, CurrencyId destinationCurrency, DateOnly date)
     {
         CurrencyPair currencyPair = new()
         {

@@ -24,7 +24,7 @@ public class DuplicateReportDto
     /// <summary>
     /// Date of the exchange rate
     /// </summary>
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     /// <summary>
     /// Currency pair identifier

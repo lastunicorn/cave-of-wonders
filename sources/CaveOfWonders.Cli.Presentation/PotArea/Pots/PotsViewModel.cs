@@ -25,7 +25,7 @@ internal class PotsViewModel
 {
     public CultureInfo Culture { get; set; }
 
-    public DateTime Date { get; }
+    public DateOnly Date { get; }
 
     public List<PotInstanceViewModel> Values { get; }
 

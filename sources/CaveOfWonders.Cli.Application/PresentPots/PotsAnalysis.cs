@@ -24,7 +24,7 @@ internal class PotsAnalysis
 
     public string TargetCurrency { get; set; }
 
-    public DateTime TargetDate { get; set; }
+    public DateOnly TargetDate { get; set; }
 
     public decimal TotalValue { get; private set; }
 

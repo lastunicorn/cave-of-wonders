@@ -15,7 +15,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.DataTypes;
-using DustInTheWind.CaveOfWonders.Infrastructure;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 
@@ -24,12 +23,12 @@ public class ExchangeRateNotFoundException : Exception
 {
     private const string DefaultMessage = "Exchange rate for {0} and date {1:d} was not found.";
 
-    public ExchangeRateNotFoundException(CurrencyPair currencyPair, DateTime date)
+    public ExchangeRateNotFoundException(CurrencyPair currencyPair, DateOnly date)
         : base(string.Format(DefaultMessage, currencyPair, date))
     {
     }
 
-    public ExchangeRateNotFoundException(IEnumerable<CurrencyPair> currencyPairs, DateTime date)
+    public ExchangeRateNotFoundException(IEnumerable<CurrencyPair> currencyPairs, DateOnly date)
         : base(string.Format(DefaultMessage, string.Join(", ", currencyPairs), date))
     {
     }

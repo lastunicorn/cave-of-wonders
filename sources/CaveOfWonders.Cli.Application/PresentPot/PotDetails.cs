@@ -26,15 +26,15 @@ public class PotDetails
 
     public string Description { get; }
 
-    public DateTime StartDate { get; }
+    public DateOnly StartDate { get; }
 
-    public DateTime? EndDate { get; }
+    public DateOnly? EndDate { get; }
 
     public string Currency { get; }
 
     public int GemCount { get; }
 
-    public DateTime? LastGemDate { get; set; }
+    public DateOnly? LastGemDate { get; set; }
 
     public CurrencyValue Value { get; set; }
     

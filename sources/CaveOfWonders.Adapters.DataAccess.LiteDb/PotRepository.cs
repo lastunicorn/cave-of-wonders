@@ -38,7 +38,7 @@ public class PotRepository : IPotRepository
         return Task.FromResult(pots);
     }
 
-    public Task<IEnumerable<PotInstance>> GetInstances(DateTime date, DateMatchingMode dateMatchingMode, bool includeInactive)
+    public Task<IEnumerable<PotInstance>> GetInstances(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive)
     {
         IEnumerable<PotInstance> potInstances = dbContext.Pots
             .FindAll()

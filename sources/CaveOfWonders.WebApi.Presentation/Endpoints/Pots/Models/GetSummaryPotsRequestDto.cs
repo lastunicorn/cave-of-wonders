@@ -21,7 +21,7 @@ namespace CaveOfWonders.WebApi.Presentation.Endpoints.Pots.Models;
 public class GetSummaryPotsRequestDto
 {
     [FromQuery]
-    public DateTime? Date { get; set; }
+    public DateOnly? Date { get; set; }
 
     [FromQuery]
     public string Currency { get; set; }

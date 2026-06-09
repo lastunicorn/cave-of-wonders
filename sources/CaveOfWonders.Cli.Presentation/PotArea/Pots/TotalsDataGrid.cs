@@ -23,7 +23,7 @@ namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pots;
 
 internal class TotalsDataGrid
 {
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     public List<CurrencyTotalOverview> Values { get; set; }
 

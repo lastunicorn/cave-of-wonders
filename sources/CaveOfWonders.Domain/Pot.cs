@@ -10,9 +10,9 @@ public class Pot
 
     public uint DisplayOrder { get; set; }
 
-    public DateTime StartDate { get; set; }
+    public DateOnly StartDate { get; set; }
 
-    public DateTime? EndDate { get; set; }
+    public DateOnly? EndDate { get; set; }
 
     public string Currency { get; set; }
 
@@ -20,7 +20,7 @@ public class Pot
     
     public List<string> Labels { get; } = [];
 
-    public bool IsActive(DateTime date)
+    public bool IsActive(DateOnly date)
     {
         return date >= StartDate && (EndDate == null || date <= EndDate);
     }

@@ -57,7 +57,7 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
 
             if (!request.IncludeInactivePots)
             {
-                DateTime today = systemClock.Today;
+                DateOnly today = systemClock.Today;
                 pots = pots.Where(x => x.IsActive(today));
             }
 

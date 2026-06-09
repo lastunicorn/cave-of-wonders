@@ -34,7 +34,7 @@ public class ConvertUseCase_DateProvidedTests
         {
             InitialValue = 100,
             CurrencyPair = new CurrencyPair("EURRON"),
-            Date = new DateTime(2000, 06, 04)
+            Date = new DateOnly(2000, 06, 04)
         };
 
         try
@@ -44,7 +44,7 @@ public class ConvertUseCase_DateProvidedTests
         catch { }
 
         CurrencyPair expectedCurrencyPair = new("EURRON");
-        DateTime expectedDate = new(2000, 06, 04);
+        DateOnly expectedDate = new(2000, 06, 04);
 
         exchangeRateRepository.Verify(x => x.GetForLatestDayAvailable(expectedCurrencyPair, expectedDate, true), Times.Once);
     }
@@ -53,14 +53,14 @@ public class ConvertUseCase_DateProvidedTests
     public async Task HavingDateProvided_AndExchangeRateDoesNotExistInStorage_ThenThrows()
     {
         exchangeRateRepository
-            .Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateTime>(), It.IsAny<bool>()))
+            .Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>()))
             .Returns(Task.FromResult(null as ExchangeRate));
 
         ConvertRequest convertRequest = new()
         {
             InitialValue = 100,
             CurrencyPair = new CurrencyPair("EURRON"),
-            Date = new DateTime(2000, 06, 04)
+            Date = new DateOnly(2000, 06, 04)
         };
 
         Func<Task> action = async () => await convertUseCase.Handle(convertRequest, CancellationToken.None);
@@ -72,19 +72,19 @@ public class ConvertUseCase_DateProvidedTests
     public async Task HavingDateProvided_AndExchangeRateExistsInStorage_ThenReturnsConvertedValue()
     {
         exchangeRateRepository
-            .Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateTime>(), It.IsAny<bool>()))
+            .Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>()))
             .Returns(Task.FromResult(new ExchangeRate()
             {
                 Value = 2,
                 CurrencyPair = new CurrencyPair("EURRON"),
-                Date = new DateTime(2000, 06, 04)
+                Date = new DateOnly(2000, 06, 04)
             }));
 
         ConvertRequest convertRequest = new()
         {
             InitialValue = 102,
             CurrencyPair = new CurrencyPair("EURRON"),
-            Date = new DateTime(2000, 06, 04)
+            Date = new DateOnly(2000, 06, 04)
         };
 
         ConvertResponse response = await convertUseCase.Handle(convertRequest, CancellationToken.None);
@@ -96,26 +96,26 @@ public class ConvertUseCase_DateProvidedTests
         response.ExchangeRate.SourceCurrency.Should().Be("EUR");
         response.ExchangeRate.DestinationCurrency.Should().Be("RON");
         response.ExchangeRate.Value.Should().Be(2);
-        response.ExchangeRate.Date.Should().Be(new DateTime(2000, 06, 04));
+        response.ExchangeRate.Date.Should().Be(new DateOnly(2000, 06, 04));
     }
 
     [Fact]
     public async Task HavingDateProvided_AndExchangeRateExistsInStorageForAPreviousDate_ThenReturnsConvertedValue()
     {
         exchangeRateRepository
-            .Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateTime>(), It.IsAny<bool>()))
+            .Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>()))
             .Returns(Task.FromResult(new ExchangeRate()
             {
                 Value = 2,
                 CurrencyPair = new CurrencyPair("EURRON"),
-                Date = new DateTime(2000, 06, 01)
+                Date = new DateOnly(2000, 06, 01)
             }));
 
         ConvertRequest convertRequest = new()
         {
             InitialValue = 102,
             CurrencyPair = new CurrencyPair("EURRON"),
-            Date = new DateTime(2000, 06, 04)
+            Date = new DateOnly(2000, 06, 04)
         };
 
         ConvertResponse response = await convertUseCase.Handle(convertRequest, CancellationToken.None);
@@ -127,6 +127,6 @@ public class ConvertUseCase_DateProvidedTests
         response.ExchangeRate.SourceCurrency.Should().Be("EUR");
         response.ExchangeRate.DestinationCurrency.Should().Be("RON");
         response.ExchangeRate.Value.Should().Be(2);
-        response.ExchangeRate.Date.Should().Be(new DateTime(2000, 06, 01));
+        response.ExchangeRate.Date.Should().Be(new DateOnly(2000, 06, 01));
     }
 }

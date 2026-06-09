@@ -16,7 +16,6 @@
 
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
@@ -39,7 +38,7 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
 
     public async Task<PresentPotsResponse> Handle(PresentPotsRequest request, CancellationToken cancellationToken)
     {
-        DateTime currentDate = request.Date ?? systemClock.Today;
+        DateOnly currentDate = request.Date ?? systemClock.Today;
         string defaultCurrency = request.Currency ?? "RON";
 
         IEnumerable<PotInstance> potInstances = await RetrievePotInstancesFromStorage(currentDate, request.IncludeInactive);
@@ -70,13 +69,13 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
         };
     }
 
-    private async Task<IEnumerable<PotInstance>> RetrievePotInstancesFromStorage(DateTime date, bool includeInactive)
+    private async Task<IEnumerable<PotInstance>> RetrievePotInstancesFromStorage(DateOnly date, bool includeInactive)
     {
         IEnumerable<PotInstance> potInstances = await unitOfWork.PotRepository.GetInstances(date, DateMatchingMode.LastAvailable, includeInactive);
         return potInstances.OrderBy(x => x.Pot.DisplayOrder);
     }
 
-    private async Task<List<PotInstanceInfo>> ConvertToPotInstanceInfos(IEnumerable<PotInstance> potInstances, DateTime currentDate, string defaultCurrency)
+    private async Task<List<PotInstanceInfo>> ConvertToPotInstanceInfos(IEnumerable<PotInstance> potInstances, DateOnly currentDate, string defaultCurrency)
     {
         List<PotInstanceInfo> potInstanceInfos = [];
 
@@ -89,7 +88,7 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
         return potInstanceInfos;
     }
 
-    private async Task<PotInstanceInfo> Convert(PotInstance potInstance, DateTime currentDate, CurrencyId defaultCurrency)
+    private async Task<PotInstanceInfo> Convert(PotInstance potInstance, DateOnly currentDate, CurrencyId defaultCurrency)
     {
         PotInstanceInfo potInstanceInfo = new()
         {

@@ -32,7 +32,7 @@ internal class CreatePotCommand : IConsoleCommand<CreatePotViewModel>
     public string Description { get; set; }
 
     [NamedParameter("start-date", ShortName = 's', IsMandatory = false, Description = "Optional start date for the pot. Default value = today")]
-    public DateTime? StartDate { get; set; }
+    public DateOnly? StartDate { get; set; }
 
     [NamedParameter("currency", ShortName = 'c', Description = "The currency for this pot.")]
     public string Currency { get; set; }

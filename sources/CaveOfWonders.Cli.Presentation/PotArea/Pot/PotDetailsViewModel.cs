@@ -11,9 +11,9 @@ internal class PotDetailsViewModel
 
     public string Description { get; }
 
-    public DateTime StartDate { get; }
+    public DateOnly StartDate { get; }
 
-    public DateTime? EndDate { get; }
+    public DateOnly? EndDate { get; }
 
     public string Currency { get; }
 
@@ -21,7 +21,7 @@ internal class PotDetailsViewModel
 
     public bool IsActive { get; set; }
 
-    public DateTime? LastGemDate { get; }
+    public DateOnly? LastGemDate { get; }
 
     public CurrencyValue Value { get; }
     
@@ -43,6 +43,6 @@ internal class PotDetailsViewModel
         Value = potDetails.Value;
         Labels = potDetails.Labels.ToList();
 
-        IsActive = potDetails.EndDate == null || potDetails.EndDate >= DateTime.Today;
+        IsActive = potDetails.EndDate == null || potDetails.EndDate >= DateOnly.FromDateTime(DateTime.Today);
     }
 }

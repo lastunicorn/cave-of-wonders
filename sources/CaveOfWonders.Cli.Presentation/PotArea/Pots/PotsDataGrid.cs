@@ -22,7 +22,7 @@ namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pots;
 
 internal class PotsDataGrid
 {
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     public List<PotInstanceViewModel> Values { get; set; }
 

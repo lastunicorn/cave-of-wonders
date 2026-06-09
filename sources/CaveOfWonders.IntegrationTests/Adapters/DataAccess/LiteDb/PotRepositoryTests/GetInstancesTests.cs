@@ -9,7 +9,7 @@ namespace DustInTheWind.CaveOfWonders.IntegrationTests.Adapters.DataAccess.LiteD
 
 public class GetInstancesTests
 {
-    private readonly DateTime currentDate = new(2023, 7, 1);
+    private readonly DateOnly currentDate = new(2023, 7, 1);
 
     [Fact]
     public async Task GetInstances_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection()

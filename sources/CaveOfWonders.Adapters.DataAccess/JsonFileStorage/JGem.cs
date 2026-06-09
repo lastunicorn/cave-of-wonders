@@ -18,7 +18,7 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
 
 public class JGem
 {
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     public decimal Value { get; set; }
 }

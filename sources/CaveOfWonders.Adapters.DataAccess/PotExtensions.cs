@@ -21,7 +21,7 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
 internal static class PotExtensions
 {
-    public static Gem GetGem(this Pot pot, DateTime date, DateMatchingMode dateMatchingMode)
+    public static Gem GetGem(this Pot pot, DateOnly date, DateMatchingMode dateMatchingMode)
     {
         return dateMatchingMode switch
         {

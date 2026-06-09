@@ -32,13 +32,13 @@ public class ExchangeCommand : IConsoleCommand<PresentExchangeRateResponse>
     public bool Today { get; set; }
 
     [NamedParameter("date", ShortName = 'd', IsMandatory = false, Description = "The date for which to display the exchange rate.")]
-    public DateTime? Date { get; set; }
+    public DateOnly? Date { get; set; }
 
     [NamedParameter("start-date", ShortName = 's', IsMandatory = false, Description = "Works together with end-date to specify a time interval for which to return exchange rates.")]
-    public DateTime? StartDate { get; set; }
+    public DateOnly? StartDate { get; set; }
 
     [NamedParameter("end-date", ShortName = 'e', IsMandatory = false, Description = "Works together with start-date to specify a time interval for which to return exchange rates.")]
-    public DateTime? EndDate { get; set; }
+    public DateOnly? EndDate { get; set; }
 
     [NamedParameter("year", ShortName = 'y', IsMandatory = false, Description = "Specify the year for which to return exchange rate values. Works together with the optional month.")]
     public uint? Year { get; set; }

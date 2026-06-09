@@ -22,7 +22,7 @@ internal class JExchangeRate
 
     public string Currency2 { get; set; }
 
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     public decimal Value { get; set; }
 }

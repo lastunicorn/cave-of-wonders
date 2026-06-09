@@ -26,7 +26,7 @@ public class ExchangeRateViewModel
 
     public decimal Value { get; }
 
-    public DateTime CurrencyDate { get; }
+    public DateOnly CurrencyDate { get; }
 
     public bool IsCurrent { get; }
 

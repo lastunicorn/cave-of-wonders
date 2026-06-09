@@ -15,7 +15,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.DataTypes;
-using DustInTheWind.CaveOfWonders.Infrastructure;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.Convert;
@@ -26,5 +25,5 @@ public class ConvertRequest : IRequest<ConvertResponse>
 
     public CurrencyPair CurrencyPair { get; set; }
 
-    public DateTime? Date { get; set; }
+    public DateOnly? Date { get; set; }
 }

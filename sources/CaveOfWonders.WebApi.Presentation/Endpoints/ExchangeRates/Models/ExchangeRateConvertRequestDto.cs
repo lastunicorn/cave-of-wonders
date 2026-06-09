@@ -54,7 +54,7 @@ public class ExchangeRateConvertRequestDto
     /// Date of the exchange rate to use (defaults to latest available)
     /// </summary>
     [FromQuery]
-    public DateTime? Date { get; set; }
+    public DateOnly? Date { get; set; }
 
     /// <summary>
     /// Converts the DTO to the application request

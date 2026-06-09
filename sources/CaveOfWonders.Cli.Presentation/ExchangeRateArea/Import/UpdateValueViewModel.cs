@@ -20,7 +20,7 @@ namespace DustInTheWind.CaveOfWonders.Cli.Presentation.ExchangeRateArea.Import;
 
 internal class UpdateValueViewModel
 {
-    public DateTime Date { get; }
+    public DateOnly Date { get; }
 
     public string CurrencyPair { get; }
 

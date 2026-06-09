@@ -28,13 +28,13 @@ public class ExchangeRateRequestDto
     /// Start date of the date range for exchange rates
     /// </summary>
     [FromQuery]
-    public DateTime? StartDate { get; set; }
+    public DateOnly? StartDate { get; set; }
 
     /// <summary>
     /// End date of the date range for exchange rates
     /// </summary>
     [FromQuery]
-    public DateTime? EndDate { get; set; }
+    public DateOnly? EndDate { get; set; }
 
     /// <summary>
     /// First currency in the pair (3-letter code)
@@ -58,7 +58,7 @@ public class ExchangeRateRequestDto
     /// Specific date for which to retrieve exchange rates
     /// </summary>
     [FromQuery]
-    public DateTime? Date { get; set; }
+    public DateOnly? Date { get; set; }
 
     /// <summary>
     /// Year for which to retrieve exchange rates

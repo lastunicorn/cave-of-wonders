@@ -35,7 +35,7 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 
 public class PresentPotsResponse
 {
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     public List<PotInstanceInfo> PotInstances { get; set; }
 
