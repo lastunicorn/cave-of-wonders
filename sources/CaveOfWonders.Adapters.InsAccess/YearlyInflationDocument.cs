@@ -4,7 +4,7 @@ namespace DustInTheWind.CaveOfWonders.Adapters.InsAccess;
 
 internal class YearlyInflationDocument
 {
-    public List<InflationRecordDto> Records { get; } = new();
+    public List<InflationRecordDto> Records { get; } = [];
 
     public YearlyInflationDocument(IEnumerable<string> lines)
     {

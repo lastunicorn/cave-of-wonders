@@ -7,7 +7,16 @@ internal class InsConfig
     private const string AppSettingsFileName = "appsettings.json";
     private readonly IConfigurationSection insConfig;
 
-    public string InflationPageUrl => insConfig["InflationPageUrl"];
+    public Uri InflationPageUrl
+    {
+        get
+        {
+            string rawValue = insConfig["InflationPageUrl"];
+            return Uri.TryCreate(rawValue, UriKind.Absolute, out Uri result)
+                ? result
+                : null;
+        }
+    }
 
     public InsConfig()
     {

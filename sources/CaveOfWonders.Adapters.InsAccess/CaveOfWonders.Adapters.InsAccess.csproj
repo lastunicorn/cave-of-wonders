@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="DustInTheWind.Ins.Toolkit" Version="1.1.0" />
       <PackageReference Include="HtmlAgilityPack" Version="1.11.63" />
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.8" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.8" />

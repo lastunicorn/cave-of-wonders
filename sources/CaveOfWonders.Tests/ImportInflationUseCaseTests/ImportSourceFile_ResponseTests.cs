@@ -10,13 +10,13 @@ namespace CaveOfWonders.Tests.ImportInflationUseCaseTests;
 public class ImportSourceFile_ResponseTests
 {
     private readonly ImportInflationUseCase useCase;
-    private readonly Mock<IIns> ins;
+    private readonly Mock<IInsService> ins;
     private readonly Mock<IUnitOfWork> unitOfWork;
     private readonly Mock<IInflationRecordRepository> inflationRecordRepository;
 
     public ImportSourceFile_ResponseTests()
     {
-        ins = new Mock<IIns>();
+        ins = new Mock<IInsService>();
         unitOfWork = new Mock<IUnitOfWork>();
         inflationRecordRepository = new Mock<IInflationRecordRepository>();
 

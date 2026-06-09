@@ -75,7 +75,7 @@ internal static class Program
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddSingleton<ISystemClock, SystemClock>();
         builder.Services.AddSingleton<IBnr, Bnr>();
-        builder.Services.AddSingleton<IIns, Ins>();
+        builder.Services.AddSingleton<IInsService, InsService>();
         builder.Services.AddSingleton<ISheets, Sheets>();
         builder.Services.AddScoped<ILog, Log>();
         builder.Services.AddSingleton<IFileSystem, FileSystem>();

@@ -1,6 +1,6 @@
 ﻿namespace DustInTheWind.CaveOfWonders.Ports.InsAccess;
 
-public interface IIns
+public interface IInsService
 {
     Task<IEnumerable<InflationRecordDto>> GetInflationValuesFromFile(string filePath);
 

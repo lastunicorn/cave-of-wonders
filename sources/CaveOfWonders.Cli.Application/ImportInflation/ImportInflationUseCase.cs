@@ -23,13 +23,13 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 
 internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, ImportInflationResponse>
 {
-    private readonly IIns ins;
+    private readonly IInsService insService;
     private readonly IUnitOfWork unitOfWork;
     private ImportInflationResponse response;
 
-    public ImportInflationUseCase(IIns ins, IUnitOfWork unitOfWork)
+    public ImportInflationUseCase(IInsService insService, IUnitOfWork unitOfWork)
     {
-        this.ins = ins ?? throw new ArgumentNullException(nameof(ins));
+        this.insService = insService ?? throw new ArgumentNullException(nameof(insService));
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
 
@@ -55,7 +55,7 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
 
                 try
                 {
-                    return await ins.GetInflationValuesFromFile(request.SourceFilePath);
+                    return await insService.GetInflationValuesFromFile(request.SourceFilePath);
                 }
                 catch (Exception ex)
                 {
@@ -65,7 +65,7 @@ internal class ImportInflationUseCase : IRequestHandler<ImportInflationRequest, 
             case ImportSource.Web:
                 try
                 {
-                    return await ins.GetInflationValuesFromWeb();
+                    return await insService.GetInflationValuesFromWeb();
                 }
                 catch (Exception ex)
                 {
