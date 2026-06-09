@@ -19,6 +19,5 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
 public enum ImportSource
 {
     BnrWebsite,
-    BnrFile,
     BnrNbrFile
 }

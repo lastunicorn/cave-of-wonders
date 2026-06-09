@@ -58,7 +58,6 @@ namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRates.Models
             return source switch
             {
                 ExchangeRateImportSourceDto.BnrWebsite => DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates.ImportSource.BnrWebsite,
-                ExchangeRateImportSourceDto.BnrFile => DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates.ImportSource.BnrFile,
                 ExchangeRateImportSourceDto.BnrNbrFile => DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates.ImportSource.BnrNbrFile,
                 _ => throw new ArgumentOutOfRangeException(nameof(source), $"Unsupported import source: {source}")
             };

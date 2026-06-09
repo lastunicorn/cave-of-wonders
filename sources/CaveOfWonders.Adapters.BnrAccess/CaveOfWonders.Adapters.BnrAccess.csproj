@@ -8,7 +8,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\CaveOfWonders.Adapters.BnrAccess.BnrFiles\CaveOfWonders.Adapters.BnrAccess.BnrFiles.csproj" PrivateAssets="All" />
 		<ProjectReference Include="..\CaveOfWonders.Ports.BnrAccess\CaveOfWonders.Ports.BnrAccess.csproj" PrivateAssets="All" />
 	</ItemGroup>
 

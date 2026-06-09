@@ -50,7 +50,6 @@ internal class ImportExchangeRatesUseCase : IRequestHandler<ImportExchangeRatesR
         IEnumerable<BnrExchangeRate> bnrExchangeRates = request.ImportSource switch
         {
             ImportSource.BnrWebsite => await ImportFromWebNbrFile(request, cancellationToken),
-            ImportSource.BnrFile => await ImportFromLocalBnrFile(request, cancellationToken),
             ImportSource.BnrNbrFile => await ImportFromLocalNbrFile(request, cancellationToken),
             _ => throw new ArgumentOutOfRangeException()
         };
@@ -69,18 +68,6 @@ internal class ImportExchangeRatesUseCase : IRequestHandler<ImportExchangeRatesR
         catch (Exception ex)
         {
             throw new BnrWebsiteAccessException(year, ex);
-        }
-    }
-
-    private async Task<IEnumerable<BnrExchangeRate>> ImportFromLocalBnrFile(ImportExchangeRatesRequest request, CancellationToken cancellationToken)
-    {
-        try
-        {
-            return await bnrService.GetExchangeRatesFrom(request.SourceFilePath, cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            throw new ImportFileAccessException(request.SourceFilePath, ex);
         }
     }
 

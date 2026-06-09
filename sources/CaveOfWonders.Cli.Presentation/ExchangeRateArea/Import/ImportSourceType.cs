@@ -18,7 +18,6 @@ namespace DustInTheWind.CaveOfWonders.Cli.Presentation.ExchangeRateArea.Import;
 
 internal enum ImportSourceType
 {
-    Bnr,
     Nbr,
     Web
 }

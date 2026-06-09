@@ -25,7 +25,7 @@ internal class ImportCommand : IConsoleCommand<ImportResultViewModel>
 {
     private readonly IMediator mediator;
 
-    [NamedParameter("source-type", ShortName = 's', IsMandatory = true, Description = "The source of the imported data. (bnr - bnr file; nbr - nbr file; web - nbr file from BNR website)")]
+    [NamedParameter("source-type", ShortName = 's', IsMandatory = true, Description = "The source of the imported data. (nbr - nbr file; web - nbr file from BNR website)")]
     public ImportSourceType SourceType { get; set; }
 
     [NamedParameter("file", ShortName = 'f', IsMandatory = false, Description = "The full name of the file containing the exchange rates. Used by bnr and nbr imports.")]
@@ -45,7 +45,6 @@ internal class ImportCommand : IConsoleCommand<ImportResultViewModel>
         {
             ImportSource = SourceType switch
             {
-                ImportSourceType.Bnr => ImportSource.BnrFile,
                 ImportSourceType.Nbr => ImportSource.BnrNbrFile,
                 ImportSourceType.Web => ImportSource.BnrWebsite,
                 _ => throw new ArgumentOutOfRangeException()

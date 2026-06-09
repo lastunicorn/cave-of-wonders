@@ -27,11 +27,6 @@ namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRates.Models
         BnrWebsite = 0,
 
         /// <summary>
-        /// Import from BNR file
-        /// </summary>
-        BnrFile = 1,
-
-        /// <summary>
         /// Import from NBR file
         /// </summary>
         BnrNbrFile = 2
