@@ -8,5 +8,7 @@ public interface IUnitOfWork
 
     public IInflationRecordRepository InflationRecordRepository { get; }
 
+    IAverageWageRepository AverageWageRepository { get; }
+
     public Task SaveChanges();
 }

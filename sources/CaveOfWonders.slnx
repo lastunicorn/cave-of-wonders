@@ -9,7 +9,7 @@
 		<Project Path="CaveOfWonders.Adapters.SheetsAccess/CaveOfWonders.Adapters.SheetsAccess.csproj" />
 		<Project Path="CaveOfWonders.Adapters.SystemAccess/CaveOfWonders.Adapters.SystemAccess.csproj" />
 	</Folder>
-	<Folder Name="/App.CaveOfWonders/">
+	<Folder Name="/App.Cli/">
 		<Project Path="CaveOfWonders.Cli.Application/CaveOfWonders.Cli.Application.csproj" />
 		<Project Path="CaveOfWonders.Cli.Presentation/CaveOfWonders.Cli.Presentation.csproj" />
 		<Project Path="CaveOfWonders.Cli/CaveOfWonders.Cli.csproj" />

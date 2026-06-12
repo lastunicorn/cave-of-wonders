@@ -30,6 +30,8 @@ public class Database
 
     public List<InflationRecord> InflationRecords { get; } = [];
 
+    public List<AverageWage> AverageWages { get; } = [];
+
     public Database(string location)
     {
         databaseDirectoryPath = location ?? throw new ArgumentNullException(nameof(location));
@@ -43,6 +45,7 @@ public class Database
         await LoadExchangeRates();
         await LoadPots();
         await LoadInflationRates();
+        await LoadAverageWages();
     }
 
     private async Task LoadExchangeRates()
@@ -136,11 +139,32 @@ public class Database
         InflationRecords.AddRange(inflationRecordDtos);
     }
 
+    private async Task LoadAverageWages()
+    {
+        string filePath = Path.Combine(databaseDirectoryPath, "average-wages.json");
+        AverageWagesFile averageWagesFile = new(filePath);
+
+        if (!averageWagesFile.Exists)
+            return;
+
+        IEnumerable<JAverageWageRecord> jAverageWageRecords = await averageWagesFile.Read();
+
+        IEnumerable<AverageWage> averageWageRecordDtos = jAverageWageRecords
+            .Select(x => new AverageWage
+            {
+                Year = x.Year,
+                Value = x.Value
+            });
+
+        AverageWages.AddRange(averageWageRecordDtos);
+    }
+
     public async Task Save()
     {
         await SaveExchangeRates();
         await SavePots();
         await SaveInflationRates();
+        await SaveAverageWages();
     }
 
     private async Task SaveExchangeRates()
@@ -217,5 +241,20 @@ public class Database
             });
 
         await inflationRatesFile.Save(jInflationRecords);
+    }
+
+    private async Task SaveAverageWages()
+    {
+        string filePath = Path.Combine(databaseDirectoryPath, "average-wages.json");
+        AverageWagesFile averageWageFile = new(filePath);
+
+        IEnumerable<JAverageWageRecord> jAverageWageRecord = InflationRecords
+            .Select(x => new JAverageWageRecord
+            {
+                Year = x.Year,
+                Value = x.Value
+            });
+
+        await averageWageFile.Save(jAverageWageRecord);
     }
 }

@@ -25,12 +25,15 @@ public class UnitOfWork : IUnitOfWork
     private IPotRepository potRepository;
     private IExchangeRateRepository exchangeRateRepository;
     private IInflationRecordRepository inflationRecordRepository;
+    private IAverageWageRepository averageWageRepository;
 
     public IPotRepository PotRepository => potRepository ??= new PotRepository(database);
 
     public IExchangeRateRepository ExchangeRateRepository => exchangeRateRepository ??= new ExchangeRateRepository(database);
 
     public IInflationRecordRepository InflationRecordRepository => inflationRecordRepository ??= new InflationRecordRepository(database);
+
+    public IAverageWageRepository AverageWageRepository => averageWageRepository ??= new AverageWageRepository(database);  
 
     public UnitOfWork(Database database)
     {
