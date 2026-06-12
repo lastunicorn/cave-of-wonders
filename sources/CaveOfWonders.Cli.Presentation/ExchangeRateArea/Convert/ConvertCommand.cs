@@ -22,7 +22,7 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.ExchangeRateArea.Convert;
 
-[NamedCommand("currency-convert", Description = "Convert a value from one currency into another.")]
+[NamedCommand("fx-convert", Description = "Convert a value from one currency into another.")]
 internal class ConvertCommand : IConsoleCommand<ConvertViewModel>
 {
     private readonly IMediator mediator;
