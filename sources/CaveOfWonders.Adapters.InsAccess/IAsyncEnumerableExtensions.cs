@@ -1,5 +1,5 @@
-﻿// Cave of Wonders
-// Copyright (C) 2023-2025 Dust in the Wind
+// Cave of Wonders
+// Copyright (C) 2023-2024 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,13 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.DataTypes;
+namespace DustInTheWind.CaveOfWonders.Adapters.InsAccess;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application;
-
-public readonly struct CurrencyPairDto
+internal static class IAsyncEnumerableExtensions
 {
-    public Currency Currency1 { get; init; }
+	public static async Task<List<T>> ToListAsync<T>(this IAsyncEnumerable<T> source, CancellationToken cancellationToken = default)
+	{
+		List<T> list = [];
 
-    public Currency Currency2 { get; init; }
+		await foreach (T item in source.WithCancellation(cancellationToken))
+			list.Add(item);
+
+		return list;
+	}
 }

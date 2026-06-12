@@ -24,7 +24,7 @@ public class ImportSourceWebTests
             .SetupGet(x => x.InflationRecordRepository)
             .Returns(inflationRecordRepository.Object);
 
-        useCase = new ImportCpiUseCase(ins.Object, unitOfWork.Object);
+        useCase = new ImportCpiUseCase(ins.Object, unitOfWork.Object, null);
     }
 
     [Fact]

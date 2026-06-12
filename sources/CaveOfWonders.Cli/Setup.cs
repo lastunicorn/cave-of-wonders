@@ -22,35 +22,39 @@ namespace DustInTheWind.CaveOfWonders.Cli;
 
 internal static class DependenciesSetup
 {
-    public static void Configure(ContainerBuilder containerBuilder)
-    {
-        MediatRConfiguration mediatRConfiguration = MediatRConfigurationBuilder.Create("", typeof(PresentPotsRequest).Assembly)
-            .WithAllOpenGenericHandlerTypesRegistered()
-            .Build();
+	public static void Configure(ContainerBuilder containerBuilder)
+	{
+		MediatRConfiguration mediatRConfiguration = MediatRConfigurationBuilder.Create("", typeof(PresentPotsRequest).Assembly)
+			.WithAllOpenGenericHandlerTypesRegistered()
+			.Build();
 
-        containerBuilder.RegisterMediatR(mediatRConfiguration);
+		containerBuilder.RegisterMediatR(mediatRConfiguration);
 
-        containerBuilder
-            .Register(context =>
-            {
-                IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
-                    .SetBasePath(AppContext.BaseDirectory)
-                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false);
+		containerBuilder
+			.Register(context =>
+			{
+				IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
+					.SetBasePath(AppContext.BaseDirectory)
+					.AddJsonFile("appsettings.json", optional: true, reloadOnChange: false);
 
-                IConfiguration configuration = configurationBuilder.Build();
-                string connectionString = configuration.GetConnectionString("DefaultConnection");
+				IConfiguration configuration = configurationBuilder.Build();
+				string connectionString = configuration.GetConnectionString("DefaultConnection");
 
-                return new Database(connectionString);
-            })
-            .AsSelf();
+				return new Database(connectionString);
+			})
+			.AsSelf();
 
-        containerBuilder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
+		containerBuilder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
 
-        containerBuilder.RegisterType<SystemClock>().As<ISystemClock>();
-        containerBuilder.RegisterType<BnrService>().As<IBnrService>();
-        containerBuilder.RegisterType<InsService>().As<IInsService>();
-        containerBuilder.RegisterType<Sheets>().As<ISheets>();
-        containerBuilder.RegisterType<Log>().As<ILog>().InstancePerLifetimeScope();
-        containerBuilder.RegisterType<FileSystem>().As<IFileSystem>().SingleInstance();
-    }
+		containerBuilder.RegisterType<SystemClock>().As<ISystemClock>();
+		containerBuilder.RegisterType<BnrService>().As<IBnrService>();
+		containerBuilder.RegisterType<InsService>().As<IInsService>();
+		containerBuilder.RegisterType<Sheets>().As<ISheets>();
+		containerBuilder.RegisterType<Log>().As<ILog>().InstancePerLifetimeScope();
+		containerBuilder.RegisterType<FileSystem>().As<IFileSystem>().SingleInstance();
+
+		containerBuilder.RegisterType<CpiImportFactory>().As<ICpiImportFactory>().SingleInstance();
+		containerBuilder.RegisterType<FileCpiImport>().AsSelf();
+		containerBuilder.RegisterType<WebCpiImport>().AsSelf();
+	}
 }
