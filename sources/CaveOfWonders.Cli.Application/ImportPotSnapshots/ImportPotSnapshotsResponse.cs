@@ -14,15 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots.Importing;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots;
+
+public class ImportPotSnapshotsResponse
 {
-    [Serializable]
-    internal class SourceFileNotProvidedException : Exception
-    {
-        public SourceFileNotProvidedException()
-            : base("Source file path must be provided for import.")
-        {
-        }
-    }
+    public List<PotImportReport> Report { get; set; }
 }

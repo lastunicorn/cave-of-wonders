@@ -34,5 +34,5 @@ internal class PotDbEntity
     
     public List<string> Labels { get; set; } = [];
 
-    public List<GemDbEntity> Gems { get; set; } = [];
+    public List<PotSnapshotDbEntity> Snapshots { get; set; } = [];
 }

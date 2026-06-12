@@ -17,9 +17,9 @@
 using System.Collections;
 using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots.Importing;
 
-public class GemImportReport : IEnumerable<PotImportReport>
+public class SnapshotImportReport : IEnumerable<PotImportReport>
 {
     private readonly List<PotImportReport> potImportReports = [];
 

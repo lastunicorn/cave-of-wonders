@@ -34,8 +34,8 @@ internal static class PotDbEntityExtensions
             Currency = potDbEntity.Currency
         };
 
-        IEnumerable<Gem> gems = potDbEntity.Gems
-            .Select(x => new Gem
+        IEnumerable<PotSnapshot> potSnapshots = potDbEntity.Snapshots
+            .Select(x => new PotSnapshot
             {
                 Date = x.Date,
                 Value = x.Value
@@ -44,7 +44,7 @@ internal static class PotDbEntityExtensions
         if (potDbEntity.Labels != null)
             pot.Labels.AddRange(potDbEntity.Labels);
 
-        pot.Gems.AddRange(gems);
+        pot.Snapshots.AddRange(potSnapshots);
 
         return pot;
     }

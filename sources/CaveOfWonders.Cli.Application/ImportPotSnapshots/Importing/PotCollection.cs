@@ -16,7 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots.Importing;
 
 internal class PotCollection
 {
@@ -32,69 +32,69 @@ internal class PotCollection
             this.pots.Add(pot.Id, pot);
     }
 
-    public void ClearGems()
+    public void ClearSnapshots()
     {
         foreach (Pot pot in pots.Values)
-            pot.Gems.Clear();
+            pot.Snapshots.Clear();
     }
 
-    public void ClearGems(IEnumerable<Guid> potIds)
+    public void ClearSnapshots(IEnumerable<Guid> potIds)
     {
         foreach (Guid potId in potIds)
         {
             bool success = pots.TryGetValue(potId, out Pot pot);
 
             if (success)
-                pot.Gems.Clear();
+                pot.Snapshots.Clear();
         }
     }
 
-    public GemAddReport AddGem(Guid key, Gem gem)
+    public SnapshotAddReport AddSnapshot(Guid key, PotSnapshot potSnapshot)
     {
-        ArgumentNullException.ThrowIfNull(gem);
+        ArgumentNullException.ThrowIfNull(potSnapshot);
 
         bool potExists = pots.TryGetValue(key, out Pot pot);
 
         if (!potExists)
         {
-            return new GemAddReport
+            return new SnapshotAddReport
             {
-                AddStatus = GemAddStatus.PotNotFound,
+                AddStatus = SnapshotAddStatus.PotNotFound,
                 Key = key,
-                Gem = gem
+                PotSnapshot = potSnapshot
             };
         }
 
-        if (!pot.IsActive(gem.Date))
+        if (!pot.IsActive(potSnapshot.Date))
         {
-            return new GemAddReport
+            return new SnapshotAddReport
             {
-                AddStatus = GemAddStatus.PotNotActive,
-                Key = key,
-                Pot = pot,
-                Gem = gem
-            };
-        }
-
-        if (pot.Gems.Contains(gem))
-        {
-            return new GemAddReport
-            {
-                AddStatus = GemAddStatus.GemAlreadyExists,
+                AddStatus = SnapshotAddStatus.PotNotActive,
                 Key = key,
                 Pot = pot,
-                Gem = gem
+                PotSnapshot = potSnapshot
             };
         }
 
-        pot.Gems.Add(gem);
-
-        return new GemAddReport
+        if (pot.Snapshots.Contains(potSnapshot))
         {
-            AddStatus = GemAddStatus.Success,
+            return new SnapshotAddReport
+            {
+                AddStatus = SnapshotAddStatus.SnapshotAlreadyExists,
+                Key = key,
+                Pot = pot,
+                PotSnapshot = potSnapshot
+            };
+        }
+
+        pot.Snapshots.Add(potSnapshot);
+
+        return new SnapshotAddReport
+        {
+            AddStatus = SnapshotAddStatus.Success,
             Key = key,
             Pot = pot,
-            Gem = gem
+            PotSnapshot = potSnapshot
         };
     }
 }

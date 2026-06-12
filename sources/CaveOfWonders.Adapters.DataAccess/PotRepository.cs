@@ -41,7 +41,7 @@ public class PotRepository : IPotRepository
             .Select(x => new PotInstance
             {
                 Pot = x,
-                Gem = x.GetGem(date, dateMatchingMode)
+                PotSnapshot = x.GetSnapshot(date, dateMatchingMode)
             });
 
         return Task.FromResult(potInstances);

@@ -14,29 +14,29 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots.Importing;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.LogAccess;
 using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
 using MediatR;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots;
 
-internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGemsResponse>
+internal class ImportPotSnapshotsUseCase : IRequestHandler<ImportPotSnapshotsRequest, ImportPotSnapshotsResponse>
 {
     private readonly IUnitOfWork unitOfWork;
     private readonly ISheets sheets;
     private readonly ILog log;
 
-    public ImportGemsUseCase(IUnitOfWork unitOfWork, ISheets sheets, ILog log)
+    public ImportPotSnapshotsUseCase(IUnitOfWork unitOfWork, ISheets sheets, ILog log)
     {
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         this.sheets = sheets ?? throw new ArgumentNullException(nameof(sheets));
         this.log = log ?? throw new ArgumentNullException(nameof(log));
     }
 
-    public Task<ImportGemsResponse> Handle(ImportGemsRequest request, CancellationToken cancellationToken)
+    public Task<ImportPotSnapshotsResponse> Handle(ImportPotSnapshotsRequest request, CancellationToken cancellationToken)
     {
         if (request.SourceFilePath is null)
             throw new SourceFileNotProvidedException();
@@ -57,11 +57,11 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
             if (request.Overwrite)
                 ClearPots(potCollection, sheetMappings);
 
-            GemImportReport importReport = DoImport(request.SourceFilePath, potCollection, sheetMappings);
+            SnapshotImportReport importReport = DoImport(request.SourceFilePath, potCollection, sheetMappings);
 
             await unitOfWork.SaveChanges();
 
-            return new ImportGemsResponse
+            return new ImportPotSnapshotsResponse
             {
                 Report = importReport.ToList()
             };
@@ -73,12 +73,12 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
         IEnumerable<Guid> potIds = sheetDescriptors
             .SelectMany(x => x.ColumnDescriptors.Select(x => x.Key));
 
-        potCollection.ClearGems(potIds);
+        potCollection.ClearSnapshots(potIds);
     }
 
-    private GemImportReport DoImport(string sourceFilePath, PotCollection potCollection, List<SheetMapping> sheetDescriptors)
+    private SnapshotImportReport DoImport(string sourceFilePath, PotCollection potCollection, List<SheetMapping> sheetDescriptors)
     {
-        GemImport gemImport = new()
+        SnapshotImport snapshotImport = new()
         {
             Pots = potCollection,
             Log = log
@@ -87,9 +87,9 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
         using IExcelSpreadsheet excelSpreadsheet = sheets.GetExcelSpreadsheet(sourceFilePath);
         IEnumerable<SheetValue> sheetsValues = excelSpreadsheet.Read(sheetDescriptors);
 
-        gemImport.Execute(sheetsValues);
+        snapshotImport.Execute(sheetsValues);
 
-        return gemImport.Report;
+        return snapshotImport.Report;
     }
 
     private List<SheetMapping> GetSheetMappings(string sheetMappingsPath)

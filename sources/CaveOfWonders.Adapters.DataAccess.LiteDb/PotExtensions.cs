@@ -21,12 +21,12 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb;
 
 internal static class PotExtensions
 {
-    public static Gem GetGem(this Pot pot, DateOnly date, DateMatchingMode dateMatchingMode)
+    public static PotSnapshot GetSnapshot(this Pot pot, DateOnly date, DateMatchingMode dateMatchingMode)
     {
         return dateMatchingMode switch
         {
-            DateMatchingMode.Exact => pot.Gems.FirstOrDefault(x => x.Date == date),
-            DateMatchingMode.LastAvailable => pot.Gems
+            DateMatchingMode.Exact => pot.Snapshots.FirstOrDefault(x => x.Date == date),
+            DateMatchingMode.LastAvailable => pot.Snapshots
                 .Where(x => x.Date <= date)
                 .MaxBy(x => x.Date),
             _ => throw new ArgumentOutOfRangeException(nameof(dateMatchingMode))

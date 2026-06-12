@@ -47,7 +47,7 @@ public class PotRepository : IPotRepository
             .Select(x => new PotInstance
             {
                 Pot = x,
-                Gem = x.GetGem(date, dateMatchingMode)
+                PotSnapshot = x.GetSnapshot(date, dateMatchingMode)
             });
 
         return Task.FromResult(potInstances);
@@ -90,8 +90,8 @@ public class PotRepository : IPotRepository
             StartDate = pot.StartDate,
             EndDate = pot.EndDate,
             Currency = pot.Currency,
-            Gems = pot.Gems
-                .Select(x => new GemDbEntity
+            Snapshots = pot.Snapshots
+                .Select(x => new PotSnapshotDbEntity
                 {
                     Date = x.Date,
                     Value = x.Value

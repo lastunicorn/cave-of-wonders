@@ -16,7 +16,7 @@ public class Pot
 
     public string Currency { get; set; }
 
-    public List<Gem> Gems { get; } = [];
+    public List<PotSnapshot> Snapshots { get; } = [];
     
     public List<string> Labels { get; } = [];
 
@@ -25,12 +25,12 @@ public class Pot
         return date >= StartDate && (EndDate == null || date <= EndDate);
     }
 
-    public Gem GetLastGem()
+    public PotSnapshot GetLastSnapshot()
     {
-        bool hasGems = Gems.Count > 0;
+        bool hasSnapshots = Snapshots.Count > 0;
 
-        return hasGems
-            ? Gems[Gems.Count - 1]
+        return hasSnapshots
+            ? Snapshots[Snapshots.Count - 1]
             : null;
     }
 }

@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots.Importing;
 using DustInTheWind.ConsoleTools.Commando;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.ImportGems;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.ImportSnapshots;
 
-internal class ImportGemsView : IView<ImportGemsViewModel>
+internal class ImportSnapshotsView : IView<ImportSnapshotsViewModel>
 {
-    public void Display(ImportGemsViewModel viewModel)
+    public void Display(ImportSnapshotsViewModel viewModel)
     {
         DisplayReports(viewModel.Report);
     }
@@ -30,7 +30,7 @@ internal class ImportGemsView : IView<ImportGemsViewModel>
     {
         ImportReportDataGrid dataGrid = new()
         {
-            Title = "Import Gems Report",
+            Title = "Import Pot Snapshots Report",
             TitleRow =
             {
                 BackgroundColor = ConsoleColor.Gray,

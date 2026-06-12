@@ -130,7 +130,7 @@ public class GetAllTests
     }
 
     [Fact]
-    public async Task GetAll_WithPotsContainingGems_ShouldReturnPotsWithGems()
+    public async Task GetAll_WithPotsContainingSnapshots_ShouldReturnPotsWithSnapshots()
     {
         await DatabaseTest.Create()
             .Arrange((database, context) =>
@@ -138,19 +138,19 @@ public class GetAllTests
                 Pot potInDb = new()
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Test Pot with Gems",
+                    Name = "Test Pot with Snapshots",
                     DisplayOrder = 1,
                     StartDate = new DateOnly(2023, 1, 1),
                     Currency = "USD"
                 };
 
-                potInDb.Gems.AddRange([
-                    new Gem
+                potInDb.Snapshots.AddRange([
+                    new PotSnapshot
                     {
                         Date = new DateOnly(2023, 1, 15),
                         Value = 100.50m
                     },
-                    new Gem
+                    new PotSnapshot
                     {
                         Date = new DateOnly(2023, 2, 15),
                         Value = 120.75m
@@ -171,9 +171,9 @@ public class GetAllTests
 
                 pots.Should().HaveCount(1);
                 Pot pot = pots.First();
-                pot.Gems.Should().HaveCount(2);
-                pot.Gems.Should().ContainSingle(x => x.Date == new DateOnly(2023, 1, 15) && x.Value == 100.50m);
-                pot.Gems.Should().ContainSingle(x => x.Date == new DateOnly(2023, 2, 15) && x.Value == 120.75m);
+                pot.Snapshots.Should().HaveCount(2);
+                pot.Snapshots.Should().ContainSingle(x => x.Date == new DateOnly(2023, 1, 15) && x.Value == 100.50m);
+                pot.Snapshots.Should().ContainSingle(x => x.Date == new DateOnly(2023, 2, 15) && x.Value == 120.75m);
             })
             .Execute();
     }

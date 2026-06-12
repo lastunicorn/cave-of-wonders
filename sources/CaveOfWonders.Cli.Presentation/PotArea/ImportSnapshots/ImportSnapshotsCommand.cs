@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots;
 using DustInTheWind.ConsoleTools.Commando;
 using MediatR;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.ImportGems;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.ImportSnapshots;
 
-[NamedCommand("pot-import", Description = "Imports gems from csv exported files of the sheets of my ods file.")]
-internal class ImportGemsCommand : IConsoleCommand<ImportGemsViewModel>
+[NamedCommand("pot-import", Description = "Imports pot snapshots from csv exported files of the sheets of my ods file.")]
+internal class ImportSnapshotsCommand : IConsoleCommand<ImportSnapshotsViewModel>
 {
     private readonly IMediator mediator;
 
@@ -31,26 +31,26 @@ internal class ImportGemsCommand : IConsoleCommand<ImportGemsViewModel>
     [NamedParameter("mappings-file", ShortName = 'm', Description = "The full path of the mappings file. This file specify which column from the spreadsheet to be imported in which pot.")]
     public string MappingsFilePath { get; set; }
 
-    [NamedParameter("overwrite", ShortName = 'x', IsMandatory = false, Description = "If specified, the entire pot will be cleared and populated with the current imported gems.")]
+    [NamedParameter("overwrite", ShortName = 'x', IsMandatory = false, Description = "If specified, the entire pot will be cleared before importing the snapshots.")]
     public bool Overwrite { get; set; }
 
-    public ImportGemsCommand(IMediator mediator)
+    public ImportSnapshotsCommand(IMediator mediator)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
-    public async Task<ImportGemsViewModel> Execute()
+    public async Task<ImportSnapshotsViewModel> Execute()
     {
-        ImportGemsRequest request = new()
+        ImportPotSnapshotsRequest request = new()
         {
             SourceFilePath = SourceFilePath,
             MappingsFilePath = MappingsFilePath,
             Overwrite = Overwrite
         };
 
-        ImportGemsResponse response = await mediator.Send(request);
+        ImportPotSnapshotsResponse response = await mediator.Send(request);
 
-        return new ImportGemsViewModel
+        return new ImportSnapshotsViewModel
         {
             Report = response.Report,
         };

@@ -65,7 +65,7 @@ public class GetInstancesTests
                 Guid expectedPotId = context.PotId;
                 potInstances[0].Pot.Id.Should().Be(expectedPotId);
                 potInstances[0].Pot.Name.Should().Be("Test Pot");
-                potInstances[0].Gem.Should().BeNull();
+                potInstances[0].PotSnapshot.Should().BeNull();
             })
             .Execute();
     }
@@ -133,7 +133,7 @@ public class GetInstancesTests
                 Guid expectedPotId = context.PotId;
                 potInstances[0].Pot.Id.Should().Be(expectedPotId);
                 potInstances[0].Pot.Name.Should().Be("Inactive Pot - Future");
-                potInstances[0].Gem.Should().BeNull();
+                potInstances[0].PotSnapshot.Should().BeNull();
             })
             .Execute();
     }
@@ -171,7 +171,7 @@ public class GetInstancesTests
     }
 
     [Fact]
-    public async Task GetInstances_WithExactDateMatchingMode_ShouldReturnOnlyExactDateGem()
+    public async Task GetInstances_WithExactDateMatchingMode_ShouldReturnOnlyExactDateSnapshot()
     {
         await DatabaseTest.Create()
             .Arrange((dbContext, context) =>
@@ -179,16 +179,16 @@ public class GetInstancesTests
                 PotDbEntity potDbEntity = new()
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Pot With Gems",
+                    Name = "Pot With Snapshots",
                     DisplayOrder = 1,
                     StartDate = currentDate.AddDays(-30),
                     Currency = "USD",
-                    Gems =
+                    Snapshots =
                     [
-                        new GemDbEntity { Date = currentDate.AddDays(-20), Value = 100m },
-                        new GemDbEntity { Date = currentDate.AddDays(-10), Value = 150m },
-                        new GemDbEntity { Date = currentDate, Value = 200m }, // Exact match
-                        new GemDbEntity { Date = currentDate.AddDays(10), Value = 250m }
+                        new PotSnapshotDbEntity { Date = currentDate.AddDays(-20), Value = 100m },
+                        new PotSnapshotDbEntity { Date = currentDate.AddDays(-10), Value = 150m },
+                        new PotSnapshotDbEntity { Date = currentDate, Value = 200m }, // Exact match
+                        new PotSnapshotDbEntity { Date = currentDate.AddDays(10), Value = 250m }
                     ]
                 };
 
@@ -204,15 +204,15 @@ public class GetInstancesTests
             {
                 List<PotInstance> potInstances = context.PotInstances as List<PotInstance>;
                 potInstances.Should().HaveCount(1);
-                potInstances[0].Gem.Should().NotBeNull();
-                potInstances[0].Gem.Value.Should().Be(200m);
-                potInstances[0].Gem.Date.Should().Be(currentDate);
+                potInstances[0].PotSnapshot.Should().NotBeNull();
+                potInstances[0].PotSnapshot.Value.Should().Be(200m);
+                potInstances[0].PotSnapshot.Date.Should().Be(currentDate);
             })
             .Execute();
     }
 
     [Fact]
-    public async Task GetInstances_WithExactDateMatchingMode_ShouldReturnNullGemWhenNoExactDateExists()
+    public async Task GetInstances_WithExactDateMatchingMode_ShouldReturnNullSnapshotWhenNoExactDateExists()
     {
         await DatabaseTest.Create()
             .Arrange((dbContext, context) =>
@@ -220,15 +220,15 @@ public class GetInstancesTests
                 PotDbEntity potDbEntity = new()
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Pot Without Exact Date Gem",
+                    Name = "Pot Without Exact Date Snapshot",
                     DisplayOrder = 1,
                     StartDate = currentDate.AddDays(-30),
                     Currency = "USD",
-                    Gems =
+                    Snapshots =
                     [
-                        new GemDbEntity { Date = currentDate.AddDays(-20), Value = 100m },
-                        new GemDbEntity { Date = currentDate.AddDays(-10), Value = 150m },
-                        new GemDbEntity { Date = currentDate.AddDays(10), Value = 250m }
+                        new PotSnapshotDbEntity { Date = currentDate.AddDays(-20), Value = 100m },
+                        new PotSnapshotDbEntity { Date = currentDate.AddDays(-10), Value = 150m },
+                        new PotSnapshotDbEntity { Date = currentDate.AddDays(10), Value = 250m }
                     ]
                 };
 
@@ -244,13 +244,13 @@ public class GetInstancesTests
             {
                 List<PotInstance> potInstances = context.PotInstances as List<PotInstance>;
                 potInstances.Should().HaveCount(1);
-                potInstances[0].Gem.Should().BeNull();
+                potInstances[0].PotSnapshot.Should().BeNull();
             })
             .Execute();
     }
 
     [Fact]
-    public async Task GetInstances_WithLastAvailableDateMatchingMode_ShouldReturnLastAvailableGem()
+    public async Task GetInstances_WithLastAvailableDateMatchingMode_ShouldReturnLastAvailableSnapshot()
     {
         await DatabaseTest.Create()
             .Arrange((dbContext, context) =>
@@ -258,15 +258,15 @@ public class GetInstancesTests
                 PotDbEntity potDbEntity = new()
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Pot With Gems",
+                    Name = "Pot With Snapshots",
                     DisplayOrder = 1,
                     StartDate = currentDate.AddDays(-30),
                     Currency = "USD",
-                    Gems =
+                    Snapshots =
                     [
-                        new GemDbEntity { Date = currentDate.AddDays(-20), Value = 100m },
-                        new GemDbEntity { Date = currentDate.AddDays(-10), Value = 150m }, // Should pick this one
-                        new GemDbEntity { Date = currentDate.AddDays(10), Value = 250m }
+                        new PotSnapshotDbEntity { Date = currentDate.AddDays(-20), Value = 100m },
+                        new PotSnapshotDbEntity { Date = currentDate.AddDays(-10), Value = 150m }, // Should pick this one
+                        new PotSnapshotDbEntity { Date = currentDate.AddDays(10), Value = 250m }
                     ]
                 };
 
@@ -282,15 +282,15 @@ public class GetInstancesTests
             {
                 List<PotInstance> potInstances = context.PotInstances as List<PotInstance>;
                 potInstances.Should().HaveCount(1);
-                potInstances[0].Gem.Should().NotBeNull();
-                potInstances[0].Gem.Value.Should().Be(150m);
-                potInstances[0].Gem.Date.Should().Be(currentDate.AddDays(-10));
+                potInstances[0].PotSnapshot.Should().NotBeNull();
+                potInstances[0].PotSnapshot.Value.Should().Be(150m);
+                potInstances[0].PotSnapshot.Date.Should().Be(currentDate.AddDays(-10));
             })
             .Execute();
     }
 
     [Fact]
-    public async Task GetInstances_WithLastAvailableDateMatchingMode_ShouldReturnNullGemWhenNoGemBeforeDate()
+    public async Task GetInstances_WithLastAvailableDateMatchingMode_ShouldReturnNullSnapshotWhenNoSnapshotBeforeDate()
     {
         await DatabaseTest.Create()
             .Arrange((dbContext, context) =>
@@ -298,14 +298,14 @@ public class GetInstancesTests
                 PotDbEntity potDbEntity = new()
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Pot With Future Gems Only",
+                    Name = "Pot With Future Snapshots Only",
                     DisplayOrder = 1,
                     StartDate = currentDate.AddDays(-30),
                     Currency = "USD",
-                    Gems =
+                    Snapshots =
                     [
-                        new GemDbEntity { Date = currentDate.AddDays(10), Value = 100m },
-                        new GemDbEntity { Date = currentDate.AddDays(20), Value = 150m }
+                        new PotSnapshotDbEntity { Date = currentDate.AddDays(10), Value = 100m },
+                        new PotSnapshotDbEntity { Date = currentDate.AddDays(20), Value = 150m }
                     ]
                 };
 
@@ -321,7 +321,7 @@ public class GetInstancesTests
             {
                 List<PotInstance> potInstances = context.PotInstances as List<PotInstance>;
                 potInstances.Should().HaveCount(1);
-                potInstances[0].Gem.Should().BeNull();
+                potInstances[0].PotSnapshot.Should().BeNull();
             })
             .Execute();
     }
@@ -339,9 +339,9 @@ public class GetInstancesTests
                     DisplayOrder = 1,
                     StartDate = currentDate.AddDays(-10),
                     Currency = "USD",
-                    Gems =
+                    Snapshots =
                     [
-                        new GemDbEntity { Date = currentDate, Value = 100m }
+                        new PotSnapshotDbEntity { Date = currentDate, Value = 100m }
                     ]
                 };
 
@@ -353,9 +353,9 @@ public class GetInstancesTests
                     StartDate = currentDate.AddDays(-20),
                     EndDate = currentDate.AddDays(10),
                     Currency = "EUR",
-                    Gems =
+                    Snapshots =
                     [
-                        new GemDbEntity { Date = currentDate.AddDays(-5), Value = 200m }
+                        new PotSnapshotDbEntity { Date = currentDate.AddDays(-5), Value = 200m }
                     ]
                 };
 
@@ -395,13 +395,13 @@ public class GetInstancesTests
 
                 PotInstance instance1 = potInstances.FirstOrDefault(x => x.Pot.Id == expectedActivePot1Id);
                 instance1.Should().NotBeNull();
-                instance1.Gem.Should().NotBeNull();
-                instance1.Gem!.Value.Should().Be(100m);
+                instance1.PotSnapshot.Should().NotBeNull();
+                instance1.PotSnapshot!.Value.Should().Be(100m);
 
                 PotInstance instance2 = potInstances.FirstOrDefault(x => x.Pot.Id == expectedActivePot2Id);
                 instance2.Should().NotBeNull();
-                instance2.Gem.Should().NotBeNull();
-                instance2.Gem!.Value.Should().Be(200m);
+                instance2.PotSnapshot.Should().NotBeNull();
+                instance2.PotSnapshot!.Value.Should().Be(200m);
             })
             .Execute();
     }

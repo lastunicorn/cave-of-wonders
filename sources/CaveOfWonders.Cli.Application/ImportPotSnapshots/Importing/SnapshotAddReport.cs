@@ -14,11 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
+using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.ImportGems;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots.Importing;
 
-internal class ImportGemsViewModel
+internal class SnapshotAddReport
 {
-    public List<PotImportReport> Report { get; set; }
+    public SnapshotAddStatus AddStatus { get; set; }
+
+    public Guid Key { get; set; }
+
+    public Pot Pot { get; set; }
+
+    public PotSnapshot PotSnapshot { get; set; }
 }

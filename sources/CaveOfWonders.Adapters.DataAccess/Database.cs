@@ -100,8 +100,8 @@ public class Database
                 Currency = jPot.Currency
             };
 
-            IEnumerable<Gem> gems = jPot.Gems
-                .Select(x => new Gem
+            IEnumerable<PotSnapshot> potSnapshots = jPot.Gems
+                .Select(x => new PotSnapshot
                 {
                     Date = x.Date,
                     Value = x.Value
@@ -110,7 +110,7 @@ public class Database
             if (jPot.Labels != null)
                 pot.Labels.AddRange(jPot.Labels);
 
-            pot.Gems.AddRange(gems);
+            pot.Snapshots.AddRange(potSnapshots);
 
             Pots.Add(pot);
         }
@@ -190,7 +190,7 @@ public class Database
                 EndDate = pot.EndDate,
                 Currency = pot.Currency,
                 Labels = pot.Labels?.ToList(),
-                Gems = pot.Gems
+                Gems = pot.Snapshots
                     .Select(x => new JGem
                     {
                         Date = x.Date,

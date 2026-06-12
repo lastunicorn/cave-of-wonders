@@ -1,12 +1,12 @@
 ﻿namespace DustInTheWind.CaveOfWonders.Domain;
 
-public class Gem : IEquatable<Gem>
+public class PotSnapshot : IEquatable<PotSnapshot>
 {
     public DateOnly Date { get; set; }
 
     public decimal Value { get; set; }
 
-    public bool Equals(Gem other)
+    public bool Equals(PotSnapshot other)
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
@@ -18,7 +18,7 @@ public class Gem : IEquatable<Gem>
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;
         if (obj.GetType() != GetType()) return false;
-        return Equals((Gem)obj);
+        return Equals((PotSnapshot)obj);
     }
 
     public override int GetHashCode()
@@ -26,12 +26,12 @@ public class Gem : IEquatable<Gem>
         return HashCode.Combine(Date, Value);
     }
 
-    public static bool operator ==(Gem left, Gem right)
+    public static bool operator ==(PotSnapshot left, PotSnapshot right)
     {
         return Equals(left, right);
     }
 
-    public static bool operator !=(Gem left, Gem right)
+    public static bool operator !=(PotSnapshot left, PotSnapshot right)
     {
         return !Equals(left, right);
     }

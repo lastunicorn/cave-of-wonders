@@ -4,5 +4,5 @@ public class PotInstance
 {
     public Pot Pot { get; set; }
 
-    public Gem Gem { get; set; }
+    public PotSnapshot PotSnapshot { get; set; }
 }

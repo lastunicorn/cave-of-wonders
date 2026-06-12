@@ -33,9 +33,9 @@ public class PotDetailsApiDto
 
     public string Currency { get; set; }
 
-    public int GemCount { get; set; }
+    public int SnapshotCount { get; set; }
 
-    public DateOnly? LastGemDate { get; set; }
+    public DateOnly? LastSnapshotDate { get; set; }
 
     public CurrencyValue Value { get; set; }
 
@@ -54,9 +54,9 @@ public class PotDetailsApiDto
             StartDate = potDetails.StartDate,
             EndDate = potDetails.EndDate,
             Currency = potDetails.Currency,
-            GemCount = potDetails.GemCount,
+            SnapshotCount = potDetails.SnapshotCount,
             Labels = potDetails.Labels?.ToList() ?? [],
-            LastGemDate = potDetails.LastGemDate,
+            LastSnapshotDate = potDetails.LastSnapshotDate,
             Value = potDetails.Value
         };
     }

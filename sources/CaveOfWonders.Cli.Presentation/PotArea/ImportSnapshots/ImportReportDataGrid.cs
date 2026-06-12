@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots.Importing;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.ImportGems;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.ImportSnapshots;
 
 internal class ImportReportDataGrid : DataGrid
 {

@@ -1,4 +1,4 @@
-// Cave of Wonders
+﻿// Cave of Wonders
 // Copyright (C) 2023-2025 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -14,11 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.Entities;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots.Importing;
 
-internal class GemDbEntity
+public class PotImportReport
 {
-    public DateOnly Date { get; set; }
+    public string PotName { get; init; }
+    
+    public Guid PotId { get; init; }
 
-    public decimal Value { get; set; }
+    public int SkipExistsCount { get; set; }
+
+    public int SkipNotActiveCount { get; set; }
+
+    public int AddCount { get; set; }
 }

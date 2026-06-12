@@ -14,11 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.ImportGems.Importing;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;
-
-public class ImportGemsResponse
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots
 {
-    public List<PotImportReport> Report { get; set; }
+    [Serializable]
+    internal class SheetMappingsNotProvidedException : Exception
+    {
+        public SheetMappingsNotProvidedException()
+        {
+        }
+    }
 }

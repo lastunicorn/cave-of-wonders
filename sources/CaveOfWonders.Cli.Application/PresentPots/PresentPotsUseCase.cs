@@ -105,13 +105,13 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
 
     private static CurrencyValue ComputeOriginalValue(PotInstance potInstance)
     {
-        if (potInstance.Gem != null)
+        if (potInstance.PotSnapshot != null)
         {
             return new CurrencyValue
             {
                 Currency = potInstance.Pot.Currency,
-                Value = potInstance.Gem.Value,
-                Date = potInstance.Gem.Date
+                Value = potInstance.PotSnapshot.Value,
+                Date = potInstance.PotSnapshot.Date
             };
         }
 

@@ -32,9 +32,9 @@ public class PotDetails
 
     public string Currency { get; }
 
-    public int GemCount { get; }
+    public int SnapshotCount { get; }
 
-    public DateOnly? LastGemDate { get; set; }
+    public DateOnly? LastSnapshotDate { get; set; }
 
     public CurrencyValue Value { get; set; }
     
@@ -48,20 +48,20 @@ public class PotDetails
         StartDate = pot.StartDate;
         EndDate = pot.EndDate;
         Currency = pot.Currency;
-        GemCount = pot.Gems.Count;
+        SnapshotCount = pot.Snapshots.Count;
         Labels = pot.Labels?.ToList() ?? [];
 
-        Gem lastGem = pot.Gems?.Count > 0
-            ? pot.Gems[^1]
+        PotSnapshot lastPotSnapshot = pot.Snapshots?.Count > 0
+            ? pot.Snapshots[^1]
             : null;
 
-        if (lastGem != null)
+        if (lastPotSnapshot != null)
         {
-            LastGemDate = lastGem.Date;
+            LastSnapshotDate = lastPotSnapshot.Date;
             Value = new CurrencyValue
             {
                 Currency = pot.Currency,
-                Value = lastGem.Value
+                Value = lastPotSnapshot.Value
             };
         }
     }

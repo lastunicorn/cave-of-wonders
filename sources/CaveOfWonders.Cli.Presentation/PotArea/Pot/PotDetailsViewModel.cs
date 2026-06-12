@@ -17,11 +17,11 @@ internal class PotDetailsViewModel
 
     public string Currency { get; }
 
-    public int GemCount { get; }
+    public int SnapshotCount { get; }
 
     public bool IsActive { get; set; }
 
-    public DateOnly? LastGemDate { get; }
+    public DateOnly? LastSnapshotDate { get; }
 
     public CurrencyValue Value { get; }
     
@@ -38,8 +38,8 @@ internal class PotDetailsViewModel
         StartDate = potDetails.StartDate;
         EndDate = potDetails.EndDate;
         Currency = potDetails.Currency;
-        GemCount = potDetails.GemCount;
-        LastGemDate = potDetails.LastGemDate;
+        SnapshotCount = potDetails.SnapshotCount;
+        LastSnapshotDate = potDetails.LastSnapshotDate;
         Value = potDetails.Value;
         Labels = potDetails.Labels.ToList();
 
