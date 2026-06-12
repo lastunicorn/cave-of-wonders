@@ -1,0 +1,39 @@
+<Solution>
+	<Folder Name="/Adapters/">
+		<Project Path="CaveOfWonders.Adapters.BnrAccess/CaveOfWonders.Adapters.BnrAccess.csproj" />
+		<Project Path="CaveOfWonders.Adapters.DataAccess.LiteDb/CaveOfWonders.Adapters.DataAccess.LiteDb.csproj" />
+		<Project Path="CaveOfWonders.Adapters.DataAccess/CaveOfWonders.Adapters.DataAccess.Json.csproj" />
+		<Project Path="CaveOfWonders.Adapters.FileAccess/CaveOfWonders.Adapters.FileAccess.csproj" />
+		<Project Path="CaveOfWonders.Adapters.InsAccess/CaveOfWonders.Adapters.InsAccess.csproj" />
+		<Project Path="CaveOfWonders.Adapters.LogAccess/CaveOfWonders.Adapters.LogAccess.csproj" />
+		<Project Path="CaveOfWonders.Adapters.SheetsAccess/CaveOfWonders.Adapters.SheetsAccess.csproj" />
+		<Project Path="CaveOfWonders.Adapters.SystemAccess/CaveOfWonders.Adapters.SystemAccess.csproj" />
+	</Folder>
+	<Folder Name="/App.CaveOfWonders/">
+		<Project Path="CaveOfWonders.Cli.Application/CaveOfWonders.Cli.Application.csproj" />
+		<Project Path="CaveOfWonders.Cli.Presentation/CaveOfWonders.Cli.Presentation.csproj" />
+		<Project Path="CaveOfWonders.Cli/CaveOfWonders.Cli.csproj" />
+	</Folder>
+	<Folder Name="/App.WebApi/">
+		<Project Path="CaveOfWonders.WebApi.Presentation/CaveOfWonders.WebApi.Presentation.csproj" />
+		<Project Path="CaveOfWonders.WebApi/CaveOfWonders.WebApi.csproj" />
+	</Folder>
+	<Folder Name="/Common/">
+		<File Path=".editorconfig" />
+		<File Path="Directory.Build.props" />
+	</Folder>
+	<Folder Name="/Ports/">
+		<Project Path="CaveOfWonders.Ports.BnrAccess/CaveOfWonders.Ports.BnrAccess.csproj" />
+		<Project Path="CaveOfWonders.Ports.DataAccess/CaveOfWonders.Ports.DataAccess.csproj" />
+		<Project Path="CaveOfWonders.Ports.FileAccess/CaveOfWonders.Ports.FileAccess.csproj" />
+		<Project Path="CaveOfWonders.Ports.InsAccess/CaveOfWonders.Ports.InsAccess.csproj" />
+		<Project Path="CaveOfWonders.Ports.LogAccess/CaveOfWonders.Ports.LogAccess.csproj" />
+		<Project Path="CaveOfWonders.Ports.SheetsAccess/CaveOfWonders.Ports.SheetsAccess.csproj" />
+		<Project Path="CaveOfWonders.Ports.SystemAccess/CaveOfWonders.Ports.SystemAccess.csproj" />
+	</Folder>
+	<Project Path="CaveOfWonders.DataTypes/CaveOfWonders.DataTypes.csproj" />
+	<Project Path="CaveOfWonders.Domain/CaveOfWonders.Domain.csproj" />
+	<Project Path="CaveOfWonders.Infrastructure/CaveOfWonders.Infrastructure.csproj" />
+	<Project Path="CaveOfWonders.IntegrationTests/CaveOfWonders.IntegrationTests.csproj" />
+	<Project Path="CaveOfWonders.Tests/CaveOfWonders.Tests.csproj" />
+</Solution>
