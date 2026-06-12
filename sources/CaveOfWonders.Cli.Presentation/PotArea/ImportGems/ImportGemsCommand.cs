@@ -20,7 +20,7 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.ImportGems;
 
-[NamedCommand("import-gems", Description = "Imports gems from csv exported files of the sheets of my ods file.")]
+[NamedCommand("gem-import", Description = "Imports gems from csv exported files of the sheets of my ods file.")]
 internal class ImportGemsCommand : IConsoleCommand<ImportGemsViewModel>
 {
     private readonly IMediator mediator;

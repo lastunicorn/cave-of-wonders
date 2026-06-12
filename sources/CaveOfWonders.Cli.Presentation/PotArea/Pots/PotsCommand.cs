@@ -21,7 +21,7 @@ using System.Globalization;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pots;
 
-[NamedCommand("pots", Description = "Display the state of the pots for a specific date.")]
+[NamedCommand("pot-overview", Description = "Display the state of the pots for a specific date.")]
 internal class PotsCommand : IConsoleCommand<PotsViewModel>
 {
     private readonly IMediator mediator;

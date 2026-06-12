@@ -20,7 +20,7 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.CreatePot;
 
-[NamedCommand("create-pot", Description = "Create a new pot.")]
+[NamedCommand("pot-create", Description = "Create a new pot.")]
 internal class CreatePotCommand : IConsoleCommand<CreatePotViewModel>
 {
     private readonly IMediator mediator;

@@ -20,7 +20,7 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.ExchangeRateArea.Exchange;
 
-[NamedCommand("exchange", Description = "Displays the exchange rate for the specified date.")]
+[NamedCommand("fx", Description = "Displays the exchange rate for the specified date.")]
 public class ExchangeCommand : IConsoleCommand<PresentExchangeRateResponse>
 {
     private readonly IMediator mediator;

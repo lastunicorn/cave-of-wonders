@@ -20,7 +20,7 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.InflationArea.ExportInflation;
 
-[NamedCommand("export-inflation", Description = "Exports the inflation information to a file on disk.")]
+[NamedCommand("inflation-export", Description = "Exports the inflation information to a file on disk.")]
 internal class ExportInflationCommand : IConsoleCommand
 {
     private readonly IMediator mediator;
