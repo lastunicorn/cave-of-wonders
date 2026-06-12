@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentInflation;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentCpi;
 
 namespace CaveOfWonders.WebApi.Presentation.Endpoints.Inflation.Models;
 
@@ -31,7 +31,7 @@ public class InflationResponseDto
     /// <summary>
     /// Creates a response DTO from the application response
     /// </summary>
-    public static InflationResponseDto FromApplicationResponse(PresentInflationResponse response)
+    public static InflationResponseDto FromApplicationResponse(PresentCpiResponse response)
     {
         InflationResponseDto dto = new();
         

@@ -1,6 +1,6 @@
-﻿using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
-using DustInTheWind.ErrorFlow.AspNetCore;
+﻿using DustInTheWind.ErrorFlow.AspNetCore;
 using System.Net;
+using DustInTheWind.CaveOfWonders.Cli.Application.ConvertCurrency;
 
 namespace CaveOfWonders.WebApi.Presentation.ErrorHandlers;
 

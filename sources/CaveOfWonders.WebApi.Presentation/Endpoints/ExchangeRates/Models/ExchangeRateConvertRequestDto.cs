@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
 using DustInTheWind.CaveOfWonders.DataTypes;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using DustInTheWind.CaveOfWonders.Cli.Application.ConvertCurrency;
 
 namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRates.Models;
 
@@ -59,9 +59,9 @@ public class ExchangeRateConvertRequestDto
     /// <summary>
     /// Converts the DTO to the application request
     /// </summary>
-    public ConvertRequest ToApplication()
+    public ConvertCurrencyRequest ToApplication()
     {
-        return new ConvertRequest
+        return new ConvertCurrencyRequest
         {
             InitialValue = Value,
             CurrencyPair = new CurrencyPair

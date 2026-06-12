@@ -1,4 +1,4 @@
-﻿using DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
+﻿using DustInTheWind.CaveOfWonders.Cli.Application.ImportCpi;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.InsAccess;
@@ -9,7 +9,7 @@ namespace CaveOfWonders.Tests.ImportInflationUseCaseTests;
 
 public class ImportSourceFileTests
 {
-    private readonly ImportInflationUseCase useCase;
+    private readonly ImportCpiUseCase useCase;
     private readonly Mock<IInsService> ins;
     private readonly Mock<IUnitOfWork> unitOfWork;
     private readonly Mock<IInflationRecordRepository> inflationRecordRepository;
@@ -24,14 +24,14 @@ public class ImportSourceFileTests
             .SetupGet(x => x.InflationRecordRepository)
             .Returns(inflationRecordRepository.Object);
 
-        useCase = new ImportInflationUseCase(ins.Object, unitOfWork.Object);
+        useCase = new ImportCpiUseCase(ins.Object, unitOfWork.Object);
     }
 
     [Fact]
     public async Task HavingSourceTypeFile_AndNullFileNameProvided_WhenImportInflations_ThenThrows()
     {
         // Arrange
-        ImportInflationRequest request = new()
+        ImportCpiRequest request = new()
         {
             ImportSource = ImportSource.File,
             SourceFilePath = null
@@ -48,7 +48,7 @@ public class ImportSourceFileTests
     public async Task HavingSourceTypeFile_AndEmptyFileNameProvided_WhenImportInflations_ThenThrows()
     {
         // Arrange
-        ImportInflationRequest request = new()
+        ImportCpiRequest request = new()
         {
             ImportSource = ImportSource.File,
             SourceFilePath = string.Empty
@@ -65,7 +65,7 @@ public class ImportSourceFileTests
     public async Task HavingSourceTypeFile_AndFileNameProvided_WhenImportInflations_ThenInsServiceIsCalled()
     {
         // Arrange
-        ImportInflationRequest request = new()
+        ImportCpiRequest request = new()
         {
             ImportSource = ImportSource.File,
             SourceFilePath = "file1"
@@ -86,7 +86,7 @@ public class ImportSourceFileTests
             .Setup(x => x.GetInflationValuesFromFile(It.IsAny<string>()))
             .Throws<Exception>();
 
-        ImportInflationRequest request = new()
+        ImportCpiRequest request = new()
         {
             ImportSource = ImportSource.File,
             SourceFilePath = "file1"
@@ -114,7 +114,7 @@ public class ImportSourceFileTests
             .Setup(x => x.AddOrUpdate(It.IsAny<InflationRecord>()))
             .Throws<Exception>();
 
-        ImportInflationRequest request = new()
+        ImportCpiRequest request = new()
         {
             ImportSource = ImportSource.File,
             SourceFilePath = "file1"
@@ -139,7 +139,7 @@ public class ImportSourceFileTests
             .Setup(x => x.AddOrUpdate(It.IsAny<InflationRecord>()))
             .Throws<Exception>();
 
-        ImportInflationRequest request = new()
+        ImportCpiRequest request = new()
         {
             ImportSource = ImportSource.File,
             SourceFilePath = "file1"
@@ -163,7 +163,7 @@ public class ImportSourceFileTests
                 new InflationRecordDto()
             });
 
-        ImportInflationRequest request = new()
+        ImportCpiRequest request = new()
         {
             ImportSource = ImportSource.File,
             SourceFilePath = "file1"
@@ -188,7 +188,7 @@ public class ImportSourceFileTests
                 new InflationRecordDto()
             });
 
-        ImportInflationRequest request = new()
+        ImportCpiRequest request = new()
         {
             ImportSource = ImportSource.File,
             SourceFilePath = "file1"
@@ -212,7 +212,7 @@ public class ImportSourceFileTests
                 new InflationRecordDto()
             });
 
-        ImportInflationRequest request = new()
+        ImportCpiRequest request = new()
         {
             ImportSource = ImportSource.File,
             SourceFilePath = "file1"

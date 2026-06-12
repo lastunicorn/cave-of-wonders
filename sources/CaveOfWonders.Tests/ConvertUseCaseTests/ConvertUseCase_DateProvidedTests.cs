@@ -1,4 +1,4 @@
-using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
+using DustInTheWind.CaveOfWonders.Cli.Application.ConvertCurrency;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
@@ -12,7 +12,7 @@ namespace CaveOfWonders.Tests.ConvertUseCaseTests;
 
 public class ConvertUseCase_DateProvidedTests
 {
-    private readonly ConvertUseCase convertUseCase;
+    private readonly ConvertCurrencyUseCase convertCurrencyUseCase;
     private readonly Mock<IExchangeRateRepository> exchangeRateRepository;
 
     public ConvertUseCase_DateProvidedTests()
@@ -20,7 +20,7 @@ public class ConvertUseCase_DateProvidedTests
         Mock<IUnitOfWork> unitOfWork = new();
         exchangeRateRepository = new Mock<IExchangeRateRepository>();
 
-        convertUseCase = new(unitOfWork.Object, Mock.Of<ISystemClock>());
+        convertCurrencyUseCase = new(unitOfWork.Object, Mock.Of<ISystemClock>());
 
         unitOfWork
             .SetupGet(x => x.ExchangeRateRepository)
@@ -30,7 +30,7 @@ public class ConvertUseCase_DateProvidedTests
     [Fact]
     public async Task HavingDateProvided_ThenExchangeRateIsRequestedForThatDate()
     {
-        ConvertRequest convertRequest = new()
+        ConvertCurrencyRequest convertCurrencyRequest = new()
         {
             InitialValue = 100,
             CurrencyPair = new CurrencyPair("EURRON"),
@@ -39,7 +39,7 @@ public class ConvertUseCase_DateProvidedTests
 
         try
         {
-            _ = await convertUseCase.Handle(convertRequest, CancellationToken.None);
+            _ = await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
         }
         catch { }
 
@@ -56,14 +56,14 @@ public class ConvertUseCase_DateProvidedTests
             .Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>()))
             .Returns(Task.FromResult(null as ExchangeRate));
 
-        ConvertRequest convertRequest = new()
+        ConvertCurrencyRequest convertCurrencyRequest = new()
         {
             InitialValue = 100,
             CurrencyPair = new CurrencyPair("EURRON"),
             Date = new DateOnly(2000, 06, 04)
         };
 
-        Func<Task> action = async () => await convertUseCase.Handle(convertRequest, CancellationToken.None);
+        Func<Task> action = async () => await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
 
         await action.Should().ThrowAsync<ExchangeRateNotFoundException>();
     }
@@ -80,14 +80,14 @@ public class ConvertUseCase_DateProvidedTests
                 Date = new DateOnly(2000, 06, 04)
             }));
 
-        ConvertRequest convertRequest = new()
+        ConvertCurrencyRequest convertCurrencyRequest = new()
         {
             InitialValue = 102,
             CurrencyPair = new CurrencyPair("EURRON"),
             Date = new DateOnly(2000, 06, 04)
         };
 
-        ConvertResponse response = await convertUseCase.Handle(convertRequest, CancellationToken.None);
+        ConvertCurrencyResponse response = await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
 
         response.InitialValue.Should().Be(102);
         response.ConvertedValue.Should().Be(204);
@@ -111,14 +111,14 @@ public class ConvertUseCase_DateProvidedTests
                 Date = new DateOnly(2000, 06, 01)
             }));
 
-        ConvertRequest convertRequest = new()
+        ConvertCurrencyRequest convertCurrencyRequest = new()
         {
             InitialValue = 102,
             CurrencyPair = new CurrencyPair("EURRON"),
             Date = new DateOnly(2000, 06, 04)
         };
 
-        ConvertResponse response = await convertUseCase.Handle(convertRequest, CancellationToken.None);
+        ConvertCurrencyResponse response = await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
 
         response.InitialValue.Should().Be(102);
         response.ConvertedValue.Should().Be(204);

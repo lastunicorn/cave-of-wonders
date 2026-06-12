@@ -1,4 +1,4 @@
-﻿using DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
+﻿using DustInTheWind.CaveOfWonders.Cli.Application.ImportCpi;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.InsAccess;
@@ -9,7 +9,7 @@ namespace CaveOfWonders.Tests.ImportInflationUseCaseTests;
 
 public class ImportSourceWebTests
 {
-    private readonly ImportInflationUseCase useCase;
+    private readonly ImportCpiUseCase useCase;
     private readonly Mock<IInsService> ins;
     private readonly Mock<IUnitOfWork> unitOfWork;
     private readonly Mock<IInflationRecordRepository> inflationRecordRepository;
@@ -24,14 +24,14 @@ public class ImportSourceWebTests
             .SetupGet(x => x.InflationRecordRepository)
             .Returns(inflationRecordRepository.Object);
 
-        useCase = new ImportInflationUseCase(ins.Object, unitOfWork.Object);
+        useCase = new ImportCpiUseCase(ins.Object, unitOfWork.Object);
     }
 
     [Fact]
     public async Task HavingSourceTypeWeb_WhenImportInflations_ThenInsServiceIsCalled()
     {
         // Arrange
-        ImportInflationRequest request = new()
+        ImportCpiRequest request = new()
         {
             ImportSource = ImportSource.Web
         };
@@ -51,7 +51,7 @@ public class ImportSourceWebTests
             .Setup(x => x.GetInflationValuesFromWeb())
             .Throws<Exception>();
 
-        ImportInflationRequest request = new()
+        ImportCpiRequest request = new()
         {
             ImportSource = ImportSource.Web
         };
@@ -74,7 +74,7 @@ public class ImportSourceWebTests
                 new InflationRecordDto()
             });
 
-        ImportInflationRequest request = new()
+        ImportCpiRequest request = new()
         {
             ImportSource = ImportSource.Web
         };
@@ -98,7 +98,7 @@ public class ImportSourceWebTests
                 new InflationRecordDto()
             });
 
-        ImportInflationRequest request = new()
+        ImportCpiRequest request = new()
         {
             ImportSource = ImportSource.Web
         };
@@ -118,7 +118,7 @@ public class ImportSourceWebTests
             .Setup(x => x.GetInflationValuesFromWeb())
             .ReturnsAsync(new List<InflationRecordDto>());
 
-        ImportInflationRequest request = new()
+        ImportCpiRequest request = new()
         {
             ImportSource = ImportSource.Web
         };
@@ -145,7 +145,7 @@ public class ImportSourceWebTests
             .Setup(x => x.AddOrUpdate(It.IsAny<InflationRecord>()))
             .Throws<Exception>();
 
-        ImportInflationRequest request = new()
+        ImportCpiRequest request = new()
         {
             ImportSource = ImportSource.Web
         };
@@ -168,7 +168,7 @@ public class ImportSourceWebTests
                 new InflationRecordDto()
             });
 
-        ImportInflationRequest request = new()
+        ImportCpiRequest request = new()
         {
             ImportSource = ImportSource.Web
         };

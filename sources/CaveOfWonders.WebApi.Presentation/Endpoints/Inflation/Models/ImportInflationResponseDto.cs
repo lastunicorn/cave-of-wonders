@@ -31,7 +31,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportCpi;
 
 namespace CaveOfWonders.WebApi.Presentation.Endpoints.Inflation.Models;
 
@@ -58,7 +58,7 @@ public class ImportInflationResponseDto
     /// <summary>
     /// Creates a response DTO from the application response
     /// </summary>
-    internal static ImportInflationResponseDto FromApplicationResponse(ImportInflationResponse response)
+    internal static ImportInflationResponseDto FromApplicationResponse(ImportCpiResponse response)
     {
         return new ImportInflationResponseDto
         {

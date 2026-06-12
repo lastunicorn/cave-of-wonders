@@ -1,4 +1,4 @@
-using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
+using DustInTheWind.CaveOfWonders.Cli.Application.ConvertCurrency;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
@@ -11,7 +11,7 @@ namespace CaveOfWonders.Tests.ConvertUseCaseTests;
 
 public class ConvertUseCase_NoDateProvidedTests
 {
-    private readonly ConvertUseCase convertUseCase;
+    private readonly ConvertCurrencyUseCase convertCurrencyUseCase;
     private readonly Mock<IExchangeRateRepository> exchangeRateRepository;
     private readonly Mock<ISystemClock> systemClock;
 
@@ -21,7 +21,7 @@ public class ConvertUseCase_NoDateProvidedTests
         systemClock = new Mock<ISystemClock>();
         exchangeRateRepository = new Mock<IExchangeRateRepository>();
 
-        convertUseCase = new(unitOfWork.Object, systemClock.Object);
+        convertCurrencyUseCase = new(unitOfWork.Object, systemClock.Object);
 
         unitOfWork
             .SetupGet(x => x.ExchangeRateRepository)
@@ -31,7 +31,7 @@ public class ConvertUseCase_NoDateProvidedTests
     [Fact]
     public async Task HavingNoDateProvided_ThenDateIsRetrievedFromSystemDateService()
     {
-        ConvertRequest convertRequest = new()
+        ConvertCurrencyRequest convertCurrencyRequest = new()
         {
             InitialValue = 100,
             CurrencyPair = new CurrencyPair("EURRON")
@@ -39,7 +39,7 @@ public class ConvertUseCase_NoDateProvidedTests
 
         try
         {
-            _ = await convertUseCase.Handle(convertRequest, CancellationToken.None);
+            _ = await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
         }
         catch { }
 
@@ -53,7 +53,7 @@ public class ConvertUseCase_NoDateProvidedTests
             .SetupGet(x => x.Today)
             .Returns(new DateOnly(2000, 12, 04));
 
-        ConvertRequest convertRequest = new()
+        ConvertCurrencyRequest convertCurrencyRequest = new()
         {
             InitialValue = 100,
             CurrencyPair = new CurrencyPair("EURRON")
@@ -61,7 +61,7 @@ public class ConvertUseCase_NoDateProvidedTests
 
         try
         {
-            _ = await convertUseCase.Handle(convertRequest, CancellationToken.None);
+            _ = await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
         }
         catch { }
 
@@ -82,13 +82,13 @@ public class ConvertUseCase_NoDateProvidedTests
             .Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>()))
             .Returns(Task.FromResult(null as ExchangeRate));
 
-        ConvertRequest convertRequest = new()
+        ConvertCurrencyRequest convertCurrencyRequest = new()
         {
             InitialValue = 100,
             CurrencyPair = new CurrencyPair("EURRON")
         };
 
-        Func<Task> action = async () => await convertUseCase.Handle(convertRequest, CancellationToken.None);
+        Func<Task> action = async () => await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
 
         await action.Should().ThrowAsync<ExchangeRateNotFoundException>();
     }
@@ -109,13 +109,13 @@ public class ConvertUseCase_NoDateProvidedTests
                 Date = new DateOnly(2000, 12, 04)
             }));
 
-        ConvertRequest convertRequest = new()
+        ConvertCurrencyRequest convertCurrencyRequest = new()
         {
             InitialValue = 102,
             CurrencyPair = new CurrencyPair("EURRON")
         };
 
-        ConvertResponse response = await convertUseCase.Handle(convertRequest, CancellationToken.None);
+        ConvertCurrencyResponse response = await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
 
         response.InitialValue.Should().Be(102);
         response.ConvertedValue.Should().Be(204);
@@ -143,13 +143,13 @@ public class ConvertUseCase_NoDateProvidedTests
                 Date = new DateOnly(2000, 12, 01)
             }));
 
-        ConvertRequest convertRequest = new()
+        ConvertCurrencyRequest convertCurrencyRequest = new()
         {
             InitialValue = 102,
             CurrencyPair = new CurrencyPair("EURRON")
         };
 
-        ConvertResponse response = await convertUseCase.Handle(convertRequest, CancellationToken.None);
+        ConvertCurrencyResponse response = await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
 
         response.InitialValue.Should().Be(102);
         response.ConvertedValue.Should().Be(204);

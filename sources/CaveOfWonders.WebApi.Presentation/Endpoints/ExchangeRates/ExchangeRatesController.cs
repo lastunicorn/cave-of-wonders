@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRates.Models;
-using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
+using DustInTheWind.CaveOfWonders.Cli.Application.ConvertCurrency;
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 using MediatR;
@@ -83,8 +83,8 @@ public class ExchangeRatesController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        ConvertRequest request = exchangeRateConvertRequestDto.ToApplication();
-        ConvertResponse response = await mediator.Send(request);
+        ConvertCurrencyRequest request = exchangeRateConvertRequestDto.ToApplication();
+        ConvertCurrencyResponse response = await mediator.Send(request);
 
         ExchangeRateConvertResponseDto responseDto = ExchangeRateConvertResponseDto.FromApplicationResponse(response);
 

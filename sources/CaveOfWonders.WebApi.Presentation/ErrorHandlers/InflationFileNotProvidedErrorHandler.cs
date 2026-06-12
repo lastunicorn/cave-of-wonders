@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
 using DustInTheWind.ErrorFlow.AspNetCore;
 using System.Net;
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportCpi;
 
 namespace CaveOfWonders.WebApi.Presentation.ErrorHandlers;
 

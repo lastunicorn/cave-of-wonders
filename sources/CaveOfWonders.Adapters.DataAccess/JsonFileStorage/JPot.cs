@@ -32,5 +32,5 @@ internal class JPot
     
     public List<string> Labels { get; set; }
 
-    public List<JGem> Gems { get; set; }
+    public List<JSnapshot> Snapshots { get; set; }
 }

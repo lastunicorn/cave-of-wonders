@@ -1,6 +1,6 @@
-﻿using DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
-using DustInTheWind.ErrorFlow.AspNetCore;
+﻿using DustInTheWind.ErrorFlow.AspNetCore;
 using System.Net;
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportCpi;
 
 namespace CaveOfWonders.WebApi.Presentation.ErrorHandlers;
 

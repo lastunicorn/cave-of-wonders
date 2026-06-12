@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.ComponentModel.DataAnnotations;
-using DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportCpi;
 
 namespace CaveOfWonders.WebApi.Presentation.Endpoints.Inflation.Models;
 
@@ -38,14 +38,14 @@ public class ImportInflationDto
     /// <summary>
     /// Converts the DTO to the application request
     /// </summary>
-    internal ImportInflationRequest ToApplicationRequest()
+    internal ImportCpiRequest ToApplicationRequest()
     {
-        return new ImportInflationRequest
+        return new ImportCpiRequest
         {
             SourceFilePath = SourceFilePath,
             ImportSource = ImportSource == InflationImportSourceDto.File 
-                ? DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation.ImportSource.File 
-                : DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation.ImportSource.Web
+                ? DustInTheWind.CaveOfWonders.Cli.Application.ImportCpi.ImportSource.File 
+                : DustInTheWind.CaveOfWonders.Cli.Application.ImportCpi.ImportSource.Web
         };
     }
 }

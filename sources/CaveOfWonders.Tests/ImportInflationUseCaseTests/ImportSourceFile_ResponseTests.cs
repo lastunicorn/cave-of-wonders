@@ -1,4 +1,4 @@
-﻿using DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
+﻿using DustInTheWind.CaveOfWonders.Cli.Application.ImportCpi;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.InsAccess;
@@ -9,7 +9,7 @@ namespace CaveOfWonders.Tests.ImportInflationUseCaseTests;
 
 public class ImportSourceFile_ResponseTests
 {
-    private readonly ImportInflationUseCase useCase;
+    private readonly ImportCpiUseCase useCase;
     private readonly Mock<IInsService> ins;
     private readonly Mock<IUnitOfWork> unitOfWork;
     private readonly Mock<IInflationRecordRepository> inflationRecordRepository;
@@ -24,7 +24,7 @@ public class ImportSourceFile_ResponseTests
             .SetupGet(x => x.InflationRecordRepository)
             .Returns(inflationRecordRepository.Object);
 
-        useCase = new ImportInflationUseCase(ins.Object, unitOfWork.Object);
+        useCase = new ImportCpiUseCase(ins.Object, unitOfWork.Object);
     }
 
     [Fact]
@@ -41,7 +41,7 @@ public class ImportSourceFile_ResponseTests
             .ReturnsAsync(AddOrUpdateResult.Added);
 
         // Act
-        ImportInflationResponse response = await ExecuteUseCase(insRecords);
+        ImportCpiResponse response = await ExecuteUseCase(insRecords);
 
         // Assert
         response.AddedCount.Should().Be(1);
@@ -64,7 +64,7 @@ public class ImportSourceFile_ResponseTests
             .ReturnsAsync(AddOrUpdateResult.Added);
 
         // Act
-        ImportInflationResponse response = await ExecuteUseCase(insRecords);
+        ImportCpiResponse response = await ExecuteUseCase(insRecords);
 
         // Assert
         response.AddedCount.Should().Be(2);
@@ -87,7 +87,7 @@ public class ImportSourceFile_ResponseTests
             .ReturnsAsync(AddOrUpdateResult.Updated);
 
         // Act
-        ImportInflationResponse response = await ExecuteUseCase(insRecords);
+        ImportCpiResponse response = await ExecuteUseCase(insRecords);
 
         // Assert
         response.AddedCount.Should().Be(1);
@@ -111,20 +111,20 @@ public class ImportSourceFile_ResponseTests
             .ReturnsAsync(AddOrUpdateResult.Updated);
 
         // Act
-        ImportInflationResponse response = await ExecuteUseCase(insRecords);
+        ImportCpiResponse response = await ExecuteUseCase(insRecords);
 
         // Assert
         response.UpdatedCount.Should().Be(2);
         response.TotalCount.Should().Be(2);
     }
 
-    private async Task<ImportInflationResponse> ExecuteUseCase(List<InflationRecordDto> insRecords)
+    private async Task<ImportCpiResponse> ExecuteUseCase(List<InflationRecordDto> insRecords)
     {
         ins
             .Setup(x => x.GetInflationValuesFromFile(It.IsAny<string>()))
             .ReturnsAsync(insRecords);
 
-        ImportInflationRequest request = new()
+        ImportCpiRequest request = new()
         {
             ImportSource = ImportSource.File,
             SourceFilePath = "file2"

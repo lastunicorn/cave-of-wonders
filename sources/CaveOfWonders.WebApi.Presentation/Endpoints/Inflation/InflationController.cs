@@ -15,8 +15,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using CaveOfWonders.WebApi.Presentation.Endpoints.Inflation.Models;
-using DustInTheWind.CaveOfWonders.Cli.Application.ImportInflation;
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentInflation;
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportCpi;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentCpi;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -52,8 +52,8 @@ public class InflationController : ControllerBase
     [ProducesResponseType(typeof(InflationResponseDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<InflationResponseDto>> GetInflationRecords()
     {
-        PresentInflationRequest request = new();
-        PresentInflationResponse response = await mediator.Send(request);
+        PresentCpiRequest request = new();
+        PresentCpiResponse response = await mediator.Send(request);
 
         InflationResponseDto responseDto = InflationResponseDto.FromApplicationResponse(response);
         return Ok(responseDto);
@@ -77,8 +77,8 @@ public class InflationController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        ImportInflationRequest request = importInflationDto.ToApplicationRequest();
-        ImportInflationResponse response = await mediator.Send(request);
+        ImportCpiRequest request = importInflationDto.ToApplicationRequest();
+        ImportCpiResponse response = await mediator.Send(request);
 
         ImportInflationResponseDto responseDto = ImportInflationResponseDto.FromApplicationResponse(response);
         return Ok(responseDto);

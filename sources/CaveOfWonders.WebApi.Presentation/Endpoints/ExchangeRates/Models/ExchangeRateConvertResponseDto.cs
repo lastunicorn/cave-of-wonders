@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using CaveOfWonders.WebApi.Presentation.Endpoints.Pots.Models;
-using DustInTheWind.CaveOfWonders.Cli.Application.Convert;
+using DustInTheWind.CaveOfWonders.Cli.Application.ConvertCurrency;
 
 namespace CaveOfWonders.WebApi.Presentation.Endpoints.ExchangeRates.Models;
 
@@ -47,7 +47,7 @@ public class ExchangeRateConvertResponseDto
     /// <summary>
     /// Creates a response DTO from the application response
     /// </summary>
-    public static ExchangeRateConvertResponseDto FromApplicationResponse(ConvertResponse response)
+    public static ExchangeRateConvertResponseDto FromApplicationResponse(ConvertCurrencyResponse response)
     {
         return new ExchangeRateConvertResponseDto
         {
