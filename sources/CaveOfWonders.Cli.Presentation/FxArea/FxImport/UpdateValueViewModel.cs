@@ -16,7 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.FxArea.Import;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.FxArea.FxImport;
 
 internal class UpdateValueViewModel
 {

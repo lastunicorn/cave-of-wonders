@@ -18,7 +18,7 @@ using DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
 using DustInTheWind.ConsoleTools.Commando;
 using MediatR;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.FxArea.Import;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.FxArea.FxImport;
 
 [NamedCommand("fx-import", Description = "Execute exchange rates from local files or directly from the BNR website.")]
 internal class FxImportCommand : IConsoleCommand<FxImportViewModel>

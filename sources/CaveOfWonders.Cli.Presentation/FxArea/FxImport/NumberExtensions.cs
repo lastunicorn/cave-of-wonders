@@ -14,25 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.FxArea.FxImport;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.FxArea.Import;
-
-internal class DuplicateValueViewModel
+internal static class NumberExtensions
 {
-    public DateOnly Date { get; }
-
-    public string CurrencyPair { get; }
-
-    public decimal Value1 { get; }
-
-    public decimal Value2 { get; }
-
-    internal DuplicateValueViewModel(DuplicateReportResponseDto duplicateReport)
+    public static string ToStringOrEmpty(this int number, string emptyString = "")
     {
-        Date = duplicateReport.Date;
-        CurrencyPair = duplicateReport.CurrencyPair;
-        Value1 = duplicateReport.Value1;
-        Value2 = duplicateReport.Value2;
+        return number == 0
+            ? emptyString
+            : number.ToString();
     }
 }

@@ -14,10 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.FxArea.Import;
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
 
-internal enum ImportSourceType
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.FxArea.FxImport;
+
+internal class DuplicateValueViewModel
 {
-    Nbr,
-    Web
+    public DateOnly Date { get; }
+
+    public string CurrencyPair { get; }
+
+    public decimal Value1 { get; }
+
+    public decimal Value2 { get; }
+
+    internal DuplicateValueViewModel(DuplicateReportResponseDto duplicateReport)
+    {
+        Date = duplicateReport.Date;
+        CurrencyPair = duplicateReport.CurrencyPair;
+        Value1 = duplicateReport.Value1;
+        Value2 = duplicateReport.Value2;
+    }
 }

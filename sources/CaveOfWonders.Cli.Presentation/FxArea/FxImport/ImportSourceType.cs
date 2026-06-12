@@ -14,14 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.FxArea.Import;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.FxArea.FxImport;
 
-internal static class NumberExtensions
+internal enum ImportSourceType
 {
-    public static string ToStringOrEmpty(this int number, string emptyString = "")
-    {
-        return number == 0
-            ? emptyString
-            : number.ToString();
-    }
+    Nbr,
+    Web
 }

@@ -18,7 +18,7 @@ using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.ConsoleTools.Controls;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.FxArea.Import;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.FxArea.FxImport;
 
 internal class FxImportView : IView<FxImportViewModel>
 {
