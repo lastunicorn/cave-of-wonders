@@ -21,7 +21,7 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application;
 
 public readonly struct CurrencyPairDto
 {
-    public CurrencyId Currency1 { get; init; }
+    public Currency Currency1 { get; init; }
 
-    public CurrencyId Currency2 { get; init; }
+    public Currency Currency2 { get; init; }
 }

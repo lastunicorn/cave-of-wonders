@@ -88,7 +88,7 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
         return potInstanceInfos;
     }
 
-    private async Task<PotInstanceInfo> Convert(PotInstance potInstance, DateOnly currentDate, CurrencyId defaultCurrency)
+    private async Task<PotInstanceInfo> Convert(PotInstance potInstance, DateOnly currentDate, Currency defaultCurrency)
     {
         PotInstanceInfo potInstanceInfo = new()
         {

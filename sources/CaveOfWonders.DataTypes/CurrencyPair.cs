@@ -2,25 +2,25 @@
 
 namespace DustInTheWind.CaveOfWonders.DataTypes;
 
-public readonly struct CurrencyPair : IEquatable<CurrencyPair>
+public readonly record struct CurrencyPair
 {
     private static readonly Regex Regex = new(@"^(.{3})[\/| ]?(.{3})$", RegexOptions.Singleline);
 
     public static CurrencyPair Empty { get; } = new();
 
-    public CurrencyId Currency1 { get; init; }
+    public Currency Currency1 { get; init; }
 
-    public CurrencyId Currency2 { get; init; }
+    public Currency Currency2 { get; init; }
 
     public bool IsEmpty => Currency1.IsEmpty || Currency2.IsEmpty;
 
     public CurrencyPair()
     {
-        Currency1 = CurrencyId.Empty;
-        Currency2 = CurrencyId.Empty;
+        Currency1 = Currency.Empty;
+        Currency2 = Currency.Empty;
     }
 
-    public CurrencyPair(CurrencyId currency1, CurrencyId currency2)
+    public CurrencyPair(Currency currency1, Currency currency2)
     {
         Currency1 = currency1;
         Currency2 = currency2;
@@ -55,24 +55,9 @@ public readonly struct CurrencyPair : IEquatable<CurrencyPair>
                Currency2.Equals(other.Currency2);
     }
 
-    public override bool Equals(object obj)
-    {
-        return obj is CurrencyPair other && Equals(other);
-    }
-
     public override int GetHashCode()
     {
         return HashCode.Combine(Currency1, Currency2);
-    }
-
-    public static bool operator ==(CurrencyPair left, CurrencyPair right)
-    {
-        return left.Equals(right);
-    }
-
-    public static bool operator !=(CurrencyPair left, CurrencyPair right)
-    {
-        return !left.Equals(right);
     }
 
     public static implicit operator CurrencyPair(string value)
@@ -87,7 +72,7 @@ public readonly struct CurrencyPair : IEquatable<CurrencyPair>
         return currencyPair.ToString();
     }
 
-    public static implicit operator CurrencyPair((CurrencyId currency1, CurrencyId currency2) tuple)
+    public static implicit operator CurrencyPair((Currency currency1, Currency currency2) tuple)
     {
         return new CurrencyPair(tuple.currency1, tuple.currency2);
     }

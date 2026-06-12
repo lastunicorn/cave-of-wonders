@@ -31,7 +31,7 @@ internal class CurrenciesConvertor
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
 
-    public async Task<CurrencyValue> Convert(CurrencyValue originalValue, CurrencyId destinationCurrency, DateOnly destinationDate)
+    public async Task<CurrencyValue> Convert(CurrencyValue originalValue, Currency destinationCurrency, DateOnly destinationDate)
     {
         if (originalValue == null)
             return null;
@@ -61,7 +61,7 @@ internal class CurrenciesConvertor
         return originalValue;
     }
 
-    private async Task<CurrencyConvertor> GetConverter(CurrencyId sourceCurrency, CurrencyId destinationCurrency, DateOnly date)
+    private async Task<CurrencyConvertor> GetConverter(Currency sourceCurrency, Currency destinationCurrency, DateOnly date)
     {
         CurrencyPair currencyPair = new()
         {

@@ -22,7 +22,7 @@ public class ExchangeRate : IEquatable<ExchangeRate>
             : value / Value;
     }
 
-    public ConversionAbility AnalyzeConversionAbility(CurrencyId source, CurrencyId destination)
+    public ConversionAbility AnalyzeConversionAbility(Currency source, Currency destination)
     {
         bool canConvertDirect = CurrencyPair.Currency1 == source && CurrencyPair.Currency2 == destination;
         if (canConvertDirect)
@@ -35,7 +35,7 @@ public class ExchangeRate : IEquatable<ExchangeRate>
         return ConversionAbility.None;
     }
 
-    public bool CanConvert(CurrencyId source, CurrencyId destination)
+    public bool CanConvert(Currency source, Currency destination)
     {
         return (CurrencyPair.Currency1 == source && CurrencyPair.Currency2 == destination) ||
                (CurrencyPair.Currency1 == destination && CurrencyPair.Currency2 == source);

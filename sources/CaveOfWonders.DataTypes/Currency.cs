@@ -1,14 +1,14 @@
 ﻿namespace DustInTheWind.CaveOfWonders.DataTypes;
 
-public readonly struct CurrencyId
+public readonly record struct Currency
 {
     private readonly string value;
 
-    public static CurrencyId Empty { get; } = new();
+    public static Currency Empty { get; } = new();
 
     public bool IsEmpty => value == null;
 
-    private CurrencyId(string value)
+    private Currency(string value)
     {
         this.value = value;
     }
@@ -18,16 +18,16 @@ public readonly struct CurrencyId
         return value;
     }
 
-    public static implicit operator CurrencyId(string value)
+    public static implicit operator Currency(string value)
     {
         if (value == null) throw new ArgumentNullException(nameof(value));
         if (value.Length != 3) throw new ArgumentException("The currency ID must have three characters.", nameof(value));
 
-        return new CurrencyId(value.ToUpper());
+        return new Currency(value.ToUpper());
     }
 
-    public static implicit operator string(CurrencyId currencyId)
+    public static implicit operator string(Currency currency)
     {
-        return currencyId.value;
+        return currency.value;
     }
 }
