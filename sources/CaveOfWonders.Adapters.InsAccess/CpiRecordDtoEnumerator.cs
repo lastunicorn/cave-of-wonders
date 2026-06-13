@@ -4,7 +4,7 @@ using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.InsAccess;
 
-internal class InflationRecordDtoEnumerator : IEnumerator<CpiRecordDto>
+internal class CpiRecordDtoEnumerator : IEnumerator<CpiRecordDto>
 {
     private readonly CultureInfo cultureInfo = new("ro-RO");
     private int currentLineIndex = -1;
@@ -15,7 +15,7 @@ internal class InflationRecordDtoEnumerator : IEnumerator<CpiRecordDto>
 
     object IEnumerator.Current => Current;
 
-    public InflationRecordDtoEnumerator(IEnumerable<string> lines)
+    public CpiRecordDtoEnumerator(IEnumerable<string> lines)
     {
         this.lines = lines ?? throw new ArgumentNullException(nameof(lines));
     }

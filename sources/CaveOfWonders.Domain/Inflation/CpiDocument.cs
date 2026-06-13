@@ -1,10 +1,10 @@
 ﻿namespace DustInTheWind.CaveOfWonders.Domain.Inflation;
 
-public sealed class InflationDocument : IDisposable
+public sealed class CpiDocument : IDisposable
 {
     private readonly StreamWriter streamWriter;
 
-    public InflationDocument(Stream stream)
+    public CpiDocument(Stream stream)
     {
         if (stream is null)
             throw new ArgumentNullException(nameof(stream));
@@ -12,14 +12,14 @@ public sealed class InflationDocument : IDisposable
         streamWriter = new StreamWriter(stream);
     }
 
-    public async Task Write(InflationRecordLine inflationRecordLine)
+    public async Task Write(CpiRecordLine cpiRecordLine)
     {
-        await inflationRecordLine.Write(streamWriter);
+        await cpiRecordLine.Write(streamWriter);
     }
 
-    public async Task Write(IEnumerable<InflationRecordLine> inflationRecordLines)
+    public async Task Write(IEnumerable<CpiRecordLine> inflationRecordLines)
     {
-        foreach (InflationRecordLine inflationRecordLine in inflationRecordLines)
+        foreach (CpiRecordLine inflationRecordLine in inflationRecordLines)
             await inflationRecordLine.Write(streamWriter);
     }
 

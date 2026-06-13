@@ -24,14 +24,14 @@ public class UnitOfWork : IUnitOfWork
 
     private IPotRepository potRepository;
     private IExchangeRateRepository exchangeRateRepository;
-    private IInflationRecordRepository inflationRecordRepository;
+    private ICpiRepository cpiRepository;
     private IAverageWageRepository averageWageRepository;
 
     public IPotRepository PotRepository => potRepository ??= new PotRepository(database);
 
     public IExchangeRateRepository ExchangeRateRepository => exchangeRateRepository ??= new ExchangeRateRepository(database);
 
-    public IInflationRecordRepository InflationRecordRepository => inflationRecordRepository ??= new InflationRecordRepository(database);
+    public ICpiRepository CpiRepository => cpiRepository ??= new CpiRepository(database);
 
     public IAverageWageRepository AverageWageRepository => averageWageRepository ??= new AverageWageRepository(database);  
 

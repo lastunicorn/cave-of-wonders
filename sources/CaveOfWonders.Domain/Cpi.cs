@@ -1,6 +1,6 @@
 ﻿namespace DustInTheWind.CaveOfWonders.Domain;
 
-public class InflationRecord
+public class Cpi
 {
     public int Year { get; set; }
 

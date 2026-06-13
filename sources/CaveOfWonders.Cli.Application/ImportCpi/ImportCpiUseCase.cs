@@ -113,13 +113,13 @@ internal class ImportCpiUseCase : IRequestHandler<ImportCpiRequest, ImportCpiRes
 	{
 		foreach (CpiRecordDto insInflationRecordDto in inflationRecordDtos)
 		{
-			InflationRecord inflationRecordDto = new()
+			Cpi cpiDto = new()
 			{
 				Year = insInflationRecordDto.Year,
 				Value = insInflationRecordDto.Value
 			};
 
-			yield return await unitOfWork.InflationRecordRepository.AddOrUpdate(inflationRecordDto);
+			yield return await unitOfWork.CpiRepository.AddOrUpdate(cpiDto);
 		}
 	}
 }

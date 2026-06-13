@@ -16,15 +16,15 @@
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentCpi;
 
-public class InflationRecordDto
+public class CpiDto
 {
     public int Year { get; set; }
 
     public decimal Value { get; set; }
 
-    internal InflationRecordDto(Domain.InflationRecord inflationRecord)
+    internal CpiDto(Domain.Cpi cpi)
     {
-        Year = inflationRecord.Year;
-        Value = inflationRecord.Value;
+        Year = cpi.Year;
+        Value = cpi.Value;
     }
 }

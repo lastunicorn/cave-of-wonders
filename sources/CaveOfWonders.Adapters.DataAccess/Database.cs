@@ -28,7 +28,7 @@ public class Database
 
     public List<ExchangeRate> ExchangeRates { get; } = [];
 
-    public List<InflationRecord> InflationRecords { get; } = [];
+    public List<Cpi> CpiRecords { get; } = [];
 
     public List<AverageWage> AverageWages { get; } = [];
 
@@ -44,7 +44,7 @@ public class Database
 
         await LoadExchangeRates();
         await LoadPots();
-        await LoadInflationRates();
+        await LoadCpi();
         await LoadAverageWages();
     }
 
@@ -119,7 +119,7 @@ public class Database
         }
     }
 
-    private async Task LoadInflationRates()
+    private async Task LoadCpi()
     {
         string filePath = Path.Combine(databaseDirectoryPath, "inflation-rates.json");
         InflationRatesFile inflationRatesFile = new(filePath);
@@ -127,16 +127,16 @@ public class Database
         if (!inflationRatesFile.Exists)
             return;
 
-        IEnumerable<JInflationRecord> jInflationRecords = await inflationRatesFile.Read();
+        IEnumerable<JCpi> jInflationRecords = await inflationRatesFile.Read();
 
-        IEnumerable<InflationRecord> inflationRecordDtos = jInflationRecords
-            .Select(x => new InflationRecord
+        IEnumerable<Cpi> inflationRecordDtos = jInflationRecords
+            .Select(x => new Cpi
             {
                 Year = x.Year,
                 Value = x.Value
             });
 
-        InflationRecords.AddRange(inflationRecordDtos);
+        CpiRecords.AddRange(inflationRecordDtos);
     }
 
     private async Task LoadAverageWages()
@@ -164,7 +164,7 @@ public class Database
     {
         await SaveExchangeRates();
         await SavePots();
-        await SaveInflationRates();
+        await SaveCpi();
         await SaveAverageWages();
     }
 
@@ -229,13 +229,13 @@ public class Database
         }
     }
 
-    private async Task SaveInflationRates()
+    private async Task SaveCpi()
     {
         string filePath = Path.Combine(databaseDirectoryPath, "inflation-rates.json");
         InflationRatesFile inflationRatesFile = new(filePath);
 
-        IEnumerable<JInflationRecord> jInflationRecords = InflationRecords
-            .Select(x => new JInflationRecord
+        IEnumerable<JCpi> jInflationRecords = CpiRecords
+            .Select(x => new JCpi
             {
                 Year = x.Year,
                 Value = x.Value

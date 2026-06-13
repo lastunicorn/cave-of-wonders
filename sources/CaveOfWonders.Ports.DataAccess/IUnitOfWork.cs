@@ -6,7 +6,7 @@ public interface IUnitOfWork
 
     public IExchangeRateRepository ExchangeRateRepository { get; }
 
-    public IInflationRecordRepository InflationRecordRepository { get; }
+    public ICpiRepository CpiRepository { get; }
 
     IAverageWageRepository AverageWageRepository { get; }
 

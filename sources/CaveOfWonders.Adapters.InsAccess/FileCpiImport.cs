@@ -32,7 +32,7 @@ public class FileCpiImport : ICpiImport
 	{
 		IEnumerable<string> lines = await File.ReadLinesAsync(filePath, cancellationToken).ToListAsync(cancellationToken);
 
-		InflationRecordDtoEnumerator enumerator = new(lines);
+		CpiRecordDtoEnumerator enumerator = new(lines);
 
 		while (enumerator.MoveNext())
 			yield return enumerator.Current;

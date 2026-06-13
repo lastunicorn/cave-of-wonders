@@ -29,19 +29,19 @@ internal class InflationRatesFile
         this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
     }
 
-    public async Task<IEnumerable<JInflationRecord>> Read()
+    public async Task<IEnumerable<JCpi>> Read()
     {
         if (!File.Exists(filePath))
-            return Enumerable.Empty<JInflationRecord>();
+            return Enumerable.Empty<JCpi>();
 
         string json = await File.ReadAllTextAsync(filePath);
 
         return string.IsNullOrEmpty(json)
-            ? Enumerable.Empty<JInflationRecord>()
-            : JsonConvert.DeserializeObject<IEnumerable<JInflationRecord>>(json);
+            ? Enumerable.Empty<JCpi>()
+            : JsonConvert.DeserializeObject<IEnumerable<JCpi>>(json);
     }
 
-    public Task Save(IEnumerable<JInflationRecord> jInflationRecords)
+    public Task Save(IEnumerable<JCpi> jInflationRecords)
     {
         string json = JsonConvert.SerializeObject(jInflationRecords, Formatting.Indented);
         return File.WriteAllTextAsync(filePath, json);

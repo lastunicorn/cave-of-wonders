@@ -31,19 +31,19 @@ internal class PresentCpiUseCase : IRequestHandler<PresentCpiRequest, PresentCpi
 
     public async Task<PresentCpiResponse> Handle(PresentCpiRequest request, CancellationToken cancellationToken)
     {
-        IEnumerable<InflationRecord> inflationRecords = await RetrieveInflationRecordsFromStorage();
+        IEnumerable<Cpi> inflationRecords = await RetrieveInflationRecordsFromStorage();
 
         return new PresentCpiResponse
         {
             InflationRecords = inflationRecords
-                .Select(x => new InflationRecordDto(x))
+                .Select(x => new CpiDto(x))
                 .ToList()
         };
     }
 
-    private async Task<IEnumerable<InflationRecord>> RetrieveInflationRecordsFromStorage()
+    private async Task<IEnumerable<Cpi>> RetrieveInflationRecordsFromStorage()
     {
-        IEnumerable<InflationRecord> inflationRecords = await unitOfWork.InflationRecordRepository.GetAll();
+        IEnumerable<Cpi> inflationRecords = await unitOfWork.CpiRepository.GetAll();
 
         return inflationRecords
             .OrderBy(x => x.Year);

@@ -20,5 +20,5 @@ namespace DustInTheWind.CaveOfWonders.Cli.Presentation.CpiArea.Cpi;
 
 internal class CpiViewModel
 {
-    public List<InflationRecordDto> Records { get; set; }
+    public List<CpiDto> Records { get; set; }
 }

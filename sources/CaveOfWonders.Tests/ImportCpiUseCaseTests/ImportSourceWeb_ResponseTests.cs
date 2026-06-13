@@ -5,23 +5,23 @@ using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 using FluentAssertions;
 using Moq;
 
-namespace CaveOfWonders.Tests.ImportInflationUseCaseTests;
+namespace CaveOfWonders.Tests.ImportCpiUseCaseTests;
 
 public class ImportSourceWeb_ResponseTests
 {
     private readonly ImportCpiUseCase useCase;
     private readonly Mock<IInsService> ins;
     private readonly Mock<IUnitOfWork> unitOfWork;
-    private readonly Mock<IInflationRecordRepository> inflationRecordRepository;
+    private readonly Mock<ICpiRepository> inflationRecordRepository;
 
     public ImportSourceWeb_ResponseTests()
     {
         ins = new Mock<IInsService>();
         unitOfWork = new Mock<IUnitOfWork>();
-        inflationRecordRepository = new Mock<IInflationRecordRepository>();
+        inflationRecordRepository = new Mock<ICpiRepository>();
 
         unitOfWork
-            .SetupGet(x => x.InflationRecordRepository)
+            .SetupGet(x => x.CpiRepository)
             .Returns(inflationRecordRepository.Object);
 
         useCase = new ImportCpiUseCase(ins.Object, unitOfWork.Object, null);
@@ -37,7 +37,7 @@ public class ImportSourceWeb_ResponseTests
         ];
 
         inflationRecordRepository
-            .SetupSequence(x => x.AddOrUpdate(It.IsAny<InflationRecord>()))
+            .SetupSequence(x => x.AddOrUpdate(It.IsAny<Cpi>()))
             .ReturnsAsync(AddOrUpdateResult.Added);
 
         // Act
@@ -59,7 +59,7 @@ public class ImportSourceWeb_ResponseTests
         ];
 
         inflationRecordRepository
-            .SetupSequence(x => x.AddOrUpdate(It.IsAny<InflationRecord>()))
+            .SetupSequence(x => x.AddOrUpdate(It.IsAny<Cpi>()))
             .ReturnsAsync(AddOrUpdateResult.Added)
             .ReturnsAsync(AddOrUpdateResult.Added);
 
@@ -82,7 +82,7 @@ public class ImportSourceWeb_ResponseTests
         ];
 
         inflationRecordRepository
-            .SetupSequence(x => x.AddOrUpdate(It.IsAny<InflationRecord>()))
+            .SetupSequence(x => x.AddOrUpdate(It.IsAny<Cpi>()))
             .ReturnsAsync(AddOrUpdateResult.Added)
             .ReturnsAsync(AddOrUpdateResult.Updated);
 
@@ -106,7 +106,7 @@ public class ImportSourceWeb_ResponseTests
         ];
 
         inflationRecordRepository
-            .SetupSequence(x => x.AddOrUpdate(It.IsAny<InflationRecord>()))
+            .SetupSequence(x => x.AddOrUpdate(It.IsAny<Cpi>()))
             .ReturnsAsync(AddOrUpdateResult.Updated)
             .ReturnsAsync(AddOrUpdateResult.Updated);
 

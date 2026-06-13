@@ -18,5 +18,5 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentCpi;
 
 public class PresentCpiResponse
 {
-    public List<InflationRecordDto> InflationRecords { get; set; }
+    public List<CpiDto> InflationRecords { get; set; }
 }

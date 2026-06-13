@@ -8,7 +8,7 @@ internal class YearlyInflationDocument
 
     public YearlyInflationDocument(IEnumerable<string> lines)
     {
-        InflationRecordDtoEnumerator enumerator = new(lines);
+        CpiRecordDtoEnumerator enumerator = new(lines);
 
         while (enumerator.MoveNext())
             Records.Add(enumerator.Current);

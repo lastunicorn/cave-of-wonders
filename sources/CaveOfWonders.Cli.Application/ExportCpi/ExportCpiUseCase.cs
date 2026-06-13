@@ -22,31 +22,31 @@ internal class ExportCpiUseCase : IRequestHandler<ExportCpiRequest>
         if (string.IsNullOrEmpty(request.OutputPath.Trim()))
             throw new OutputPathNotProvidedException();
 
-        using InflationDocument exportDocument = CreateExportFile(request.OutputPath);
+        using CpiDocument exportDocument = CreateExportFile(request.OutputPath);
 
-        IEnumerable<InflationRecord> inflationRecords = await RetrieveInflationRecordsFromStorage();
+        IEnumerable<Cpi> inflationRecords = await RetrieveInflationRecordsFromStorage();
 
-        foreach (InflationRecord inflationRecord in inflationRecords)
+        foreach (Cpi inflationRecord in inflationRecords)
             await WriteToExportDocument(exportDocument, inflationRecord);
     }
 
-    private InflationDocument CreateExportFile(string outputPath)
+    private CpiDocument CreateExportFile(string outputPath)
     {
         Stream exportStream = fileSystem.CreateFile(outputPath);
-        return new InflationDocument(exportStream);
+        return new CpiDocument(exportStream);
     }
 
-    private async Task<IEnumerable<InflationRecord>> RetrieveInflationRecordsFromStorage()
+    private async Task<IEnumerable<Cpi>> RetrieveInflationRecordsFromStorage()
     {
-        IEnumerable<InflationRecord> inflationRecords = await unitOfWork.InflationRecordRepository.GetAll();
+        IEnumerable<Cpi> inflationRecords = await unitOfWork.CpiRepository.GetAll();
 
         return inflationRecords
             .OrderBy(x => x.Year);
     }
 
-    private static async Task WriteToExportDocument(InflationDocument exportDocument, InflationRecord inflationRecord)
+    private static async Task WriteToExportDocument(CpiDocument exportDocument, Cpi cpi)
     {
-        InflationRecordLine exportInflationRecord = new(inflationRecord.Year, inflationRecord.Value);
-        await exportDocument.Write(exportInflationRecord);
+        CpiRecordLine exportCpiRecord = new(cpi.Year, cpi.Value);
+        await exportDocument.Write(exportCpiRecord);
     }
 }

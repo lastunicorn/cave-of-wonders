@@ -5,23 +5,23 @@ using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 using FluentAssertions;
 using Moq;
 
-namespace CaveOfWonders.Tests.ImportInflationUseCaseTests;
+namespace CaveOfWonders.Tests.ImportCpiUseCaseTests;
 
 public class ImportSourceFileTests
 {
     private readonly ImportCpiUseCase useCase;
     private readonly Mock<IInsService> ins;
     private readonly Mock<IUnitOfWork> unitOfWork;
-    private readonly Mock<IInflationRecordRepository> inflationRecordRepository;
+    private readonly Mock<ICpiRepository> inflationRecordRepository;
 
     public ImportSourceFileTests()
     {
         ins = new Mock<IInsService>();
         unitOfWork = new Mock<IUnitOfWork>();
-        inflationRecordRepository = new Mock<IInflationRecordRepository>();
+        inflationRecordRepository = new Mock<ICpiRepository>();
 
         unitOfWork
-            .SetupGet(x => x.InflationRecordRepository)
+            .SetupGet(x => x.CpiRepository)
             .Returns(inflationRecordRepository.Object);
 
         useCase = new ImportCpiUseCase(ins.Object, unitOfWork.Object, null);
@@ -41,7 +41,7 @@ public class ImportSourceFileTests
         Func<Task> action = async () => await useCase.Handle(request, CancellationToken.None);
 
         // Assert
-        await action.Should().ThrowAsync<InflationFileNotProvidedException>();
+        await action.Should().ThrowAsync<CpiFileNotProvidedException>();
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class ImportSourceFileTests
         Func<Task> action = async () => await useCase.Handle(request, CancellationToken.None);
 
         // Assert
-        await action.Should().ThrowAsync<InflationFileNotProvidedException>();
+        await action.Should().ThrowAsync<CpiFileNotProvidedException>();
     }
 
     [Fact]
@@ -111,7 +111,7 @@ public class ImportSourceFileTests
             });
 
         inflationRecordRepository
-            .Setup(x => x.AddOrUpdate(It.IsAny<InflationRecord>()))
+            .Setup(x => x.AddOrUpdate(It.IsAny<Cpi>()))
             .Throws<Exception>();
 
         ImportCpiRequest request = new()
@@ -136,7 +136,7 @@ public class ImportSourceFileTests
             .ReturnsAsync(new List<CpiRecordDto>());
 
         inflationRecordRepository
-            .Setup(x => x.AddOrUpdate(It.IsAny<InflationRecord>()))
+            .Setup(x => x.AddOrUpdate(It.IsAny<Cpi>()))
             .Throws<Exception>();
 
         ImportCpiRequest request = new()
@@ -149,7 +149,7 @@ public class ImportSourceFileTests
         _ = await useCase.Handle(request, CancellationToken.None);
 
         // Assert
-        inflationRecordRepository.Verify(x => x.AddOrUpdate(It.IsAny<InflationRecord>()), Times.Never);
+        inflationRecordRepository.Verify(x => x.AddOrUpdate(It.IsAny<Cpi>()), Times.Never);
     }
 
     [Fact]
@@ -173,7 +173,7 @@ public class ImportSourceFileTests
         _ = await useCase.Handle(request, CancellationToken.None);
 
         // Assert
-        inflationRecordRepository.Verify(x => x.AddOrUpdate(It.IsAny<InflationRecord>()), Times.Once);
+        inflationRecordRepository.Verify(x => x.AddOrUpdate(It.IsAny<Cpi>()), Times.Once);
     }
 
     [Fact]
@@ -198,7 +198,7 @@ public class ImportSourceFileTests
         _ = await useCase.Handle(request, CancellationToken.None);
 
         // Assert
-        inflationRecordRepository.Verify(x => x.AddOrUpdate(It.IsAny<InflationRecord>()), Times.Exactly(2));
+        inflationRecordRepository.Verify(x => x.AddOrUpdate(It.IsAny<Cpi>()), Times.Exactly(2));
     }
 
     [Fact]

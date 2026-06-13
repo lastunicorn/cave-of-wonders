@@ -5,23 +5,23 @@ using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 using FluentAssertions;
 using Moq;
 
-namespace CaveOfWonders.Tests.ImportInflationUseCaseTests;
+namespace CaveOfWonders.Tests.ImportCpiUseCaseTests;
 
 public class ImportSourceWebTests
 {
     private readonly ImportCpiUseCase useCase;
     private readonly Mock<IInsService> ins;
     private readonly Mock<IUnitOfWork> unitOfWork;
-    private readonly Mock<IInflationRecordRepository> inflationRecordRepository;
+    private readonly Mock<ICpiRepository> inflationRecordRepository;
 
     public ImportSourceWebTests()
     {
         ins = new Mock<IInsService>();
         unitOfWork = new Mock<IUnitOfWork>();
-        inflationRecordRepository = new Mock<IInflationRecordRepository>();
+        inflationRecordRepository = new Mock<ICpiRepository>();
 
         unitOfWork
-            .SetupGet(x => x.InflationRecordRepository)
+            .SetupGet(x => x.CpiRepository)
             .Returns(inflationRecordRepository.Object);
 
         useCase = new ImportCpiUseCase(ins.Object, unitOfWork.Object, null);
@@ -83,7 +83,7 @@ public class ImportSourceWebTests
         _ = await useCase.Handle(request, CancellationToken.None);
 
         // Assert
-        inflationRecordRepository.Verify(x => x.AddOrUpdate(It.IsAny<InflationRecord>()), Times.Once);
+        inflationRecordRepository.Verify(x => x.AddOrUpdate(It.IsAny<Cpi>()), Times.Once);
     }
 
     [Fact]
@@ -107,7 +107,7 @@ public class ImportSourceWebTests
         _ = await useCase.Handle(request, CancellationToken.None);
 
         // Assert
-        inflationRecordRepository.Verify(x => x.AddOrUpdate(It.IsAny<InflationRecord>()), Times.Exactly(2));
+        inflationRecordRepository.Verify(x => x.AddOrUpdate(It.IsAny<Cpi>()), Times.Exactly(2));
     }
 
     [Fact]
@@ -127,7 +127,7 @@ public class ImportSourceWebTests
         _ = await useCase.Handle(request, CancellationToken.None);
 
         // Assert
-        inflationRecordRepository.Verify(x => x.AddOrUpdate(It.IsAny<InflationRecord>()), Times.Never);
+        inflationRecordRepository.Verify(x => x.AddOrUpdate(It.IsAny<Cpi>()), Times.Never);
     }
 
     [Fact]
@@ -142,7 +142,7 @@ public class ImportSourceWebTests
             });
 
         inflationRecordRepository
-            .Setup(x => x.AddOrUpdate(It.IsAny<InflationRecord>()))
+            .Setup(x => x.AddOrUpdate(It.IsAny<Cpi>()))
             .Throws<Exception>();
 
         ImportCpiRequest request = new()

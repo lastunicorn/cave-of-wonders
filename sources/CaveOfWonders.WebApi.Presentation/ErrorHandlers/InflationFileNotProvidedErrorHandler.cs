@@ -20,11 +20,11 @@ using DustInTheWind.CaveOfWonders.Cli.Application.ImportCpi;
 
 namespace CaveOfWonders.WebApi.Presentation.ErrorHandlers;
 
-internal class InflationFileNotProvidedErrorHandler : JsonErrorHandler<InflationFileNotProvidedException, string>
+internal class InflationFileNotProvidedErrorHandler : JsonErrorHandler<CpiFileNotProvidedException, string>
 {
     protected override HttpStatusCode HttpStatusCode => HttpStatusCode.BadRequest;
 
-    protected override string BuildHttpResponseBody(InflationFileNotProvidedException ex)
+    protected override string BuildHttpResponseBody(CpiFileNotProvidedException ex)
     {
         return "Inflation file path not provided";
     }

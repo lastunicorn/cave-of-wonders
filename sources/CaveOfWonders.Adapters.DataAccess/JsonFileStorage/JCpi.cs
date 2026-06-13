@@ -16,7 +16,7 @@
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
 
-internal class JInflationRecord
+internal class JCpi
 {
     public int Year { get; set; }
 

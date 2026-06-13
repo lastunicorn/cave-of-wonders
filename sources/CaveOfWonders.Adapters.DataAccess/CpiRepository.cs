@@ -19,45 +19,45 @@ using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
-public class InflationRecordRepository : IInflationRecordRepository
+public class CpiRepository : ICpiRepository
 {
     private readonly Database database;
 
-    public InflationRecordRepository(Database database)
+    public CpiRepository(Database database)
     {
         this.database = database ?? throw new ArgumentNullException(nameof(database));
     }
 
-    public Task<IEnumerable<InflationRecord>> GetAll()
+    public Task<IEnumerable<Cpi>> GetAll()
     {
-        IEnumerable<InflationRecord> inflationRecords = database.InflationRecords;
+        IEnumerable<Cpi> inflationRecords = database.CpiRecords;
         return Task.FromResult(inflationRecords);
     }
 
-    public Task Add(InflationRecord inflationRecordDto)
+    public Task Add(Cpi cpiDto)
     {
-        if (inflationRecordDto == null) throw new ArgumentNullException(nameof(inflationRecordDto));
+        if (cpiDto == null) throw new ArgumentNullException(nameof(cpiDto));
 
-        database.InflationRecords.Add(inflationRecordDto);
+        database.CpiRecords.Add(cpiDto);
 
         return Task.CompletedTask;
     }
 
-    public Task<AddOrUpdateResult> AddOrUpdate(InflationRecord inflationRecordDto)
+    public Task<AddOrUpdateResult> AddOrUpdate(Cpi cpiDto)
     {
-        if (inflationRecordDto == null) throw new ArgumentNullException(nameof(inflationRecordDto));
+        if (cpiDto == null) throw new ArgumentNullException(nameof(cpiDto));
 
-        InflationRecord existingRecord = database.InflationRecords
-            .FirstOrDefault(x => x.Year == inflationRecordDto.Year);
+        Cpi existing = database.CpiRecords
+            .FirstOrDefault(x => x.Year == cpiDto.Year);
 
-        if (existingRecord == null)
+        if (existing == null)
         {
-            database.InflationRecords.Add(inflationRecordDto);
+            database.CpiRecords.Add(cpiDto);
             return Task.FromResult(AddOrUpdateResult.Added);
         }
         else
         {
-            existingRecord.Value = inflationRecordDto.Value;
+            existing.Value = cpiDto.Value;
             return Task.FromResult(AddOrUpdateResult.Updated);
         }
     }

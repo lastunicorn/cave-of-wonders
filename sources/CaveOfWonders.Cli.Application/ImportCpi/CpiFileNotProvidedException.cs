@@ -18,11 +18,11 @@
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportCpi;
 
 [Serializable]
-public class InflationFileNotProvidedException : Exception
+public class CpiFileNotProvidedException : Exception
 {
-    private const string DefaultMessage = "The name of the text file containing inflation values was not provided.";
+    private const string DefaultMessage = "The name of the text file containing CPI values was not provided.";
 
-    public InflationFileNotProvidedException()
+    public CpiFileNotProvidedException()
         : base(DefaultMessage)
     {
     }
