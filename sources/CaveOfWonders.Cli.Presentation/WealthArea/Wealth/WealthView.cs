@@ -14,63 +14,63 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Globalization;
 using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
 using DustInTheWind.ConsoleTools.Commando;
+using System.Globalization;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.PotOverview;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WealthArea.Wealth;
 
-internal class PotOverviewView : IView<PotOverviewViewModel>
+internal class WealthView : IView<WealthViewModel>
 {
-    public void Display(PotOverviewViewModel potOverviewViewModel)
+    public void Display(WealthViewModel wealthViewModel)
     {
-        if (potOverviewViewModel.Culture != null)
+        if (wealthViewModel.Culture != null)
         {
-            CultureInfo.CurrentCulture = potOverviewViewModel.Culture;
-            CultureInfo.CurrentUICulture = potOverviewViewModel.Culture;
+            CultureInfo.CurrentCulture = wealthViewModel.Culture;
+            CultureInfo.CurrentUICulture = wealthViewModel.Culture;
         }
 
-        DisplayCaveInstances(potOverviewViewModel);
+        DisplayCaveInstances(wealthViewModel);
 
-        if (potOverviewViewModel.CurrencyTotalOverviews?.Count > 1)
-            DisplayTotals(potOverviewViewModel);
+        if (wealthViewModel.CurrencyTotalOverviews?.Count > 1)
+            DisplayTotals(wealthViewModel);
 
-        DisplayConversionRates(potOverviewViewModel);
+        DisplayConversionRates(wealthViewModel);
     }
 
-    private static void DisplayCaveInstances(PotOverviewViewModel potOverviewViewModel)
+    private static void DisplayCaveInstances(WealthViewModel wealthViewModel)
     {
         PotsDataGrid potsDataGrid = new()
         {
-            Date = potOverviewViewModel.Date,
-            Values = potOverviewViewModel.Values,
-            Total = potOverviewViewModel.Total
+            Date = wealthViewModel.Date,
+            Values = wealthViewModel.Values,
+            Total = wealthViewModel.Total
         };
 
         potsDataGrid.Display();
     }
 
-    private static void DisplayTotals(PotOverviewViewModel potOverviewViewModel)
+    private static void DisplayTotals(WealthViewModel wealthViewModel)
     {
         Console.WriteLine();
 
         TotalsDataGrid totalsDataGrid = new()
         {
-            Date = potOverviewViewModel.Date,
-            Values = potOverviewViewModel.CurrencyTotalOverviews,
-            Total = potOverviewViewModel.Total
+            Date = wealthViewModel.Date,
+            Values = wealthViewModel.CurrencyTotalOverviews,
+            Total = wealthViewModel.Total
         };
 
         totalsDataGrid.Display();
     }
 
-    private static void DisplayConversionRates(PotOverviewViewModel potOverviewViewModel)
+    private static void DisplayConversionRates(WealthViewModel wealthViewModel)
     {
         Console.WriteLine();
 
         ExchangeRatesControl exchangeRatesControl = new()
         {
-            ExchangeRates = potOverviewViewModel.ConversionRates
+            ExchangeRates = wealthViewModel.ConversionRates
         };
 
         exchangeRatesControl.Display();

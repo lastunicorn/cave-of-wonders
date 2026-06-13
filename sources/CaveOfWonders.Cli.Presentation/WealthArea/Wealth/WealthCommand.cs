@@ -14,15 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Globalization;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using DustInTheWind.ConsoleTools.Commando;
 using MediatR;
+using System.Globalization;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.PotOverview;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WealthArea.Wealth;
 
-[NamedCommand("pot-overview", Description = "Display the state of the pots for a specific date.")]
-internal class PotOverviewCommand : IConsoleCommand<PotOverviewViewModel>
+[NamedCommand("wealth", Description = "Display an overview of the entire cave (the wealth).")]
+internal class WealthCommand : IConsoleCommand<WealthViewModel>
 {
     private readonly IMediator mediator;
 
@@ -38,12 +38,12 @@ internal class PotOverviewCommand : IConsoleCommand<PotOverviewViewModel>
     [NamedParameter("culture", ShortName = 'u', IsMandatory = false, Description = "The culture info used for displaying the data.")]
     public CultureInfo Culture { get; set; }
 
-    public PotOverviewCommand(IMediator mediator)
+    public WealthCommand(IMediator mediator)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
-    public async Task<PotOverviewViewModel> Execute()
+    public async Task<WealthViewModel> Execute()
     {
         PresentPotsRequest request = new()
         {
@@ -54,7 +54,7 @@ internal class PotOverviewCommand : IConsoleCommand<PotOverviewViewModel>
 
         PresentPotsResponse response = await mediator.Send(request);
 
-        return new PotOverviewViewModel(response)
+        return new WealthViewModel(response)
         {
             Culture = Culture,
         };

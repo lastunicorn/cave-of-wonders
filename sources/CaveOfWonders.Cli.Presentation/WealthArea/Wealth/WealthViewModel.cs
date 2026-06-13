@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Globalization;
 using DustInTheWind.CaveOfWonders.Cli.Application;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
+using System.Globalization;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.PotOverview;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WealthArea.Wealth;
 
-internal class PotOverviewViewModel
+internal class WealthViewModel
 {
     public CultureInfo Culture { get; set; }
 
@@ -35,7 +35,7 @@ internal class PotOverviewViewModel
 
     public List<CurrencyTotalOverview> CurrencyTotalOverviews { get; }
 
-    public PotOverviewViewModel(PresentPotsResponse presentPotsResponse)
+    public WealthViewModel(PresentPotsResponse presentPotsResponse)
     {
         Date = presentPotsResponse.Date;
 

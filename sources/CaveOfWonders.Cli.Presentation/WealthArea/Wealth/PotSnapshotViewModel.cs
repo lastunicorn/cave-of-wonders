@@ -33,7 +33,7 @@
 
 using DustInTheWind.CaveOfWonders.Cli.Application;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.PotOverview;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WealthArea.Wealth;
 
 internal class PotSnapshotViewModel
 {

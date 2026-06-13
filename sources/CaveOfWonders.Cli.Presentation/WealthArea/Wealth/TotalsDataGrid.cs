@@ -19,7 +19,7 @@ using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using DustInTheWind.ConsoleTools.Controls;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.PotOverview;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WealthArea.Wealth;
 
 internal class TotalsDataGrid
 {

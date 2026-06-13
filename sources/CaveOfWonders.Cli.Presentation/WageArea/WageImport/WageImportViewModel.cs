@@ -16,7 +16,7 @@
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WageArea.WageImport;
 
-public class WageImportViewModel
+internal class WageImportViewModel
 {
     public int TotalCount { get; init; }
 

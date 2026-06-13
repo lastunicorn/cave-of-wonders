@@ -21,7 +21,7 @@ using MediatR;
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WageArea.WageImport;
 
 [NamedCommand("wage-import", Description = "Imports the average wage data from the INS web page.")]
-public class WageImportCommand : IConsoleCommand<WageImportViewModel>
+internal class WageImportCommand : IConsoleCommand<WageImportViewModel>
 {
     private readonly IMediator mediator;
 

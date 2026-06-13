@@ -16,7 +16,7 @@
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WageArea.Wage;
 
-public class WagesViewModel
+internal class WagesViewModel
 {
     public List<WageViewModel> Wages { get; set; }
 }

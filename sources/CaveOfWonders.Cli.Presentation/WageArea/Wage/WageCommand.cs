@@ -21,7 +21,7 @@ using MediatR;
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WageArea.Wage;
 
 [NamedCommand("wage", Description = "Displays average wage information.")]
-public class WageCommand : IConsoleCommand<WagesViewModel>
+internal class WageCommand : IConsoleCommand<WagesViewModel>
 {
     private readonly IMediator mediator;
 
