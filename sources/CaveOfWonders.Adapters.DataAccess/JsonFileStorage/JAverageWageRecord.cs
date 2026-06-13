@@ -20,5 +20,7 @@ internal class JAverageWageRecord
 {
     public int Year { get; set; }
 
-    public decimal Value { get; set; }
+    public decimal? Gross { get; set; }
+    
+    public decimal? Net { get; set; }
 }

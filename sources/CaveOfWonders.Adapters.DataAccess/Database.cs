@@ -153,7 +153,8 @@ public class Database
             .Select(x => new AverageWage
             {
                 Year = x.Year,
-                Value = x.Value
+                GrossValue = x.Gross,
+                NetValue = x.Net
             });
 
         AverageWages.AddRange(averageWageRecordDtos);
@@ -248,11 +249,12 @@ public class Database
         string filePath = Path.Combine(databaseDirectoryPath, "average-wages.json");
         AverageWagesFile averageWageFile = new(filePath);
 
-        IEnumerable<JAverageWageRecord> jAverageWageRecord = InflationRecords
+        IEnumerable<JAverageWageRecord> jAverageWageRecord = AverageWages
             .Select(x => new JAverageWageRecord
             {
                 Year = x.Year,
-                Value = x.Value
+                Gross = x.GrossValue,
+                Net = x.NetValue
             });
 
         await averageWageFile.Save(jAverageWageRecord);

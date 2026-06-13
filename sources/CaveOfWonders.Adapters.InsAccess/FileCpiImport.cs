@@ -28,7 +28,7 @@ public class FileCpiImport : ICpiImport
 		this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
 	}
 
-	public async IAsyncEnumerable<InflationRecordDto> ImportAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+	public async IAsyncEnumerable<CpiRecordDto> ImportAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
 	{
 		IEnumerable<string> lines = await File.ReadLinesAsync(filePath, cancellationToken).ToListAsync(cancellationToken);
 

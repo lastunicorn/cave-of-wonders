@@ -105,9 +105,9 @@ public class ImportSourceFileTests
         // Arrange
         ins
             .Setup(x => x.GetInflationValuesFromFile(It.IsAny<string>()))
-            .ReturnsAsync(new List<InflationRecordDto>
+            .ReturnsAsync(new List<CpiRecordDto>
             {
-                new InflationRecordDto()
+                new CpiRecordDto()
             });
 
         inflationRecordRepository
@@ -133,7 +133,7 @@ public class ImportSourceFileTests
         // Arrange
         ins
             .Setup(x => x.GetInflationValuesFromFile(It.IsAny<string>()))
-            .ReturnsAsync(new List<InflationRecordDto>());
+            .ReturnsAsync(new List<CpiRecordDto>());
 
         inflationRecordRepository
             .Setup(x => x.AddOrUpdate(It.IsAny<InflationRecord>()))
@@ -158,9 +158,9 @@ public class ImportSourceFileTests
         // Arrange
         ins
             .Setup(x => x.GetInflationValuesFromFile(It.IsAny<string>()))
-            .ReturnsAsync(new List<InflationRecordDto>
+            .ReturnsAsync(new List<CpiRecordDto>
             {
-                new InflationRecordDto()
+                new CpiRecordDto()
             });
 
         ImportCpiRequest request = new()
@@ -182,10 +182,10 @@ public class ImportSourceFileTests
         // Arrange
         ins
             .Setup(x => x.GetInflationValuesFromFile(It.IsAny<string>()))
-            .ReturnsAsync(new List<InflationRecordDto>
+            .ReturnsAsync(new List<CpiRecordDto>
             {
-                new InflationRecordDto(),
-                new InflationRecordDto()
+                new CpiRecordDto(),
+                new CpiRecordDto()
             });
 
         ImportCpiRequest request = new()
@@ -207,9 +207,9 @@ public class ImportSourceFileTests
         // Arrange
         ins
             .Setup(x => x.GetInflationValuesFromFile(It.IsAny<string>()))
-            .ReturnsAsync(new List<InflationRecordDto>
+            .ReturnsAsync(new List<CpiRecordDto>
             {
-                new InflationRecordDto()
+                new CpiRecordDto()
             });
 
         ImportCpiRequest request = new()

@@ -1,22 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <AssemblyName>DustInTheWind.$(MSBuildProjectName)</AssemblyName>
-        <RootNamespace>DustInTheWind.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
-    </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<AssemblyName>DustInTheWind.$(MSBuildProjectName)</AssemblyName>
+		<RootNamespace>DustInTheWind.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+	</PropertyGroup>
 
-    <ItemGroup>
-      <PackageReference Include="DustInTheWind.Ins.Toolkit" Version="1.1.0" />
-      <PackageReference Include="HtmlAgilityPack" Version="1.11.63" />
-      <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.8" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.8" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.8" />
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="DustInTheWind.Ins.Toolkit" Version="1.2.0" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.63" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.8" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.8" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.8" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\CaveOfWonders.Ports.InsAccess\CaveOfWonders.Ports.InsAccess.csproj" PrivateAssets="All" />
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\CaveOfWonders.Domain\CaveOfWonders.Domain.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Ports.InsAccess\CaveOfWonders.Ports.InsAccess.csproj" PrivateAssets="All" />
+	</ItemGroup>
 
 </Project>

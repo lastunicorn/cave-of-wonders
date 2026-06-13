@@ -14,37 +14,33 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentWage;
+using DustInTheWind.CaveOfWonders.Cli.Application.ImportAverageWage;
 using DustInTheWind.ConsoleTools.Commando;
 using MediatR;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WageArea.Wage;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WageArea.WageImport;
 
-[NamedCommand("wage", Description = "Displays average wage information.")]
-public class WageCommand : IConsoleCommand<WagesViewModel>
+[NamedCommand("wage-import", Description = "Imports the average wage data from the INS web page.")]
+public class WageImportCommand : IConsoleCommand<WageImportViewModel>
 {
     private readonly IMediator mediator;
 
-    public WageCommand(IMediator mediator)
+    public WageImportCommand(IMediator mediator)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
-    
-    public async Task<WagesViewModel> Execute()
+
+    public async Task<WageImportViewModel> Execute()
     {
-        PresentWageRequest request = new();
-        PresentWageResponse response = await mediator.Send(request);
+        WageImportRequest request = new();
+        WageImportResponse response =  await mediator.Send(request);
         
-        return new WagesViewModel
+        return new WageImportViewModel
         {
-            Wages = response.Values
-                .Select(x=> new WageViewModel
-                {
-                    Year = x.Year,
-                    GrossValue = x.GrossValue,
-                    NetValue = x.NetValue
-                })
-                .ToList()
+            TotalCount = response.TotalCount,
+            AddedCount = response.AddedCount,
+            UpdatedCount = response.UpdatedCount,
+            DeletedCount = response.DeletedCount
         };
     }
 }

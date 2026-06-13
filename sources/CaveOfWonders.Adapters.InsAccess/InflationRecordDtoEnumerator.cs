@@ -4,14 +4,14 @@ using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.InsAccess;
 
-internal class InflationRecordDtoEnumerator : IEnumerator<InflationRecordDto>
+internal class InflationRecordDtoEnumerator : IEnumerator<CpiRecordDto>
 {
     private readonly CultureInfo cultureInfo = new("ro-RO");
     private int currentLineIndex = -1;
     private readonly IEnumerable<string> lines;
     private IEnumerator<string> lineEnumerator;
 
-    public InflationRecordDto Current { get; private set; }
+    public CpiRecordDto Current { get; private set; }
 
     object IEnumerator.Current => Current;
 
@@ -62,7 +62,7 @@ internal class InflationRecordDtoEnumerator : IEnumerator<InflationRecordDto>
             case 0:
                 int year = int.Parse(line, cultureInfo);
 
-                Current = new InflationRecordDto
+                Current = new CpiRecordDto
                 {
                     Year = year
                 };

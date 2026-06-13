@@ -69,9 +69,9 @@ public class ImportSourceWebTests
         // Arrange
         ins
             .Setup(x => x.GetInflationValuesFromWeb())
-            .ReturnsAsync(new List<InflationRecordDto>
+            .ReturnsAsync(new List<CpiRecordDto>
             {
-                new InflationRecordDto()
+                new CpiRecordDto()
             });
 
         ImportCpiRequest request = new()
@@ -92,10 +92,10 @@ public class ImportSourceWebTests
         // Arrange
         ins
             .Setup(x => x.GetInflationValuesFromWeb())
-            .ReturnsAsync(new List<InflationRecordDto>
+            .ReturnsAsync(new List<CpiRecordDto>
             {
-                new InflationRecordDto(),
-                new InflationRecordDto()
+                new CpiRecordDto(),
+                new CpiRecordDto()
             });
 
         ImportCpiRequest request = new()
@@ -116,7 +116,7 @@ public class ImportSourceWebTests
         // Arrange
         ins
             .Setup(x => x.GetInflationValuesFromWeb())
-            .ReturnsAsync(new List<InflationRecordDto>());
+            .ReturnsAsync(new List<CpiRecordDto>());
 
         ImportCpiRequest request = new()
         {
@@ -136,9 +136,9 @@ public class ImportSourceWebTests
         // Arrange
         ins
             .Setup(x => x.GetInflationValuesFromWeb())
-            .ReturnsAsync(new List<InflationRecordDto>
+            .ReturnsAsync(new List<CpiRecordDto>
             {
-                new InflationRecordDto()
+                new CpiRecordDto()
             });
 
         inflationRecordRepository
@@ -163,9 +163,9 @@ public class ImportSourceWebTests
         // Arrange
         ins
             .Setup(x => x.GetInflationValuesFromWeb())
-            .ReturnsAsync(new List<InflationRecordDto>
+            .ReturnsAsync(new List<CpiRecordDto>
             {
-                new InflationRecordDto()
+                new CpiRecordDto()
             });
 
         ImportCpiRequest request = new()

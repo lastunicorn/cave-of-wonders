@@ -24,22 +24,22 @@ public class WebCpiImport : ICpiImport
 {
 	private readonly Lazy<InsConfig> insConfig = new(() => new InsConfig());
 
-	public async IAsyncEnumerable<InflationRecordDto> ImportAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+	public async IAsyncEnumerable<CpiRecordDto> ImportAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
 	{
 		Uri url = insConfig.Value.InflationPageUrl;
 
 		if (url == null)
-			throw new MissingInflationUrlException();
+			throw new MissingCpiUrlException();
 
-		YearlyInflationWebPage yearlyInflationWebPage = new(url);
-		IAsyncEnumerable<YearlyInflationRecord> inflationRecords = yearlyInflationWebPage.EnumerateInflationRecords();
+		YearlyCpiWebPage webPage = new(url);
+		IEnumerable<YearlyCpiRecord> yearlyCpiRecords = await webPage.EnumerateRecords();
 
-		await foreach (YearlyInflationRecord inflationRecord in inflationRecords)
+		foreach (YearlyCpiRecord yearlyCpiRecord in yearlyCpiRecords)
 		{
-			yield return new InflationRecordDto
+			yield return new CpiRecordDto
 			{
-				Year = inflationRecord.Year,
-				Value = inflationRecord.Value
+				Year = yearlyCpiRecord.Year,
+				Value = yearlyCpiRecord.Value
 			};
 		}
 	}

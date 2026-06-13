@@ -18,5 +18,5 @@ namespace DustInTheWind.CaveOfWonders.Ports.InsAccess;
 
 public interface ICpiImport
 {
-	IAsyncEnumerable<InflationRecordDto> ImportAsync(CancellationToken cancellationToken = default);
+	IAsyncEnumerable<CpiRecordDto> ImportAsync(CancellationToken cancellationToken = default);
 }

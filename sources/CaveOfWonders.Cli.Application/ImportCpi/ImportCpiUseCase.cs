@@ -40,7 +40,7 @@ internal class ImportCpiUseCase : IRequestHandler<ImportCpiRequest, ImportCpiRes
 	{
 		response = new ImportCpiResponse();
 
-		IEnumerable<InflationRecordDto> inflationRecordDtos = await RetrieveInflationValues(request);
+		IEnumerable<CpiRecordDto> inflationRecordDtos = await RetrieveInflationValues(request);
 		await AddOrUpdateInflationRecordsToStore(inflationRecordDtos);
 
 		await unitOfWork.SaveChanges();
@@ -48,7 +48,7 @@ internal class ImportCpiUseCase : IRequestHandler<ImportCpiRequest, ImportCpiRes
 		return response;
 	}
 
-	private async Task<IEnumerable<InflationRecordDto>> RetrieveInflationValues(ImportCpiRequest request)
+	private async Task<IEnumerable<CpiRecordDto>> RetrieveInflationValues(ImportCpiRequest request)
 	{
 		CpiImportType cpiImportType = request.ImportSource switch
 		{
@@ -94,7 +94,7 @@ internal class ImportCpiUseCase : IRequestHandler<ImportCpiRequest, ImportCpiRes
 		// 		throw new InvalidImportSourceException(request.ImportSource);
 	}
 
-	private async Task AddOrUpdateInflationRecordsToStore(IEnumerable<InflationRecordDto> inflationRecordDtos)
+	private async Task AddOrUpdateInflationRecordsToStore(IEnumerable<CpiRecordDto> inflationRecordDtos)
 	{
 		try
 		{
@@ -109,9 +109,9 @@ internal class ImportCpiUseCase : IRequestHandler<ImportCpiRequest, ImportCpiRes
 		}
 	}
 
-	private async IAsyncEnumerable<AddOrUpdateResult> AddOrUpdateInflationRecordsToStoreUnsafe(IEnumerable<InflationRecordDto> inflationRecordDtos)
+	private async IAsyncEnumerable<AddOrUpdateResult> AddOrUpdateInflationRecordsToStoreUnsafe(IEnumerable<CpiRecordDto> inflationRecordDtos)
 	{
-		foreach (InflationRecordDto insInflationRecordDto in inflationRecordDtos)
+		foreach (CpiRecordDto insInflationRecordDto in inflationRecordDtos)
 		{
 			InflationRecord inflationRecordDto = new()
 			{

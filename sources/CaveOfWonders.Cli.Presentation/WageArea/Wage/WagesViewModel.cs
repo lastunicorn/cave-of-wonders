@@ -14,17 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Domain;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WageArea.Wage;
 
-namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
-
-public interface IAverageWageRepository
+public class WagesViewModel
 {
-    IAsyncEnumerable<AverageWage> GetAllAsync(CancellationToken cancellationToken = default);
-
-    Task<AverageWage> GetAsync(int averageWageYear, CancellationToken cancellationToken);
-
-    void Add(AverageWage averageWage);
-
-    void Delete(AverageWage averageWage);
+    public List<WageViewModel> Wages { get; set; }
 }

@@ -29,6 +29,14 @@ public class AverageWageRepository : IAverageWageRepository
         this.database = database ?? throw new ArgumentNullException(nameof(database));
     }
 
+    public Task<AverageWage> GetAsync(int averageWageYear, CancellationToken cancellationToken)
+    {
+        AverageWage averageWage = database.AverageWages
+            .FirstOrDefault(x => x.Year == averageWageYear);
+
+        return Task.FromResult(averageWage);
+    }
+
     public async IAsyncEnumerable<AverageWage> GetAllAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         IEnumerable<AverageWage> averageWages = database.AverageWages;
@@ -40,5 +48,21 @@ public class AverageWageRepository : IAverageWageRepository
 
             yield return averageWage;
         }
+    }
+
+    public void Add(AverageWage averageWage)
+    {
+        if (averageWage == null)
+            throw new ArgumentNullException(nameof(averageWage));
+
+        database.AverageWages.Add(averageWage);
+    }
+
+    public void Delete(AverageWage averageWage)
+    {
+        if (averageWage == null)
+            throw new ArgumentNullException(nameof(averageWage));
+
+        database.AverageWages.Remove(averageWage);
     }
 }

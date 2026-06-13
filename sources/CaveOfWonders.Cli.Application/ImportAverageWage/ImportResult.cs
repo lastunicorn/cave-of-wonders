@@ -14,17 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Domain;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportAverageWage;
 
-namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
-
-public interface IAverageWageRepository
+internal class ImportResult
 {
-    IAsyncEnumerable<AverageWage> GetAllAsync(CancellationToken cancellationToken = default);
-
-    Task<AverageWage> GetAsync(int averageWageYear, CancellationToken cancellationToken);
-
-    void Add(AverageWage averageWage);
-
-    void Delete(AverageWage averageWage);
+    public int TotalCount { get; set; }
+    
+    public int AddedCount { get; set; }
+    
+    public int UpdatedCount { get; set; }
+    
+    public int DeletedCount { get; set; }
 }

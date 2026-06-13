@@ -31,9 +31,9 @@ public class ImportSourceFile_ResponseTests
     public async Task HavingInsReturnsOneRecords_AndRepositoryAddsOneAsNew_WhenImportInflations_ThenResponseHasOneAddedOneTotal()
     {
         // Arrange
-        List<InflationRecordDto> insRecords =
+        List<CpiRecordDto> insRecords =
         [
-            new InflationRecordDto()
+            new CpiRecordDto()
         ];
 
         inflationRecordRepository
@@ -52,10 +52,10 @@ public class ImportSourceFile_ResponseTests
     public async Task HavingInsReturnsTwoRecords_AndRepositoryAddsTwoAsNew_WhenImportInflations_ThenResponseHasTwoAddedTwoTotal()
     {
         // Arrange
-        List<InflationRecordDto> insRecords =
+        List<CpiRecordDto> insRecords =
         [
-            new InflationRecordDto(),
-            new InflationRecordDto()
+            new CpiRecordDto(),
+            new CpiRecordDto()
         ];
 
         inflationRecordRepository
@@ -75,10 +75,10 @@ public class ImportSourceFile_ResponseTests
     public async Task HavingInsReturnsTwoRecords_AndRepositoryAddsOneAsNewAndUpdatesOne_WhenImportInflations_ThenResponseHasOneAddedOneUpdatedTwoTotal()
     {
         // Arrange
-        List<InflationRecordDto> insRecords =
+        List<CpiRecordDto> insRecords =
         [
-            new InflationRecordDto(),
-            new InflationRecordDto()
+            new CpiRecordDto(),
+            new CpiRecordDto()
         ];
 
         inflationRecordRepository
@@ -99,10 +99,10 @@ public class ImportSourceFile_ResponseTests
     public async Task HavingInsReturnsTwoRecords_AndRepositoryUpdatesTwo_WhenImportInflations_ThenResponseHasTwoUpdatedTwoTotal()
     {
         // Arrange
-        List<InflationRecordDto> insRecords =
+        List<CpiRecordDto> insRecords =
         [
-            new InflationRecordDto(),
-            new InflationRecordDto()
+            new CpiRecordDto(),
+            new CpiRecordDto()
         ];
 
         inflationRecordRepository
@@ -118,7 +118,7 @@ public class ImportSourceFile_ResponseTests
         response.TotalCount.Should().Be(2);
     }
 
-    private async Task<ImportCpiResponse> ExecuteUseCase(List<InflationRecordDto> insRecords)
+    private async Task<ImportCpiResponse> ExecuteUseCase(List<CpiRecordDto> insRecords)
     {
         ins
             .Setup(x => x.GetInflationValuesFromFile(It.IsAny<string>()))

@@ -1,4 +1,5 @@
-﻿using DustInTheWind.CaveOfWonders.Ports.InsAccess;
+﻿using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 using DustInTheWind.Ins.Toolkit;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.InsAccess;
@@ -10,7 +11,7 @@ public class InsService : IInsService
 {
 	private readonly Lazy<InsConfig> insConfig = new(() => new InsConfig());
 
-	public async Task<IEnumerable<InflationRecordDto>> GetInflationValuesFromFile(string filePath)
+	public async Task<IEnumerable<CpiRecordDto>> GetInflationValuesFromFile(string filePath)
 	{
 		string[] lines = await File.ReadAllLinesAsync(filePath);
 		YearlyInflationDocument yearlyInflationDocument = new(lines);
@@ -18,25 +19,34 @@ public class InsService : IInsService
 		return yearlyInflationDocument.Records;
 	}
 
-	public async Task<IEnumerable<InflationRecordDto>> GetInflationValuesFromWeb()
+	public async Task<IEnumerable<CpiRecordDto>> GetInflationValuesFromWeb()
 	{
 		Uri url = insConfig.Value.InflationPageUrl;
 
 		if (url == null)
-			throw new MissingInflationUrlException();
+			throw new MissingCpiUrlException();
 
-		YearlyInflationWebPage yearlyInflationWebPage = new(url);
-		IAsyncEnumerable<YearlyInflationRecord> inflationRecords = yearlyInflationWebPage.EnumerateInflationRecords();
+		YearlyCpiWebPage yearlyCpiWebPage = new(url);
+		IEnumerable<YearlyCpiRecord> yearlyCpiRecords = await yearlyCpiWebPage.EnumerateRecords();
 
-		List<InflationRecordDto> inflationRecordDtos = [];
-		await foreach (YearlyInflationRecord inflationRecord in inflationRecords)
-		{
-			inflationRecordDtos.Add(new InflationRecordDto
-			{
-				Year = inflationRecord.Year,
-				Value = inflationRecord.Value
-			});
-		}
-		return inflationRecordDtos;
-	}
+        return yearlyCpiRecords
+            .Select(x => new CpiRecordDto
+            {
+                Year = x.Year,
+                Value = x.Value
+            });
+    }
+
+    public async Task<IEnumerable<AverageWage>> GetAverageWagesAsync()
+    {
+        YearlyAverageWageWebPage webPage = new();
+        
+        return (await webPage.EnumerateRecords())
+            .Select(x => new AverageWage
+            {
+                Year = x.Year,
+                GrossValue = x.AverageGrossWage,
+                NetValue = x.AverageNetWage
+            });
+    }
 }

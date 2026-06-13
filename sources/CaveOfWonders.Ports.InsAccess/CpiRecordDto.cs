@@ -1,6 +1,6 @@
 ﻿namespace DustInTheWind.CaveOfWonders.Ports.InsAccess;
 
-public class InflationRecordDto
+public class CpiRecordDto
 {
     public int Year { get; set; }
 

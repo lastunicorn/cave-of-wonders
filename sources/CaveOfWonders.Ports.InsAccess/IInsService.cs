@@ -1,8 +1,12 @@
-﻿namespace DustInTheWind.CaveOfWonders.Ports.InsAccess;
+﻿using DustInTheWind.CaveOfWonders.Domain;
+
+namespace DustInTheWind.CaveOfWonders.Ports.InsAccess;
 
 public interface IInsService
 {
-    Task<IEnumerable<InflationRecordDto>> GetInflationValuesFromFile(string filePath);
+    Task<IEnumerable<CpiRecordDto>> GetInflationValuesFromFile(string filePath);
 
-    Task<IEnumerable<InflationRecordDto>> GetInflationValuesFromWeb();
+    Task<IEnumerable<CpiRecordDto>> GetInflationValuesFromWeb();
+
+    Task<IEnumerable<AverageWage>> GetAverageWagesAsync();
 }

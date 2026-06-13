@@ -37,7 +37,12 @@ internal class PresentWageUseCase : IRequestHandler<PresentWageRequest, PresentW
         return new PresentWageResponse
         {
             Values = await averageWages
-                .Select(x => x, cancellationToken)
+                .Select(x => new AverageWageDto
+                {
+                    Year = x.Year,
+                    GrossValue = x.GrossValue,
+                    NetValue = x.NetValue
+                }, cancellationToken)
                 .ToListAsync(cancellationToken)
         };
     }
