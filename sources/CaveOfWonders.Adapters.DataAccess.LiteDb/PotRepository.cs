@@ -38,17 +38,13 @@ public class PotRepository : IPotRepository
         return Task.FromResult(pots);
     }
 
-    public Task<IEnumerable<PotInstance>> GetInstances(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive)
+    public Task<IEnumerable<PotSnapshot>> GetSnapshots(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive)
     {
-        IEnumerable<PotInstance> potInstances = dbContext.Pots
+        IEnumerable<PotSnapshot> potInstances = dbContext.Pots
             .FindAll()
             .Select(x => x.ToDomainEntity())
             .Where(x => includeInactive || x.IsActive(date))
-            .Select(x => new PotInstance
-            {
-                Pot = x,
-                PotSnapshot = x.GetSnapshot(date, dateMatchingMode)
-            });
+            .Select(x => x.GetSnapshot(date, dateMatchingMode));
 
         return Task.FromResult(potInstances);
     }
@@ -77,7 +73,7 @@ public class PotRepository : IPotRepository
         return Task.FromResult(pots);
     }
 
-    public Task Add(Pot pot)
+    public void Add(Pot pot)
     {
         ArgumentNullException.ThrowIfNull(pot);
 
@@ -101,7 +97,5 @@ public class PotRepository : IPotRepository
         };
 
         dbContext.Pots.Insert(potDbEntity);
-
-        return Task.CompletedTask;
     }
 }

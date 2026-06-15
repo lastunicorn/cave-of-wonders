@@ -20,7 +20,7 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.PotImport;
 
-[NamedCommand("pot-import", Description = "Imports pot snapshots from csv exported files of the sheets of my ods file.")]
+[NamedCommand("snapshot-import", Description = "Imports pot snapshots from csv exported files of the sheets of my ods file.")]
 internal class PotImportCommand : IConsoleCommand<PotImportViewModel>
 {
     private readonly IMediator mediator;

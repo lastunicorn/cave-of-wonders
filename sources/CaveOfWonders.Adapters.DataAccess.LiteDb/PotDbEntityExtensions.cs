@@ -38,7 +38,8 @@ internal static class PotDbEntityExtensions
             .Select(x => new PotSnapshot
             {
                 Date = x.Date,
-                Value = x.Value
+                Value = x.Value,
+                Pot = pot
             });
 
         if (potDbEntity.Labels != null)

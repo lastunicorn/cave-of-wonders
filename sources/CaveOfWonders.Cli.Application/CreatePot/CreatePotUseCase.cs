@@ -53,7 +53,7 @@ public class CreatePotUseCase : IRequestHandler<CreatePotRequest, CreatePotRespo
 
         try
         {
-            await unitOfWork.PotRepository.Add(pot);
+            unitOfWork.PotRepository.Add(pot);
             await unitOfWork.SaveChanges();
             
             return new CreatePotResponse

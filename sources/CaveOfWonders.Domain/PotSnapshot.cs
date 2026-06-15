@@ -5,6 +5,8 @@ public class PotSnapshot : IEquatable<PotSnapshot>
     public DateOnly Date { get; set; }
 
     public decimal Value { get; set; }
+    
+    public Pot Pot { get; init; }
 
     public bool Equals(PotSnapshot other)
     {

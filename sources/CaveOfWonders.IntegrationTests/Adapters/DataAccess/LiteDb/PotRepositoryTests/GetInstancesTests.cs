@@ -18,12 +18,12 @@ public class GetInstancesTests
             .Act(async (dbContext, context) =>
             {
                 PotRepository potRepository = new(dbContext);
-                List<PotInstance> potInstances = (await potRepository.GetInstances(currentDate, DateMatchingMode.Exact, false)).ToList();
+                List<PotSnapshot> potInstances = (await potRepository.GetSnapshots(currentDate, DateMatchingMode.Exact, false)).ToList();
                 context.PotInstances = potInstances;
             })
             .Assert((dbContext, context) =>
             {
-                List<PotInstance> potInstances = context.PotInstances as List<PotInstance>;
+                List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
                 potInstances.Should().BeEmpty();
             })
             .Execute();
@@ -51,12 +51,12 @@ public class GetInstancesTests
             .Act(async (dbContext, context) =>
             {
                 PotRepository potRepository = new(dbContext);
-                List<PotInstance> potInstances = (await potRepository.GetInstances(currentDate, DateMatchingMode.Exact, false)).ToList();
+                List<PotSnapshot> potInstances = (await potRepository.GetSnapshots(currentDate, DateMatchingMode.Exact, false)).ToList();
                 context.PotInstances = potInstances;
             })
             .Assert((dbContext, context) =>
             {
-                List<PotInstance> potInstances = context.PotInstances as List<PotInstance>;
+                List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
 
                 potInstances.Should().HaveCount(1);
 
@@ -65,7 +65,7 @@ public class GetInstancesTests
                 Guid expectedPotId = context.PotId;
                 potInstances[0].Pot.Id.Should().Be(expectedPotId);
                 potInstances[0].Pot.Name.Should().Be("Test Pot");
-                potInstances[0].PotSnapshot.Should().BeNull();
+                potInstances[0].Should().BeNull();
             })
             .Execute();
     }
@@ -90,12 +90,12 @@ public class GetInstancesTests
             .Act(async (dbContext, context) =>
             {
                 PotRepository potRepository = new(dbContext);
-                List<PotInstance> potInstances = (await potRepository.GetInstances(currentDate, DateMatchingMode.Exact, false)).ToList();
+                List<PotSnapshot> potInstances = (await potRepository.GetSnapshots(currentDate, DateMatchingMode.Exact, false)).ToList();
                 context.PotInstances = potInstances;
             })
             .Assert((dbContext, context) =>
             {
-                List<PotInstance> potInstances = context.PotInstances as List<PotInstance>;
+                List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
                 potInstances.Should().BeEmpty();
             })
             .Execute();
@@ -122,18 +122,18 @@ public class GetInstancesTests
             .Act(async (dbContext, context) =>
             {
                 PotRepository potRepository = new(dbContext);
-                List<PotInstance> potInstances = (await potRepository.GetInstances(currentDate, DateMatchingMode.Exact, true)).ToList();
+                List<PotSnapshot> potInstances = (await potRepository.GetSnapshots(currentDate, DateMatchingMode.Exact, true)).ToList();
                 context.PotInstances = potInstances;
             })
             .Assert((dbContext, context) =>
             {
-                List<PotInstance> potInstances = context.PotInstances as List<PotInstance>;
+                List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
                 potInstances.Should().HaveCount(1);
 
                 Guid expectedPotId = context.PotId;
                 potInstances[0].Pot.Id.Should().Be(expectedPotId);
                 potInstances[0].Pot.Name.Should().Be("Inactive Pot - Future");
-                potInstances[0].PotSnapshot.Should().BeNull();
+                potInstances[0].Should().BeNull();
             })
             .Execute();
     }
@@ -159,12 +159,12 @@ public class GetInstancesTests
             .Act(async (dbContext, context) =>
             {
                 PotRepository potRepository = new(dbContext);
-                List<PotInstance> potInstances = (await potRepository.GetInstances(currentDate, DateMatchingMode.Exact, false)).ToList();
+                List<PotSnapshot> potInstances = (await potRepository.GetSnapshots(currentDate, DateMatchingMode.Exact, false)).ToList();
                 context.PotInstances = potInstances;
             })
             .Assert((dbContext, context) =>
             {
-                List<PotInstance> potInstances = context.PotInstances as List<PotInstance>;
+                List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
                 potInstances.Should().BeEmpty();
             })
             .Execute();
@@ -197,16 +197,16 @@ public class GetInstancesTests
             .Act(async (dbContext, context) =>
             {
                 PotRepository potRepository = new(dbContext);
-                List<PotInstance> potInstances = (await potRepository.GetInstances(currentDate, DateMatchingMode.Exact, false)).ToList();
+                List<PotSnapshot> potInstances = (await potRepository.GetSnapshots(currentDate, DateMatchingMode.Exact, false)).ToList();
                 context.PotInstances = potInstances;
             })
             .Assert((dbContext, context) =>
             {
-                List<PotInstance> potInstances = context.PotInstances as List<PotInstance>;
+                List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
                 potInstances.Should().HaveCount(1);
-                potInstances[0].PotSnapshot.Should().NotBeNull();
-                potInstances[0].PotSnapshot.Value.Should().Be(200m);
-                potInstances[0].PotSnapshot.Date.Should().Be(currentDate);
+                potInstances[0].Should().NotBeNull();
+                potInstances[0].Value.Should().Be(200m);
+                potInstances[0].Date.Should().Be(currentDate);
             })
             .Execute();
     }
@@ -237,14 +237,14 @@ public class GetInstancesTests
             .Act(async (dbContext, context) =>
             {
                 PotRepository potRepository = new(dbContext);
-                List<PotInstance> potInstances = (await potRepository.GetInstances(currentDate, DateMatchingMode.Exact, false)).ToList();
+                List<PotSnapshot> potInstances = (await potRepository.GetSnapshots(currentDate, DateMatchingMode.Exact, false)).ToList();
                 context.PotInstances = potInstances;
             })
             .Assert((dbContext, context) =>
             {
-                List<PotInstance> potInstances = context.PotInstances as List<PotInstance>;
+                List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
                 potInstances.Should().HaveCount(1);
-                potInstances[0].PotSnapshot.Should().BeNull();
+                potInstances[0].Should().BeNull();
             })
             .Execute();
     }
@@ -275,16 +275,16 @@ public class GetInstancesTests
             .Act(async (dbContext, context) =>
             {
                 PotRepository potRepository = new(dbContext);
-                List<PotInstance> potInstances = (await potRepository.GetInstances(currentDate, DateMatchingMode.LastAvailable, false)).ToList();
+                List<PotSnapshot> potInstances = (await potRepository.GetSnapshots(currentDate, DateMatchingMode.LastAvailable, false)).ToList();
                 context.PotInstances = potInstances;
             })
             .Assert((dbContext, context) =>
             {
-                List<PotInstance> potInstances = context.PotInstances as List<PotInstance>;
+                List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
                 potInstances.Should().HaveCount(1);
-                potInstances[0].PotSnapshot.Should().NotBeNull();
-                potInstances[0].PotSnapshot.Value.Should().Be(150m);
-                potInstances[0].PotSnapshot.Date.Should().Be(currentDate.AddDays(-10));
+                potInstances[0].Should().NotBeNull();
+                potInstances[0].Value.Should().Be(150m);
+                potInstances[0].Date.Should().Be(currentDate.AddDays(-10));
             })
             .Execute();
     }
@@ -314,14 +314,14 @@ public class GetInstancesTests
             .Act(async (dbContext, context) =>
             {
                 PotRepository potRepository = new(dbContext);
-                List<PotInstance> potInstances = (await potRepository.GetInstances(currentDate, DateMatchingMode.LastAvailable, false)).ToList();
+                List<PotSnapshot> potInstances = (await potRepository.GetSnapshots(currentDate, DateMatchingMode.LastAvailable, false)).ToList();
                 context.PotInstances = potInstances;
             })
             .Assert((dbContext, context) =>
             {
-                List<PotInstance> potInstances = context.PotInstances as List<PotInstance>;
+                List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
                 potInstances.Should().HaveCount(1);
-                potInstances[0].PotSnapshot.Should().BeNull();
+                potInstances[0].Should().BeNull();
             })
             .Execute();
     }
@@ -378,12 +378,12 @@ public class GetInstancesTests
             .Act(async (dbContext, context) =>
             {
                 PotRepository potRepository = new(dbContext);
-                List<PotInstance> potInstances = (await potRepository.GetInstances(currentDate, DateMatchingMode.LastAvailable, false)).ToList();
+                List<PotSnapshot> potInstances = (await potRepository.GetSnapshots(currentDate, DateMatchingMode.LastAvailable, false)).ToList();
                 context.PotInstances = potInstances;
             })
             .Assert((dbContext, context) =>
             {
-                List<PotInstance> potInstances = context.PotInstances as List<PotInstance>;
+                List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
 
                 potInstances.Should().HaveCount(2);
 
@@ -393,15 +393,15 @@ public class GetInstancesTests
                 Guid expectedActivePot2Id = context.activePot2Id;
                 potInstances.Should().Contain(x => x.Pot.Id == expectedActivePot2Id);
 
-                PotInstance instance1 = potInstances.FirstOrDefault(x => x.Pot.Id == expectedActivePot1Id);
+                PotSnapshot instance1 = potInstances.FirstOrDefault(x => x.Pot.Id == expectedActivePot1Id);
                 instance1.Should().NotBeNull();
-                instance1.PotSnapshot.Should().NotBeNull();
-                instance1.PotSnapshot!.Value.Should().Be(100m);
+                instance1.Should().NotBeNull();
+                instance1!.Value.Should().Be(100m);
 
-                PotInstance instance2 = potInstances.FirstOrDefault(x => x.Pot.Id == expectedActivePot2Id);
+                PotSnapshot instance2 = potInstances.FirstOrDefault(x => x.Pot.Id == expectedActivePot2Id);
                 instance2.Should().NotBeNull();
-                instance2.PotSnapshot.Should().NotBeNull();
-                instance2.PotSnapshot!.Value.Should().Be(200m);
+                instance2.Should().NotBeNull();
+                instance2!.Value.Should().Be(200m);
             })
             .Execute();
     }
@@ -451,12 +451,12 @@ public class GetInstancesTests
             .Act(async (dbContext, context) =>
             {
                 PotRepository potRepository = new(dbContext);
-                List<PotInstance> potInstances = (await potRepository.GetInstances(currentDate, DateMatchingMode.Exact, true)).ToList();
+                List<PotSnapshot> potInstances = (await potRepository.GetSnapshots(currentDate, DateMatchingMode.Exact, true)).ToList();
                 context.PotInstances = potInstances;
             })
             .Assert((dbContext, context) =>
             {
-                List<PotInstance> potInstances = context.PotInstances as List<PotInstance>;
+                List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
                 potInstances.Should().HaveCount(3);
 
                 Guid expectedActivePotId = context.ActivePotId;

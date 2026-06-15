@@ -34,15 +34,11 @@ public class PotRepository : IPotRepository
         return Task.FromResult(result);
     }
 
-    public Task<IEnumerable<PotInstance>> GetInstances(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive)
+    public Task<IEnumerable<PotSnapshot>> GetSnapshots(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive)
     {
-        IEnumerable<PotInstance> potInstances = database.Pots
+        IEnumerable<PotSnapshot> potInstances = database.Pots
             .Where(x => includeInactive || x.IsActive(date))
-            .Select(x => new PotInstance
-            {
-                Pot = x,
-                PotSnapshot = x.GetSnapshot(date, dateMatchingMode)
-            });
+            .Select(x => x.GetSnapshot(date, dateMatchingMode));
 
         return Task.FromResult(potInstances);
     }
@@ -67,12 +63,11 @@ public class PotRepository : IPotRepository
         return Task.FromResult(pots);
     }
 
-    public Task Add(Pot pot)
+    public void Add(Pot pot)
     {
         if (pot == null)
             throw new ArgumentNullException(nameof(pot));
             
         database.Pots.Add(pot);
-        return Task.CompletedTask;
     }
 }

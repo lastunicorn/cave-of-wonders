@@ -6,11 +6,11 @@ public interface IPotRepository
 {
     Task<IEnumerable<Pot>> GetAll();
 
-    Task<IEnumerable<PotInstance>> GetInstances(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive);
+    Task<IEnumerable<PotSnapshot>> GetSnapshots(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive);
 
     Task<IEnumerable<Pot>> GetByPartialId(string partialPotId);
 
     Task<IEnumerable<Pot>> GetByIdOrName(string idOrName);
     
-    Task Add(Pot pot);
+    void Add(Pot pot);
 }

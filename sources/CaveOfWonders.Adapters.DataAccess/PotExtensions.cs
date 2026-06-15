@@ -25,10 +25,10 @@ internal static class PotExtensions
     {
         return dateMatchingMode switch
         {
-            DateMatchingMode.Exact => pot.Snapshots.FirstOrDefault(z => z.Date == date),
+            DateMatchingMode.Exact => pot.Snapshots.FirstOrDefault(x => x.Date == date),
             DateMatchingMode.LastAvailable => pot.Snapshots
-                .Where(z => z.Date <= date)
-                .MaxBy(z => z.Date),
+                .Where(x => x.Date <= date)
+                .MaxBy(x => x.Date),
             _ => throw new ArgumentOutOfRangeException(nameof(dateMatchingMode))
         };
     }
