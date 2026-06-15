@@ -1,4 +1,6 @@
 ﻿using Autofac;
+using DustInTheWind.CaveOfWanders.Adapters.MintosAccess;
+using DustInTheWind.CaveOfWanders.Ports.MintosAccess;
 using DustInTheWind.CaveOfWonders.Adapters.BnrAccess;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 using DustInTheWind.CaveOfWonders.Adapters.FileAccess;
@@ -49,6 +51,7 @@ internal static class DependenciesSetup
         containerBuilder.RegisterType<SystemClock>().As<ISystemClock>();
         containerBuilder.RegisterType<BnrService>().As<IBnrService>();
         containerBuilder.RegisterType<InsService>().As<IInsService>();
+        containerBuilder.RegisterType<MintosService>().As<IMintosService>();
         containerBuilder.RegisterType<Sheets>().As<ISheets>();
         containerBuilder.RegisterType<Log>().As<ILog>().InstancePerLifetimeScope();
         containerBuilder.RegisterType<FileSystem>().As<IFileSystem>().SingleInstance();

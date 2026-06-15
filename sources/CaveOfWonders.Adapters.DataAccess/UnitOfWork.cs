@@ -26,6 +26,7 @@ public class UnitOfWork : IUnitOfWork
     private IExchangeRateRepository exchangeRateRepository;
     private ICpiRepository cpiRepository;
     private IAverageWageRepository averageWageRepository;
+    private IGemRepository gemRepository;
 
     public IPotRepository PotRepository => potRepository ??= new PotRepository(database);
 
@@ -33,7 +34,9 @@ public class UnitOfWork : IUnitOfWork
 
     public ICpiRepository CpiRepository => cpiRepository ??= new CpiRepository(database);
 
-    public IAverageWageRepository AverageWageRepository => averageWageRepository ??= new AverageWageRepository(database);  
+    public IAverageWageRepository AverageWageRepository => averageWageRepository ??= new AverageWageRepository(database);
+
+    public IGemRepository GemRepository => gemRepository ??= new GemRepository(database);
 
     public UnitOfWork(Database database)
     {

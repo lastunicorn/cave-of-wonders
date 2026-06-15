@@ -18,13 +18,13 @@ using Newtonsoft.Json;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
 
-internal class InflationRatesFile
+internal class CpiFile
 {
     private readonly string filePath;
 
     public bool Exists => File.Exists(filePath);
 
-    public InflationRatesFile(string filePath)
+    public CpiFile(string filePath)
     {
         this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
     }
@@ -41,9 +41,9 @@ internal class InflationRatesFile
             : JsonConvert.DeserializeObject<IEnumerable<JCpi>>(json);
     }
 
-    public Task Save(IEnumerable<JCpi> jInflationRecords)
+    public Task Save(IEnumerable<JCpi> jCpi)
     {
-        string json = JsonConvert.SerializeObject(jInflationRecords, Formatting.Indented);
+        string json = JsonConvert.SerializeObject(jCpi, Formatting.Indented);
         return File.WriteAllTextAsync(filePath, json);
     }
 }

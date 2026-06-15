@@ -10,5 +10,7 @@ public interface IUnitOfWork
 
     IAverageWageRepository AverageWageRepository { get; }
 
+    IGemRepository GemRepository { get; }
+
     public Task SaveChanges();
 }

@@ -24,13 +24,4 @@ public class Pot
     {
         return date >= StartDate && (EndDate == null || date <= EndDate);
     }
-
-    public PotSnapshot GetLastSnapshot()
-    {
-        bool hasSnapshots = Snapshots.Count > 0;
-
-        return hasSnapshots
-            ? Snapshots[Snapshots.Count - 1]
-            : null;
-    }
 }

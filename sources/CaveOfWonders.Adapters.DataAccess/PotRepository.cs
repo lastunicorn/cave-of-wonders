@@ -34,6 +34,14 @@ public class PotRepository : IPotRepository
         return Task.FromResult(result);
     }
 
+    public Task<Pot> GetById(Guid id)
+    {
+        Pot pot = database.Pots
+            .FirstOrDefault(x => x.Id == id);
+        
+        return Task.FromResult(pot);
+    }
+
     public Task<IEnumerable<PotSnapshot>> GetSnapshots(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive)
     {
         IEnumerable<PotSnapshot> potInstances = database.Pots

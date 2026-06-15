@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
-using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
@@ -24,8 +22,12 @@ public class Database
 {
     private readonly string databaseDirectoryPath;
 
+    private bool areGemsLoaded;
+    
     public List<Pot> Pots { get; } = [];
 
+    public List<Gem> Gems { get; private set; } = [];
+    
     public List<ExchangeRate> ExchangeRates { get; } = [];
 
     public List<Cpi> CpiRecords { get; } = [];
@@ -52,113 +54,59 @@ public class Database
     {
         ExchangeRates.Clear();
 
-        ExchangeRatesDirectory exchangeRatesDirectory = new(databaseDirectoryPath);
+        ExchangeRatePersister exchangeRatePersister = new(databaseDirectoryPath);
 
-        if (!exchangeRatesDirectory.Exists)
-            return;
-
-        IEnumerable<ExchangeRatesFile> exchangeRateFiles = exchangeRatesDirectory.EnumerateExchangeRateFiles();
-
-        foreach (ExchangeRatesFile exchangeRatesFile in exchangeRateFiles)
-        {
-            List<JExchangeRate> jExchangeRates = (await exchangeRatesFile.ReadAll())
-                .OrderByDescending(x => x.Date)
-                .ToList();
-
-            IEnumerable<ExchangeRate> exchangeRates = jExchangeRates
-                .Select(x => new ExchangeRate
-                {
-                    CurrencyPair = new CurrencyPair(x.Currency1, x.Currency2),
-                    Date = x.Date,
-                    Value = x.Value
-                });
-
-            ExchangeRates.AddRange(exchangeRates);
-        }
+        await foreach (ExchangeRate exchangeRate in exchangeRatePersister.Load())
+            ExchangeRates.Add(exchangeRate);
     }
 
     private async Task LoadPots()
     {
         Pots.Clear();
 
-        PotsDirectory potsDirectory = new(databaseDirectoryPath);
+        PotPersister potPersister = new(databaseDirectoryPath);
 
-        if (!potsDirectory.Exists)
-            return;
-
-        IEnumerable<PotFile> potFiles = potsDirectory.EnumeratePotFiles();
-
-        foreach (PotFile potFile in potFiles)
-        {
-            JPot jPot = await potFile.Read();
-
-            Pot pot = new()
-            {
-                Id = potFile.PotId,
-                Name = jPot.Name,
-                Description = jPot.Description,
-                DisplayOrder = jPot.DisplayOrder,
-                StartDate = jPot.StartDate,
-                EndDate = jPot.EndDate,
-                Currency = jPot.Currency
-            };
-
-            IEnumerable<PotSnapshot> potSnapshots = jPot.Snapshots
-                .Select(x => new PotSnapshot
-                {
-                    Date = x.Date,
-                    Value = x.Value,
-                    Pot = pot
-                });
-
-            if (jPot.Labels != null)
-                pot.Labels.AddRange(jPot.Labels);
-
-            pot.Snapshots.AddRange(potSnapshots);
-
+        await foreach (Pot pot in potPersister.Load())
             Pots.Add(pot);
-        }
+    }
+
+    public async Task LoadGems(CancellationToken cancellationToken = default)
+    {
+        if(areGemsLoaded)
+            return;
+        
+        GemPersister gemPersister = new(databaseDirectoryPath);
+
+        IAsyncEnumerable<Gem> gemCollection = gemPersister.Load(cancellationToken);
+
+        List<Gem> temp = Gems.ToList();
+        Gems.Clear();
+        
+        await foreach (Gem gem in gemCollection)
+            Gems.Add(gem);
+        
+        Gems.AddRange(temp);
+        
+        areGemsLoaded = true;
     }
 
     private async Task LoadCpi()
     {
-        string filePath = Path.Combine(databaseDirectoryPath, "cpi.json");
-        InflationRatesFile inflationRatesFile = new(filePath);
+        CpiRecords.Clear();
+        CpiPersister cpiPersister = new(databaseDirectoryPath);
 
-        if (!inflationRatesFile.Exists)
-            return;
-
-        IEnumerable<JCpi> jInflationRecords = await inflationRatesFile.Read();
-
-        IEnumerable<Cpi> inflationRecordDtos = jInflationRecords
-            .Select(x => new Cpi
-            {
-                Year = x.Year,
-                Value = x.Value
-            });
-
-        CpiRecords.AddRange(inflationRecordDtos);
+        await foreach (Cpi cpi in cpiPersister.Load())
+            CpiRecords.Add(cpi);
     }
 
     private async Task LoadAverageWages()
     {
-        string filePath = Path.Combine(databaseDirectoryPath, "average-wages.json");
-        AverageWagesFile averageWagesFile = new(filePath);
+        AverageWages.Clear();
 
-        if (!averageWagesFile.Exists)
-            return;
+        AverageWagePersister averageWagePersister = new(databaseDirectoryPath);
 
-        IEnumerable<JAverageWageRecord> jAverageWageRecords = await averageWagesFile.Read();
-
-        IEnumerable<AverageWage> averageWageRecordDtos = jAverageWageRecords
-            .Select(x => new AverageWage
-            {
-                Year = x.Year,
-                GrossValue = x.Gross,
-                NetValue = x.Net
-            });
-
-        AverageWages.AddRange(averageWageRecordDtos);
+        await foreach (AverageWage averageWage in averageWagePersister.Load())
+            AverageWages.Add(averageWage);
     }
 
     public async Task Save()
@@ -167,97 +115,41 @@ public class Database
         await SavePots();
         await SaveCpi();
         await SaveAverageWages();
+        
+        if (!areGemsLoaded &&  Gems.Count > 0)
+            await LoadGems();
+        
+        if (areGemsLoaded)
+            await SaveGems();
     }
 
-    private async Task SaveExchangeRates()
+    private async Task SaveGems()
     {
-        ExchangeRatesDirectory exchangeRatesDirectory = new(databaseDirectoryPath);
-
-        if (!exchangeRatesDirectory.Exists)
-            exchangeRatesDirectory.Create();
-
-        Dictionary<CurrencyPair, IEnumerable<JExchangeRate>> conversionRateGroups = ExchangeRates
-            .GroupBy(x => x.CurrencyPair)
-            .ToDictionary(x => x.Key, x => x.Select(ToJEntity));
-
-        foreach (KeyValuePair<CurrencyPair, IEnumerable<JExchangeRate>> conversionRateGroup in conversionRateGroups)
-        {
-            ExchangeRatesFile exchangeRatesFile = exchangeRatesDirectory.GetExchangeRateFile(conversionRateGroup.Key);
-            await exchangeRatesFile.SaveAll(conversionRateGroup.Value);
-        }
+        GemPersister gemPersister = new(databaseDirectoryPath);
+        await gemPersister.Save(Gems);
     }
 
-    private static JExchangeRate ToJEntity(ExchangeRate exchangeRate)
+    private Task SaveExchangeRates()
     {
-        return new JExchangeRate
-        {
-            Currency1 = exchangeRate.CurrencyPair.Currency1,
-            Currency2 = exchangeRate.CurrencyPair.Currency2,
-            Date = exchangeRate.Date,
-            Value = exchangeRate.Value
-        };
+        ExchangeRatePersister exchangeRatePersister = new(databaseDirectoryPath);
+        return exchangeRatePersister.Save(ExchangeRates);
     }
 
-    private async Task SavePots()
+    private Task SavePots()
     {
-        PotsDirectory potsDirectory = new(databaseDirectoryPath);
-
-        if (!potsDirectory.Exists)
-            potsDirectory.Create();
-
-        foreach (Pot pot in Pots)
-        {
-            JPot jPot = new()
-            {
-                Name = pot.Name,
-                Description = pot.Description,
-                DisplayOrder = pot.DisplayOrder,
-                StartDate = pot.StartDate,
-                EndDate = pot.EndDate,
-                Currency = pot.Currency,
-                Labels = pot.Labels?.ToList(),
-                Snapshots = pot.Snapshots
-                    .Select(x => new JSnapshot
-                    {
-                        Date = x.Date,
-                        Value = x.Value
-                    })
-                    .ToList()
-            };
-
-            PotFile potFile = potsDirectory.GetPotFile(pot.Id);
-            await potFile.Save(jPot);
-        }
+        PotPersister potPersister = new(databaseDirectoryPath);
+        return potPersister.Save(Pots);
     }
 
-    private async Task SaveCpi()
+    private Task SaveCpi()
     {
-        string filePath = Path.Combine(databaseDirectoryPath, "cpi.json");
-        InflationRatesFile inflationRatesFile = new(filePath);
-
-        IEnumerable<JCpi> jInflationRecords = CpiRecords
-            .Select(x => new JCpi
-            {
-                Year = x.Year,
-                Value = x.Value
-            });
-
-        await inflationRatesFile.Save(jInflationRecords);
+        CpiPersister cpiPersister = new(databaseDirectoryPath);
+        return cpiPersister.Save(CpiRecords);
     }
 
-    private async Task SaveAverageWages()
+    private Task SaveAverageWages()
     {
-        string filePath = Path.Combine(databaseDirectoryPath, "average-wages.json");
-        AverageWagesFile averageWageFile = new(filePath);
-
-        IEnumerable<JAverageWageRecord> jAverageWageRecord = AverageWages
-            .Select(x => new JAverageWageRecord
-            {
-                Year = x.Year,
-                Gross = x.GrossValue,
-                Net = x.NetValue
-            });
-
-        await averageWageFile.Save(jAverageWageRecord);
+        AverageWagePersister averageWagePersister = new(databaseDirectoryPath);
+        return averageWagePersister.Save(AverageWages);
     }
 }

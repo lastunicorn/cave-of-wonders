@@ -38,6 +38,11 @@ public class PotRepository : IPotRepository
         return Task.FromResult(pots);
     }
 
+    public Task<Pot> GetById(Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<IEnumerable<PotSnapshot>> GetSnapshots(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive)
     {
         IEnumerable<PotSnapshot> potInstances = dbContext.Pots
