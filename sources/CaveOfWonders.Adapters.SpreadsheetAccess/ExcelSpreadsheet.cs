@@ -1,9 +1,9 @@
-﻿using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
+﻿using DustInTheWind.CaveOfWonders.Ports.SpreadsheetAccess;
 using ExcelDataReader;
 using System.Data;
 using System.Globalization;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.SpreadsheetAccess;
 
 public sealed class ExcelSpreadsheet : IExcelSpreadsheet
 {

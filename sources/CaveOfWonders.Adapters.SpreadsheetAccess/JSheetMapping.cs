@@ -1,4 +1,4 @@
-﻿namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
+﻿namespace DustInTheWind.CaveOfWonders.Adapters.SpreadsheetAccess;
 
 internal class JSheetMapping
 {

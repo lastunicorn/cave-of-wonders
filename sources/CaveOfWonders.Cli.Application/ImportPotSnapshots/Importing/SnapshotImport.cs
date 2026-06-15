@@ -16,7 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.LogAccess;
-using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
+using DustInTheWind.CaveOfWonders.Ports.SpreadsheetAccess;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots.Importing;
 

@@ -1,7 +1,7 @@
-﻿using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
+﻿using DustInTheWind.CaveOfWonders.Ports.SpreadsheetAccess;
 using Newtonsoft.Json;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.SpreadsheetAccess;
 
 public class Sheets : ISheets
 {

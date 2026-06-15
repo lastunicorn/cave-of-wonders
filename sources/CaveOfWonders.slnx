@@ -34,9 +34,9 @@
 		<Project Path="CaveOfWonders.Adapters.LogAccess/CaveOfWonders.Adapters.LogAccess.csproj" />
 		<Project Path="CaveOfWonders.Ports.LogAccess/CaveOfWonders.Ports.LogAccess.csproj" />
 	</Folder>
-	<Folder Name="/Ports/SheetsAccess/">
-		<Project Path="CaveOfWonders.Adapters.SheetsAccess/CaveOfWonders.Adapters.SheetsAccess.csproj" />
-		<Project Path="CaveOfWonders.Ports.SheetsAccess/CaveOfWonders.Ports.SheetsAccess.csproj" />
+	<Folder Name="/Ports/SpreadsheetAccess/">
+		<Project Path="CaveOfWonders.Adapters.SpreadsheetAccess\CaveOfWonders.Adapters.SpreadsheetAccess.csproj" />
+		<Project Path="CaveOfWonders.Ports.SpreadsheetAccess\CaveOfWonders.Ports.SpreadsheetAccess.csproj" />
 	</Folder>
 	<Folder Name="/Ports/SystemAccess/">
 		<Project Path="CaveOfWonders.Adapters.SystemAccess/CaveOfWonders.Adapters.SystemAccess.csproj" />

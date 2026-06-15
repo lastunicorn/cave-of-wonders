@@ -1,4 +1,4 @@
-﻿namespace DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
+﻿namespace DustInTheWind.CaveOfWonders.Ports.SpreadsheetAccess;
 
 public class ColumnMappings
 {

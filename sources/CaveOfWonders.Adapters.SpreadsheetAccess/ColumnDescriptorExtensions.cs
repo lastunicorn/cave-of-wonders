@@ -1,6 +1,6 @@
-﻿using DustInTheWind.CaveOfWonders.Ports.SheetsAccess;
+﻿using DustInTheWind.CaveOfWonders.Ports.SpreadsheetAccess;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.SheetsAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.SpreadsheetAccess;
 
 internal static class ColumnDescriptorExtensions
 {
