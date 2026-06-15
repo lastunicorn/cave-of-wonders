@@ -38,7 +38,8 @@ public class PotRepository : IPotRepository
     {
         IEnumerable<PotSnapshot> potInstances = database.Pots
             .Where(x => includeInactive || x.IsActive(date))
-            .Select(x => x.GetSnapshot(date, dateMatchingMode));
+            .Select(x => x.GetSnapshot(date, dateMatchingMode))
+            .Where(x => x != null);
 
         return Task.FromResult(potInstances);
     }
@@ -67,7 +68,7 @@ public class PotRepository : IPotRepository
     {
         if (pot == null)
             throw new ArgumentNullException(nameof(pot));
-            
+
         database.Pots.Add(pot);
     }
 }

@@ -107,7 +107,8 @@ public class Database
                 .Select(x => new PotSnapshot
                 {
                     Date = x.Date,
-                    Value = x.Value
+                    Value = x.Value,
+                    Pot = pot
                 });
 
             if (jPot.Labels != null)

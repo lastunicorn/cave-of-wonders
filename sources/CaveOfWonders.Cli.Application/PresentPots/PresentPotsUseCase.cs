@@ -41,8 +41,8 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
         DateOnly currentDate = request.Date ?? systemClock.Today;
         string defaultCurrency = request.Currency ?? "RON";
 
-        IEnumerable<PotSnapshot> potInstances = await RetrievePotInstancesFromStorage(currentDate, request.IncludeInactive);
-        List<PotInstanceInfo> potInstanceInfos = await ConvertToPotInstanceInfos(potInstances, currentDate, defaultCurrency);
+        IEnumerable<PotSnapshot> potSnapshots = await RetrievePotSnapshotsFromStorage(currentDate, request.IncludeInactive);
+        List<PotInstanceInfo> potInstanceInfos = await ConvertToPotInstanceInfos(potSnapshots, currentDate, defaultCurrency);
 
         PotsAnalysis potsAnalysis = new(currenciesConverter)
         {
@@ -69,33 +69,33 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
         };
     }
 
-    private async Task<IEnumerable<PotSnapshot>> RetrievePotInstancesFromStorage(DateOnly date, bool includeInactive)
+    private async Task<IEnumerable<PotSnapshot>> RetrievePotSnapshotsFromStorage(DateOnly date, bool includeInactive)
     {
-        IEnumerable<PotSnapshot> potInstances = await unitOfWork.PotRepository.GetSnapshots(date, DateMatchingMode.LastAvailable, includeInactive);
-        return potInstances.OrderBy(x => x.Pot.DisplayOrder);
+        IEnumerable<PotSnapshot> potSnapshots = await unitOfWork.PotRepository.GetSnapshots(date, DateMatchingMode.LastAvailable, includeInactive);
+        return potSnapshots.OrderBy(x => x.Pot.DisplayOrder);
     }
 
     private async Task<List<PotInstanceInfo>> ConvertToPotInstanceInfos(IEnumerable<PotSnapshot> potInstances, DateOnly currentDate, string defaultCurrency)
     {
         List<PotInstanceInfo> potInstanceInfos = [];
 
-        foreach (PotSnapshot potInstance in potInstances)
+        foreach (PotSnapshot potSnapshot in potInstances)
         {
-            PotInstanceInfo potInstanceInfo = await Convert(potInstance, currentDate, defaultCurrency);
+            PotInstanceInfo potInstanceInfo = await Convert(potSnapshot, currentDate, defaultCurrency);
             potInstanceInfos.Add(potInstanceInfo);
         }
 
         return potInstanceInfos;
     }
 
-    private async Task<PotInstanceInfo> Convert(PotSnapshot potInstance, DateOnly currentDate, Currency defaultCurrency)
+    private async Task<PotInstanceInfo> Convert(PotSnapshot potSnapshot, DateOnly currentDate, Currency defaultCurrency)
     {
         PotInstanceInfo potInstanceInfo = new()
         {
-            Id = potInstance.Pot.Id,
-            Name = potInstance.Pot.Name,
-            IsActive = potInstance.Pot.IsActive(currentDate),
-            Value = ComputeOriginalValue(potInstance)
+            Id = potSnapshot.Pot.Id,
+            Name = potSnapshot.Pot.Name,
+            IsActive = potSnapshot.Pot.IsActive(currentDate),
+            Value = ComputeOriginalValue(potSnapshot)
         };
 
         potInstanceInfo.NormalizedValue = await currenciesConverter.Convert(potInstanceInfo.Value, defaultCurrency, currentDate);
@@ -103,15 +103,15 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
         return potInstanceInfo;
     }
 
-    private static CurrencyValue ComputeOriginalValue(PotSnapshot potInstance)
+    private static CurrencyValue ComputeOriginalValue(PotSnapshot potSnapshot)
     {
-        if (potInstance != null)
+        if (potSnapshot != null)
         {
             return new CurrencyValue
             {
-                Currency = potInstance.Pot.Currency,
-                Value = potInstance.Value,
-                Date = potInstance.Date
+                Currency = potSnapshot.Pot.Currency,
+                Value = potSnapshot.Value,
+                Date = potSnapshot.Date
             };
         }
 
