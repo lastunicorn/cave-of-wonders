@@ -34,7 +34,7 @@ public class WebCpiImportExport : ICpiImportExport
 
     public async IAsyncEnumerable<CpiRecordDto> ImportAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        Uri url = insConfig.Value.InflationPageUrl;
+        Uri url = insConfig.Value.CpiPageUrl;
 
         if (url == null)
             throw new MissingCpiUrlException();
@@ -44,7 +44,11 @@ public class WebCpiImportExport : ICpiImportExport
 
         foreach (YearlyCpiRecord yearlyCpiRecord in yearlyCpiRecords)
         {
-            yield return new CpiRecordDto { Year = yearlyCpiRecord.Year, Value = yearlyCpiRecord.Value };
+            yield return new CpiRecordDto
+            {
+                Year = yearlyCpiRecord.Year,
+                Value = yearlyCpiRecord.Value
+            };
         }
     }
 

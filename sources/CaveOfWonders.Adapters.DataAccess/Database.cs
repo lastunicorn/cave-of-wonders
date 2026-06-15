@@ -121,7 +121,7 @@ public class Database
 
     private async Task LoadCpi()
     {
-        string filePath = Path.Combine(databaseDirectoryPath, "inflation-rates.json");
+        string filePath = Path.Combine(databaseDirectoryPath, "cpi.json");
         InflationRatesFile inflationRatesFile = new(filePath);
 
         if (!inflationRatesFile.Exists)
@@ -231,7 +231,7 @@ public class Database
 
     private async Task SaveCpi()
     {
-        string filePath = Path.Combine(databaseDirectoryPath, "inflation-rates.json");
+        string filePath = Path.Combine(databaseDirectoryPath, "cpi.json");
         InflationRatesFile inflationRatesFile = new(filePath);
 
         IEnumerable<JCpi> jInflationRecords = CpiRecords

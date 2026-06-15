@@ -14,28 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentCpi;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentInflation;
 using DustInTheWind.ConsoleTools.Commando;
 using MediatR;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.CpiArea.Cpi;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.CpiArea.Inflation;
 
-[NamedCommand("cpi", Description = "Display the consumer price indexes.")]
-internal class CpiCommand : IConsoleCommand<CpiViewModel>
+[NamedCommand("inflation", Description = "Display the inflation.")]
+internal class InflationCommand : IConsoleCommand<InflationViewModel>
 {
     private readonly IMediator mediator;
 
-    public CpiCommand(IMediator mediator)
+    public InflationCommand(IMediator mediator)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
-    public async Task<CpiViewModel> Execute()
+    public async Task<InflationViewModel> Execute()
     {
-        PresentCpiRequest request = new();
-        PresentCpiResponse response = await mediator.Send(request);
+        PresentInflationRequest request = new();
+        PresentInflationResponse response = await mediator.Send(request);
 
-        return new CpiViewModel
+        return new InflationViewModel
         {
             Records = response.InflationRecords
         };

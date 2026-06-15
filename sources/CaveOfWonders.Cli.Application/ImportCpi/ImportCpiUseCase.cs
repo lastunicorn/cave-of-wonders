@@ -24,14 +24,12 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportCpi;
 
 internal class ImportCpiUseCase : IRequestHandler<ImportCpiRequest, ImportCpiResponse>
 {
-	private readonly IInsService insService;
 	private readonly IUnitOfWork unitOfWork;
 	private readonly ICpiImportExportFactory cpiImportExportFactory;
 	private ImportCpiResponse response;
 
-	public ImportCpiUseCase(IInsService insService, IUnitOfWork unitOfWork, ICpiImportExportFactory cpiImportExportFactory)
+	public ImportCpiUseCase(IUnitOfWork unitOfWork, ICpiImportExportFactory cpiImportExportFactory)
 	{
-		this.insService = insService ?? throw new ArgumentNullException(nameof(insService));
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 		this.cpiImportExportFactory = cpiImportExportFactory ?? throw new ArgumentNullException(nameof(cpiImportExportFactory));
 	}
@@ -40,8 +38,8 @@ internal class ImportCpiUseCase : IRequestHandler<ImportCpiRequest, ImportCpiRes
 	{
 		response = new ImportCpiResponse();
 
-		IEnumerable<CpiRecordDto> inflationRecordDtos = await RetrieveInflationValues(request);
-		await AddOrUpdateInflationRecordsToStore(inflationRecordDtos);
+		IEnumerable<CpiRecordDto> cpiRecordDtos = await RetrieveInflationValues(request);
+		await AddOrUpdateCpiRecordsToStore(cpiRecordDtos);
 
 		await unitOfWork.SaveChanges();
 
@@ -64,41 +62,13 @@ internal class ImportCpiUseCase : IRequestHandler<ImportCpiRequest, ImportCpiRes
 
 		ICpiImportExport cpiImportExport = cpiImportExportFactory.Create(cpiImportType, parameters);
 		return await cpiImportExport.ImportAsync().ToListAsync();
-
-		// switch (request.ImportSource)
-		// {
-		// 	case ImportSource.File:
-		// 		if (string.IsNullOrEmpty(request.SourceFilePath))
-		// 			throw new InflationFileNotProvidedException();
-		//
-		// 		try
-		// 		{
-		// 			return await insService.GetInflationValuesFromFile(request.SourceFilePath);
-		// 		}
-		// 		catch (Exception ex)
-		// 		{
-		// 			throw new InsFileException(ex);
-		// 		}
-		//
-		// 	case ImportSource.Web:
-		// 		try
-		// 		{
-		// 			return await insService.GetInflationValuesFromWeb();
-		// 		}
-		// 		catch (Exception ex)
-		// 		{
-		// 			throw new InsWebPageException(ex);
-		// 		}
-		//
-		// 	default:
-		// 		throw new InvalidImportSourceException(request.ImportSource);
 	}
 
-	private async Task AddOrUpdateInflationRecordsToStore(IEnumerable<CpiRecordDto> inflationRecordDtos)
+	private async Task AddOrUpdateCpiRecordsToStore(IEnumerable<CpiRecordDto> cpiRecordDtos)
 	{
 		try
 		{
-			IAsyncEnumerable<AddOrUpdateResult> results = AddOrUpdateInflationRecordsToStoreUnsafe(inflationRecordDtos);
+			IAsyncEnumerable<AddOrUpdateResult> results = AddOrUpdateCpiRecordsToStoreUnsafe(cpiRecordDtos);
 
 			await foreach (AddOrUpdateResult result in results)
 				response.AddResult(result);
@@ -109,17 +79,17 @@ internal class ImportCpiUseCase : IRequestHandler<ImportCpiRequest, ImportCpiRes
 		}
 	}
 
-	private async IAsyncEnumerable<AddOrUpdateResult> AddOrUpdateInflationRecordsToStoreUnsafe(IEnumerable<CpiRecordDto> inflationRecordDtos)
+	private async IAsyncEnumerable<AddOrUpdateResult> AddOrUpdateCpiRecordsToStoreUnsafe(IEnumerable<CpiRecordDto> cpiRecordDtos)
 	{
-		foreach (CpiRecordDto insInflationRecordDto in inflationRecordDtos)
+		foreach (CpiRecordDto cpiRecordDto in cpiRecordDtos)
 		{
-			Cpi cpiDto = new()
+			Cpi cpi = new()
 			{
-				Year = insInflationRecordDto.Year,
-				Value = insInflationRecordDto.Value
+				Year = cpiRecordDto.Year,
+				Value = cpiRecordDto.Value
 			};
 
-			yield return await unitOfWork.CpiRepository.AddOrUpdate(cpiDto);
+			yield return await unitOfWork.CpiRepository.AddOrUpdate(cpi);
 		}
 	}
 }

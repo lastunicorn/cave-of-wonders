@@ -17,10 +17,10 @@ public sealed class CpiDocument : IDisposable
         await cpiRecordLine.Write(streamWriter);
     }
 
-    public async Task Write(IEnumerable<CpiRecordLine> inflationRecordLines)
+    public async Task Write(IEnumerable<CpiRecordLine> cpiRecordLines)
     {
-        foreach (CpiRecordLine inflationRecordLine in inflationRecordLines)
-            await inflationRecordLine.Write(streamWriter);
+        foreach (CpiRecordLine cpiRecordLine in cpiRecordLines)
+            await cpiRecordLine.Write(streamWriter);
     }
 
     public void Dispose()

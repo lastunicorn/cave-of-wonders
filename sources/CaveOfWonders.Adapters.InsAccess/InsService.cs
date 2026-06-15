@@ -21,7 +21,7 @@ public class InsService : IInsService
 
 	public async Task<IEnumerable<CpiRecordDto>> GetInflationValuesFromWeb()
 	{
-		Uri url = insConfig.Value.InflationPageUrl;
+		Uri url = insConfig.Value.CpiPageUrl;
 
 		if (url == null)
 			throw new MissingCpiUrlException();

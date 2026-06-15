@@ -2,7 +2,7 @@
   "profiles": {
     "CaveOfWonders.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "wage-import"
+      "commandLineArgs": "cpi-import --source-type web"
     }
   }
 }
