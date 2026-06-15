@@ -26,14 +26,14 @@ internal class ImportCpiUseCase : IRequestHandler<ImportCpiRequest, ImportCpiRes
 {
 	private readonly IInsService insService;
 	private readonly IUnitOfWork unitOfWork;
-	private readonly ICpiImportFactory cpiImportFactory;
+	private readonly ICpiImportExportFactory cpiImportExportFactory;
 	private ImportCpiResponse response;
 
-	public ImportCpiUseCase(IInsService insService, IUnitOfWork unitOfWork, ICpiImportFactory cpiImportFactory)
+	public ImportCpiUseCase(IInsService insService, IUnitOfWork unitOfWork, ICpiImportExportFactory cpiImportExportFactory)
 	{
 		this.insService = insService ?? throw new ArgumentNullException(nameof(insService));
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-		this.cpiImportFactory = cpiImportFactory ?? throw new ArgumentNullException(nameof(cpiImportFactory));
+		this.cpiImportExportFactory = cpiImportExportFactory ?? throw new ArgumentNullException(nameof(cpiImportExportFactory));
 	}
 
 	public async Task<ImportCpiResponse> Handle(ImportCpiRequest request, CancellationToken cancellationToken)
@@ -62,8 +62,8 @@ internal class ImportCpiUseCase : IRequestHandler<ImportCpiRequest, ImportCpiRes
 			{ "FilePath", request.SourceFilePath }
 		};
 
-		ICpiImport cpiImport = cpiImportFactory.Create(cpiImportType, parameters);
-		return await cpiImport.ImportAsync().ToListAsync();
+		ICpiImportExport cpiImportExport = cpiImportExportFactory.Create(cpiImportType, parameters);
+		return await cpiImportExport.ImportAsync().ToListAsync();
 
 		// switch (request.ImportSource)
 		// {

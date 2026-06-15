@@ -53,8 +53,8 @@ internal static class DependenciesSetup
 		containerBuilder.RegisterType<Log>().As<ILog>().InstancePerLifetimeScope();
 		containerBuilder.RegisterType<FileSystem>().As<IFileSystem>().SingleInstance();
 
-		containerBuilder.RegisterType<CpiImportFactory>().As<ICpiImportFactory>().SingleInstance();
-		containerBuilder.RegisterType<FileCpiImport>().AsSelf();
-		containerBuilder.RegisterType<WebCpiImport>().AsSelf();
+		containerBuilder.RegisterType<CpiImportExportFactory>().As<ICpiImportExportFactory>().SingleInstance();
+		containerBuilder.RegisterType<FileCpiImportExport>().AsSelf();
+		containerBuilder.RegisterType<WebCpiImportExport>().AsSelf();
 	}
 }

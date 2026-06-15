@@ -16,7 +16,17 @@
 
 namespace DustInTheWind.CaveOfWonders.Ports.InsAccess;
 
-public interface ICpiImportFactory
+public interface ICpiImportExport
 {
-	ICpiImport Create(CpiImportType type, CpiImportParameters parameters);
+    Guid Id { get; }
+    
+    string Name { get; }
+    
+    bool CanImport { get; }
+    
+    bool CanExport { get; }
+    
+	IAsyncEnumerable<CpiRecordDto> ImportAsync(CancellationToken cancellationToken = default);
+    
+    Task ExportAsync(CancellationToken cancellationToken = default);
 }

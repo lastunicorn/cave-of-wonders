@@ -21,24 +21,24 @@ using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 
 namespace DustInTheWind.CaveOfWonders.Cli;
 
-internal class CpiImportFactory : ICpiImportFactory
+internal class CpiImportExportFactory : ICpiImportExportFactory
 {
 	private readonly ILifetimeScope lifetimeScope;
 
-	public CpiImportFactory(ILifetimeScope lifetimeScope)
+	public CpiImportExportFactory(ILifetimeScope lifetimeScope)
 	{
 		this.lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
 	}
 
-	public ICpiImport Create(CpiImportType type, CpiImportParameters parameters)
+	public ICpiImportExport Create(CpiImportType type, CpiImportParameters parameters)
 	{
 		return type switch
 		{
-			CpiImportType.File => lifetimeScope.Resolve<FileCpiImport>(new Parameter[]
+			CpiImportType.File => lifetimeScope.Resolve<FileCpiImportExport>(new Parameter[]
 			{
 				new NamedParameter("filePath", (string)parameters["FilePath"])
 			}),
-			CpiImportType.Web => lifetimeScope.Resolve<WebCpiImport>(),
+			CpiImportType.Web => lifetimeScope.Resolve<WebCpiImportExport>(),
 			_ => throw new NotSupportedException($"CPI import of type '{type}' is not supported.")
 		};
 	}
