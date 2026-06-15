@@ -17,11 +17,11 @@
 using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.CpiArea.CpiExport;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.CpiArea.InflationExport;
 
-internal class CpiExportView : IView<CpiExportCommand>
+internal class InflationExportView : IView<InflationExportCommand>
 {
-    public void Display(CpiExportCommand viewModel)
+    public void Display(InflationExportCommand viewModel)
     {
         CustomConsole.WriteLineSuccess("Export succeeded.");
     }

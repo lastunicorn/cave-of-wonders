@@ -1,11 +1,11 @@
 ﻿namespace DustInTheWind.CaveOfWonders.Domain.Inflation;
 
-public class CpiRecordLine
+public class InflationRecordLine
 {
     private readonly int year;
     private readonly decimal value;
 
-    public CpiRecordLine(int year, decimal value)
+    public InflationRecordLine(int year, decimal value)
     {
         this.year = year;
         this.value = value;

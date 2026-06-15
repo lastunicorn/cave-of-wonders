@@ -4,39 +4,39 @@ using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.FileAccess;
 using MediatR;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ExportCpi;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.ExportInflation;
 
-internal class ExportCpiUseCase : IRequestHandler<ExportCpiRequest>
+internal class ExportInflationUseCase : IRequestHandler<ExportInflationRequest>
 {
     private readonly IUnitOfWork unitOfWork;
     private readonly IFileSystem fileSystem;
 
-    public ExportCpiUseCase(IUnitOfWork unitOfWork, IFileSystem fileSystem)
+    public ExportInflationUseCase(IUnitOfWork unitOfWork, IFileSystem fileSystem)
     {
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
     }
 
-    public async Task Handle(ExportCpiRequest request, CancellationToken cancellationToken)
+    public async Task Handle(ExportInflationRequest request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(request.OutputPath.Trim()))
             throw new OutputPathNotProvidedException();
 
-        using CpiDocument exportDocument = CreateExportFile(request.OutputPath);
+        using InflationDocument exportDocument = CreateExportFile(request.OutputPath);
 
-        IEnumerable<Cpi> cpiRecords = await RetrieveInflationRecordsFromStorage();
+        IEnumerable<Cpi> cpiRecords = await RetrieveCpiRecordsFromStorage();
 
         foreach (Cpi inflationRecord in cpiRecords)
             await WriteToExportDocument(exportDocument, inflationRecord);
     }
 
-    private CpiDocument CreateExportFile(string outputPath)
+    private InflationDocument CreateExportFile(string outputPath)
     {
         Stream exportStream = fileSystem.CreateFile(outputPath);
-        return new CpiDocument(exportStream);
+        return new InflationDocument(exportStream);
     }
 
-    private async Task<IEnumerable<Cpi>> RetrieveInflationRecordsFromStorage()
+    private async Task<IEnumerable<Cpi>> RetrieveCpiRecordsFromStorage()
     {
         IEnumerable<Cpi> cpiRecords = await unitOfWork.CpiRepository.GetAll();
 
@@ -44,9 +44,9 @@ internal class ExportCpiUseCase : IRequestHandler<ExportCpiRequest>
             .OrderBy(x => x.Year);
     }
 
-    private static async Task WriteToExportDocument(CpiDocument exportDocument, Cpi cpi)
+    private static async Task WriteToExportDocument(InflationDocument exportDocument, Cpi cpi)
     {
-        CpiRecordLine exportCpiRecord = new(cpi.Year, cpi.Value);
-        await exportDocument.Write(exportCpiRecord);
+        InflationRecordLine exportInflationRecord = new(cpi.Year, cpi.Value - 100);
+        await exportDocument.Write(exportInflationRecord);
     }
 }

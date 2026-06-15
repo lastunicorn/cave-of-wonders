@@ -14,28 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.ExportCpi;
+using DustInTheWind.CaveOfWonders.Cli.Application.ExportInflation;
 using DustInTheWind.ConsoleTools.Commando;
 using MediatR;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.CpiArea.CpiExport;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.CpiArea.InflationExport;
 
-[NamedCommand("cpi-export", Description = "Exports the inflation information to a file on disk.")]
-internal class CpiExportCommand : IConsoleCommand
+[NamedCommand("inflation-export", Description = "Exports the inflation information to a file on disk.")]
+internal class InflationExportCommand : IConsoleCommand
 {
     private readonly IMediator mediator;
 
     [NamedParameter("output", ShortName = 'o', IsMandatory = false, Description = "Path to the output file.")]
     public string OutputPath { get; set; }
 
-    public CpiExportCommand(IMediator mediator)
+    public InflationExportCommand(IMediator mediator)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
     public async Task Execute()
     {
-        ExportCpiRequest request = new()
+        ExportInflationRequest request = new()
         {
             OutputPath = OutputPath
         };
