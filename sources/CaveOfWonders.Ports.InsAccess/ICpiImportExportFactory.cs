@@ -18,5 +18,5 @@ namespace DustInTheWind.CaveOfWonders.Ports.InsAccess;
 
 public interface ICpiImportExportFactory
 {
-	ICpiImportExport Create(CpiImportType type, CpiImportParameters parameters);
+	ICpiImportExport Create(Type type);
 }

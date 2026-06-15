@@ -26,7 +26,7 @@ public interface ICpiImportExport
     
     bool CanExport { get; }
     
-	IAsyncEnumerable<CpiRecordDto> ImportAsync(CancellationToken cancellationToken = default);
+	IAsyncEnumerable<CpiRecordDto> ImportAsync(IDictionary<string, object> parameters = null, CancellationToken cancellationToken = default);
     
-    Task ExportAsync(CancellationToken cancellationToken = default);
+    Task ExportAsync(IDictionary<string, object> parameters = null, CancellationToken cancellationToken = default);
 }

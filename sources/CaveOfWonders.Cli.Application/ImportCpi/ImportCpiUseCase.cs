@@ -24,72 +24,80 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportCpi;
 
 internal class ImportCpiUseCase : IRequestHandler<ImportCpiRequest, ImportCpiResponse>
 {
-	private readonly IUnitOfWork unitOfWork;
-	private readonly ICpiImportExportFactory cpiImportExportFactory;
-	private ImportCpiResponse response;
+    private readonly IUnitOfWork unitOfWork;
+    private readonly CpiImportExportPool cpiImportExportPool;
+    private ImportCpiResponse response;
 
-	public ImportCpiUseCase(IUnitOfWork unitOfWork, ICpiImportExportFactory cpiImportExportFactory)
-	{
-		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-		this.cpiImportExportFactory = cpiImportExportFactory ?? throw new ArgumentNullException(nameof(cpiImportExportFactory));
-	}
+    public ImportCpiUseCase(IUnitOfWork unitOfWork, CpiImportExportPool cpiImportExportPool)
+    {
+        this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        this.cpiImportExportPool = cpiImportExportPool ?? throw new ArgumentNullException(nameof(cpiImportExportPool));
+    }
 
-	public async Task<ImportCpiResponse> Handle(ImportCpiRequest request, CancellationToken cancellationToken)
-	{
-		response = new ImportCpiResponse();
+    public async Task<ImportCpiResponse> Handle(ImportCpiRequest request, CancellationToken cancellationToken)
+    {
+        response = new ImportCpiResponse();
 
-		IEnumerable<CpiRecordDto> cpiRecordDtos = await RetrieveInflationValues(request);
-		await AddOrUpdateCpiRecordsToStore(cpiRecordDtos);
+        IEnumerable<CpiRecordDto> cpiRecordDtos = await RetrieveInflationValues(request);
+        await AddOrUpdateCpiRecordsToStore(cpiRecordDtos, cancellationToken);
 
-		await unitOfWork.SaveChanges();
+        await unitOfWork.SaveChanges();
 
-		return response;
-	}
+        return response;
+    }
 
-	private async Task<IEnumerable<CpiRecordDto>> RetrieveInflationValues(ImportCpiRequest request)
-	{
-		CpiImportType cpiImportType = request.ImportSource switch
-		{
-			ImportSource.File => CpiImportType.File,
-			ImportSource.Web => CpiImportType.Web,
-			_ => throw new ArgumentOutOfRangeException()
-		};
+    private async Task<IEnumerable<CpiRecordDto>> RetrieveInflationValues(ImportCpiRequest request)
+    {
+        ICpiImportExport cpiImportExport = cpiImportExportPool.Get(request.ImportSource switch
+        {
+            ImportSource.File => new Guid("bb7590ef-6126-4529-8012-b6a8a4c6f903"),
+            ImportSource.Web => new Guid("3ff33b30-a149-4f08-b545-e524fd3e4384"),
+            _ => throw new ArgumentOutOfRangeException()
+        });
 
-		CpiImportParameters parameters = new()
-		{
-			{ "FilePath", request.SourceFilePath }
-		};
+        CpiImportParameters parameters = new()
+        {
+            { "FilePath", request.SourceFilePath }
+        };
 
-		ICpiImportExport cpiImportExport = cpiImportExportFactory.Create(cpiImportType, parameters);
-		return await cpiImportExport.ImportAsync().ToListAsync();
-	}
+        return await cpiImportExport.ImportAsync(parameters)
+            .ToListAsync();
+    }
 
-	private async Task AddOrUpdateCpiRecordsToStore(IEnumerable<CpiRecordDto> cpiRecordDtos)
-	{
-		try
-		{
-			IAsyncEnumerable<AddOrUpdateResult> results = AddOrUpdateCpiRecordsToStoreUnsafe(cpiRecordDtos);
+    private async Task AddOrUpdateCpiRecordsToStore(IEnumerable<CpiRecordDto> cpiRecordDtos, CancellationToken cancellationToken)
+    {
+        try
+        {
+            foreach (CpiRecordDto cpiRecordDto in cpiRecordDtos)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                    break;
 
-			await foreach (AddOrUpdateResult result in results)
-				response.AddResult(result);
-		}
-		catch (Exception ex)
-		{
-			throw new DataStorageException(ex);
-		}
-	}
+                response.TotalCount++;
 
-	private async IAsyncEnumerable<AddOrUpdateResult> AddOrUpdateCpiRecordsToStoreUnsafe(IEnumerable<CpiRecordDto> cpiRecordDtos)
-	{
-		foreach (CpiRecordDto cpiRecordDto in cpiRecordDtos)
-		{
-			Cpi cpi = new()
-			{
-				Year = cpiRecordDto.Year,
-				Value = cpiRecordDto.Value
-			};
+                Cpi cpi = new()
+                {
+                    Year = cpiRecordDto.Year,
+                    Value = cpiRecordDto.Value
+                };
 
-			yield return await unitOfWork.CpiRepository.AddOrUpdate(cpi);
-		}
-	}
+                Cpi existingCpi = await unitOfWork.CpiRepository.GetByYear(cpi.Year);
+
+                if (existingCpi == null)
+                {
+                    unitOfWork.CpiRepository.Add(cpi);
+                    response.AddedCount++;
+                }
+                else if (existingCpi.Value != cpi.Value)
+                {
+                    existingCpi.Value = cpi.Value;
+                    response.UpdatedCount++;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new DataStorageException(ex);
+        }
+    }
 }

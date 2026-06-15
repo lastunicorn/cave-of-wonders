@@ -32,7 +32,7 @@ public class WebCpiImportExport : ICpiImportExport
 
     public bool CanExport => false;
 
-    public async IAsyncEnumerable<CpiRecordDto> ImportAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<CpiRecordDto> ImportAsync(IDictionary<string, object> parameters = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         Uri url = insConfig.Value.CpiPageUrl;
 
@@ -40,7 +40,7 @@ public class WebCpiImportExport : ICpiImportExport
             throw new MissingCpiUrlException();
 
         YearlyCpiWebPage webPage = new(url);
-        IEnumerable<YearlyCpiRecord> yearlyCpiRecords = await webPage.EnumerateRecords();
+        IEnumerable<YearlyCpiRecord> yearlyCpiRecords = await webPage.EnumerateRecords(cancellationToken);
 
         foreach (YearlyCpiRecord yearlyCpiRecord in yearlyCpiRecords)
         {
@@ -52,7 +52,7 @@ public class WebCpiImportExport : ICpiImportExport
         }
     }
 
-    public Task ExportAsync(CancellationToken cancellationToken = default)
+    public Task ExportAsync(IDictionary<string, object> parameters = null, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }

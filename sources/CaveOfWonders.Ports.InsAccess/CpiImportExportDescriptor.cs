@@ -14,25 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using Autofac;
-using DustInTheWind.CaveOfWonders.Ports.InsAccess;
+namespace DustInTheWind.CaveOfWonders.Ports.InsAccess;
 
-namespace DustInTheWind.CaveOfWonders.Cli;
-
-internal class CpiImportExportFactory : ICpiImportExportFactory
+public class CpiImportExportDescriptor
 {
-    private readonly ILifetimeScope lifetimeScope;
+    public Guid Id { get; set; }
 
-    public CpiImportExportFactory(ILifetimeScope lifetimeScope)
-    {
-        this.lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
-    }
-
-    public ICpiImportExport Create(Type type)
-    {
-        if (!type.IsAssignableTo<ICpiImportExport>())
-            throw new ArgumentException($"The type '{type.FullName}' is not assignable to ICpiImportExport.", nameof(type));
-
-        return (ICpiImportExport)lifetimeScope.Resolve(type);
-    }
+    public Type Type { get; set; }
 }

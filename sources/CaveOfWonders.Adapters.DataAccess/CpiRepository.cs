@@ -34,31 +34,18 @@ public class CpiRepository : ICpiRepository
         return Task.FromResult(inflationRecords);
     }
 
-    public Task Add(Cpi cpiDto)
+    public Task<Cpi> GetByYear(int year)
     {
-        if (cpiDto == null) throw new ArgumentNullException(nameof(cpiDto));
+        Cpi cpi = database.CpiRecords
+            .FirstOrDefault(x => x.Year == year);
 
-        database.CpiRecords.Add(cpiDto);
-
-        return Task.CompletedTask;
+        return Task.FromResult(cpi);
     }
 
-    public Task<AddOrUpdateResult> AddOrUpdate(Cpi cpiDto)
+    public void Add(Cpi cpi)
     {
-        if (cpiDto == null) throw new ArgumentNullException(nameof(cpiDto));
+        if (cpi == null) throw new ArgumentNullException(nameof(cpi));
 
-        Cpi existing = database.CpiRecords
-            .FirstOrDefault(x => x.Year == cpiDto.Year);
-
-        if (existing == null)
-        {
-            database.CpiRecords.Add(cpiDto);
-            return Task.FromResult(AddOrUpdateResult.Added);
-        }
-        else
-        {
-            existing.Value = cpiDto.Value;
-            return Task.FromResult(AddOrUpdateResult.Updated);
-        }
+        database.CpiRecords.Add(cpi);
     }
 }

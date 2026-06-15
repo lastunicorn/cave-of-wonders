@@ -71,7 +71,7 @@ internal class CpiRecordDtoEnumerator : IEnumerator<CpiRecordDto>
 
             case 1:
                 decimal value = decimal.Parse(line, cultureInfo);
-                Current.Value = value - 100;
+                Current.Value = value;
                 break;
 
             case 2:

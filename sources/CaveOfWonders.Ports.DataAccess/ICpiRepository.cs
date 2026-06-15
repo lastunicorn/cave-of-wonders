@@ -6,7 +6,7 @@ public interface ICpiRepository
 {
     Task<IEnumerable<Cpi>> GetAll();
 
-    Task Add(Cpi cpiDto);
+    Task<Cpi> GetByYear(int year);
 
-    Task<AddOrUpdateResult> AddOrUpdate(Cpi cpiDto);
+    void Add(Cpi cpi);
 }

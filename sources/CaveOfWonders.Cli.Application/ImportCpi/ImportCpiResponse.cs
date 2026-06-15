@@ -14,38 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportCpi;
 
 public class ImportCpiResponse
 {
-    public int AddedCount { get; private set; }
+    public int AddedCount { get; internal set; }
 
-    public int UpdatedCount { get; private set; }
+    public int UpdatedCount { get; internal set; }
 
-    public int TotalCount => AddedCount + UpdatedCount;
-
-    internal async Task AddResultsAsync(IAsyncEnumerable<AddOrUpdateResult> addOrUpdateResults)
-    {
-        await foreach (AddOrUpdateResult addOrUpdateResult in addOrUpdateResults)
-            AddResult(addOrUpdateResult);
-    }
-
-    internal void AddResult(AddOrUpdateResult result)
-    {
-        switch (result)
-        {
-            case AddOrUpdateResult.Added:
-                AddedCount++;
-                break;
-
-            case AddOrUpdateResult.Updated:
-                UpdatedCount++;
-                break;
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(result), result, null);
-        }
-    }
+    public int TotalCount { get; internal set; }
 }

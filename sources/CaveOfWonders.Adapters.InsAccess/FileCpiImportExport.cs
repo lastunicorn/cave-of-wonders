@@ -36,7 +36,7 @@ public class FileCpiImportExport : ICpiImportExport
 
     public bool CanExport => false;
 
-    public async IAsyncEnumerable<CpiRecordDto> ImportAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<CpiRecordDto> ImportAsync(IDictionary<string, object> parameters = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
 	{
 		IEnumerable<string> lines = await File.ReadLinesAsync(filePath, cancellationToken)
             .ToListAsync(cancellationToken);
@@ -47,7 +47,7 @@ public class FileCpiImportExport : ICpiImportExport
 			yield return enumerator.Current;
 	}
 
-    public Task ExportAsync(CancellationToken cancellationToken = default)
+    public Task ExportAsync(IDictionary<string, object> parameters = null, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
