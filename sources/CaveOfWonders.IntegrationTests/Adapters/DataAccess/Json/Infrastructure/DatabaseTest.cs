@@ -89,28 +89,28 @@ internal class DatabaseTest
             {
                 Database database = await OpenDatabase();
                 await arrangeAction1(database, context);
-                await database.Save();
+                await database.SaveAsync(CancellationToken.None);
             }
 
             if (arrangeAction2 != null)
             {
                 Database database = await OpenDatabase();
                 arrangeAction2(database, context);
-                await database.Save();
+                await database.SaveAsync(CancellationToken.None);
             }
 
             if (actAction1 != null)
             {
                 Database database = await OpenDatabase();
                 await actAction1(database, context);
-                await database.Save();
+                await database.SaveAsync(CancellationToken.None);
             }
 
             if (actAction2 != null)
             {
                 Database database = await OpenDatabase();
                 actAction2(database, context);
-                await database.Save();
+                await database.SaveAsync(CancellationToken.None);
             }
 
             if (assertAction1 != null)
@@ -134,7 +134,7 @@ internal class DatabaseTest
     private async Task<Database> OpenDatabase()
     {
         Database database = new(dbDirectoryPath);
-        await database.Load();
+        await database.LoadAsync(CancellationToken.None);
 
         return database;
     }

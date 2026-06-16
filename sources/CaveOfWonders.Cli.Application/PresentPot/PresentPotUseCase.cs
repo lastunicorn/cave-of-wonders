@@ -37,7 +37,7 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
         if (string.IsNullOrWhiteSpace(request.PotIdentifier))
             throw new PotIdentifierNotSpecifiedException();
 
-        IEnumerable<Pot> pots = await RetrievePots(request);
+        IEnumerable<Pot> pots = await RetrievePots(request, cancellationToken);
 
         PresentPotResponse response = new()
         {
@@ -49,11 +49,11 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
         return response;
     }
 
-    private async Task<IEnumerable<Pot>> RetrievePots(PresentPotRequest request)
+    private async Task<IEnumerable<Pot>> RetrievePots(PresentPotRequest request, CancellationToken cancellationToken)
     {
         try
         {
-            IEnumerable<Pot> pots = await RetrievePotsByIdOrName(request.PotIdentifier);
+            IEnumerable<Pot> pots = await RetrievePotsByIdOrName(request.PotIdentifier, cancellationToken);
 
             if (!request.IncludeInactivePots)
             {
@@ -71,12 +71,12 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
         }
     }
 
-    private async Task<IEnumerable<Pot>> RetrievePotsByIdOrName(string potIdentifier)
+    private async Task<IEnumerable<Pot>> RetrievePotsByIdOrName(string potIdentifier, CancellationToken cancellationToken)
     {
         bool isIdentifierSpecified = !string.IsNullOrWhiteSpace(potIdentifier);
 
         return isIdentifierSpecified
             ? await unitOfWork.PotRepository.GetByIdOrName(potIdentifier)
-            : await unitOfWork.PotRepository.GetAll();
+            : await unitOfWork.PotRepository.GetAllAsync(cancellationToken);
     }
 }

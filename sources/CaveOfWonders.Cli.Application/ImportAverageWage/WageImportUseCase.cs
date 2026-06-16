@@ -74,7 +74,7 @@ internal class WageImportUseCase : IRequestHandler<WageImportRequest, WageImport
             }
         }
 
-        await unitOfWork.SaveChanges();
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         
         return new WageImportResponse
         {

@@ -4,9 +4,9 @@ namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
 public interface IPotRepository
 {
-    Task<IEnumerable<Pot>> GetAll();
+    Task<IEnumerable<Pot>> GetAllAsync(CancellationToken cancellationToken = default);
     
-    Task<Pot> GetById(Guid id);
+    Task<Pot> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
     Task<IEnumerable<PotSnapshot>> GetSnapshots(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive);
 

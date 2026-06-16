@@ -29,21 +29,21 @@ internal class AverageWagesFile
         this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
     }
 
-    public async Task<IEnumerable<JAverageWageRecord>> Read()
+    public async Task<IEnumerable<JAverageWageRecord>> ReadAsync(CancellationToken cancellationToken)
     {
         if (!File.Exists(filePath))
-            return Enumerable.Empty<JAverageWageRecord>();
+            return [];
 
-        string json = await File.ReadAllTextAsync(filePath);
+        string json = await File.ReadAllTextAsync(filePath, cancellationToken);
 
         return string.IsNullOrEmpty(json)
-            ? Enumerable.Empty<JAverageWageRecord>()
+            ? []
             : JsonConvert.DeserializeObject<IEnumerable<JAverageWageRecord>>(json);
     }
 
-    public Task Save(IEnumerable<JAverageWageRecord> jAverageWageRecords)
+    public Task SaveAsync(IEnumerable<JAverageWageRecord> jAverageWageRecords, CancellationToken cancellationToken)
     {
         string json = JsonConvert.SerializeObject(jAverageWageRecords, Formatting.Indented);
-        return File.WriteAllTextAsync(filePath, json);
+        return File.WriteAllTextAsync(filePath, json, cancellationToken);
     }
 }

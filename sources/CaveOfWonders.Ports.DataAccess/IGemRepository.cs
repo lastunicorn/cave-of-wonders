@@ -20,7 +20,7 @@ namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
 public interface IGemRepository
 {
-    Task<Gem> GetByDate(Guid potId, DateTime date);
+    Task<Gem> GetByDateAsync(Guid potId, DateTime date, CancellationToken cancellationToken = default);
 
     void Add(Gem gem);
 }

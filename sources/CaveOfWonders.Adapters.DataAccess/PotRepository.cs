@@ -28,13 +28,13 @@ public class PotRepository : IPotRepository
         this.database = database ?? throw new ArgumentNullException(nameof(database));
     }
 
-    public Task<IEnumerable<Pot>> GetAll()
+    public Task<IEnumerable<Pot>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         IEnumerable<Pot> result = database.Pots;
         return Task.FromResult(result);
     }
 
-    public Task<Pot> GetById(Guid id)
+    public Task<Pot> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         Pot pot = database.Pots
             .FirstOrDefault(x => x.Id == id);

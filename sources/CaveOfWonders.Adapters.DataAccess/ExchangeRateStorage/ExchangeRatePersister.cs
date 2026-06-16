@@ -17,6 +17,7 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
+using System.Runtime.CompilerServices;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
@@ -29,7 +30,7 @@ internal class ExchangeRatePersister
         this.databaseDirectoryPath = databaseDirectoryPath ?? throw new ArgumentNullException(nameof(databaseDirectoryPath));
     }
 
-    public async IAsyncEnumerable<ExchangeRate> Load()
+    public async IAsyncEnumerable<ExchangeRate> LoadAsync([EnumeratorCancellation] CancellationToken cancellationToken)
     {
         ExchangeRatesDirectory exchangeRatesDirectory = new(databaseDirectoryPath);
 
@@ -40,7 +41,7 @@ internal class ExchangeRatePersister
 
         foreach (ExchangeRatesFile exchangeRatesFile in exchangeRateFiles)
         {
-            List<JExchangeRate> jExchangeRates = (await exchangeRatesFile.ReadAll())
+            List<JExchangeRate> jExchangeRates = (await exchangeRatesFile.ReadAllAsync(cancellationToken))
                 .OrderByDescending(x => x.Date)
                 .ToList();
 
@@ -57,7 +58,7 @@ internal class ExchangeRatePersister
         }
     }
 
-    public async Task Save(IEnumerable<ExchangeRate> exchangeRates)
+    public async Task SaveAsync(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken)
     {
         ExchangeRatesDirectory exchangeRatesDirectory = new(databaseDirectoryPath);
 
@@ -71,7 +72,7 @@ internal class ExchangeRatePersister
         foreach (KeyValuePair<CurrencyPair, IEnumerable<JExchangeRate>> conversionRateGroup in conversionRateGroups)
         {
             ExchangeRatesFile exchangeRatesFile = exchangeRatesDirectory.GetExchangeRateFile(conversionRateGroup.Key);
-            await exchangeRatesFile.SaveAll(conversionRateGroup.Value);
+            await exchangeRatesFile.SaveAllAsync(conversionRateGroup.Value, cancellationToken);
         }
     }
 

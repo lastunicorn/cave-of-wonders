@@ -52,14 +52,14 @@ internal class ImportPotSnapshotsUseCase : IRequestHandler<ImportPotSnapshotsReq
         return log.ExecuteInfo($"Starting import from file: {sourceFilePath}; Import type: {importType};", async () =>
         {
             List<SheetMapping> sheetMappings = GetSheetMappings(request.MappingsFilePath);
-            PotCollection potCollection = await RetrievePotsToPopulate();
+            PotCollection potCollection = await RetrievePotsToPopulate(cancellationToken);
 
             if (request.Overwrite)
                 ClearPots(potCollection, sheetMappings);
 
             SnapshotImportReport importReport = DoImport(request.SourceFilePath, potCollection, sheetMappings);
 
-            await unitOfWork.SaveChanges();
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
             return new ImportPotSnapshotsResponse
             {
@@ -98,11 +98,11 @@ internal class ImportPotSnapshotsUseCase : IRequestHandler<ImportPotSnapshotsReq
             .ToList();
     }
 
-    private async Task<PotCollection> RetrievePotsToPopulate()
+    private async Task<PotCollection> RetrievePotsToPopulate(CancellationToken cancellationToken)
     {
         PotCollection potCollection = new();
 
-        IEnumerable<Pot> pots = await unitOfWork.PotRepository.GetAll();
+        IEnumerable<Pot> pots = await unitOfWork.PotRepository.GetAllAsync(cancellationToken);
         potCollection.AddRange(pots);
 
         return potCollection;

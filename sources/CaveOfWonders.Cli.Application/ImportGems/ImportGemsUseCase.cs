@@ -34,8 +34,8 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 
     public async Task<ImportGemsResponse> Handle(ImportGemsRequest request, CancellationToken cancellationToken)
     {
-        Guid mintosId = new Guid("f48d26ca-ed78-4da4-8d27-ca65676f8ecc");
-        Pot pot = unitOfWork.PotRepository.GetById(mintosId).Result;
+        Guid mintosId = new("f48d26ca-ed78-4da4-8d27-ca65676f8ecc");
+        Pot pot = await unitOfWork.PotRepository.GetByIdAsync(mintosId, cancellationToken);
         
         IAsyncEnumerable<Gem> gemEnumeration = mintosService.GetGemsAsync(request.FilePath, cancellationToken);
 
@@ -45,7 +45,7 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
         {
             response.TotalGemsCount++;
             
-            Gem existingGem = await unitOfWork.GemRepository.GetByDate(mintosId, gem.Date);
+            Gem existingGem = await unitOfWork.GemRepository.GetByDateAsync(mintosId, gem.Date, cancellationToken);
 
             if (existingGem != null)
             {
@@ -69,7 +69,7 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
             }
         }
 
-        await unitOfWork.SaveChanges();
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         
         return response;
     }

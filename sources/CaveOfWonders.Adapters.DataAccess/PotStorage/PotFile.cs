@@ -33,13 +33,13 @@ internal class PotFile
         PotId = Guid.Parse(idAsString);
     }
 
-    public async Task<JPot> Read()
+    public async Task<JPot> ReadAsync(CancellationToken cancellationToken)
     {
-        string json = await File.ReadAllTextAsync(filePath);
+        string json = await File.ReadAllTextAsync(filePath, cancellationToken);
         return JsonConvert.DeserializeObject<JPot>(json);
     }
 
-    public Task Save(JPot jPot)
+    public Task SaveAsync(JPot jPot, CancellationToken cancellationToken)
     {
         IsoDateTimeConverter dateTimeConverter = new()
         {
@@ -47,6 +47,6 @@ internal class PotFile
         };
         string json = JsonConvert.SerializeObject(jPot, Formatting.Indented, dateTimeConverter);
 
-        return File.WriteAllTextAsync(filePath, json);
+        return File.WriteAllTextAsync(filePath, json, cancellationToken);
     }
 }

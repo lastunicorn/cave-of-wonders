@@ -28,9 +28,9 @@ public class GemRepository : IGemRepository
         this.database = database ?? throw new ArgumentNullException(nameof(database));
     }
 
-    public async Task<Gem> GetByDate(Guid potId, DateTime date)
+    public async Task<Gem> GetByDateAsync(Guid potId, DateTime date, CancellationToken cancellationToken = default)
     {
-        await database.LoadGems();
+        await database.LoadGemsAsync(cancellationToken);
 
         return database.Gems
             .FirstOrDefault(x => x.Pot?.Id == potId && x.Date == date);

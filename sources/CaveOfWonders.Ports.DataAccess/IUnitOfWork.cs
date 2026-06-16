@@ -12,5 +12,5 @@ public interface IUnitOfWork
 
     IGemRepository GemRepository { get; }
 
-    public Task SaveChanges();
+    public Task SaveChangesAsync(CancellationToken cancellationToken = default);
 }

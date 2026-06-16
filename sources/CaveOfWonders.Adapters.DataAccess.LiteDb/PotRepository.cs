@@ -29,7 +29,7 @@ public class PotRepository : IPotRepository
         this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    public Task<IEnumerable<Pot>> GetAll()
+    public Task<IEnumerable<Pot>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         IEnumerable<Pot> pots = dbContext.Pots
             .FindAll()
@@ -38,7 +38,7 @@ public class PotRepository : IPotRepository
         return Task.FromResult(pots);
     }
 
-    public Task<Pot> GetById(Guid id)
+    public Task<Pot> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }

@@ -16,6 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
 using DustInTheWind.CaveOfWonders.Domain;
+using System.Runtime.CompilerServices;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
@@ -28,7 +29,7 @@ internal class AverageWagePersister
         this.databaseDirectoryPath = databaseDirectoryPath ?? throw new ArgumentNullException(nameof(databaseDirectoryPath));
     }
 
-    public async IAsyncEnumerable<AverageWage> Load()
+    public async IAsyncEnumerable<AverageWage> LoadAsync([EnumeratorCancellation] CancellationToken cancellationToken)
     {
         if (!Directory.Exists(databaseDirectoryPath))
             yield break;
@@ -39,7 +40,7 @@ internal class AverageWagePersister
         if (!averageWagesFile.Exists)
             yield break;
 
-        IEnumerable<JAverageWageRecord> jAverageWageRecords = await averageWagesFile.Read();
+        IEnumerable<JAverageWageRecord> jAverageWageRecords = await averageWagesFile.ReadAsync(cancellationToken);
 
         IEnumerable<AverageWage> averageWageRecordDtos = jAverageWageRecords
             .Select(x => new AverageWage { Year = x.Year, GrossValue = x.Gross, NetValue = x.Net });
@@ -48,7 +49,7 @@ internal class AverageWagePersister
             yield return averageWage;
     }
 
-    public async Task Save(IEnumerable<AverageWage>  averageWages)
+    public async Task SaveAsync(IEnumerable<AverageWage> averageWages, CancellationToken cancellationToken)
     {
         if (averageWages == null) throw new ArgumentNullException(nameof(averageWages));
         
@@ -61,6 +62,6 @@ internal class AverageWagePersister
         IEnumerable<JAverageWageRecord> jAverageWageRecord = averageWages
             .Select(x => new JAverageWageRecord { Year = x.Year, Gross = x.GrossValue, Net = x.NetValue });
 
-        await averageWageFile.Save(jAverageWageRecord);
+        await averageWageFile.SaveAsync(jAverageWageRecord, cancellationToken);
     }
 }

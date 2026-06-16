@@ -30,13 +30,13 @@ internal class ExchangeRatesFile
 
     public bool Exists => File.Exists(filePath);
 
-    public async Task<List<JExchangeRate>> ReadAll()
+    public async Task<List<JExchangeRate>> ReadAllAsync(CancellationToken cancellationToken)
     {
-        string json = await File.ReadAllTextAsync(filePath);
+        string json = await File.ReadAllTextAsync(filePath, cancellationToken);
         return JsonConvert.DeserializeObject<List<JExchangeRate>>(json);
     }
 
-    public Task SaveAll(IEnumerable<JExchangeRate> conversionRates)
+    public Task SaveAllAsync(IEnumerable<JExchangeRate> conversionRates, CancellationToken cancellationToken)
     {
         IsoDateTimeConverter dateTimeConverter = new()
         {
@@ -44,6 +44,6 @@ internal class ExchangeRatesFile
         };
         string json = JsonConvert.SerializeObject(conversionRates, Formatting.Indented, dateTimeConverter);
 
-        return File.WriteAllTextAsync(filePath, json);
+        return File.WriteAllTextAsync(filePath, json, cancellationToken);
     }
 }

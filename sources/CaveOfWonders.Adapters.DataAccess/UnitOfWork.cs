@@ -42,11 +42,11 @@ public class UnitOfWork : IUnitOfWork
     {
         this.database = database ?? throw new ArgumentNullException(nameof(database));
 
-        database.Load().Wait();
+        database.LoadAsync(CancellationToken.None).Wait();
     }
 
-    public Task SaveChanges()
+    public Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        return database.Save();
+        return database.SaveAsync(cancellationToken);
     }
 }

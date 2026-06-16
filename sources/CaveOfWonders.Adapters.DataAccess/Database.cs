@@ -39,45 +39,45 @@ public class Database
         databaseDirectoryPath = location ?? throw new ArgumentNullException(nameof(location));
     }
 
-    public async Task Load()
+    public async Task LoadAsync(CancellationToken cancellationToken)
     {
         if (!Directory.Exists(databaseDirectoryPath))
             Directory.CreateDirectory(databaseDirectoryPath);
 
-        await LoadExchangeRates();
-        await LoadPots();
-        await LoadCpi();
-        await LoadAverageWages();
+        await LoadExchangeRatesAsync(cancellationToken);
+        await LoadPotsAsync(cancellationToken);
+        await LoadCpiAsync(cancellationToken);
+        await LoadAverageWagesAsync(cancellationToken);
     }
 
-    private async Task LoadExchangeRates()
+    private async Task LoadExchangeRatesAsync(CancellationToken cancellationToken)
     {
         ExchangeRates.Clear();
 
         ExchangeRatePersister exchangeRatePersister = new(databaseDirectoryPath);
 
-        await foreach (ExchangeRate exchangeRate in exchangeRatePersister.Load())
+        await foreach (ExchangeRate exchangeRate in exchangeRatePersister.LoadAsync(cancellationToken))
             ExchangeRates.Add(exchangeRate);
     }
 
-    private async Task LoadPots()
+    private async Task LoadPotsAsync(CancellationToken cancellationToken)
     {
         Pots.Clear();
 
         PotPersister potPersister = new(databaseDirectoryPath);
 
-        await foreach (Pot pot in potPersister.Load())
+        await foreach (Pot pot in potPersister.LoadAsync(cancellationToken))
             Pots.Add(pot);
     }
 
-    public async Task LoadGems(CancellationToken cancellationToken = default)
+    public async Task LoadGemsAsync(CancellationToken cancellationToken)
     {
         if(areGemsLoaded)
             return;
         
         GemPersister gemPersister = new(databaseDirectoryPath);
 
-        IAsyncEnumerable<Gem> gemCollection = gemPersister.Load(cancellationToken);
+        IAsyncEnumerable<Gem> gemCollection = gemPersister.LoadAAsync(cancellationToken);
 
         List<Gem> temp = Gems.ToList();
         Gems.Clear();
@@ -90,66 +90,66 @@ public class Database
         areGemsLoaded = true;
     }
 
-    private async Task LoadCpi()
+    private async Task LoadCpiAsync(CancellationToken cancellationToken)
     {
         CpiRecords.Clear();
         CpiPersister cpiPersister = new(databaseDirectoryPath);
 
-        await foreach (Cpi cpi in cpiPersister.Load())
+        await foreach (Cpi cpi in cpiPersister.LoadAsync(cancellationToken))
             CpiRecords.Add(cpi);
     }
 
-    private async Task LoadAverageWages()
+    private async Task LoadAverageWagesAsync(CancellationToken cancellationToken)
     {
         AverageWages.Clear();
 
         AverageWagePersister averageWagePersister = new(databaseDirectoryPath);
 
-        await foreach (AverageWage averageWage in averageWagePersister.Load())
+        await foreach (AverageWage averageWage in averageWagePersister.LoadAsync(cancellationToken))
             AverageWages.Add(averageWage);
     }
 
-    public async Task Save()
+    public async Task SaveAsync(CancellationToken cancellationToken)
     {
-        await SaveExchangeRates();
-        await SavePots();
-        await SaveCpi();
-        await SaveAverageWages();
+        await SaveExchangeRatesAsync(cancellationToken);
+        await SavePotsAsync(cancellationToken);
+        await SaveCpiAsync(cancellationToken);
+        await SaveAverageWagesAsync(cancellationToken);
         
         if (!areGemsLoaded &&  Gems.Count > 0)
-            await LoadGems();
+            await LoadGemsAsync(cancellationToken);
         
         if (areGemsLoaded)
-            await SaveGems();
+            await SaveGemsAsync(cancellationToken);
     }
 
-    private async Task SaveGems()
-    {
-        GemPersister gemPersister = new(databaseDirectoryPath);
-        await gemPersister.Save(Gems);
-    }
-
-    private Task SaveExchangeRates()
+    private Task SaveExchangeRatesAsync(CancellationToken cancellationToken)
     {
         ExchangeRatePersister exchangeRatePersister = new(databaseDirectoryPath);
-        return exchangeRatePersister.Save(ExchangeRates);
+        return exchangeRatePersister.SaveAsync(ExchangeRates, cancellationToken);
     }
 
-    private Task SavePots()
+    private Task SavePotsAsync(CancellationToken cancellationToken)
     {
         PotPersister potPersister = new(databaseDirectoryPath);
-        return potPersister.Save(Pots);
+        return potPersister.SaveAsync(Pots, cancellationToken);
     }
 
-    private Task SaveCpi()
+    private Task SaveCpiAsync(CancellationToken cancellationToken)
     {
         CpiPersister cpiPersister = new(databaseDirectoryPath);
-        return cpiPersister.Save(CpiRecords);
+        return cpiPersister.SaveAsync(CpiRecords, cancellationToken);
     }
 
-    private Task SaveAverageWages()
+    private Task SaveAverageWagesAsync(CancellationToken cancellationToken)
     {
         AverageWagePersister averageWagePersister = new(databaseDirectoryPath);
-        return averageWagePersister.Save(AverageWages);
+        return averageWagePersister.SaveAsync(AverageWages, cancellationToken);
+    }
+
+    private async Task SaveGemsAsync(CancellationToken  cancellationToken)
+    {
+        GemPersister gemPersister = new(databaseDirectoryPath);
+        await gemPersister.SaveAsync(Gems,  cancellationToken);
     }
 }

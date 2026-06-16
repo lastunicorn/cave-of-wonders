@@ -29,21 +29,21 @@ internal class CpiFile
         this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
     }
 
-    public async Task<IEnumerable<JCpi>> Read()
+    public async Task<IEnumerable<JCpi>> ReadAsync(CancellationToken cancellationToken)
     {
         if (!File.Exists(filePath))
-            return Enumerable.Empty<JCpi>();
+            return [];
 
-        string json = await File.ReadAllTextAsync(filePath);
+        string json = await File.ReadAllTextAsync(filePath, cancellationToken);
 
         return string.IsNullOrEmpty(json)
-            ? Enumerable.Empty<JCpi>()
+            ? []
             : JsonConvert.DeserializeObject<IEnumerable<JCpi>>(json);
     }
 
-    public Task Save(IEnumerable<JCpi> jCpi)
+    public Task SaveAsync(IEnumerable<JCpi> jCpi, CancellationToken cancellationToken)
     {
         string json = JsonConvert.SerializeObject(jCpi, Formatting.Indented);
-        return File.WriteAllTextAsync(filePath, json);
+        return File.WriteAllTextAsync(filePath, json, cancellationToken);
     }
 }

@@ -14,7 +14,7 @@ public class GetAllTests
             .Act(async (database, context) =>
             {
                 PotRepository potRepository = new(database);
-                List<Pot> pots = (await potRepository.GetAll()).ToList();
+                List<Pot> pots = (await potRepository.GetAllAsync()).ToList();
                 context.Pots = pots;
             })
             .Assert((database, context) =>
@@ -45,7 +45,7 @@ public class GetAllTests
             .Act(async (database, context) =>
             {
                 PotRepository potRepository = new(database);
-                List<Pot> pots = (await potRepository.GetAll()).ToList();
+                List<Pot> pots = (await potRepository.GetAllAsync()).ToList();
                 context.Pots = pots;
             })
             .Assert((database, context) =>
@@ -108,7 +108,7 @@ public class GetAllTests
             .Act(async (database, context) =>
             {
                 PotRepository potRepository = new(database);
-                List<Pot> pots = (await potRepository.GetAll()).ToList();
+                List<Pot> pots = (await potRepository.GetAllAsync()).ToList();
                 context.Pots = pots;
             })
             .Assert((database, context) =>
@@ -162,7 +162,7 @@ public class GetAllTests
             .Act(async (database, context) =>
             {
                 PotRepository potRepository = new(database);
-                List<Pot> pots = (await potRepository.GetAll()).ToList();
+                List<Pot> pots = (await potRepository.GetAllAsync()).ToList();
                 context.Pots = pots;
             })
             .Assert((database, context) =>
@@ -204,7 +204,7 @@ public class GetAllTests
             .Act(async (database, context) =>
             {
                 PotRepository potRepository = new(database);
-                List<Pot> pots = (await potRepository.GetAll()).ToList();
+                List<Pot> pots = (await potRepository.GetAllAsync()).ToList();
                 context.Pots = pots;
             })
             .Assert((database, context) =>

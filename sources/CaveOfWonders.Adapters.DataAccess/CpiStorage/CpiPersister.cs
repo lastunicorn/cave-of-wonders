@@ -16,6 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
 using DustInTheWind.CaveOfWonders.Domain;
+using System.Runtime.CompilerServices;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
@@ -28,7 +29,7 @@ internal class CpiPersister
         this.databaseDirectoryPath = databaseDirectoryPath ?? throw new ArgumentNullException(nameof(databaseDirectoryPath));
     }
 
-    public async IAsyncEnumerable<Cpi> Load()
+    public async IAsyncEnumerable<Cpi> LoadAsync([EnumeratorCancellation] CancellationToken cancellationToken)
     {
         if (!Directory.Exists(databaseDirectoryPath))
             yield break;
@@ -39,7 +40,7 @@ internal class CpiPersister
         if (!cpiFile.Exists)
             yield break;
 
-        IEnumerable<JCpi> jCpis = await cpiFile.Read();
+        IEnumerable<JCpi> jCpis = await cpiFile.ReadAsync(cancellationToken);
 
         IEnumerable<Cpi> cpis = jCpis
             .Select(x => new Cpi
@@ -52,7 +53,7 @@ internal class CpiPersister
             yield return cpi;
     }
 
-    public async Task Save(IEnumerable<Cpi> cpis)
+    public async Task SaveAsync(IEnumerable<Cpi> cpis, CancellationToken cancellationToken)
     {
         if (!Directory.Exists(databaseDirectoryPath))
             Directory.CreateDirectory(databaseDirectoryPath);
@@ -67,6 +68,6 @@ internal class CpiPersister
                 Value = x.Value
             });
 
-        await cpiFile.Save(jInflationRecords);
+        await cpiFile.SaveAsync(jInflationRecords, cancellationToken);
     }
 }

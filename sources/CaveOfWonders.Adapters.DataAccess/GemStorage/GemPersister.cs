@@ -29,7 +29,7 @@ internal class GemPersister
         this.databaseDirectoryPath = databaseDirectoryPath ?? throw new ArgumentNullException(nameof(databaseDirectoryPath));
     }
 
-    public async IAsyncEnumerable<Gem> Load([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<Gem> LoadAAsync([EnumeratorCancellation] CancellationToken cancellationToken)
     {
         GemsDirectory gemsDirectory = new(databaseDirectoryPath);
 
@@ -43,7 +43,7 @@ internal class GemPersister
             if (cancellationToken.IsCancellationRequested)
                 throw new TaskCanceledException();
             
-            List<JGem> jGems = await gemsFile.Read(cancellationToken);
+            List<JGem> jGems = await gemsFile.ReadAsync(cancellationToken);
 
             foreach (JGem jGem in jGems)
             {
@@ -65,7 +65,7 @@ internal class GemPersister
         }
     }
 
-    public async Task Save(List<Gem> gems)
+    public async Task SaveAsync(List<Gem> gems, CancellationToken cancellationToken)
     {
         if (gems == null) throw new ArgumentNullException(nameof(gems));
 
@@ -103,7 +103,7 @@ internal class GemPersister
             List<JGem> jGems = jGemsByPotIdEntry.Value;
 
             GemsFile gemsFile = gemsDirectory.GetGemsFile(potId);
-            await gemsFile.Save(jGems);
+            await gemsFile.SaveAsync(jGems, cancellationToken);
         }
     }
 }

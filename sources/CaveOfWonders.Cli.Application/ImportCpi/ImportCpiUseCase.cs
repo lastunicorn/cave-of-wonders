@@ -41,7 +41,7 @@ internal class ImportCpiUseCase : IRequestHandler<ImportCpiRequest, ImportCpiRes
         IEnumerable<CpiRecordDto> cpiRecordDtos = await RetrieveInflationValues(request);
         await AddOrUpdateCpiRecordsToStore(cpiRecordDtos, cancellationToken);
 
-        await unitOfWork.SaveChanges();
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return response;
     }

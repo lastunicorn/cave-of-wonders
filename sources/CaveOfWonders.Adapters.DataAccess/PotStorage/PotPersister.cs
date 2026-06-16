@@ -16,6 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
 using DustInTheWind.CaveOfWonders.Domain;
+using System.Runtime.CompilerServices;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
@@ -28,7 +29,7 @@ internal class PotPersister
         this.databaseDirectoryPath = databaseDirectoryPath ?? throw new ArgumentNullException(nameof(databaseDirectoryPath));
     }
     
-    public async IAsyncEnumerable<Pot> Load()
+    public async IAsyncEnumerable<Pot> LoadAsync([EnumeratorCancellation] CancellationToken cancellationToken)
     {
         PotsDirectory potsDirectory = new(databaseDirectoryPath);
 
@@ -39,7 +40,7 @@ internal class PotPersister
 
         foreach (PotFile potFile in potFiles)
         {
-            JPot jPot = await potFile.Read();
+            JPot jPot = await potFile.ReadAsync(cancellationToken);
 
             Pot pot = new()
             {
@@ -69,7 +70,7 @@ internal class PotPersister
         }
     }
 
-    public async Task Save(IEnumerable<Pot> pots)
+    public async Task SaveAsync(IEnumerable<Pot> pots, CancellationToken cancellationToken)
     {
         if (pots == null) throw new ArgumentNullException(nameof(pots));
         
@@ -99,7 +100,7 @@ internal class PotPersister
             };
 
             PotFile potFile = potsDirectory.GetPotFile(pot.Id);
-            await potFile.Save(jPot);
+            await potFile.SaveAsync(jPot, cancellationToken);
         }
     }
 }

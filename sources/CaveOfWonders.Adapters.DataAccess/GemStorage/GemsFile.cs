@@ -33,13 +33,13 @@ internal class GemsFile
         PotId = Guid.Parse(idAsString);
     }
 
-    public async Task<List<JGem>> Read(CancellationToken cancellationToken = default)
+    public async Task<List<JGem>> ReadAsync(CancellationToken cancellationToken)
     {
         string json = await File.ReadAllTextAsync(filePath, cancellationToken);
         return JsonConvert.DeserializeObject<List<JGem>>(json);
     }
 
-    public Task Save(IEnumerable<JGem> jGems, CancellationToken cancellationToken = default)
+    public Task SaveAsync(IEnumerable<JGem> jGems, CancellationToken cancellationToken)
     {
         IsoDateTimeConverter dateTimeConverter = new()
         {

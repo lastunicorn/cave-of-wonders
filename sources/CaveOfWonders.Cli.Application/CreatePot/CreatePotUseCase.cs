@@ -54,7 +54,7 @@ public class CreatePotUseCase : IRequestHandler<CreatePotRequest, CreatePotRespo
         try
         {
             unitOfWork.PotRepository.Add(pot);
-            await unitOfWork.SaveChanges();
+            await unitOfWork.SaveChangesAsync(cancellationToken);
             
             return new CreatePotResponse
             {
