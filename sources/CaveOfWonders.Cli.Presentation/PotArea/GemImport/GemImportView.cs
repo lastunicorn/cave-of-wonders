@@ -28,9 +28,10 @@ internal class GemImportView : IView<GemImportViewModel>
         dataGrid.Columns.Add("Name");
         dataGrid.Columns.Add("Value");
 
-        dataGrid.Rows.Add("Added", viewModel.AddedGemsCount);
-        dataGrid.Rows.Add("Updated", viewModel.UpdatedGemsCount);
-        dataGrid.Rows.Add("Total", viewModel.TotalGemsCount);
+        dataGrid.Rows.Add("Added", viewModel.AddedGemCount);
+        dataGrid.Rows.Add("Updated", viewModel.UpdatedGemCount);
+        dataGrid.Rows.Add("Skipped", viewModel.SkippedGemCount);
+        dataGrid.Rows.Add("Total", viewModel.TotalGemCount);
 
         dataGrid.Display();
     }

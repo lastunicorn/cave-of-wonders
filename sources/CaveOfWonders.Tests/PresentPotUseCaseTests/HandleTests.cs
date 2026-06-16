@@ -61,7 +61,7 @@ public class HandleTests
 
         // Assert
         potRepository
-            .Verify(x => x.GetByIdOrName(request.PotIdentifier), Times.Once, "Repository should be called with the specified pot identifier.");
+            .Verify(x => x.GetByIdOrName(request.PotIdentifier, CancellationToken.None), Times.Once, "Repository should be called with the specified pot identifier.");
     }
 
     [Fact]
@@ -73,7 +73,7 @@ public class HandleTests
             PotIdentifier = "dummy-id"
         };
         potRepository
-            .Setup(x => x.GetByIdOrName(It.IsAny<string>()))
+            .Setup(x => x.GetByIdOrName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception("Repository is inaccessible."));
 
         // Act
@@ -93,7 +93,7 @@ public class HandleTests
         };
 
         potRepository
-            .Setup(x => x.GetByIdOrName(It.IsAny<string>()))
+            .Setup(x => x.GetByIdOrName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
         // Act
@@ -113,7 +113,7 @@ public class HandleTests
         };
 
         potRepository
-            .Setup(x => x.GetByIdOrName(It.IsAny<string>()))
+            .Setup(x => x.GetByIdOrName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([new Pot()]);
 
         // Act
@@ -133,7 +133,7 @@ public class HandleTests
         };
 
         potRepository
-            .Setup(x => x.GetByIdOrName(It.IsAny<string>()))
+            .Setup(x => x.GetByIdOrName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([
                 new Pot(),
                 new Pot()

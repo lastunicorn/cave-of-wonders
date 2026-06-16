@@ -20,7 +20,7 @@ namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
 public interface IGemRepository
 {
-    Task<Gem> GetByDateAsync(Guid potId, DateTime date, CancellationToken cancellationToken = default);
+    IAsyncEnumerable<Gem> GetByDateAsync(Guid potId, DateTime date, CancellationToken cancellationToken = default);
     
     IAsyncEnumerable<Gem> FindByDateAsync(Guid potId, DateOnly date, CancellationToken cancellationToken = default);
 

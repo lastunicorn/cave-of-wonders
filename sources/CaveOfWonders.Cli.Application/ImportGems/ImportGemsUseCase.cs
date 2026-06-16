@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWanders.Ports.MintosAccess;
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using MediatR;
@@ -37,43 +38,81 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 
     public async Task<ImportGemsResponse> Handle(ImportGemsRequest request, CancellationToken cancellationToken)
     {
-        Guid mintosId = new("f48d26ca-ed78-4da4-8d27-ca65676f8ecc");
-        Pot pot = await unitOfWork.PotRepository.GetByIdAsync(mintosId, cancellationToken);
-        
+        Pot pot = await FindPot(request.PotId, cancellationToken);
+
         IAsyncEnumerable<Gem> gemEnumeration = mintosService.GetGemsAsync(request.FilePath, cancellationToken);
 
         ImportGemsResponse response = new();
-        
+
         await foreach (Gem gem in gemEnumeration)
         {
-            response.TotalGemsCount++;
-            
-            Gem existingGem = await unitOfWork.GemRepository.GetByDateAsync(mintosId, gem.Date, cancellationToken);
+            response.TotalGemCount++;
+
+            gem.Pot = pot;
+            Gem existingGem = await FindExistingGem(gem, cancellationToken);
 
             if (existingGem != null)
             {
                 if (gem != existingGem)
                 {
-                    response.UpdatedGemsCount++;
-                    
+                    response.UpdatedGemCount++;
+
                     existingGem.Category = gem.Category;
                     existingGem.Amount = gem.Amount;
                     existingGem.Description = gem.Description;
+                    existingGem.Pot = gem.Pot;
                     existingGem.Parameters.Clear();
                     existingGem.Parameters.AddRange(gem.Parameters);
+                }
+                else
+                {
+                    response.SkippedGemCount++;
                 }
             }
             else
             {
-                response.AddedGemsCount++;
-
-                gem.Pot = pot;
+                response.AddedGemCount++;
                 unitOfWork.GemRepository.Add(gem);
             }
         }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
         return response;
+    }
+
+    private async Task<Pot> FindPot(PotIdentifier potId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            IEnumerable<Pot> potEnumeration = await unitOfWork.PotRepository.GetByIdOrName(potId, cancellationToken);
+            return potEnumeration.Single();
+        }
+        catch (Exception ex)
+        {
+            throw new CaveOfWandersException($"The specified pot identifier must match a single pot: '{potId}'", ex);
+        }
+    }
+
+    private async Task<Gem> FindExistingGem(Gem gem, CancellationToken cancellationToken)
+    {
+        if (gem.Pot == null)
+            return null;
+
+        IAsyncEnumerable<Gem> existingGems = unitOfWork.GemRepository.GetByDateAsync(gem.Pot.Id, gem.Date, cancellationToken);
+
+        await foreach (Gem existingGem in existingGems)
+        {
+            bool areTheSame = existingGem.Date == gem.Date
+                && existingGem.Amount == gem.Amount
+                && existingGem.Category == gem.Category
+                && existingGem.Parameters.Count == gem.Parameters.Count
+                && !existingGem.Parameters.Except(gem.Parameters).Any();
+
+            if (areTheSame)
+                return existingGem;
+        }
+
+        return null;
     }
 }

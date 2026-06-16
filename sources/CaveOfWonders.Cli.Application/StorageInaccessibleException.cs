@@ -16,7 +16,7 @@
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application;
 
-public class StorageInaccessibleException : Exception
+public class StorageInaccessibleException : CaveOfWandersException
 {
     private const string DefaultMessage = "Storage is inaccessible.";
 

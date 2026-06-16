@@ -2,7 +2,7 @@
   "profiles": {
     "CaveOfWonders.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "gem --pot f48d26ca-ed78-4da4-8d27-ca65676f8ecc"
+      "commandLineArgs": "gem-import --pot f48d26ca-ed78-4da4-8d27-ca65676f8ecc"
     }
   }
 }

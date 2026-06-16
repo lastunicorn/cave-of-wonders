@@ -18,9 +18,11 @@ namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.GemImport;
 
 internal class GemImportViewModel
 {
-    public int UpdatedGemsCount { get; init; }
+    public int UpdatedGemCount { get; init; }
 
-    public int AddedGemsCount { get; init; }
+    public int AddedGemCount { get; init; }
+    
+    public int SkippedGemCount { get; init; }
 
-    public int TotalGemsCount { get; init; }
+    public int TotalGemCount { get; init; }
 }

@@ -57,12 +57,18 @@ public class GemRepository : IGemRepository
         }
     }
 
-    public async Task<Gem> GetByDateAsync(Guid potId, DateTime date, CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<Gem> GetByDateAsync(Guid potId, DateTime date, CancellationToken cancellationToken = default)
     {
         await database.LoadGemsAsync(cancellationToken);
 
-        return database.Gems
-            .FirstOrDefault(x => x.Pot?.Id == potId && x.Date == date);
+        IEnumerable<Gem> gems = database.Gems
+            .Where(x => x.Pot?.Id == potId && x.Date == date);
+
+        foreach (Gem gem in gems)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            yield return gem;
+        }
     }
 
     public void Add(Gem gem)

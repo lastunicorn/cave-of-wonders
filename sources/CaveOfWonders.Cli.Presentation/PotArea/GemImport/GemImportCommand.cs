@@ -25,25 +25,33 @@ internal class GemImportCommand : IConsoleCommand<GemImportViewModel>
 {
     private readonly IMediator mediator;
 
+    [NamedParameter("file", IsMandatory = true, Description = "The path to the file from which to import the gems.")]
+    public string FilePath { get; set; }
+
+    [NamedParameter("pot", IsMandatory = false, Description = "The pot id for which to import the gems.")]
+    public string PotId { get; set; }
+
     public GemImportCommand(IMediator mediator)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
-    
+
     public async Task<GemImportViewModel> Execute()
     {
         ImportGemsRequest request = new()
         {
-            FilePath = @"/nfs/YubabaAlez/finanțe/mintos/account statements/2026/05 - mai/2026 05 - account-statement.csv"
+            FilePath = FilePath,
+            PotId = PotId
         };
-        
+
         ImportGemsResponse response = await mediator.Send(request);
-        
+
         return new GemImportViewModel
         {
-            UpdatedGemsCount = response.UpdatedGemsCount,
-            AddedGemsCount = response.AddedGemsCount,
-            TotalGemsCount = response.TotalGemsCount
+            UpdatedGemCount = response.UpdatedGemCount,
+            AddedGemCount = response.AddedGemCount,
+            SkippedGemCount = response.SkippedGemCount,
+            TotalGemCount = response.TotalGemCount
         };
     }
 }

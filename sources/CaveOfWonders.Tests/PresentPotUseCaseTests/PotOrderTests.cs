@@ -144,7 +144,7 @@ public class PotOrderTests
         };
 
         potRepository
-            .Setup(x => x.GetByIdOrName(It.IsAny<string>()))
+            .Setup(x => x.GetByIdOrName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(potsFromRepository);
 
         // Act

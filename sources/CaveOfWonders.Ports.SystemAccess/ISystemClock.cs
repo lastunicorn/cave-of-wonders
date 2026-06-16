@@ -2,7 +2,7 @@
 
 public interface ISystemClock
 {
-    public DateTime Now { get; }
+    DateTime Now { get; }
 
-    public DateOnly Today { get; }
+    DateOnly Today { get; }
 }

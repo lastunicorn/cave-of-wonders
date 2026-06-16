@@ -12,7 +12,7 @@ public interface IPotRepository
 
     IAsyncEnumerable<Pot> GetByPartialIdAsync(string partialPotId, CancellationToken cancellationToken = default);
 
-    Task<IEnumerable<Pot>> GetByIdOrName(string idOrName);
+    Task<IEnumerable<Pot>> GetByIdOrName(string idOrName, CancellationToken cancellationToken = default);
     
     void Add(Pot pot);
 }

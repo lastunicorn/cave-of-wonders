@@ -67,7 +67,7 @@ public class PotRepository : IPotRepository
         }
     }
 
-    public Task<IEnumerable<Pot>> GetByIdOrName(string idOrName)
+    public Task<IEnumerable<Pot>> GetByIdOrName(string idOrName, CancellationToken cancellationToken = default)
     {
         string idWithoutDashes = idOrName.Trim().Replace("-", string.Empty);
 

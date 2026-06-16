@@ -14,33 +14,24 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.DataTypes;
+namespace DustInTheWind.CaveOfWonders.Cli.Application;
 
-namespace DustInTheWind.CaveOfWonders.Domain;
-
-public record class Gem
+public class CaveOfWandersException : Exception
 {
-    public DateTime Date { get; set; }
+    private const string DefaultMessage = "An unknown exception happened.";
 
-    public GemCategory Category { get; set; }
-
-    public decimal Amount { get; set; }
-
-    public string Description { get; set; }
-
-    public Dictionary<string, string> Parameters { get; } = [];
-
-    public Pot Pot { get; set; }
-
-    public virtual bool Equals(Gem other)
+    public CaveOfWandersException(string message)
+        : base(message)
     {
-        if (other == null) return false;
+    }
 
-        return Date == other.Date
-            && Category == other.Category
-            && Amount == other.Amount
-            && Description == other.Description
-            && Parameters.SequenceEqual(other.Parameters)
-            && Pot?.Id == other.Pot?.Id;
+    public CaveOfWandersException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
+
+    public CaveOfWandersException(Exception innerException)
+        : base(DefaultMessage, innerException)
+    {
     }
 }
