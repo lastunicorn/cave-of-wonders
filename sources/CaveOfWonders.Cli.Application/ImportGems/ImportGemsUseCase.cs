@@ -21,6 +21,9 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;
 
+/// <summary>
+/// For now, this use case is hard-coded to import only Mintos gems (transactions).
+/// </summary>
 internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGemsResponse>
 {
     private readonly IMintosService mintosService;
