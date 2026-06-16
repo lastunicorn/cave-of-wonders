@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Main Build
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup msbuild
+        uses: actions/setup-dotnet@v4
+        
+      - name: Install dependencies
+        run: dotnet restore "./CaveOfWonders.slnx"
+        
+      - name: Build 
+        run: dotnet build --configuration Release --no-restore "./CaveOfWonders.slnx"
+        
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal "./CaveOfWonders.slnx"
