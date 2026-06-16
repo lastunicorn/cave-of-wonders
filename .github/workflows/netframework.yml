@@ -19,10 +19,10 @@ jobs:
         uses: actions/setup-dotnet@v1.7.2
         
       - name: Install dependencies
-        run: dotnet restore "sources/CaveOfWonders.sln"
+        run: dotnet restore "CaveOfWonders.slnx"
         
       - name: Build 
-        run: dotnet build --configuration Release --no-restore "sources/CaveOfWonders.sln"
+        run: dotnet build --configuration Release --no-restore "CaveOfWonders.slnx"
         
       - name: Test
-        run: dotnet test --no-restore --verbosity normal "sources/CaveOfWonders.sln"
+        run: dotnet test --no-restore --verbosity normal "CaveOfWonders.slnx"

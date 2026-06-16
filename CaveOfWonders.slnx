@@ -1,0 +1,50 @@
+<Solution>
+	<Folder Name="/App.Cli/">
+		<Project Path="sources/CaveOfWonders.Cli.Application/CaveOfWonders.Cli.Application.csproj" />
+		<Project Path="sources/CaveOfWonders.Cli.Presentation/CaveOfWonders.Cli.Presentation.csproj" />
+		<Project Path="sources/CaveOfWonders.Cli/CaveOfWonders.Cli.csproj" />
+	</Folder>
+	<Folder Name="/App.WebApi/">
+		<Project Path="sources/CaveOfWonders.WebApi.Presentation/CaveOfWonders.WebApi.Presentation.csproj" />
+		<Project Path="sources/CaveOfWonders.WebApi/CaveOfWonders.WebApi.csproj" />
+	</Folder>
+	<Folder Name="/Ports/" />
+	<Folder Name="/Ports/BnrAccess/">
+		<Project Path="sources/CaveOfWonders.Adapters.BnrAccess/CaveOfWonders.Adapters.BnrAccess.csproj" />
+		<Project Path="sources/CaveOfWonders.Ports.BnrAccess/CaveOfWonders.Ports.BnrAccess.csproj" />
+	</Folder>
+	<Folder Name="/Ports/DataAccess/">
+		<Project Path="sources/CaveOfWonders.Adapters.DataAccess.LiteDb/CaveOfWonders.Adapters.DataAccess.LiteDb.csproj" />
+		<Project Path="sources/CaveOfWonders.Adapters.DataAccess/CaveOfWonders.Adapters.DataAccess.Json.csproj" />
+		<Project Path="sources/CaveOfWonders.Ports.DataAccess/CaveOfWonders.Ports.DataAccess.csproj" />
+	</Folder>
+	<Folder Name="/Ports/FileAccess/">
+		<Project Path="sources/CaveOfWonders.Adapters.FileAccess/CaveOfWonders.Adapters.FileAccess.csproj" />
+		<Project Path="sources/CaveOfWonders.Ports.FileAccess/CaveOfWonders.Ports.FileAccess.csproj" />
+	</Folder>
+	<Folder Name="/Ports/InsAccess/">
+		<Project Path="sources/CaveOfWonders.Adapters.InsAccess/CaveOfWonders.Adapters.InsAccess.csproj" />
+		<Project Path="sources/CaveOfWonders.Ports.InsAccess/CaveOfWonders.Ports.InsAccess.csproj" />
+	</Folder>
+	<Folder Name="/Ports/LogAccess/">
+		<Project Path="sources/CaveOfWonders.Adapters.LogAccess/CaveOfWonders.Adapters.LogAccess.csproj" />
+		<Project Path="sources/CaveOfWonders.Ports.LogAccess/CaveOfWonders.Ports.LogAccess.csproj" />
+	</Folder>
+	<Folder Name="/Ports/MintosAccess/">
+		<Project Path="sources/CaveOfWanders.Adapters.MintosAccess/CaveOfWanders.Adapters.MintosAccess.csproj" />
+		<Project Path="sources/CaveOfWanders.Ports.MintosAccess/CaveOfWanders.Ports.MintosAccess.csproj" />
+	</Folder>
+	<Folder Name="/Ports/SpreadsheetAccess/">
+		<Project Path="sources/CaveOfWonders.Adapters.SpreadsheetAccess\CaveOfWonders.Adapters.SpreadsheetAccess.csproj" />
+		<Project Path="sources/CaveOfWonders.Ports.SpreadsheetAccess\CaveOfWonders.Ports.SpreadsheetAccess.csproj" />
+	</Folder>
+	<Folder Name="/Ports/SystemAccess/">
+		<Project Path="sources/CaveOfWonders.Adapters.SystemAccess/CaveOfWonders.Adapters.SystemAccess.csproj" />
+		<Project Path="sources/CaveOfWonders.Ports.SystemAccess/CaveOfWonders.Ports.SystemAccess.csproj" />
+	</Folder>
+	<Project Path="sources/CaveOfWonders.DataTypes/CaveOfWonders.DataTypes.csproj" />
+	<Project Path="sources/CaveOfWonders.Domain/CaveOfWonders.Domain.csproj" />
+	<Project Path="sources/CaveOfWonders.Infrastructure/CaveOfWonders.Infrastructure.csproj" />
+	<Project Path="sources/CaveOfWonders.IntegrationTests/CaveOfWonders.IntegrationTests.csproj" />
+	<Project Path="sources/CaveOfWonders.Tests/CaveOfWonders.Tests.csproj" />
+</Solution>
