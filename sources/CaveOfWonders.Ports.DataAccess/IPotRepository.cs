@@ -10,7 +10,7 @@ public interface IPotRepository
 
     Task<IEnumerable<PotSnapshot>> GetSnapshots(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive);
 
-    Task<IEnumerable<Pot>> GetByPartialId(string partialPotId);
+    IAsyncEnumerable<Pot> GetByPartialIdAsync(string partialPotId, CancellationToken cancellationToken = default);
 
     Task<IEnumerable<Pot>> GetByIdOrName(string idOrName);
     

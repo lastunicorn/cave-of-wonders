@@ -16,6 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using System.Runtime.CompilerServices;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
@@ -38,7 +39,7 @@ public class PotRepository : IPotRepository
     {
         Pot pot = database.Pots
             .FirstOrDefault(x => x.Id == id);
-        
+
         return Task.FromResult(pot);
     }
 
@@ -52,14 +53,18 @@ public class PotRepository : IPotRepository
         return Task.FromResult(potInstances);
     }
 
-    public Task<IEnumerable<Pot>> GetByPartialId(string partialPotId)
+    public async IAsyncEnumerable<Pot> GetByPartialIdAsync(string partialPotId, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         string idWithoutDashes = partialPotId.Trim().Replace("-", string.Empty);
 
-        IEnumerable<Pot> pot = database.Pots
+        IEnumerable<Pot> pots = database.Pots
             .Where(x => x.Id.ToString("N").Contains(idWithoutDashes, StringComparison.InvariantCultureIgnoreCase));
 
-        return Task.FromResult(pot);
+        foreach (Pot pot in pots)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            yield return pot;
+        }
     }
 
     public Task<IEnumerable<Pot>> GetByIdOrName(string idOrName)

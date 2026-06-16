@@ -14,6 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.AverageWageStorage;
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.CpiStorage;
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.ExchangeRateStorage;
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.GemStorage;
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.PotStorage;
 using DustInTheWind.CaveOfWonders.Domain;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
@@ -77,7 +82,7 @@ public class Database
         
         GemPersister gemPersister = new(databaseDirectoryPath);
 
-        IAsyncEnumerable<Gem> gemCollection = gemPersister.LoadAAsync(cancellationToken);
+        IAsyncEnumerable<Gem> gemCollection = gemPersister.LoadAsync(Pots, cancellationToken);
 
         List<Gem> temp = Gems.ToList();
         Gems.Clear();

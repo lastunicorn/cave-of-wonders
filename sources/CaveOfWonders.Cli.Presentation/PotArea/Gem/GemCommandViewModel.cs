@@ -14,14 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentGems;
 
-public enum GemCategory
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Gem;
+
+internal class GemCommandViewModel
 {
-    Unknown = 0,
-    Deposit,
-    Withdrawal,
-    Gain,
-    Loss,
-    Bonus
+    public List<GemDto> Gems { get; set; }
 }

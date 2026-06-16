@@ -1,5 +1,5 @@
-﻿// Cave of Wonders
-// Copyright (C) 2023-2025 Dust in the Wind
+// Cave of Wonders
+// Copyright (C) 2023-2024 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,11 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.PotStorage;
+namespace DustInTheWind.CaveOfWonders.DataTypes;
 
-public class JSnapshot
+public enum GemCategory
 {
-    public DateOnly Date { get; set; }
-
-    public decimal Value { get; set; }
+    Unknown = 0,
+    Deposit,
+    Withdrawal,
+    Gain,
+    Loss,
+    Bonus
 }

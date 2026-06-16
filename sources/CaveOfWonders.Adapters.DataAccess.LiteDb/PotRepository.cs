@@ -17,6 +17,7 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.Entities;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using System.Runtime.CompilerServices;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb;
 
@@ -54,7 +55,7 @@ public class PotRepository : IPotRepository
         return Task.FromResult(potInstances);
     }
 
-    public Task<IEnumerable<Pot>> GetByPartialId(string partialPotId)
+    public async IAsyncEnumerable<Pot> GetByPartialIdAsync(string partialPotId, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         string idWithoutDashes = partialPotId.Trim().Replace("-", string.Empty);
 
@@ -63,7 +64,11 @@ public class PotRepository : IPotRepository
             .Where(x => x.Id.ToString("N").Contains(idWithoutDashes, StringComparison.InvariantCultureIgnoreCase))
             .Select(x => x.ToDomainEntity());
 
-        return Task.FromResult(pots);
+        foreach (Pot pot in pots)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            yield return pot;
+        }
     }
 
     public Task<IEnumerable<Pot>> GetByIdOrName(string idOrName)

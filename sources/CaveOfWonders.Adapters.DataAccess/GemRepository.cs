@@ -16,6 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using System.Runtime.CompilerServices;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
@@ -26,6 +27,34 @@ public class GemRepository : IGemRepository
     public GemRepository(Database database)
     {
         this.database = database ?? throw new ArgumentNullException(nameof(database));
+    }
+
+    public async IAsyncEnumerable<Gem> FindByDateAsync(Guid potId, DateOnly date, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        await database.LoadGemsAsync(cancellationToken);
+
+        IEnumerable<Gem> gems = database.Gems
+            .Where(x => x.Pot?.Id == potId && DateOnly.FromDateTime(x.Date) == date);
+
+        foreach (Gem gem in gems)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            yield return gem;
+        }
+    }
+
+    public async IAsyncEnumerable<Gem> GetByPotIdAsync(Guid potId, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        await database.LoadGemsAsync(cancellationToken);
+
+        IEnumerable<Gem> gems = database.Gems
+            .Where(x => x.Pot?.Id == potId);
+
+        foreach (Gem gem in gems)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            yield return gem;
+        }
     }
 
     public async Task<Gem> GetByDateAsync(Guid potId, DateTime date, CancellationToken cancellationToken = default)

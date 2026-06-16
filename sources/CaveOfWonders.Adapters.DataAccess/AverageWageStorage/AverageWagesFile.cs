@@ -16,7 +16,7 @@
 
 using Newtonsoft.Json;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.AverageWageStorage;
 
 internal class AverageWagesFile
 {

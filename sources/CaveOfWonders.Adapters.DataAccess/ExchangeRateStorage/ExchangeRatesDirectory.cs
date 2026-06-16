@@ -15,9 +15,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.DataTypes;
-using DustInTheWind.CaveOfWonders.Infrastructure;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.ExchangeRateStorage;
 
 internal class ExchangeRatesDirectory
 {

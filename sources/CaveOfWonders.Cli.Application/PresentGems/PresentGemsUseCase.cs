@@ -19,29 +19,34 @@ using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using MediatR;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentWage;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentGems;
 
-internal class PresentWageUseCase : IRequestHandler<PresentWageRequest, PresentWageResponse>
+internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentGemsResponse>
 {
     private readonly IUnitOfWork unitOfWork;
 
-    public PresentWageUseCase(IUnitOfWork unitOfWork)
+    public PresentGemsUseCase(IUnitOfWork unitOfWork)
     {
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
 
-    public async Task<PresentWageResponse> Handle(PresentWageRequest request, CancellationToken cancellationToken)
+    public async Task<PresentGemsResponse> Handle(PresentGemsRequest request, CancellationToken cancellationToken)
     {
-        IAsyncEnumerable<AverageWage> averageWages = unitOfWork.AverageWageRepository.GetAllAsync(cancellationToken);
+        IAsyncEnumerable<Pot> potEnumeration = unitOfWork.PotRepository.GetByPartialIdAsync(request.PotId, cancellationToken);
+        Pot pot = await potEnumeration.SingleAsync();
 
-        return new PresentWageResponse
+        IAsyncEnumerable<Gem> gems = request.Date.HasValue
+            ? unitOfWork.GemRepository.FindByDateAsync(pot.Id, request.Date.Value, cancellationToken)
+            : unitOfWork.GemRepository.GetByPotIdAsync(pot.Id, cancellationToken);
+
+        return new PresentGemsResponse
         {
-            Values = await averageWages
-                .Select(x => new AverageWageDto
+            Gems = await gems
+                .Select(x => new GemDto
                 {
-                    Year = x.Year,
-                    GrossValue = x.GrossValue,
-                    NetValue = x.NetValue
+                    Date = x.Date,
+                    Category = x.Category,
+                    Amount = x.Amount
                 })
                 .ToListAsync()
         };

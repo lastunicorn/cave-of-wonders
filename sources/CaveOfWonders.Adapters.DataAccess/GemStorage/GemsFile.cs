@@ -17,7 +17,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.GemStorage;
 
 internal class GemsFile
 {

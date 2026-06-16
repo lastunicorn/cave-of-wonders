@@ -14,11 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
 using DustInTheWind.CaveOfWonders.Domain;
 using System.Runtime.CompilerServices;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.CpiStorage;
 
 internal class CpiPersister
 {

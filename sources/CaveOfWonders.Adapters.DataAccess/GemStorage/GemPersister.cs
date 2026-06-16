@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.JsonFileStorage;
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using System.Runtime.CompilerServices;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.GemStorage;
 
 internal class GemPersister
 {
@@ -29,7 +29,7 @@ internal class GemPersister
         this.databaseDirectoryPath = databaseDirectoryPath ?? throw new ArgumentNullException(nameof(databaseDirectoryPath));
     }
 
-    public async IAsyncEnumerable<Gem> LoadAAsync([EnumeratorCancellation] CancellationToken cancellationToken)
+    public async IAsyncEnumerable<Gem> LoadAsync(List<Pot> pots, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         GemsDirectory gemsDirectory = new(databaseDirectoryPath);
 
@@ -51,7 +51,8 @@ internal class GemPersister
                 {
                     Date = jGem.Date,
                     Amount = jGem.Amount,
-                    Description = jGem.Description
+                    Description = jGem.Description,
+                    Pot = pots?.FirstOrDefault(x => x.Id == gemsFile.PotId)
                 };
 
                 if (Enum.TryParse(jGem.Category, out GemCategory category))
