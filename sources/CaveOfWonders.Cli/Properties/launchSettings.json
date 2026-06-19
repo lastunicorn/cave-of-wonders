@@ -2,7 +2,7 @@
   "profiles": {
     "CaveOfWonders.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "gem --pot mintos --month 05/2026"
+      "commandLineArgs": "gem-import --file=\"/nfs/YubabaAlez/finanțe/mintos/account statements/2026/05 - mai/2026 05 - account-statement.csv\" --pot mintos"
     }
   }
 }

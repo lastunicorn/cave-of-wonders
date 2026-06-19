@@ -16,6 +16,19 @@ public record class Gem
 
     public Pot Pot { get; set; }
 
+    public string GetParameterValue(string parameterName)
+    {
+        return Parameters.GetValueOrDefault(parameterName);
+    }
+    
+    public bool HasParameter(string key, string value)
+    {
+        if (Parameters.TryGetValue(key, out string parameterValue))
+            return parameterValue == value;
+
+        return false;
+    }
+
     public virtual bool Equals(Gem other)
     {
         if (other == null) return false;

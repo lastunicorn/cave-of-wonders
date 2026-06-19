@@ -104,13 +104,19 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 
         await foreach (Gem existingGem in existingGems)
         {
-            bool areTheSame = existingGem.Date == gem.Date
-                && existingGem.Amount == gem.Amount
-                && existingGem.Category == gem.Category
-                && existingGem.Parameters.Count == gem.Parameters.Count
-                && !existingGem.Parameters.Except(gem.Parameters).Any();
+            if (existingGem.Date != gem.Date)
+                continue;
 
-            if (areTheSame)
+            const string parameterName = "TransactionId";
+
+            string existingTransactionId = existingGem.Parameters.GetValueOrDefault(parameterName);
+
+            if (existingTransactionId == null)
+                continue;
+
+            string newTransactionId = gem.Parameters.GetValueOrDefault(parameterName);
+
+            if (newTransactionId == existingTransactionId)
                 return existingGem;
         }
 
