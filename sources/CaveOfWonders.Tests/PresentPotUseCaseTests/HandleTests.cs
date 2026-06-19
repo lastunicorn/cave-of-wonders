@@ -56,6 +56,10 @@ public class HandleTests
             PotIdentifier = "dummy-id"
         };
 
+        potRepository
+            .Setup(x => x.GetByIdOrName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Returns(Array.Empty<Pot>().ToAsyncEnumerable());
+
         // Act
         _ = await useCase.Handle(request, CancellationToken.None);
 
@@ -74,7 +78,7 @@ public class HandleTests
         };
         potRepository
             .Setup(x => x.GetByIdOrName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new Exception("Repository is inaccessible."));
+            .Throws(new Exception("Repository is inaccessible."));
 
         // Act
         Func<Task> action = async () => await useCase.Handle(request, CancellationToken.None);
@@ -94,7 +98,7 @@ public class HandleTests
 
         potRepository
             .Setup(x => x.GetByIdOrName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync([]);
+            .Returns(Array.Empty<Pot>().ToAsyncEnumerable());
 
         // Act
         PresentPotResponse response = await useCase.Handle(request, CancellationToken.None);
@@ -114,7 +118,7 @@ public class HandleTests
 
         potRepository
             .Setup(x => x.GetByIdOrName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync([new Pot()]);
+            .Returns(new List<Pot> { new() }.ToAsyncEnumerable());
 
         // Act
         PresentPotResponse response = await useCase.Handle(request, CancellationToken.None);
@@ -134,10 +138,7 @@ public class HandleTests
 
         potRepository
             .Setup(x => x.GetByIdOrName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync([
-                new Pot(),
-                new Pot()
-            ]);
+            .Returns(new List<Pot> { new(), new() }.ToAsyncEnumerable());
 
         // Act
         PresentPotResponse response = await useCase.Handle(request, CancellationToken.None);

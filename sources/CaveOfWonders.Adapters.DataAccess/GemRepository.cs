@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using System.Runtime.CompilerServices;
 
@@ -57,7 +58,21 @@ public class GemRepository : IGemRepository
         }
     }
 
-    public async IAsyncEnumerable<Gem> GetByDateAsync(Guid potId, DateTime date, CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<Gem> FindByMonthAsync(Guid potId, MonthDate month, [EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        await database.LoadGemsAsync(cancellationToken);
+
+        IEnumerable<Gem> gems = database.Gems
+            .Where(x => x.Pot?.Id == potId && x.Date.Month == month.Month && x.Date.Year == month.Year);
+
+        foreach (Gem gem in gems)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            yield return gem;
+        }
+    }
+
+    public async IAsyncEnumerable<Gem> GetByDateAsync(Guid potId, DateTime date, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         await database.LoadGemsAsync(cancellationToken);
 

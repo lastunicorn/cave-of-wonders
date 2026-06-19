@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.Utils;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using System.Runtime.CompilerServices;
@@ -29,10 +30,10 @@ public class PotRepository : IPotRepository
         this.database = database ?? throw new ArgumentNullException(nameof(database));
     }
 
-    public Task<IEnumerable<Pot>> GetAllAsync(CancellationToken cancellationToken = default)
+    public IAsyncEnumerable<Pot> GetAllAsync(CancellationToken cancellationToken = default)
     {
         IEnumerable<Pot> result = database.Pots;
-        return Task.FromResult(result);
+        return result.ToAsyncEnumerable(cancellationToken);
     }
 
     public Task<Pot> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -67,14 +68,18 @@ public class PotRepository : IPotRepository
         }
     }
 
-    public Task<IEnumerable<Pot>> GetByIdOrName(string idOrName, CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<Pot> GetByIdOrName(string idOrName, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        string idWithoutDashes = idOrName.Trim().Replace("-", string.Empty);
+        string idWithoutDashes = idOrName
+            .Trim()
+            .Replace("-", string.Empty);
 
         IEnumerable<Pot> pots = database.Pots
-            .Where(x => x.Id.ToString("N").Contains(idWithoutDashes, StringComparison.InvariantCultureIgnoreCase) || (x.Name?.Contains(idOrName, StringComparison.InvariantCultureIgnoreCase) ?? false));
+            .Where(x => x.Id.ToString("N").Contains(idWithoutDashes, StringComparison.InvariantCultureIgnoreCase)
+                || (x.Name?.Contains(idOrName, StringComparison.InvariantCultureIgnoreCase) ?? false));
 
-        return Task.FromResult(pots);
+        foreach (Pot pot in pots)
+            yield return pot;
     }
 
     public void Add(Pot pot)

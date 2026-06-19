@@ -16,6 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots.Importing;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.LogAccess;
 using DustInTheWind.CaveOfWonders.Ports.SpreadsheetAccess;
@@ -102,7 +103,9 @@ internal class ImportPotSnapshotsUseCase : IRequestHandler<ImportPotSnapshotsReq
     {
         PotCollection potCollection = new();
 
-        IEnumerable<Pot> pots = await unitOfWork.PotRepository.GetAllAsync(cancellationToken);
+        IEnumerable<Pot> pots = await unitOfWork.PotRepository.GetAllAsync(cancellationToken)
+            .ToListAsync();
+        
         potCollection.AddRange(pots);
 
         return potCollection;

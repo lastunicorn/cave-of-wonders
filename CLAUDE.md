@@ -33,6 +33,7 @@ The codebase follows a **Ports & Adapters (Hexagonal) architecture** with a stri
 
 ```
 Domain / DataTypes          — pure entities and enums, no dependencies
+Infrastructure              — shared utilities (AsyncEnumerableExtensions, EnumerableExtensions, etc.)
 Cli.Application             — use cases (MediatR request/handler pairs), depend on Ports
 Ports.*                     — interfaces for external concerns (data access, BNR, INS, spreadsheets, files, clock, log)
 Adapters.*                  — concrete implementations of Port interfaces
@@ -47,7 +48,12 @@ WebApi.Presentation         — ASP.NET Core controllers and DTOs
 - The JSON data adapter (`Adapters.DataAccess.Json`) is the primary storage: it stores data as JSON files in a directory path configured via `Database:Path` in `appsettings.json`. There is also a LiteDb adapter (`Adapters.DataAccess.LiteDb`) for pot/exchange-rate storage.
 - JSON storage model types are prefixed with `J` (e.g., `JGem`, `JPot`, `JExchangeRate`) and live in `*Storage/` subdirectories.
 - CLI commands use **ConsoleTools.Commando** for routing. Each command class in `Cli.Presentation` is auto-discovered via `RegisterCommandsFrom`. Commands are organized into area folders: `PotArea`, `FxArea`, `CpiArea`, `WageArea`, `WealthArea`.
-- The Web API uses **ErrorFlow** (`DustInTheWind.ErrorFlow.AspNetCore`) for structured exception-to-HTTP-response mapping. Error handlers in `WebApi.Presentation/ErrorHandlers/` each handle one specific exception type.
+- The Web API uses ASP.NET Core `[ApiController]` controllers (not minimal APIs) in `WebApi.Presentation/Endpoints/`. It uses **ErrorFlow** (`DustInTheWind.ErrorFlow.AspNetCore`) for structured exception-to-HTTP-response mapping, with one handler class per exception type in `WebApi.Presentation/ErrorHandlers/`.
+- The `Infrastructure` project provides custom `IAsyncEnumerable<T>` extension methods (`ToListAsync`, `Select`, `FirstAsync`, `SingleAsync`, etc.) used throughout the solution instead of `System.Linq.Async`.
+
+## JSON storage model
+
+`Database.cs` in `Adapters.DataAccess.Json` is an in-memory working set. It loads data from disk on initialization and flushes via `IUnitOfWork.SaveChangesAsync()`. Use cases access all repositories through `IUnitOfWork`, which is the only constructor-injected data-access dependency they should take.
 
 ## Domain concepts
 
@@ -59,10 +65,12 @@ WebApi.Presentation         — ASP.NET Core controllers and DTOs
 
 ## Test projects
 
-- `CaveOfWonders.Tests` — unit tests (xUnit, Moq, FluentAssertions). Tests use case logic against mocked port interfaces.
-- `CaveOfWonders.IntegrationTests` — integration tests for the application layer.
+- `CaveOfWonders.Tests` — unit tests (xUnit, Moq, FluentAssertions). Tests use case logic against mocked port interfaces. Test method naming follows `HavingX_WhenY_ThenZ`.
+- `CaveOfWonders.IntegrationTests` — integration tests for the JSON and LiteDb adapters. Uses a `DatabaseTest` fluent builder (`Arrange` → `Act` → `Assert` → `Execute`) that creates a temporary directory per test run.
 - `tests/` (root) — Excel scenario analysis files (not automated tests).
 
 ## Namespace root
 
 All namespaces are rooted at `DustInTheWind.CaveOfWonders.*`. The CLI binary assembly name is `cave`.
+
+> **Note:** The Mintos adapter projects use the misspelled namespace `DustInTheWind.CaveOfWanders.*` (Wand**e**rs vs Wond**e**rs) — this is intentional legacy naming, not a typo to fix.

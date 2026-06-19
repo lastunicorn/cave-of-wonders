@@ -31,8 +31,8 @@
 		<Project Path="sources/CaveOfWonders.Ports.LogAccess/CaveOfWonders.Ports.LogAccess.csproj" />
 	</Folder>
 	<Folder Name="/Ports/MintosAccess/">
-		<Project Path="sources/CaveOfWanders.Adapters.MintosAccess/CaveOfWanders.Adapters.MintosAccess.csproj" />
-		<Project Path="sources/CaveOfWanders.Ports.MintosAccess/CaveOfWanders.Ports.MintosAccess.csproj" />
+		<Project Path="sources\CaveOfWonders.Adapters.MintosAccess\CaveOfWonders.Adapters.MintosAccess.csproj" />
+		<Project Path="sources\CaveOfWonders.Ports.MintosAccess\CaveOfWonders.Ports.MintosAccess.csproj" />
 	</Folder>
 	<Folder Name="/Ports/SpreadsheetAccess/">
 		<Project Path="sources/CaveOfWonders.Adapters.SpreadsheetAccess\CaveOfWonders.Adapters.SpreadsheetAccess.csproj" />

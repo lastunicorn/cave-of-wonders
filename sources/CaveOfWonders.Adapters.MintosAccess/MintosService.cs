@@ -1,11 +1,11 @@
-﻿using DustInTheWind.CaveOfWanders.Ports.MintosAccess;
-using DustInTheWind.CaveOfWonders.DataTypes;
+﻿using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Ports.MintosAccess;
 using DustInTheWind.Mintos.Toolkit;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 
-namespace DustInTheWind.CaveOfWanders.Adapters.MintosAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.MintosAccess;
 
 public class MintosService : IMintosService
 {

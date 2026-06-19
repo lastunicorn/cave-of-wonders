@@ -15,9 +15,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.Entities;
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.Utils;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using System.Runtime.CompilerServices;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb;
 
@@ -30,13 +30,13 @@ public class PotRepository : IPotRepository
         this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    public Task<IEnumerable<Pot>> GetAllAsync(CancellationToken cancellationToken = default)
+    public IAsyncEnumerable<Pot> GetAllAsync(CancellationToken cancellationToken = default)
     {
         IEnumerable<Pot> pots = dbContext.Pots
             .FindAll()
             .Select(x => x.ToDomainEntity());
 
-        return Task.FromResult(pots);
+        return pots.ToAsyncEnumerable(cancellationToken);
     }
 
     public Task<Pot> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -55,7 +55,7 @@ public class PotRepository : IPotRepository
         return Task.FromResult(potInstances);
     }
 
-    public async IAsyncEnumerable<Pot> GetByPartialIdAsync(string partialPotId, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public IAsyncEnumerable<Pot> GetByPartialIdAsync(string partialPotId, CancellationToken cancellationToken = default)
     {
         string idWithoutDashes = partialPotId.Trim().Replace("-", string.Empty);
 
@@ -64,14 +64,10 @@ public class PotRepository : IPotRepository
             .Where(x => x.Id.ToString("N").Contains(idWithoutDashes, StringComparison.InvariantCultureIgnoreCase))
             .Select(x => x.ToDomainEntity());
 
-        foreach (Pot pot in pots)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            yield return pot;
-        }
+        return pots.ToAsyncEnumerable(cancellationToken);
     }
 
-    public Task<IEnumerable<Pot>> GetByIdOrName(string idOrName, CancellationToken cancellationToken)
+    public IAsyncEnumerable<Pot> GetByIdOrName(string idOrName, CancellationToken cancellationToken)
     {
         string idWithoutDashes = idOrName.Trim().Replace("-", string.Empty);
 
@@ -80,7 +76,7 @@ public class PotRepository : IPotRepository
             .Where(x => x.Id.ToString("N").Contains(idWithoutDashes, StringComparison.InvariantCultureIgnoreCase) || (x.Name?.Contains(idOrName, StringComparison.InvariantCultureIgnoreCase) ?? false))
             .Select(x => x.ToDomainEntity());
 
-        return Task.FromResult(pots);
+        return pots.ToAsyncEnumerable(cancellationToken);
     }
 
     public void Add(Pot pot)

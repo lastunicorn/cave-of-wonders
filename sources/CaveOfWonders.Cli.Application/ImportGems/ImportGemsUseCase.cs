@@ -14,10 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWanders.Ports.MintosAccess;
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Ports.MintosAccess;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;
@@ -85,8 +86,8 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
     {
         try
         {
-            IEnumerable<Pot> potEnumeration = await unitOfWork.PotRepository.GetByIdOrName(potId, cancellationToken);
-            return potEnumeration.Single();
+            return await unitOfWork.PotRepository.GetByIdOrName(potId, cancellationToken)
+                .SingleAsync();
         }
         catch (Exception ex)
         {

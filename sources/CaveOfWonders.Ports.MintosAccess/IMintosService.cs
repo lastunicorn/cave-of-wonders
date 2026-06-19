@@ -1,6 +1,6 @@
 ﻿using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CaveOfWanders.Ports.MintosAccess;
+namespace DustInTheWind.CaveOfWonders.Ports.MintosAccess;
 
 public interface IMintosService
 {

@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Runtime.CompilerServices;
+
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.Utils;
 
 internal static class EnumerableExtensions
@@ -42,6 +44,15 @@ internal static class EnumerableExtensions
         {
             Array.Resize(ref bucket, count);
             yield return bucket.Select(x => x);
+        }
+    }
+    
+    public static async IAsyncEnumerable<T> ToAsyncEnumerable<T>(this IEnumerable<T> source, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        foreach (T item in source)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            yield return item;
         }
     }
 }

@@ -4,7 +4,7 @@ namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
 public interface IPotRepository
 {
-    Task<IEnumerable<Pot>> GetAllAsync(CancellationToken cancellationToken = default);
+    IAsyncEnumerable<Pot> GetAllAsync(CancellationToken cancellationToken = default);
     
     Task<Pot> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
@@ -12,7 +12,7 @@ public interface IPotRepository
 
     IAsyncEnumerable<Pot> GetByPartialIdAsync(string partialPotId, CancellationToken cancellationToken = default);
 
-    Task<IEnumerable<Pot>> GetByIdOrName(string idOrName, CancellationToken cancellationToken = default);
+    IAsyncEnumerable<Pot> GetByIdOrName(string idOrName, CancellationToken cancellationToken = default);
     
     void Add(Pot pot);
 }

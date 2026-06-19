@@ -16,8 +16,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CaveOfWanders.Adapters.MintosAccess\CaveOfWanders.Adapters.MintosAccess.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CaveOfWanders.Ports.MintosAccess\CaveOfWanders.Ports.MintosAccess.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CaveOfWonders.Adapters.MintosAccess\CaveOfWonders.Adapters.MintosAccess.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CaveOfWonders.Ports.MintosAccess\CaveOfWonders.Ports.MintosAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess\CaveOfWonders.Adapters.DataAccess.Json.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Adapters.FileAccess\CaveOfWonders.Adapters.FileAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Adapters.SystemAccess\CaveOfWonders.Adapters.SystemAccess.csproj" PrivateAssets="All" />

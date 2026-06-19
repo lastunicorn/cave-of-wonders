@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
@@ -53,7 +54,8 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
     {
         try
         {
-            IEnumerable<Pot> pots = await RetrievePotsByIdOrName(request.PotIdentifier, cancellationToken);
+            IEnumerable<Pot> pots = await RetrievePotsByIdOrName(request.PotIdentifier, cancellationToken)
+                .ToListAsync();
 
             if (!request.IncludeInactivePots)
             {
@@ -71,12 +73,12 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
         }
     }
 
-    private async Task<IEnumerable<Pot>> RetrievePotsByIdOrName(string potIdentifier, CancellationToken cancellationToken)
+    private IAsyncEnumerable<Pot> RetrievePotsByIdOrName(string potIdentifier, CancellationToken cancellationToken)
     {
         bool isIdentifierSpecified = !string.IsNullOrWhiteSpace(potIdentifier);
 
         return isIdentifierSpecified
-            ? await unitOfWork.PotRepository.GetByIdOrName(potIdentifier)
-            : await unitOfWork.PotRepository.GetAllAsync(cancellationToken);
+            ? unitOfWork.PotRepository.GetByIdOrName(potIdentifier, cancellationToken)
+            : unitOfWork.PotRepository.GetAllAsync(cancellationToken);
     }
 }
