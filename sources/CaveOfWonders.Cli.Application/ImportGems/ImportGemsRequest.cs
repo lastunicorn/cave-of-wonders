@@ -7,5 +7,5 @@ public class ImportGemsRequest : IRequest<ImportGemsResponse>
 {
     public string FilePath { get; set; }
 
-    public PotIdentifier PotId { get; set; }
+    public PotFlexId PotId { get; set; }
 }

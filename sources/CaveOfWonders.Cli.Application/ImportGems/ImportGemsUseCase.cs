@@ -1,19 +1,3 @@
-// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
-// 
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Infrastructure;
@@ -40,12 +24,32 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
     public async Task<ImportGemsResponse> Handle(ImportGemsRequest request, CancellationToken cancellationToken)
     {
         Pot pot = await FindPot(request.PotId, cancellationToken);
-
         IAsyncEnumerable<Gem> gemEnumeration = mintosService.GetGemsAsync(request.FilePath, cancellationToken);
+        ImportGemsResponse response = await ImportGems(gemEnumeration, pot, cancellationToken);
 
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return response;
+    }
+
+    private async Task<Pot> FindPot(PotFlexId potId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await unitOfWork.PotRepository.GetByIdOrName(potId, cancellationToken)
+                .SingleAsync();
+        }
+        catch (Exception ex)
+        {
+            throw new CaveOfWandersException($"The specified pot identifier must match a single pot: '{potId}'", ex);
+        }
+    }
+
+    private async Task<ImportGemsResponse> ImportGems(IAsyncEnumerable<Gem> gemEnumeration, Pot pot, CancellationToken cancellationToken)
+    {
         ImportGemsResponse response = new();
 
-        await foreach (Gem gem in gemEnumeration)
+        await foreach (Gem gem in gemEnumeration.WithCancellation(cancellationToken))
         {
             response.TotalGemCount++;
 
@@ -76,23 +80,8 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
                 unitOfWork.GemRepository.Add(gem);
             }
         }
-
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-
+        
         return response;
-    }
-
-    private async Task<Pot> FindPot(PotIdentifier potId, CancellationToken cancellationToken)
-    {
-        try
-        {
-            return await unitOfWork.PotRepository.GetByIdOrName(potId, cancellationToken)
-                .SingleAsync();
-        }
-        catch (Exception ex)
-        {
-            throw new CaveOfWandersException($"The specified pot identifier must match a single pot: '{potId}'", ex);
-        }
     }
 
     private async Task<Gem> FindExistingGem(Gem gem, CancellationToken cancellationToken)

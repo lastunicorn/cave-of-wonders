@@ -1,6 +1,6 @@
 namespace DustInTheWind.CaveOfWonders.DataTypes;
 
-public record class PotIdentifier
+public record class PotFlexId
 {
     private readonly string partialValue;
     private readonly Guid? guid;
@@ -9,24 +9,24 @@ public record class PotIdentifier
 
     public bool IsFullGuid => guid.HasValue;
 
-    public static PotIdentifier Empty { get; } = new PotIdentifier();
+    public static PotFlexId Empty { get; } = new();
 
-    private PotIdentifier()
+    private PotFlexId()
     {
     }
 
-    public PotIdentifier(string value)
+    public PotFlexId(string value)
     {
-        if (value is not null)
-        {
-            if (Guid.TryParse(value, out Guid g))
-                guid = g;
-            else
-                partialValue = value;
-        }
+        if (value is null) 
+            return;
+        
+        if (Guid.TryParse(value, out Guid g))
+            guid = g;
+        else
+            partialValue = value;
     }
 
-    public PotIdentifier(Guid guid)
+    public PotFlexId(Guid guid)
     {
         this.guid = guid;
     }
@@ -63,25 +63,25 @@ public record class PotIdentifier
         return null;
     }
 
-    public static implicit operator PotIdentifier(string value)
+    public static implicit operator PotFlexId(string value)
     {
-        return new PotIdentifier(value);
+        return new PotFlexId(value);
     }
 
-    public static implicit operator PotIdentifier(Guid guid)
+    public static implicit operator PotFlexId(Guid guid)
     {
-        return new PotIdentifier(guid);
+        return new PotFlexId(guid);
     }
 
-    public static implicit operator string(PotIdentifier potIdentifier)
+    public static implicit operator string(PotFlexId potFlexId)
     {
-        return potIdentifier.ToString();
+        return potFlexId.ToString();
     }
 
-    public static implicit operator Guid(PotIdentifier potIdentifier)
+    public static implicit operator Guid(PotFlexId potFlexId)
     {
-        if (potIdentifier.guid.HasValue)
-            return potIdentifier.guid.Value;
+        if (potFlexId.guid.HasValue)
+            return potFlexId.guid.Value;
 
         throw new InvalidCastException("PotIdentifier does not contain a valid Guid.");
     }
