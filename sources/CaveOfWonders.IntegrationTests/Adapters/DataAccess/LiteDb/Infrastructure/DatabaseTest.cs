@@ -5,24 +5,28 @@ namespace DustInTheWind.CaveOfWonders.IntegrationTests.Adapters.DataAccess.LiteD
 
 internal class DatabaseTest : DatabaseTest<DbContext>
 {
+    private readonly string dbFilePath = Path.Combine(Path.GetTempPath(), $"test-dbContext-{Guid.NewGuid()}");
+
     public static DatabaseTest Create()
     {
         return new DatabaseTest();
     }
 
-    private DatabaseTest()
-        : base(Path.Combine(Path.GetTempPath(), $"test-dbContext-{Guid.NewGuid()}"))
-    {
-    }
-
     protected override Task<DbContext> OpenDatabaseAsync()
     {
-        return Task.FromResult(new DbContext(DbPath));
+        DbContext dbContext = new(dbFilePath);
+        return Task.FromResult(dbContext);
     }
 
     protected override Task CloseDatabaseAsync(DbContext dbContext)
     {
         dbContext.Dispose();
         return Task.CompletedTask;
+    }
+
+    protected override void ResetDatabase()
+    {
+        if (Directory.Exists(dbFilePath))
+            Directory.Delete(dbFilePath, true);
     }
 }

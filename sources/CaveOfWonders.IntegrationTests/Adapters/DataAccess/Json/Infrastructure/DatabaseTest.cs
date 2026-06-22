@@ -5,19 +5,16 @@ namespace DustInTheWind.CaveOfWonders.IntegrationTests.Adapters.DataAccess.Json.
 
 internal class DatabaseTest : DatabaseTest<Database>
 {
+    private readonly string dbFilePath = Path.Combine(Path.GetTempPath(), $"test-database-{Guid.NewGuid()}");
+
     public static DatabaseTest Create()
     {
         return new DatabaseTest();
     }
 
-    private DatabaseTest()
-        : base(Path.Combine(Path.GetTempPath(), $"test-database-{Guid.NewGuid()}"))
-    {
-    }
-
     protected override async Task<Database> OpenDatabaseAsync()
     {
-        Database database = new(DbPath);
+        Database database = new(dbFilePath);
         await database.LoadAsync(CancellationToken.None);
         return database;
     }
@@ -25,5 +22,11 @@ internal class DatabaseTest : DatabaseTest<Database>
     protected override async Task CloseDatabaseAsync(Database database)
     {
         await database.SaveAsync(CancellationToken.None);
+    }
+    
+    protected override void ResetDatabase()
+    {
+        if (Directory.Exists(dbFilePath))
+            Directory.Delete(dbFilePath, true);
     }
 }

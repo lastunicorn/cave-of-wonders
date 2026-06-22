@@ -2,8 +2,6 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 
 public abstract class DatabaseTest<TDb>
 {
-    protected readonly string DbPath;
-
     private Func<TDb, dynamic, Task> arrangeAction1;
     private Action<TDb, dynamic> arrangeAction2;
 
@@ -13,20 +11,11 @@ public abstract class DatabaseTest<TDb>
     private Func<TDb, dynamic, Task> assertAction1;
     private Action<TDb, dynamic> assertAction2;
 
-    protected DatabaseTest(string dbPath)
-    {
-        DbPath = dbPath;
-    }
-
     protected abstract Task<TDb> OpenDatabaseAsync();
 
     protected abstract Task CloseDatabaseAsync(TDb database);
 
-    protected virtual void RemoveDatabase()
-    {
-        if (Directory.Exists(DbPath))
-            Directory.Delete(DbPath, true);
-    }
+    protected abstract void ResetDatabase();
 
     public DatabaseTest<TDb> Arrange(Func<TDb, dynamic, Task> action)
     {
@@ -132,7 +121,7 @@ public abstract class DatabaseTest<TDb>
         }
         finally
         {
-            RemoveDatabase();
+            ResetDatabase();
         }
     }
 }
