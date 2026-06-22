@@ -23,6 +23,8 @@ public class FintownService : IFintownService
     {
         Gem gem = new()
         {
+            Id = Guid.NewGuid(),
+            ExternalId = transactionRecord.Date.Ticks.ToString(),
             Date = transactionRecord.Date,
             Amount = transactionRecord.Amount.Value
         };

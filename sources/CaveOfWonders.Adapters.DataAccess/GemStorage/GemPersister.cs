@@ -42,25 +42,19 @@ internal class GemPersister
         {
             if (cancellationToken.IsCancellationRequested)
                 throw new TaskCanceledException();
-            
-            List<JGem> jGems = await gemsFile.ReadAsync(cancellationToken);
 
-            foreach (JGem jGem in jGems)
-            {
-                Gem gem = new()
+            IEnumerable<Gem> gems = (await gemsFile.ReadAsync(cancellationToken))
+                .Select(x =>
                 {
-                    Date = jGem.Date,
-                    Amount = jGem.Amount,
-                    Description = jGem.Description,
-                    Pot = pots?.FirstOrDefault(x => x.Id == gemsFile.PotId)
-                };
+                    Gem gem = x.ToGem();
+                    gem.Pot = pots?.FirstOrDefault(pot => pot.Id == gemsFile.PotId);
+                    
+                    return gem;
+                });
 
-                if (Enum.TryParse(jGem.Category, out GemCategory category))
-                    gem.Category = category;
-
-                foreach (KeyValuePair<string, string> jGemParameter in jGem.Parameters)
-                    gem.Parameters.Add(jGemParameter.Key, jGemParameter.Value);
-                
+            foreach (Gem gem in gems)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
                 yield return gem;
             }
         }
@@ -71,7 +65,7 @@ internal class GemPersister
         if (gems == null) throw new ArgumentNullException(nameof(gems));
 
         GemsDirectory gemsDirectory = new(databaseDirectoryPath);
-    
+
         if (!gemsDirectory.Exists)
             gemsDirectory.Create();
 
@@ -81,21 +75,7 @@ internal class GemPersister
             .ToDictionary(
                 x => x.Key,
                 x => x
-                    .Select(gem =>
-                    {
-                        JGem jGem = new()
-                        {
-                            Date = gem.Date,
-                            Amount = gem.Amount,
-                            Description = gem.Description,
-                            Category = gem.Category.ToString()
-                        };
-
-                        foreach (KeyValuePair<string, string> gemParameter in gem.Parameters)
-                            jGem.Parameters.Add(gemParameter.Key, gemParameter.Value);
-
-                        return jGem;
-                    })
+                    .Select(gem => gem.ToJGem())
                     .ToList());
 
         foreach (KeyValuePair<Guid, List<JGem>> jGemsByPotIdEntry in jGemsByPotId)

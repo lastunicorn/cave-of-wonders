@@ -15,21 +15,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CaveOfWonders.Infrastructure;
 
-namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.GemStorage;
 
-public interface IGemRepository
+internal static class GemExtensions
 {
-    IAsyncEnumerable<Gem> GetByDateAsync(Guid potId, DateTime date, CancellationToken cancellationToken = default);
-    
-    IAsyncEnumerable<Gem> FindByDateAsync(Guid potId, DateOnly date, CancellationToken cancellationToken = default);
+    public static JGem ToJGem(this Gem gem)
+    {
+        JGem jGem = new()
+        {
+            Id = gem.Id,
+            ExternalId = gem.ExternalId,
+            Date = gem.Date,
+            Amount = gem.Amount,
+            Description = gem.Description,
+            Category = gem.Category.ToString()
+        };
 
-    IAsyncEnumerable<Gem> GetByPotIdAsync(Guid potId, CancellationToken cancellationToken = default);
+        foreach (KeyValuePair<string, string> gemParameter in gem.Parameters)
+            jGem.Parameters.Add(gemParameter.Key, gemParameter.Value);
 
-    Task<Gem> GetByExternalIdAsync(Guid potId, string gemExternalId, CancellationToken cancellationToken);
-
-    IAsyncEnumerable<Gem> FindByMonthAsync(Guid potId, MonthDate month, CancellationToken cancellationToken);
-
-    void Add(Gem gem);
+        return jGem;
+    }
 }

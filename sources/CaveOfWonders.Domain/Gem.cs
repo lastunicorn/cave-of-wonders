@@ -4,6 +4,10 @@ namespace DustInTheWind.CaveOfWonders.Domain;
 
 public record class Gem
 {
+    public Guid Id { get; set; }
+
+    public string ExternalId { get; set; }
+    
     public DateTime Date { get; set; }
 
     public GemCategory Category { get; set; }

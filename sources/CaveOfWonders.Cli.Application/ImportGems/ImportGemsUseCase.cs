@@ -99,27 +99,8 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
     {
         if (gem.Pot == null)
             return null;
-
-        IAsyncEnumerable<Gem> existingGems = unitOfWork.GemRepository.GetByDateAsync(gem.Pot.Id, gem.Date, cancellationToken);
-
-        await foreach (Gem existingGem in existingGems)
-        {
-            if (existingGem.Date != gem.Date)
-                continue;
-
-            const string parameterName = "TransactionId";
-
-            string existingTransactionId = existingGem.Parameters.GetValueOrDefault(parameterName);
-
-            if (existingTransactionId == null)
-                continue;
-
-            string newTransactionId = gem.Parameters.GetValueOrDefault(parameterName);
-
-            if (newTransactionId == existingTransactionId)
-                return existingGem;
-        }
-
-        return null;
+        
+        return await unitOfWork.GemRepository.GetByExternalIdAsync(gem.Pot.Id, gem.ExternalId, cancellationToken)
+            .ConfigureAwait(false);
     }
 }

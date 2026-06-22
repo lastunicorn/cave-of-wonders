@@ -58,6 +58,16 @@ public class GemRepository : IGemRepository
         }
     }
 
+    public async Task<Gem> GetByExternalIdAsync(Guid potId, string gemExternalId, CancellationToken cancellationToken)
+    {
+        await database.LoadGemsAsync(cancellationToken);
+
+        Gem gem = database.Gems
+            .FirstOrDefault(x => x.Pot?.Id == potId && x.ExternalId == gemExternalId);
+
+        return gem;
+    }
+
     public async IAsyncEnumerable<Gem> FindByMonthAsync(Guid potId, MonthDate month, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         await database.LoadGemsAsync(cancellationToken);

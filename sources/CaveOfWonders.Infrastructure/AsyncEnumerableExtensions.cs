@@ -68,16 +68,16 @@ public static class AsyncEnumerableExtensions
 
         bool collectionHasItems = await enumerator.MoveNextAsync();
 
-        if(!collectionHasItems)
+        if (!collectionHasItems)
             throw new InvalidOperationException("The source sequence is empty.");
 
         TSource item = enumerator.Current;
-        
+
         bool collectionHasMoreItems = await enumerator.MoveNextAsync();
-        
+
         if (collectionHasMoreItems)
             throw new InvalidOperationException("The input sequence contains more than one element.");
-        
+
         return item;
     }
 
@@ -94,9 +94,9 @@ public static class AsyncEnumerableExtensions
         {
             collectionHasItems = true;
 
-            bool isSelected = predicate.Invoke(item);
+            bool isMatch = predicate.Invoke(item);
 
-            if (isSelected)
+            if (isMatch)
             {
                 if (itemWasFound)
                     throw new InvalidOperationException("The input sequence contains more than one element.");
@@ -113,5 +113,53 @@ public static class AsyncEnumerableExtensions
             throw new InvalidOperationException("No element satisfies the condition in predicate");
 
         throw new InvalidOperationException("The source sequence is empty.");
+    }
+
+    public static async Task<TSource> SingleOrDefaultAsync<TSource>(this IAsyncEnumerable<TSource> source)
+    {
+        if (source == null) throw new ArgumentNullException(nameof(source));
+
+        bool itemWasFound = false;
+        TSource foundItem = default;
+
+        await foreach (TSource item in source)
+        {
+            if (itemWasFound)
+                throw new InvalidOperationException("The input sequence contains more than one element.");
+
+            itemWasFound = true;
+            foundItem = item;
+        }
+
+        return itemWasFound
+            ? foundItem
+            : default;
+    }
+
+    public static async Task<TSource> SingleOrDefaultAsync<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
+    {
+        if (source == null) throw new ArgumentNullException(nameof(source));
+        if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+
+        bool itemWasFound = false;
+        TSource foundItem = default;
+
+        await foreach (TSource item in source)
+        {
+            bool isMatch = predicate.Invoke(item);
+
+            if (isMatch)
+            {
+                if (itemWasFound)
+                    throw new InvalidOperationException("The input sequence contains more than one element.");
+
+                itemWasFound = true;
+                foundItem = item;
+            }
+        }
+
+        return itemWasFound
+            ? foundItem
+            : default;
     }
 }

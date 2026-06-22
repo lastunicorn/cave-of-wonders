@@ -27,14 +27,13 @@ public class MintosService : IMintosService
     {
         return new Gem
         {
+            Id = Guid.NewGuid(),
+            ExternalId = transactionRecord.TransactionId,
             Date = transactionRecord.Date,
             Amount = Math.Abs(transactionRecord.Turnover),
             Category = CalculateCategory(transactionRecord.PaymentType),
             Parameters =
             {
-                {
-                    nameof(transactionRecord.TransactionId), transactionRecord.TransactionId
-                },
                 {
                     nameof(transactionRecord.Details), transactionRecord.Details
                 },
