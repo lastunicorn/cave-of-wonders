@@ -2,6 +2,7 @@
 using DustInTheWind.CaveOfWonders.Adapters.BnrAccess;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 using DustInTheWind.CaveOfWonders.Adapters.FileAccess;
+using DustInTheWind.CaveOfWonders.Adapters.FintownAccess;
 using DustInTheWind.CaveOfWonders.Adapters.InsAccess;
 using DustInTheWind.CaveOfWonders.Adapters.LogAccess;
 using DustInTheWind.CaveOfWonders.Adapters.MintosAccess;
@@ -11,6 +12,7 @@ using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using DustInTheWind.CaveOfWonders.Ports.BnrAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.FileAccess;
+using DustInTheWind.CaveOfWonders.Ports.FintownAccess;
 using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 using DustInTheWind.CaveOfWonders.Ports.LogAccess;
 using DustInTheWind.CaveOfWonders.Ports.MintosAccess;
@@ -52,6 +54,7 @@ internal static class DependenciesSetup
         containerBuilder.RegisterType<BnrService>().As<IBnrService>();
         containerBuilder.RegisterType<InsService>().As<IInsService>();
         containerBuilder.RegisterType<MintosService>().As<IMintosService>();
+        containerBuilder.RegisterType<FintownService>().As<IFintownService>();
         containerBuilder.RegisterType<Sheets>().As<ISheets>();
         containerBuilder.RegisterType<Log>().As<ILog>().InstancePerLifetimeScope();
         containerBuilder.RegisterType<FileSystem>().As<IFileSystem>().SingleInstance();

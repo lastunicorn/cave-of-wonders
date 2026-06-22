@@ -2,6 +2,7 @@ using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Ports.FintownAccess;
 using DustInTheWind.CaveOfWonders.Ports.MintosAccess;
 using MediatR;
 
@@ -12,19 +13,29 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;
 /// </summary>
 internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGemsResponse>
 {
-    private readonly IMintosService mintosService;
     private readonly IUnitOfWork unitOfWork;
+    private readonly IMintosService mintosService;
+    private readonly IFintownService fintownService;
 
-    public ImportGemsUseCase(IMintosService mintosService, IUnitOfWork unitOfWork)
+    public ImportGemsUseCase(IUnitOfWork unitOfWork, IMintosService mintosService, IFintownService fintownService)
     {
-        this.mintosService = mintosService ?? throw new ArgumentNullException(nameof(mintosService));
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        this.mintosService = mintosService ?? throw new ArgumentNullException(nameof(mintosService));
+        this.fintownService = fintownService ?? throw new ArgumentNullException(nameof(fintownService));
     }
 
     public async Task<ImportGemsResponse> Handle(ImportGemsRequest request, CancellationToken cancellationToken)
     {
-        Pot pot = await FindPot(request.PotId, cancellationToken);
-        IAsyncEnumerable<Gem> gemEnumeration = mintosService.GetGemsAsync(request.FilePath, cancellationToken);
+        Pot pot = await FindPot(request.PotFlexId, cancellationToken);
+        
+        IAsyncEnumerable<Gem> gemEnumeration = request.FileType switch
+        {
+            FileType.Mintos => mintosService.GetGemsAsync(request.FilePath, cancellationToken),
+            FileType.Fintown => fintownService.GetGemsAsync(request.FilePath, cancellationToken),
+            FileType.Unknown => throw new NotImplementedException($"Unknown file type '{request.FileType}'."),
+            _ => throw new NotImplementedException($"Unknown file type '{request.FileType}'.")
+        };
+        
         ImportGemsResponse response = await ImportGems(gemEnumeration, pot, cancellationToken);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -32,16 +43,16 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
         return response;
     }
 
-    private async Task<Pot> FindPot(PotFlexId potId, CancellationToken cancellationToken)
+    private async Task<Pot> FindPot(PotFlexId potFlexId, CancellationToken cancellationToken)
     {
         try
         {
-            return await unitOfWork.PotRepository.GetByIdOrName(potId, cancellationToken)
+            return await unitOfWork.PotRepository.GetByIdOrName(potFlexId, cancellationToken)
                 .SingleAsync();
         }
         catch (Exception ex)
         {
-            throw new CaveOfWandersException($"The specified pot identifier must match a single pot: '{potId}'", ex);
+            throw new CaveOfWandersException($"The specified pot identifier must match a single pot: '{potFlexId}'", ex);
         }
     }
 

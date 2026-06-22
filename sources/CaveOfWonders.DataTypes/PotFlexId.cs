@@ -54,13 +54,9 @@ public record class PotFlexId
 
     public override string ToString()
     {
-        if (guid.HasValue)
-            return guid.Value.ToString("D");
-
-        if (partialValue is not null)
-            return partialValue;
-
-        return null;
+        return guid.HasValue
+            ? guid.Value.ToString("D")
+            : partialValue;
     }
 
     public static implicit operator PotFlexId(string value)
