@@ -57,10 +57,10 @@ public class MintosService : IMintosService
             return GemCategory.Deposit;
 
         if (paymentType == PaymentType.Investment)
-            return GemCategory.Unknown;
+            return GemCategory.Internal;
 
         if (paymentType == PaymentType.Principal)
-            return GemCategory.Unknown;
+            return GemCategory.Internal;
 
         if (paymentType == PaymentType.Interest)
             return GemCategory.Gain;
@@ -69,10 +69,10 @@ public class MintosService : IMintosService
             return GemCategory.Gain;
 
         if (paymentType == PaymentType.SecondaryMarketTransaction)
-            return GemCategory.Unknown;
+            return GemCategory.Internal;
 
         if (paymentType == PaymentType.LoanRepurchasePrincipal)
-            return GemCategory.Unknown;
+            return GemCategory.Internal;
 
         if (paymentType == PaymentType.LoanRepurchaseInterest)
             return GemCategory.Gain;
@@ -87,7 +87,7 @@ public class MintosService : IMintosService
             return GemCategory.Loss;
 
         if (paymentType == PaymentType.CashOutShareIncomeToSeller)
-            return GemCategory.Unknown;
+            return GemCategory.Internal;
 
         if (paymentType == PaymentType.MintosCoreFee)
             return GemCategory.Loss;
