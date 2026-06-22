@@ -22,6 +22,10 @@
 		<Project Path="sources/CaveOfWonders.Adapters.FileAccess/CaveOfWonders.Adapters.FileAccess.csproj" />
 		<Project Path="sources/CaveOfWonders.Ports.FileAccess/CaveOfWonders.Ports.FileAccess.csproj" />
 	</Folder>
+	<Folder Name="/Ports/FintownAccess/">
+		<Project Path="sources/CaveOfWonders.Adapters.FintownAccess/CaveOfWonders.Adapters.FintownAccess.csproj" />
+		<Project Path="sources/CaveOfWonders.Ports.FintownAccess/CaveOfWonders.Ports.FintownAccess.csproj" />
+	</Folder>
 	<Folder Name="/Ports/InsAccess/">
 		<Project Path="sources/CaveOfWonders.Adapters.InsAccess/CaveOfWonders.Adapters.InsAccess.csproj" />
 		<Project Path="sources/CaveOfWonders.Ports.InsAccess/CaveOfWonders.Ports.InsAccess.csproj" />
