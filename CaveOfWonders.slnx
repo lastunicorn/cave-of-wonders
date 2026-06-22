@@ -47,10 +47,12 @@
 		<Project Path="sources/CaveOfWonders.Adapters.SystemAccess/CaveOfWonders.Adapters.SystemAccess.csproj" />
 		<Project Path="sources/CaveOfWonders.Ports.SystemAccess/CaveOfWonders.Ports.SystemAccess.csproj" />
 	</Folder>
+	<Folder Name="/Tests/">
+		<Project Path="sources/CaveOfWonders.Tests.Utils/CaveOfWonders.Tests.Utils.csproj" />
+		<Project Path="sources/CaveOfWonders.Tests/CaveOfWonders.Tests.csproj" />
+		<Project Path="sources\CaveOfWonders.Tests.Integration\CaveOfWonders.Tests.Integration.csproj" />
+	</Folder>
 	<Project Path="sources/CaveOfWonders.DataTypes/CaveOfWonders.DataTypes.csproj" />
 	<Project Path="sources/CaveOfWonders.Domain/CaveOfWonders.Domain.csproj" />
 	<Project Path="sources/CaveOfWonders.Infrastructure/CaveOfWonders.Infrastructure.csproj" />
-	<Project Path="sources/CaveOfWonders.IntegrationTests/CaveOfWonders.IntegrationTests.csproj" />
-	<Project Path="sources/CaveOfWonders.Tests.Utils/CaveOfWonders.Tests.Utils.csproj" />
-	<Project Path="sources/CaveOfWonders.Tests/CaveOfWonders.Tests.csproj" />
 </Solution>

@@ -1,7 +1,7 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 
-namespace DustInTheWind.CaveOfWonders.IntegrationTests.Adapters.DataAccess.LiteDb.Infrastructure;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Adapters.DataAccess.LiteDb.Infrastructure;
 
 internal class DatabaseTest : DatabaseTest<DbContext>
 {

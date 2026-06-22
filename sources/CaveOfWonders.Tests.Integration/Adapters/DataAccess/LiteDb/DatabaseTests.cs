@@ -1,6 +1,6 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb;
 
-namespace DustInTheWind.CaveOfWonders.IntegrationTests.Adapters.DataAccess.LiteDb;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Adapters.DataAccess.LiteDb;
 
 public abstract class DatabaseTests : IDisposable
 {

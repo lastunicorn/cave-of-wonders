@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="DustInTheWind.CaveOfWonders.IntegrationTests"/>
+        <InternalsVisibleTo Include="DustInTheWind.CaveOfWonders.Tests.Integration"/>
     </ItemGroup>
 
 </Project>
