@@ -51,5 +51,6 @@
 	<Project Path="sources/CaveOfWonders.Domain/CaveOfWonders.Domain.csproj" />
 	<Project Path="sources/CaveOfWonders.Infrastructure/CaveOfWonders.Infrastructure.csproj" />
 	<Project Path="sources/CaveOfWonders.IntegrationTests/CaveOfWonders.IntegrationTests.csproj" />
+	<Project Path="sources/CaveOfWonders.Tests.Utils/CaveOfWonders.Tests.Utils.csproj" />
 	<Project Path="sources/CaveOfWonders.Tests/CaveOfWonders.Tests.csproj" />
 </Solution>

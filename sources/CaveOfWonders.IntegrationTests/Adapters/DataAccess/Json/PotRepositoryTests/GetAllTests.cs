@@ -1,6 +1,7 @@
 ﻿using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.IntegrationTests.Adapters.DataAccess.Json.Infrastructure;
+using DustInTheWind.CaveOfWonders.Tests.Utils;
 using FluentAssertions;
 
 namespace DustInTheWind.CaveOfWonders.IntegrationTests.Adapters.DataAccess.Json.PotRepositoryTests;

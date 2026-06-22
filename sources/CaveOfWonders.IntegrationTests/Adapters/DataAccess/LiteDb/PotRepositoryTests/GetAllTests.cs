@@ -2,6 +2,7 @@ using DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.Entities;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.IntegrationTests.Adapters.DataAccess.LiteDb.Infrastructure;
+using DustInTheWind.CaveOfWonders.Tests.Utils;
 using FluentAssertions;
 
 namespace DustInTheWind.CaveOfWonders.IntegrationTests.Adapters.DataAccess.LiteDb.PotRepositoryTests;

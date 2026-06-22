@@ -1,6 +1,6 @@
-namespace DustInTheWind.CaveOfWonders.IntegrationTests;
+namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 
-internal static class AsyncEnumerableExtensions
+public static class AsyncEnumerableExtensions
 {
     public static async Task<List<T>> ToListAsync<T>(this IAsyncEnumerable<T> source)
     {

@@ -1,16 +1,16 @@
 using System.Dynamic;
 
-namespace DustInTheWind.CaveOfWonders.IntegrationTests.Adapters.DataAccess.LiteDb.Infrastructure;
+namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 
-internal class DatabaseTestContext : DynamicObject
+public class DatabaseTestContext : DynamicObject
 {
     private readonly Dictionary<string, object> values = [];
- 
+
     public override bool TryGetMember(GetMemberBinder binder, out object result)
     {
         return values.TryGetValue(binder.Name, out result);
     }
-    
+
     public override bool TrySetMember(SetMemberBinder binder, object value)
     {
         bool keyExists = values.ContainsKey(binder.Name);
