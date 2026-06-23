@@ -36,17 +36,23 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
 
     public async Task<PresentPotResponse> Handle(PresentPotRequest request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.PotFlexId))
-            throw new PotIdentifierNotSpecifiedException();
-
         IEnumerable<Pot> pots = await RetrievePots(request, cancellationToken);
 
-        PresentPotResponse response = new()
+        PresentPotResponse response = new();
+
+        bool showDetails = request.ShowDetails is true || (!request.ShowDetails.HasValue && request.PotFlexId?.HasValue == true);
+        if(showDetails)
         {
-            Pots = pots
+            response.PotDetails = pots
                 .Select(x => new PotDetails(x))
-                .ToList()
-        };
+                .ToList();
+        }
+        else
+        {
+            response.PotSummaries = pots
+                .Select(x => new PotSummary(x))
+                .ToList();
+        }
 
         return response;
     }

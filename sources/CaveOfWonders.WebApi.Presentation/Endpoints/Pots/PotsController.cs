@@ -110,6 +110,6 @@ public class PotsController : ControllerBase
         };
         PresentPotResponse response = await mediator.Send(request);
 
-        return PotDetailsApiDto.From(response.Pots.FirstOrDefault());
+        return PotDetailsApiDto.From(response.PotDetails.FirstOrDefault());
     }
 }

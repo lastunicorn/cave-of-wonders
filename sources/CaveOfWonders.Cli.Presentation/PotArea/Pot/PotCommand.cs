@@ -15,6 +15,9 @@ internal class PotCommand : IConsoleCommand<PotCommandViewModel>
     [NamedParameter("all", ShortName = 'a', IsMandatory = false, Description = "Display all pots, including the inactive ones. Default = false.")]
     public bool IncludeInactivePots { get; set; }
 
+    [NamedParameter("details", ShortName = 'd', IsMandatory = false, Description = "Display details about the pot. Default = false.")]
+    public bool? ShowDetails { get; set; }
+
     public PotCommand(IMediator mediator)
     {
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -25,15 +28,19 @@ internal class PotCommand : IConsoleCommand<PotCommandViewModel>
         PresentPotRequest request = new()
         {
             PotFlexId = PotIdentifier,
-            IncludeInactivePots = IncludeInactivePots
+            IncludeInactivePots = IncludeInactivePots,
+            ShowDetails = ShowDetails
         };
 
         PresentPotResponse response = await mediator.Send(request);
 
         return new PotCommandViewModel
         {
-            PotDetailsViewModels = response.Pots
+            PotDetails = response.PotDetails?
                 .Select(x => new PotDetailsViewModel(x))
+                .ToList(),
+            PotSummaries = response.PotSummaries?
+                .Select(x => new PotSummaryViewModel(x))
                 .ToList()
         };
     }

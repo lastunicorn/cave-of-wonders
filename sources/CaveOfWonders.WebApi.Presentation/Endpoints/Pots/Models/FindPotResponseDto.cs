@@ -26,7 +26,7 @@ public class FindPotResponseDto
     {
         return new FindPotResponseDto
         {
-            Pots = response.Pots
+            Pots = response.PotDetails
                 .Select(x=> PotDetailsApiDto.From(x))
                 .ToList()
         };

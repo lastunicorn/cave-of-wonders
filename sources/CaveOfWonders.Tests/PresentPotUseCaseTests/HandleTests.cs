@@ -104,7 +104,7 @@ public class HandleTests
         PresentPotResponse response = await useCase.Handle(request, CancellationToken.None);
 
         // Assert
-        response.Pots.Should().BeEmpty("No pots should be returned when the repository is empty.");
+        response.PotDetails.Should().BeEmpty("No pots should be returned when the repository is empty.");
     }
 
     [Fact]
@@ -124,7 +124,7 @@ public class HandleTests
         PresentPotResponse response = await useCase.Handle(request, CancellationToken.None);
 
         // Assert
-        response.Pots.Should().HaveCount(1, "One pot should be returned when there is one matching pot in the repository.");
+        response.PotDetails.Should().HaveCount(1, "One pot should be returned when there is one matching pot in the repository.");
     }
 
     [Fact]
@@ -144,6 +144,6 @@ public class HandleTests
         PresentPotResponse response = await useCase.Handle(request, CancellationToken.None);
 
         // Assert
-        response.Pots.Should().HaveCount(2, "Two pots should be returned when there are two matching pots in the repository.");
+        response.PotDetails.Should().HaveCount(2, "Two pots should be returned when there are two matching pots in the repository.");
     }
 }

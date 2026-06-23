@@ -1,4 +1,5 @@
-﻿using DustInTheWind.ConsoleTools;
+﻿using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
+using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 
@@ -8,15 +9,17 @@ internal class PotView : ViewBase<PotCommandViewModel>
 {
     public override void Display(PotCommandViewModel viewModel)
     {
-        bool isFirst = true;
+        bool potExists = viewModel.PotDetails?.Count > 0 || viewModel.PotSummaries?.Count > 0;
 
-        if (viewModel.PotDetailsViewModels == null || viewModel.PotDetailsViewModels.Count == 0)
+        if (!potExists)
         {
             CustomConsole.WriteLineWarning("There is no pot with the specified name or id.");
         }
-        else
+        else if (viewModel.PotDetails?.Count > 0)
         {
-            foreach (PotDetailsViewModel potDetailsViewModel in viewModel.PotDetailsViewModels)
+            bool isFirst = true;
+
+            foreach (PotDetailsViewModel potDetailsViewModel in viewModel.PotDetails)
             {
                 if (isFirst)
                     isFirst = false;
@@ -25,6 +28,10 @@ internal class PotView : ViewBase<PotCommandViewModel>
 
                 DisplayPotDetails(potDetailsViewModel);
             }
+        }
+        else if (viewModel.PotSummaries?.Count > 0)
+        {
+            DisplayPotSummary(viewModel);
         }
     }
 
@@ -35,13 +42,18 @@ internal class PotView : ViewBase<PotCommandViewModel>
 
         if (!potDetailsViewModel.IsActive)
         {
-            DataGridTemplate.Disable(dataGrid);
+            dataGrid.Disable();
         }
         else
         {
             dataGrid.Columns.Add(new Column
             {
                 ForegroundColor = ConsoleColor.White
+            });
+            
+            dataGrid.Columns.Add(new Column
+            {
+                ForegroundColor = ConsoleColor.Gray
             });
         }
 
@@ -52,7 +64,46 @@ internal class PotView : ViewBase<PotCommandViewModel>
         dataGrid.Rows.Add("Currency", potDetailsViewModel.Currency);
         dataGrid.Rows.Add("Labels", string.Join(", ", potDetailsViewModel.Labels));
         dataGrid.Rows.Add("Snapshot Count", potDetailsViewModel.SnapshotCount);
-        dataGrid.Rows.Add("Last Snapshot", $"{potDetailsViewModel.LastSnapshotDate:d} ({potDetailsViewModel.Value.ToDisplayString()})");
+
+        string lastSnapshot = potDetailsViewModel.LastSnapshotDate != null
+            ? $"{potDetailsViewModel.LastSnapshotDate:d} ({potDetailsViewModel.Value.ToDisplayString()})"
+            : string.Empty;
+
+        dataGrid.Rows.Add("Last Snapshot", lastSnapshot);
+
+        dataGrid.Display();
+    }
+
+    private static void DisplayPotSummary(PotCommandViewModel viewModel)
+    {
+        DataGrid dataGrid = DataGridTemplate.CreateNew();
+        dataGrid.Title = "Pots";
+
+        dataGrid.Columns.Add(new Column("Id")
+        {
+            ForegroundColor = ConsoleColor.DarkGray,
+            CellContentOverflow = CellContentOverflow.PreserveOverflow
+        });
+
+        dataGrid.Columns.Add("Name");
+        dataGrid.Columns.Add("Currency");
+
+        foreach (PotSummaryViewModel potSummaryViewModel in viewModel.PotSummaries)
+        {
+            ShortPotId id = potSummaryViewModel.Id;
+            string name = potSummaryViewModel.Name;
+            string currency = potSummaryViewModel.Currency;
+
+            ContentRow row = new(id, name, currency);
+
+            if (!potSummaryViewModel.IsActive)
+            {
+                row[1].ForegroundColor = ConsoleColor.DarkGray;
+                row[2].ForegroundColor = ConsoleColor.DarkGray;
+            }
+
+            dataGrid.Rows.Add(row);
+        }
 
         dataGrid.Display();
     }

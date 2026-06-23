@@ -152,7 +152,7 @@ public class PotOrderTests
 
         // Assert
 
-        Guid[] actualIds = response.Pots
+        Guid[] actualIds = response.PotDetails
             .Select(x => x.Id)
             .ToArray();
 

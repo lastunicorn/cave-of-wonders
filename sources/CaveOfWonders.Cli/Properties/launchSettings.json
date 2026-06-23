@@ -2,7 +2,7 @@
   "profiles": {
     "CaveOfWonders.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "gem-import --pot 292bf659 --file=\"/nfs/YubabaAlez/finanțe/fintown/statements/2026/04 - aprilie/2026 04 - transactions.csv\" --file-type fintown"
+      "commandLineArgs": "pot mintos --details false"
     }
   }
 }

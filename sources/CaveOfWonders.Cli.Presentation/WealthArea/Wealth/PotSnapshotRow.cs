@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WealthArea.Wealth;
@@ -34,7 +35,7 @@ internal class PotSnapshotRow : ContentRow
 
     private void RegenerateCells()
     {
-        string id = viewModel.Id.ToString("D")[..8];
+        ShortPotId id = viewModel.Id;
         AddCell(id);
 
         string name = viewModel.Name;

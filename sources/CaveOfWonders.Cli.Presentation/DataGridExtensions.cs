@@ -1,5 +1,5 @@
-﻿// Cave of Wonders
-// Copyright (C) 2023-2025 Dust in the Wind
+// Cave of Wonders
+// Copyright (C) 2023-2024 Dust in the Wind
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,11 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
+using DustInTheWind.ConsoleTools.Controls.Tables;
 
-public class PresentPotResponse
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation;
+
+internal static class DataGridExtensions
 {
-    public List<PotSummary> PotSummaries { get; set; }
-    
-    public List<PotDetails> PotDetails { get; set; }
+    public static DataGrid Disable(this DataGrid dataGrid)
+    {
+        if (dataGrid == null)
+            return null;
+        
+        dataGrid.TitleRow.BackgroundColor = ConsoleColor.DarkGray;
+        dataGrid.Border.ForegroundColor = ConsoleColor.DarkGray;
+        dataGrid.ForegroundColor = ConsoleColor.DarkGray;
+
+        return dataGrid;
+    }
 }

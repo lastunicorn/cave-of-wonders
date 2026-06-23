@@ -19,13 +19,13 @@ internal class PotDetailsViewModel
 
     public int SnapshotCount { get; }
 
-    public bool IsActive { get; set; }
-
     public DateOnly? LastSnapshotDate { get; }
 
     public CurrencyValue Value { get; }
     
     public List<string> Labels { get; }
+
+    public bool IsActive { get; }
 
     public PotDetailsViewModel(PotDetails potDetails)
     {
@@ -42,7 +42,6 @@ internal class PotDetailsViewModel
         LastSnapshotDate = potDetails.LastSnapshotDate;
         Value = potDetails.Value;
         Labels = potDetails.Labels.ToList();
-
-        IsActive = potDetails.EndDate == null || potDetails.EndDate >= DateOnly.FromDateTime(DateTime.Today);
+        IsActive = potDetails.IsActive;
     }
 }

@@ -34,11 +34,13 @@ public class PotDetails
 
     public int SnapshotCount { get; }
 
-    public DateOnly? LastSnapshotDate { get; set; }
+    public DateOnly? LastSnapshotDate { get; }
 
-    public CurrencyValue Value { get; set; }
+    public CurrencyValue Value { get; }
     
     public List<string> Labels { get; }
+    
+    public bool IsActive { get; }
 
     internal PotDetails(Pot pot)
     {
@@ -64,5 +66,7 @@ public class PotDetails
                 Value = lastPotSnapshot.Value
             };
         }
+        
+        IsActive = pot.EndDate == null || pot.EndDate >= DateOnly.FromDateTime(DateTime.Today);
     }
 }
