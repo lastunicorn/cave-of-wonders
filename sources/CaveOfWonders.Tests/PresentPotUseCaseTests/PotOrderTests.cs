@@ -140,11 +140,11 @@ public class PotOrderTests
         // Arrange
         PresentPotRequest request = new()
         {
-            PotIdentifier = "dummy-id"
+            PotFlexId = "dummy-id"
         };
 
         potRepository
-            .Setup(x => x.GetByIdOrName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .Returns(potsFromRepository.ToAsyncEnumerable());
 
         // Act

@@ -24,7 +24,7 @@ internal class PotCommand : IConsoleCommand<PotCommandViewModel>
     {
         PresentPotRequest request = new()
         {
-            PotIdentifier = PotIdentifier,
+            PotFlexId = PotIdentifier,
             IncludeInactivePots = IncludeInactivePots
         };
 

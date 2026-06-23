@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
@@ -35,7 +36,7 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
 
     public async Task<PresentPotResponse> Handle(PresentPotRequest request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.PotIdentifier))
+        if (string.IsNullOrWhiteSpace(request.PotFlexId))
             throw new PotIdentifierNotSpecifiedException();
 
         IEnumerable<Pot> pots = await RetrievePots(request, cancellationToken);
@@ -54,7 +55,7 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
     {
         try
         {
-            IEnumerable<Pot> pots = await RetrievePotsByIdOrName(request.PotIdentifier, cancellationToken)
+            IEnumerable<Pot> pots = await RetrievePotsByIdOrName(request.PotFlexId, cancellationToken)
                 .ToListAsync();
 
             if (!request.IncludeInactivePots)
@@ -73,12 +74,15 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
         }
     }
 
-    private IAsyncEnumerable<Pot> RetrievePotsByIdOrName(string potIdentifier, CancellationToken cancellationToken)
+    private IAsyncEnumerable<Pot> RetrievePotsByIdOrName(PotFlexId potFlexId, CancellationToken cancellationToken)
     {
-        bool isIdentifierSpecified = !string.IsNullOrWhiteSpace(potIdentifier);
+        bool isIdentifierSpecified = potFlexId is
+        {
+            HasValue: true
+        };
 
         return isIdentifierSpecified
-            ? unitOfWork.PotRepository.GetByIdOrName(potIdentifier, cancellationToken)
+            ? unitOfWork.PotRepository.GetByIdOrNameAsync(potFlexId, cancellationToken)
             : unitOfWork.PotRepository.GetAllAsync(cancellationToken);
     }
 }

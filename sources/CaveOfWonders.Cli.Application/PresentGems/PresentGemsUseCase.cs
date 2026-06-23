@@ -32,7 +32,7 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
 
     public async Task<PresentGemsResponse> Handle(PresentGemsRequest request, CancellationToken cancellationToken)
     {
-        Pot pot = await unitOfWork.PotRepository.GetByIdOrName(request.PotId, cancellationToken)
+        Pot pot = await unitOfWork.PotRepository.GetByIdOrNameAsync(request.PotId, cancellationToken)
             .SingleAsync();
 
         IAsyncEnumerable<Gem> gems = RetrieveGems(request, cancellationToken, pot);

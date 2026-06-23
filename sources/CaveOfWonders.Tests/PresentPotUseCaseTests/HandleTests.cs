@@ -37,7 +37,7 @@ public class HandleTests
         // Arrange
         PresentPotRequest request = new()
         {
-            PotIdentifier = potIdentifier
+            PotFlexId = potIdentifier
         };
 
         // Act
@@ -53,11 +53,11 @@ public class HandleTests
         // Arrange
         PresentPotRequest request = new()
         {
-            PotIdentifier = "dummy-id"
+            PotFlexId = "dummy-id"
         };
 
         potRepository
-            .Setup(x => x.GetByIdOrName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .Returns(Array.Empty<Pot>().ToAsyncEnumerable());
 
         // Act
@@ -65,7 +65,7 @@ public class HandleTests
 
         // Assert
         potRepository
-            .Verify(x => x.GetByIdOrName(request.PotIdentifier, CancellationToken.None), Times.Once, "Repository should be called with the specified pot identifier.");
+            .Verify(x => x.GetByIdOrNameAsync(request.PotFlexId, CancellationToken.None), Times.Once, "Repository should be called with the specified pot identifier.");
     }
 
     [Fact]
@@ -74,10 +74,10 @@ public class HandleTests
         // Arrange
         PresentPotRequest request = new()
         {
-            PotIdentifier = "dummy-id"
+            PotFlexId = "dummy-id"
         };
         potRepository
-            .Setup(x => x.GetByIdOrName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .Throws(new Exception("Repository is inaccessible."));
 
         // Act
@@ -93,11 +93,11 @@ public class HandleTests
         // Arrange
         PresentPotRequest request = new()
         {
-            PotIdentifier = "dummy-id"
+            PotFlexId = "dummy-id"
         };
 
         potRepository
-            .Setup(x => x.GetByIdOrName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .Returns(Array.Empty<Pot>().ToAsyncEnumerable());
 
         // Act
@@ -113,11 +113,11 @@ public class HandleTests
         // Arrange
         PresentPotRequest request = new()
         {
-            PotIdentifier = "dummy-id"
+            PotFlexId = "dummy-id"
         };
 
         potRepository
-            .Setup(x => x.GetByIdOrName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .Returns(new List<Pot> { new() }.ToAsyncEnumerable());
 
         // Act
@@ -133,11 +133,11 @@ public class HandleTests
         // Arrange
         PresentPotRequest request = new()
         {
-            PotIdentifier = "dummy-id"
+            PotFlexId = "dummy-id"
         };
 
         potRepository
-            .Setup(x => x.GetByIdOrName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .Returns(new List<Pot> { new(), new() }.ToAsyncEnumerable());
 
         // Act

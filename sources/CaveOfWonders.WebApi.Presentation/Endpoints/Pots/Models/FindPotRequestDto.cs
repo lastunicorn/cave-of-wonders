@@ -31,7 +31,7 @@ public class FindPotRequestDto
     {
         return new PresentPotRequest
         {
-            PotIdentifier = PotIdentifier,
+            PotFlexId = PotIdentifier,
             IncludeInactivePots = IncludeInactive
         };
     }

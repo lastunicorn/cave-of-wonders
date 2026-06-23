@@ -82,7 +82,7 @@ public class PotsController : ControllerBase
     {
         PresentPotRequest request = new()
         {
-            PotIdentifier = getPotRequestDto.PotIdentifier,
+            PotFlexId = getPotRequestDto.PotIdentifier,
             IncludeInactivePots = getPotRequestDto.IncludeInactive
         };
         PresentPotResponse response = await mediator.Send(request);
@@ -106,7 +106,7 @@ public class PotsController : ControllerBase
     {
         PresentPotRequest request = new()
         {
-            PotIdentifier = potIdentifier
+            PotFlexId = potIdentifier
         };
         PresentPotResponse response = await mediator.Send(request);
 

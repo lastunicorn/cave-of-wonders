@@ -1,4 +1,5 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Entities;
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
@@ -65,16 +66,13 @@ internal class PotRepository : IPotRepository
         return pots.ToAsyncEnumerable(cancellationToken);
     }
 
-    public IAsyncEnumerable<Pot> GetByIdOrName(string idOrName, CancellationToken cancellationToken = default)
+    public IAsyncEnumerable<Pot> GetByIdOrNameAsync(PotFlexId potFlexId, CancellationToken cancellationToken = default)
     {
-        string idWithoutDashes = idOrName.Trim().Replace("-", string.Empty);
-
         IEnumerable<Pot> pots = dbContext.Pots
             .Include(x => x.Snapshots)
             .Include(x => x.Labels)
             .AsEnumerable()
-            .Where(x => x.Id.ToString("N").Contains(idWithoutDashes, StringComparison.InvariantCultureIgnoreCase) ||
-                (x.Name?.Contains(idOrName, StringComparison.InvariantCultureIgnoreCase) ?? false))
+            .Where(x => potFlexId.IsMatch(x.Id) || potFlexId.IsMatch(x.Name))
             .Select(MapToDomain);
 
         return pots.ToAsyncEnumerable(cancellationToken);

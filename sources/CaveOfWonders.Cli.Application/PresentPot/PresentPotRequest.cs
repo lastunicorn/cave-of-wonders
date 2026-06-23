@@ -14,13 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.DataTypes;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 
 public class PresentPotRequest : IRequest<PresentPotResponse>
 {
-    public string PotIdentifier { get; set; }
+    public PotFlexId PotFlexId { get; set; }
 
     public bool IncludeInactivePots { get; set; }
 }

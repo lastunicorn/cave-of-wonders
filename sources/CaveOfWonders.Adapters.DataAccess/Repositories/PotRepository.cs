@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.Utils;
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using System.Runtime.CompilerServices;
@@ -68,15 +69,10 @@ public class PotRepository : IPotRepository
         }
     }
 
-    public async IAsyncEnumerable<Pot> GetByIdOrName(string idOrName, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<Pot> GetByIdOrNameAsync(PotFlexId potFlexId, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        string idWithoutDashes = idOrName
-            .Trim()
-            .Replace("-", string.Empty);
-
         IEnumerable<Pot> pots = database.Pots
-            .Where(x => x.Id.ToString("N").Contains(idWithoutDashes, StringComparison.InvariantCultureIgnoreCase)
-                || (x.Name?.Contains(idOrName, StringComparison.InvariantCultureIgnoreCase) ?? false));
+            .Where(x => potFlexId.IsMatch(x.Id) || potFlexId.IsMatch(x.Name));
 
         foreach (Pot pot in pots)
             yield return pot;

@@ -7,6 +7,8 @@ public record class PotFlexId
 
     public bool IsEmpty => !guid.HasValue && partialValue == null;
 
+    public bool HasValue => guid.HasValue || partialValue != null;
+
     public bool IsFullGuid => guid.HasValue;
 
     public static PotFlexId Empty { get; } = new();
@@ -17,9 +19,9 @@ public record class PotFlexId
 
     public PotFlexId(string value)
     {
-        if (value is null) 
+        if (value is null)
             return;
-        
+
         if (Guid.TryParse(value, out Guid g))
             guid = g;
         else
@@ -44,9 +46,23 @@ public record class PotFlexId
         }
 
         if (partialValue is not null)
+            return text.Contains(partialValue, StringComparison.OrdinalIgnoreCase);
+
+        return false;
+    }
+
+    public bool IsMatch(Guid value)
+    {
+        if (guid.HasValue)
+            return guid == value;
+
+        if (partialValue is not null)
         {
-            int pos = text.IndexOf(partialValue, StringComparison.OrdinalIgnoreCase);
-            return pos >= 0;
+            string partialValueWithoutDashes = partialValue
+                .Trim()
+                .Replace("-", string.Empty);
+
+            return value.ToString("N").Contains(partialValueWithoutDashes, StringComparison.InvariantCultureIgnoreCase);
         }
 
         return false;

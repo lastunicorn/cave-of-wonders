@@ -1,4 +1,5 @@
-﻿using DustInTheWind.CaveOfWonders.Domain;
+﻿using DustInTheWind.CaveOfWonders.DataTypes;
+using DustInTheWind.CaveOfWonders.Domain;
 
 namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
@@ -12,7 +13,7 @@ public interface IPotRepository
 
     IAsyncEnumerable<Pot> GetByPartialIdAsync(string partialPotId, CancellationToken cancellationToken = default);
 
-    IAsyncEnumerable<Pot> GetByIdOrName(string idOrName, CancellationToken cancellationToken = default);
+    IAsyncEnumerable<Pot> GetByIdOrNameAsync(PotFlexId potFlexId, CancellationToken cancellationToken = default);
     
     void Add(Pot pot);
 }
