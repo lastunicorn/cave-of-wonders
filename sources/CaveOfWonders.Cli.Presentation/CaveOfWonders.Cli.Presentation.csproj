@@ -19,8 +19,4 @@
         <ProjectReference Include="..\CaveOfWonders.Infrastructure\CaveOfWonders.Infrastructure.csproj" PrivateAssets="All" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="WealthArea\Gain\" />
-    </ItemGroup>
-
 </Project>

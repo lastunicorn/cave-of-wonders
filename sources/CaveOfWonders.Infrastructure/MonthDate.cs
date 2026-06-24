@@ -20,6 +20,11 @@ public readonly record struct MonthDate
 		Month = month;
 	}
 
+    public MonthDate(DateOnly date)
+        : this(date.Year, date.Month)
+    {
+    }
+
     public bool Contains(DateTime date)
     {
         return date.Year == Year && date.Month == Month;

@@ -87,6 +87,50 @@ internal class GemRepository : IGemRepository
         }
     }
 
+    public async IAsyncEnumerable<Gem> FindByMonthAndCategoryAsync(MonthDate month, GemCategory category, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        int categoryValue = (int)category;
+
+        List<GemEntity> entities = await dbContext.Gems
+            .Include(x => x.Parameters)
+            .Include(x => x.Pot)
+            .Where(x => x.Date.Year == month.Year && x.Date.Month == month.Month && x.Category == categoryValue)
+            .ToListAsync(cancellationToken);
+
+        foreach (GemEntity entity in entities)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            yield return MapToDomain(entity);
+        }
+    }
+
+    public IAsyncEnumerable<Gem> FindAsync(GemFilter filter, CancellationToken cancellationToken = default)
+    {
+        IQueryable<GemEntity> query = dbContext.Gems
+            .Include(x => x.Parameters)
+            .Include(x => x.Pot)
+            .AsQueryable();
+
+        if (filter.PotId != null)
+            query = query.Where(x => x.PotId == filter.PotId);
+
+        if (filter.Date != null)
+            query = query.Where(x => x.Date.Year == filter.Date.Value.Year && x.Date.Month == filter.Date.Value.Month && x.Date.Day == filter.Date.Value.Day);
+
+        if (filter.Month != null)
+            query = query.Where(x => x.Date.Year == filter.Month.Value.Year && x.Date.Month == filter.Month.Value.Month);
+
+        if (filter.Categories?.Count > 0)
+            query = query.Where(x => filter.Categories.Contains((GemCategory)x.Category));
+
+        if (filter.ExternalId != null)
+            query = query.Where(x => x.ExternalId == filter.ExternalId);
+
+        return query
+            .AsAsyncEnumerable()
+            .Select(MapToDomain);
+    }
+
     public void Add(Gem gem)
     {
         ArgumentNullException.ThrowIfNull(gem);
@@ -101,7 +145,11 @@ internal class GemRepository : IGemRepository
             Description = gem.Description,
             PotId = gem.Pot.Id,
             Parameters = gem.Parameters
-                .Select(p => new GemParameterEntity { Key = p.Key, Value = p.Value })
+                .Select(p => new GemParameterEntity
+                {
+                    Key = p.Key,
+                    Value = p.Value
+                })
                 .ToList()
         };
 

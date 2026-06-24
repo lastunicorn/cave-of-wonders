@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
@@ -74,6 +75,60 @@ public class GemRepository : IGemRepository
 
         IEnumerable<Gem> gems = database.Gems
             .Where(x => x.Pot?.Id == potId && x.Date.Month == month.Month && x.Date.Year == month.Year);
+
+        foreach (Gem gem in gems)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            yield return gem;
+        }
+    }
+
+    public async IAsyncEnumerable<Gem> FindByMonthAndCategoryAsync(MonthDate month, GemCategory category, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        await database.LoadGemsAsync(cancellationToken);
+
+        IEnumerable<Gem> gems = database.Gems
+            .Where(x => x.Date.Year == month.Year && x.Date.Month == month.Month && x.Category == category);
+
+        foreach (Gem gem in gems)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            yield return gem;
+        }
+    }
+
+    public async IAsyncEnumerable<Gem> FindAsync(GemFilter filter, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        await database.LoadGemsAsync(cancellationToken);
+
+        IEnumerable<Gem> gems = database.Gems;
+
+        if (filter.PotId != null)
+            gems = gems.Where(x => x.Pot?.Id == filter.PotId.Value);
+
+        if (filter.Date != null)
+        {
+            gems = gems.Where(x =>
+            {
+                DateOnly filterDate = filter.Date.Value;
+                return x.Date.Year == filterDate.Year && x.Date.Month == filterDate.Month && x.Date.Day == filterDate.Day;
+            });
+        }
+
+        if (filter.Month != null)
+        {
+            gems = gems.Where(x =>
+            {
+                MonthDate filterMonth = filter.Month.Value;
+                return x.Date.Year == filterMonth.Year && x.Date.Month == filterMonth.Month;
+            });
+        }
+
+        if (filter.Categories?.Count > 0)
+            gems = gems.Where(x => filter.Categories.Contains(x.Category));
+
+        if (filter.ExternalId != null)
+            gems = gems.Where(x => x.ExternalId == filter.ExternalId);
 
         foreach (Gem gem in gems)
         {

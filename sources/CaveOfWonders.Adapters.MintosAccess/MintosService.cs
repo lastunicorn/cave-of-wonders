@@ -52,51 +52,31 @@ public class MintosService : IMintosService
 
     private static GemCategory CalculateCategory(PaymentType paymentType)
     {
-        if (paymentType == PaymentType.Deposits)
-            return GemCategory.Deposit;
-
-        if (paymentType == PaymentType.Investment)
-            return GemCategory.Internal;
-
-        if (paymentType == PaymentType.Principal)
-            return GemCategory.Internal;
-
-        if (paymentType == PaymentType.Interest)
-            return GemCategory.Gain;
-
-        if (paymentType == PaymentType.LateFee)
-            return GemCategory.Gain;
-
-        if (paymentType == PaymentType.SecondaryMarketTransaction)
-            return GemCategory.Internal;
-
-        if (paymentType == PaymentType.LoanRepurchasePrincipal)
-            return GemCategory.Internal;
-
-        if (paymentType == PaymentType.LoanRepurchaseInterest)
-            return GemCategory.Gain;
-
-        if (paymentType == PaymentType.TransitRebuyDelayedInterest)
-            return GemCategory.Gain;
-
-        if (paymentType == PaymentType.PendingPaymentsInterest)
-            return GemCategory.Gain;
-
-        if (paymentType == PaymentType.TaxWithholding)
-            return GemCategory.Loss;
-
-        if (paymentType == PaymentType.CashOutShareIncomeToSeller)
-            return GemCategory.Internal;
-
-        if (paymentType == PaymentType.MintosCoreFee)
-            return GemCategory.Loss;
-
-        if (paymentType == PaymentType.MintosCustomLoansFee)
-            return GemCategory.Loss;
-
-        if (paymentType == PaymentType.Withdrawal)
-            return GemCategory.Withdrawal;
-
+        if (paymentType == PaymentType.BondInterestIncome) return GemCategory.Gain;
+        if (paymentType == PaymentType.BondInvestmentPrincipalIncrease) return GemCategory.Internal;
+        if (paymentType == PaymentType.BondTaxWithholding) return GemCategory.Loss; // Tax
+        if (paymentType == PaymentType.Bonus) return GemCategory.Gain;
+        if (paymentType == PaymentType.CashOutShareIncomeToSeller) return GemCategory.Internal;
+        if (paymentType == PaymentType.DelayedInterestIncomeOnTransitRebuy) return GemCategory.Gain;
+        if (paymentType == PaymentType.Deposits) return GemCategory.Deposit;
+        if (paymentType == PaymentType.InterestReceived) return GemCategory.Gain;
+        if (paymentType == PaymentType.InterestReceivedFromLoanRepurchase) return GemCategory.Gain;
+        if (paymentType == PaymentType.InterestReceivedFromPendingPayments) return GemCategory.Gain;
+        if (paymentType == PaymentType.Investment) return GemCategory.Internal;
+        if (paymentType == PaymentType.LateFeesReceived) return GemCategory.Gain;
+        if (paymentType == PaymentType.MintosCoreFee) return GemCategory.Loss; // Fee
+        if (paymentType == PaymentType.MintosCustomLoansFee) return GemCategory.Loss; // Fee
+        if (paymentType == PaymentType.PrincipalReceived) return GemCategory.Internal;
+        if (paymentType == PaymentType.PrincipalReceivedFromLoanRepurchase) return GemCategory.Internal;
+        if (paymentType == PaymentType.PrincipalReceivedFromRepurchaseOfSmallLoanParts) return GemCategory.Internal;
+        if (paymentType == PaymentType.RealEstateInterestIncome) return GemCategory.Gain;
+        if (paymentType == PaymentType.RealEstateInvestmentPrincipalIncrease) return GemCategory.Internal;
+        if (paymentType == PaymentType.RealEstateTaxWithholding) return GemCategory.Loss; // Tax
+        if (paymentType == PaymentType.SecondaryMarketTransaction) return GemCategory.Internal;
+        if (paymentType == PaymentType.SecondaryMarketTransactionDiscountOrPremium) return GemCategory.Internal;
+        if (paymentType == PaymentType.TaxWithholding) return GemCategory.Loss; // Tax
+        if (paymentType == PaymentType.Withdrawal) return GemCategory.Withdrawal;
+        
         return GemCategory.Unknown;
     }
 }
