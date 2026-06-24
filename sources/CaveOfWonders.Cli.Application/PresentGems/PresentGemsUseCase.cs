@@ -15,7 +15,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using MediatR;
 
@@ -33,7 +32,7 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
     public async Task<PresentGemsResponse> Handle(PresentGemsRequest request, CancellationToken cancellationToken)
     {
         Pot pot = await unitOfWork.PotRepository.GetByIdOrNameAsync(request.PotId, cancellationToken)
-            .SingleAsync();
+            .SingleAsync(cancellationToken);
 
         IAsyncEnumerable<Gem> gems = RetrieveGems(request, cancellationToken, pot);
 
@@ -46,7 +45,7 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
                     Category = x.Category,
                     Amount = x.Amount
                 })
-                .ToListAsync()
+                .ToListAsync(cancellationToken)
         };
     }
 

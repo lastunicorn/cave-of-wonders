@@ -16,7 +16,6 @@
 
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots.Importing;
 using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.LogAccess;
 using DustInTheWind.CaveOfWonders.Ports.SpreadsheetAccess;
@@ -72,7 +71,7 @@ internal class ImportPotSnapshotsUseCase : IRequestHandler<ImportPotSnapshotsReq
     private static void ClearPots(PotCollection potCollection, List<SheetMapping> sheetDescriptors)
     {
         IEnumerable<Guid> potIds = sheetDescriptors
-            .SelectMany(x => x.ColumnDescriptors.Select(x => x.Key));
+            .SelectMany(x => x.ColumnDescriptors.Select(z => z.Key));
 
         potCollection.ClearSnapshots(potIds);
     }
@@ -104,7 +103,7 @@ internal class ImportPotSnapshotsUseCase : IRequestHandler<ImportPotSnapshotsReq
         PotCollection potCollection = new();
 
         IEnumerable<Pot> pots = await unitOfWork.PotRepository.GetAllAsync(cancellationToken)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
         
         potCollection.AddRange(pots);
 

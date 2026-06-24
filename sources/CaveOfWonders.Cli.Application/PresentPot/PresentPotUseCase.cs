@@ -16,7 +16,6 @@
 
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
@@ -41,7 +40,7 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
         PresentPotResponse response = new();
 
         bool showDetails = request.ShowDetails is true || (!request.ShowDetails.HasValue && request.PotFlexId?.HasValue == true);
-        if(showDetails)
+        if (showDetails)
         {
             response.PotDetails = pots
                 .Select(x => new PotDetails(x))
@@ -62,7 +61,7 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
         try
         {
             IEnumerable<Pot> pots = await RetrievePotsByIdOrName(request.PotFlexId, cancellationToken)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             if (!request.IncludeInactivePots)
             {

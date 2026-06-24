@@ -1,6 +1,5 @@
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.FintownAccess;
 using DustInTheWind.CaveOfWonders.Ports.MintosAccess;
@@ -48,7 +47,7 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
         try
         {
             return await unitOfWork.PotRepository.GetByIdOrNameAsync(potFlexId, cancellationToken)
-                .SingleAsync();
+                .SingleAsync(cancellationToken);
         }
         catch (Exception ex)
         {
