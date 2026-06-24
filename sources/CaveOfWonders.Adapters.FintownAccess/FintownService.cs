@@ -12,7 +12,7 @@ public class FintownService : IFintownService
     {
         TransactionsDocument transactionsDocument = await TransactionsDocument.LoadFromFileAsync(filePath);
 
-        IEnumerable<Gem> gems = transactionsDocument.Transactions
+        IEnumerable<Gem> gems = transactionsDocument
             .Select(CreateGem);
         
         foreach (Gem gem in gems)

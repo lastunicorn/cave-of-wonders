@@ -8,7 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DustInTheWind.Fintown.Toolkit" Version="1.1.0" />
+		<PackageReference Include="DustInTheWind.Fintown.Toolkit" Version="1.3.0" />
 	</ItemGroup>
 
 	<ItemGroup>
