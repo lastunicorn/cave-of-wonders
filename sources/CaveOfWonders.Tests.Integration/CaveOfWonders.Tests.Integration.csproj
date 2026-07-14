@@ -34,7 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Ports\DataAccess\" />
+      <None Include="repositorytests.config.json" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
 </Project>

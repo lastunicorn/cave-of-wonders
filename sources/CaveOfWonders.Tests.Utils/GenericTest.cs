@@ -1,0 +1,161 @@
+namespace DustInTheWind.CaveOfWonders.Tests.Utils;
+
+/// <summary>
+/// A fluent builder that runs an Arrange/Act/Assert integration test against a repository, addressed only through
+/// its port interface (<typeparamref name="TSut"/>), so the same test can be executed against any concrete adapter
+/// (e.g. JSON, LiteDb, SQLite) supplied via an <see cref="ISutProvider{T}"/> at runtime.
+/// </summary>
+/// <remarks>
+/// <para>
+/// Each phase (<see cref="Arrange(System.Action{TSut,dynamic})"/>, <see cref="Act(System.Action{TSut,dynamic})"/>,
+/// <see cref="Assert(System.Action{TSut,dynamic})"/>) is configured independently and executed only once
+/// <see cref="ExecuteAsync"/> is called.
+/// </para>
+/// <para>
+/// Every phase obtains and releases its own repository instance (via the injected <see cref="ISutProvider{T}"/>'s
+/// <c>InitAsync</c>/<c>CleanupAsync</c> members), rather than sharing one instance across the whole test. This forces
+/// data to be actually persisted to and reloaded from the underlying storage between phases, so the test exercises
+/// real persistence instead of asserting against an in-memory object graph that was never saved.
+/// </para>
+/// <para>
+/// Both synchronous and asynchronous overloads are provided for each phase, and each phase may be set at most once
+/// (calling it twice throws <see cref="InvalidOperationException"/>). All phases are optional, so a test can omit
+/// Arrange (e.g. to assert on an empty repository) or Assert (e.g. to only verify no exception is thrown during
+/// Act).
+/// </para>
+/// <para>
+/// A <see cref="DatabaseTestContext"/> instance is threaded through every phase as a dynamic bag, letting a test
+/// pass values (e.g. generated ids or results) from Arrange into Act and from Act into Assert without declaring
+/// dedicated fields on the test class.
+/// </para>
+/// <para>
+/// The provider's <c>Reset</c> is always called in a <c>finally</c> block, so temporary storage created for the run
+/// is removed even if one of the phases throws.
+/// </para>
+/// </remarks>
+public class GenericTest<TSut>
+{
+    private readonly ISutProvider<TSut> provider;
+
+    private Func<TSut, dynamic, Task> arrangeAction1;
+    private Action<TSut, dynamic> arrangeAction2;
+
+    private Func<TSut, dynamic, Task> actAction1;
+    private Action<TSut, dynamic> actAction2;
+
+    private Func<TSut, dynamic, Task> assertAction1;
+    private Action<TSut, dynamic> assertAction2;
+
+    public GenericTest(ISutProvider<TSut> provider)
+    {
+        this.provider = provider ?? throw new ArgumentNullException(nameof(provider));
+    }
+
+    public GenericTest<TSut> Arrange(Func<TSut, dynamic, Task> action)
+    {
+        if (arrangeAction1 != null || arrangeAction2 != null)
+            throw new InvalidOperationException("Arrange can only be called once.");
+
+        arrangeAction1 = action;
+        return this;
+    }
+
+    public GenericTest<TSut> Arrange(Action<TSut, dynamic> action)
+    {
+        if (arrangeAction1 != null || arrangeAction2 != null)
+            throw new InvalidOperationException("Arrange can only be called once.");
+
+        arrangeAction2 = action;
+        return this;
+    }
+
+    public GenericTest<TSut> Act(Func<TSut, dynamic, Task> action)
+    {
+        if (actAction1 != null || actAction2 != null)
+            throw new InvalidOperationException("Act can only be called once.");
+
+        actAction1 = action;
+        return this;
+    }
+
+    public GenericTest<TSut> Act(Action<TSut, dynamic> action)
+    {
+        if (actAction1 != null || actAction2 != null)
+            throw new InvalidOperationException("Act can only be called once.");
+
+        actAction2 = action;
+        return this;
+    }
+
+    public GenericTest<TSut> Assert(Func<TSut, dynamic, Task> action)
+    {
+        if (assertAction1 != null || assertAction2 != null)
+            throw new InvalidOperationException("Assert can only be called once.");
+
+        assertAction1 = action;
+        return this;
+    }
+
+    public GenericTest<TSut> Assert(Action<TSut, dynamic> action)
+    {
+        if (assertAction1 != null || assertAction2 != null)
+            throw new InvalidOperationException("Assert can only be called once.");
+
+        assertAction2 = action;
+        return this;
+    }
+
+    public async Task ExecuteAsync()
+    {
+        try
+        {
+            DatabaseTestContext context = new();
+
+            if (arrangeAction1 != null)
+            {
+                TSut sut = await provider.CreateAsync();
+                await arrangeAction1(sut, context);
+                await provider.ReleaseAsync(sut);
+            }
+
+            if (arrangeAction2 != null)
+            {
+                TSut sut = await provider.CreateAsync();
+                arrangeAction2(sut, context);
+                await provider.ReleaseAsync(sut);
+            }
+
+            if (actAction1 != null)
+            {
+                TSut sut = await provider.CreateAsync();
+                await actAction1(sut, context);
+                await provider.ReleaseAsync(sut);
+            }
+
+            if (actAction2 != null)
+            {
+                TSut sut = await provider.CreateAsync();
+                actAction2(sut, context);
+                await provider.ReleaseAsync(sut);
+            }
+
+            if (assertAction1 != null)
+            {
+                TSut sut = await provider.CreateAsync();
+                await assertAction1(sut, context);
+                await provider.ReleaseAsync(sut);
+            }
+
+            if (assertAction2 != null)
+            {
+                TSut sut = await provider.CreateAsync();
+                assertAction2(sut, context);
+                await provider.ReleaseAsync(sut);
+            }
+        }
+        finally
+        {
+            provider.Reset();
+        }
+    }
+}

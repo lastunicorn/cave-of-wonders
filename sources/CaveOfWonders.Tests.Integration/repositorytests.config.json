@@ -1,0 +1,6 @@
+{
+  "IPotRepository": [
+    { "adapter": "Json" },
+    { "adapter": "LiteDb" }
+  ]
+}
