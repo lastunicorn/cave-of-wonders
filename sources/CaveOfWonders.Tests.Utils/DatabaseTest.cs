@@ -1,5 +1,34 @@
 namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 
+/// <summary>
+/// A fluent builder that runs an Arrange/Act/Assert integration test against a real database instance.
+/// </summary>
+/// <remarks>
+/// <para>
+/// Each phase (<see cref="Arrange(System.Action{TDb,dynamic})"/>, <see cref="Act(System.Action{TDb,dynamic})"/>,
+/// <see cref="Assert(System.Action{TDb,dynamic})"/>) is configured independently and executed only once
+/// <see cref="Execute"/> is called.
+/// </para>
+/// <para>
+/// Every phase opens and closes its own database instance (via the abstract <c>OpenDatabaseAsync</c>/<c>CloseDatabaseAsync</c>
+/// members implemented by a derived class), rather than sharing one instance across the whole test. This forces data to be
+/// actually persisted to and reloaded from disk between phases, so the test exercises real persistence.
+/// </para>
+/// <para>
+/// Both synchronous and asynchronous overloads are provided for each phase, and each phase may be set at most once
+/// (calling it twice throws <see cref="InvalidOperationException"/>). All phases are optional, so a test can omit
+/// Arrange (e.g. to assert on an empty database) or Assert (e.g. to only verify no exception is thrown during Act).
+/// </para>
+/// <para>
+/// A <see cref="DatabaseTestContext"/> instance is threaded through every phase as a dynamic bag, letting a test pass
+/// values (e.g. generated ids or results) from Arrange into Act and from Act into Assert without declaring dedicated
+/// fields on the test class.
+/// </para>
+/// <para>
+/// The database is always cleaned up via <c>ResetDatabase</c> in a <c>finally</c> block, so temporary files are removed
+/// even if one of the phases throws.
+/// </para>
+/// </remarks>
 public abstract class DatabaseTest<TDb>
 {
     private Func<TDb, dynamic, Task> arrangeAction1;
