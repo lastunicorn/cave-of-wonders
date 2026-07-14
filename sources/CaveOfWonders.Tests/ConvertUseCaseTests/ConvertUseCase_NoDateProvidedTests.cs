@@ -11,153 +11,153 @@ namespace CaveOfWonders.Tests.ConvertUseCaseTests;
 
 public class ConvertUseCase_NoDateProvidedTests
 {
-    private readonly ConvertCurrencyUseCase convertCurrencyUseCase;
-    private readonly Mock<IExchangeRateRepository> exchangeRateRepository;
-    private readonly Mock<ISystemClock> systemClock;
+	private readonly ConvertCurrencyUseCase convertCurrencyUseCase;
+	private readonly Mock<IExchangeRateRepository> exchangeRateRepository;
+	private readonly Mock<ISystemClock> systemClock;
 
-    public ConvertUseCase_NoDateProvidedTests()
-    {
-        Mock<IUnitOfWork> unitOfWork = new();
-        systemClock = new Mock<ISystemClock>();
-        exchangeRateRepository = new Mock<IExchangeRateRepository>();
+	public ConvertUseCase_NoDateProvidedTests()
+	{
+		Mock<IUnitOfWork> unitOfWork = new();
+		systemClock = new Mock<ISystemClock>();
+		exchangeRateRepository = new Mock<IExchangeRateRepository>();
 
-        convertCurrencyUseCase = new(unitOfWork.Object, systemClock.Object);
+		convertCurrencyUseCase = new(unitOfWork.Object, systemClock.Object);
 
-        unitOfWork
-            .SetupGet(x => x.ExchangeRateRepository)
-            .Returns(exchangeRateRepository.Object);
-    }
+		unitOfWork
+			.SetupGet(x => x.ExchangeRateRepository)
+			.Returns(exchangeRateRepository.Object);
+	}
 
-    [Fact]
-    public async Task HavingNoDateProvided_ThenDateIsRetrievedFromSystemDateService()
-    {
-        ConvertCurrencyRequest convertCurrencyRequest = new()
-        {
-            InitialValue = 100,
-            CurrencyPair = new CurrencyPair("EURRON")
-        };
+	[Fact]
+	public async Task HavingNoDateProvided_ThenDateIsRetrievedFromSystemDateService()
+	{
+		ConvertCurrencyRequest convertCurrencyRequest = new()
+		{
+			InitialValue = 100,
+			CurrencyPair = new CurrencyPair("EURRON")
+		};
 
-        try
-        {
-            _ = await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
-        }
-        catch { }
+		try
+		{
+			_ = await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
+		}
+		catch { }
 
-        systemClock.VerifyGet(x => x.Today, Times.Once);
-    }
+		systemClock.VerifyGet(x => x.Today, Times.Once);
+	}
 
-    [Fact]
-    public async Task HavingNoDateProvided_AndSystemDateReturnsDateAsToday_ThenExchangeRateIsRequestedForSystemDateToday()
-    {
-        systemClock
-            .SetupGet(x => x.Today)
-            .Returns(new DateOnly(2000, 12, 04));
+	[Fact]
+	public async Task HavingNoDateProvided_AndSystemDateReturnsDateAsToday_ThenExchangeRateIsRequestedForSystemDateToday()
+	{
+		systemClock
+			.SetupGet(x => x.Today)
+			.Returns(new DateOnly(2000, 12, 04));
 
-        ConvertCurrencyRequest convertCurrencyRequest = new()
-        {
-            InitialValue = 100,
-            CurrencyPair = new CurrencyPair("EURRON")
-        };
+		ConvertCurrencyRequest convertCurrencyRequest = new()
+		{
+			InitialValue = 100,
+			CurrencyPair = new CurrencyPair("EURRON")
+		};
 
-        try
-        {
-            _ = await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
-        }
-        catch { }
+		try
+		{
+			_ = await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
+		}
+		catch { }
 
-        CurrencyPair expectedCurrencyPair = new("EURRON");
-        DateOnly expectedDate = new(2000, 12, 04);
+		CurrencyPair expectedCurrencyPair = new("EURRON");
+		DateOnly expectedDate = new(2000, 12, 04);
 
-        exchangeRateRepository.Verify(x => x.GetForLatestDayAvailable(expectedCurrencyPair, expectedDate, true), Times.Once);
-    }
+		exchangeRateRepository.Verify(x => x.GetForLatestDayAvailable(expectedCurrencyPair, expectedDate, true), Times.Once);
+	}
 
-    [Fact]
-    public async Task HavingNoDateProvided_AndSystemDateReturnsDateAsToday_AndExchangeRateDoesNotExistInStorage_ThenThrows()
-    {
-        systemClock
-            .SetupGet(x => x.Today)
-            .Returns(new DateOnly(2000, 12, 04));
+	[Fact]
+	public async Task HavingNoDateProvided_AndSystemDateReturnsDateAsToday_AndExchangeRateDoesNotExistInStorage_ThenThrows()
+	{
+		systemClock
+			.SetupGet(x => x.Today)
+			.Returns(new DateOnly(2000, 12, 04));
 
-        exchangeRateRepository
-            .Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>()))
-            .Returns(Task.FromResult(null as ExchangeRate));
+		exchangeRateRepository
+			.Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>()))
+			.Returns(Task.FromResult(null as ExchangeRate));
 
-        ConvertCurrencyRequest convertCurrencyRequest = new()
-        {
-            InitialValue = 100,
-            CurrencyPair = new CurrencyPair("EURRON")
-        };
+		ConvertCurrencyRequest convertCurrencyRequest = new()
+		{
+			InitialValue = 100,
+			CurrencyPair = new CurrencyPair("EURRON")
+		};
 
-        Func<Task> action = async () => await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
+		Func<Task> action = async () => await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
 
-        await action.Should().ThrowAsync<ExchangeRateNotFoundException>();
-    }
+		await action.Should().ThrowAsync<ExchangeRateNotFoundException>();
+	}
 
-    [Fact]
-    public async Task HavingNoDateProvided_AndSystemDateReturnsDateAsToday_AndExchangeRateExistsInStorage_ThenReturnsConvertedValue()
-    {
-        systemClock
-            .SetupGet(x => x.Today)
-            .Returns(new DateOnly(2000, 12, 04));
+	[Fact]
+	public async Task HavingNoDateProvided_AndSystemDateReturnsDateAsToday_AndExchangeRateExistsInStorage_ThenReturnsConvertedValue()
+	{
+		systemClock
+			.SetupGet(x => x.Today)
+			.Returns(new DateOnly(2000, 12, 04));
 
-        exchangeRateRepository
-            .Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>()))
-            .Returns(Task.FromResult(new ExchangeRate()
-            {
-                Value = 2,
-                CurrencyPair = new CurrencyPair("EURRON"),
-                Date = new DateOnly(2000, 12, 04)
-            }));
+		exchangeRateRepository
+			.Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>()))
+			.Returns(Task.FromResult(new ExchangeRate()
+			{
+				Value = 2,
+				CurrencyPair = new CurrencyPair("EURRON"),
+				Date = new DateOnly(2000, 12, 04)
+			}));
 
-        ConvertCurrencyRequest convertCurrencyRequest = new()
-        {
-            InitialValue = 102,
-            CurrencyPair = new CurrencyPair("EURRON")
-        };
+		ConvertCurrencyRequest convertCurrencyRequest = new()
+		{
+			InitialValue = 102,
+			CurrencyPair = new CurrencyPair("EURRON")
+		};
 
-        ConvertCurrencyResponse response = await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
+		ConvertCurrencyResponse response = await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
 
-        response.InitialValue.Should().Be(102);
-        response.ConvertedValue.Should().Be(204);
-        response.IsDateCurrent.Should().BeTrue();
-        response.ExchangeRate.Should().NotBeNull();
-        response.ExchangeRate.SourceCurrency.Should().Be("EUR");
-        response.ExchangeRate.DestinationCurrency.Should().Be("RON");
-        response.ExchangeRate.Value.Should().Be(2);
-        response.ExchangeRate.Date.Should().Be(new DateOnly(2000, 12, 04));
-    }
+		response.InitialValue.Should().Be(102);
+		response.ConvertedValue.Should().Be(204);
+		response.IsDateCurrent.Should().BeTrue();
+		response.ExchangeRate.Should().NotBeNull();
+		response.ExchangeRate.SourceCurrency.Should().Be("EUR");
+		response.ExchangeRate.DestinationCurrency.Should().Be("RON");
+		response.ExchangeRate.Value.Should().Be(2);
+		response.ExchangeRate.Date.Should().Be(new DateOnly(2000, 12, 04));
+	}
 
-    [Fact]
-    public async Task HavingNoDateProvided_AndSystemDateReturnsDateAsToday_AndExchangeRateExistsInStorageForAPreviousDate_ThenReturnsConvertedValue()
-    {
-        systemClock
-            .SetupGet(x => x.Today)
-            .Returns(new DateOnly(2000, 12, 04));
+	[Fact]
+	public async Task HavingNoDateProvided_AndSystemDateReturnsDateAsToday_AndExchangeRateExistsInStorageForAPreviousDate_ThenReturnsConvertedValue()
+	{
+		systemClock
+			.SetupGet(x => x.Today)
+			.Returns(new DateOnly(2000, 12, 04));
 
-        exchangeRateRepository
-            .Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>()))
-            .Returns(Task.FromResult(new ExchangeRate()
-            {
-                Value = 2,
-                CurrencyPair = new CurrencyPair("EURRON"),
-                Date = new DateOnly(2000, 12, 01)
-            }));
+		exchangeRateRepository
+			.Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>()))
+			.Returns(Task.FromResult(new ExchangeRate()
+			{
+				Value = 2,
+				CurrencyPair = new CurrencyPair("EURRON"),
+				Date = new DateOnly(2000, 12, 01)
+			}));
 
-        ConvertCurrencyRequest convertCurrencyRequest = new()
-        {
-            InitialValue = 102,
-            CurrencyPair = new CurrencyPair("EURRON")
-        };
+		ConvertCurrencyRequest convertCurrencyRequest = new()
+		{
+			InitialValue = 102,
+			CurrencyPair = new CurrencyPair("EURRON")
+		};
 
-        ConvertCurrencyResponse response = await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
+		ConvertCurrencyResponse response = await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
 
-        response.InitialValue.Should().Be(102);
-        response.ConvertedValue.Should().Be(204);
-        response.IsDateCurrent.Should().BeFalse();
-        response.ExchangeRate.Should().NotBeNull();
-        response.ExchangeRate.SourceCurrency.Should().Be("EUR");
-        response.ExchangeRate.DestinationCurrency.Should().Be("RON");
-        response.ExchangeRate.Value.Should().Be(2);
-        response.ExchangeRate.Date.Should().Be(new DateOnly(2000, 12, 01));
-    }
+		response.InitialValue.Should().Be(102);
+		response.ConvertedValue.Should().Be(204);
+		response.IsDateCurrent.Should().BeFalse();
+		response.ExchangeRate.Should().NotBeNull();
+		response.ExchangeRate.SourceCurrency.Should().Be("EUR");
+		response.ExchangeRate.DestinationCurrency.Should().Be("RON");
+		response.ExchangeRate.Value.Should().Be(2);
+		response.ExchangeRate.Date.Should().Be(new DateOnly(2000, 12, 01));
+	}
 }
