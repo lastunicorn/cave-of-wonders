@@ -55,7 +55,12 @@ public sealed class DbContext : IDisposable
 
     public DbContext(string filePath)
     {
-        db = new LiteDatabase(filePath);
+        // Each DbContext gets its own BsonMapper instead of relying on the default
+        // LiteDatabase behavior of falling back to the shared, static BsonMapper.Global.
+        // That shared mapper's type-metadata cache isn't safe under concurrent first-time
+        // access from multiple LiteDatabase instances (e.g. parallel test runs), which can
+        // corrupt reads for types like DateOnly and throw ArgumentOutOfRangeException.
+        db = new LiteDatabase(filePath, new BsonMapper());
     }
 
     public void Dispose()
