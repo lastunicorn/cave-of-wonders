@@ -1,9 +1,10 @@
 namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 
 /// <summary>
-/// A fluent builder that runs an Arrange/Act/Assert integration test against a repository, addressed only through
-/// its port interface (<typeparamref name="TSut"/>), so the same test can be executed against any concrete adapter
-/// (e.g. JSON, LiteDb, SQLite) supplied via an <see cref="ISutProvider{T}"/> at runtime.
+/// A fluent builder that runs an Arrange/Act/Assert integration test against a system under test (SUT), addressed
+/// only through its interface (<typeparamref name="TSut"/>), so the same test can be executed against any concrete
+/// implementation (e.g. a repository backed by JSON, LiteDb, or SQLite) supplied via an <see cref="ISutProvider{T}"/>
+/// at runtime.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -12,19 +13,20 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// <see cref="ExecuteAsync"/> is called.
 /// </para>
 /// <para>
-/// Every phase obtains and releases its own repository instance (via the injected <see cref="ISutProvider{T}"/>'s
-/// <c>InitAsync</c>/<c>CleanupAsync</c> members), rather than sharing one instance across the whole test. This forces
-/// data to be actually persisted to and reloaded from the underlying storage between phases, so the test exercises
-/// real persistence instead of asserting against an in-memory object graph that was never saved.
+/// Every phase obtains and releases its own SUT instance (via the injected <see cref="ISutProvider{T}"/>'s
+/// <see cref="ISutProvider{T}.CreateAsync"/>/<see cref="ISutProvider{T}.ReleaseAsync(T)"/> members), rather than
+/// sharing one instance across the whole test. For a SUT backed by persistent storage, this forces data to be
+/// actually persisted to and reloaded between phases, so the test exercises real persistence instead of asserting
+/// against an in-memory object graph that was never saved.
 /// </para>
 /// <para>
 /// Both synchronous and asynchronous overloads are provided for each phase, and each phase may be set at most once
 /// (calling it twice throws <see cref="InvalidOperationException"/>). All phases are optional, so a test can omit
-/// Arrange (e.g. to assert on an empty repository) or Assert (e.g. to only verify no exception is thrown during
-/// Act).
+/// Arrange (e.g. to assert on an empty/initial SUT state) or Assert (e.g. to only verify no exception is thrown
+/// during Act).
 /// </para>
 /// <para>
-/// A <see cref="DatabaseTestContext"/> instance is threaded through every phase as a dynamic bag, letting a test
+/// A <see cref="GenericTestContext"/> instance is threaded through every phase as a dynamic bag, letting a test
 /// pass values (e.g. generated ids or results) from Arrange into Act and from Act into Assert without declaring
 /// dedicated fields on the test class.
 /// </para>
@@ -109,7 +111,7 @@ public class GenericTest<TSut>
     {
         try
         {
-            DatabaseTestContext context = new();
+            GenericTestContext context = new();
 
             if (arrangeAction1 != null)
             {

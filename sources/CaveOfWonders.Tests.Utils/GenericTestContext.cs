@@ -2,7 +2,7 @@ using System.Dynamic;
 
 namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 
-public class DatabaseTestContext : DynamicObject
+public class GenericTestContext : DynamicObject
 {
     private readonly Dictionary<string, object> values = [];
 

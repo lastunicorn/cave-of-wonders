@@ -20,7 +20,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// Arrange (e.g. to assert on an empty database) or Assert (e.g. to only verify no exception is thrown during Act).
 /// </para>
 /// <para>
-/// A <see cref="DatabaseTestContext"/> instance is threaded through every phase as a dynamic bag, letting a test pass
+/// A <see cref="GenericTestContext"/> instance is threaded through every phase as a dynamic bag, letting a test pass
 /// values (e.g. generated ids or results) from Arrange into Act and from Act into Assert without declaring dedicated
 /// fields on the test class.
 /// </para>
@@ -104,7 +104,7 @@ public abstract class DatabaseTest<TDb>
     {
         try
         {
-            DatabaseTestContext context = new();
+            GenericTestContext context = new();
 
             if (arrangeAction1 != null)
             {
