@@ -21,9 +21,11 @@ internal class DatabaseSut : ISut<Database>
         Instance = null;
     }
 
-    public void Reset()
+    public Task ResetAsync(CancellationToken cancellationToken = default)
     {
         if (Directory.Exists(dbDirectoryPath))
             Directory.Delete(dbDirectoryPath, true);
+
+        return Task.CompletedTask;
     }
 }

@@ -24,9 +24,11 @@ internal class DatabaseSut : ISut<DbContext>
         return Task.CompletedTask;
     }
 
-    public void Reset()
+    public Task ResetAsync(CancellationToken cancellationToken = default)
     {
         if (File.Exists(dbFilePath))
             File.Delete(dbFilePath);
+
+        return Task.CompletedTask;
     }
 }

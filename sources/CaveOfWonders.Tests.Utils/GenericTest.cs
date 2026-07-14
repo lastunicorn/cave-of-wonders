@@ -31,8 +31,8 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// dedicated fields on the test class.
 /// </para>
 /// <para>
-/// The provider's <c>Reset</c> is always called in a <c>finally</c> block, so temporary storage created for the run
-/// is removed even if one of the phases throws.
+/// The provider's <see cref="ISut{T}.ResetAsync"/> is always called in a <c>finally</c> block, so temporary storage
+/// created for the run is removed even if one of the phases throws.
 /// </para>
 /// </remarks>
 public class GenericTest<TSut>
@@ -157,7 +157,7 @@ public class GenericTest<TSut>
         }
         finally
         {
-            sut.Reset();
+            await sut.ResetAsync(cancellationToken);
         }
     }
 }
