@@ -20,7 +20,7 @@ using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using System.Runtime.CompilerServices;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.Repositories;
 
 public class PotRepository : IPotRepository
 {

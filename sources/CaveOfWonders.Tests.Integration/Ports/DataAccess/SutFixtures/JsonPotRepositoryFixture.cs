@@ -1,4 +1,5 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.Repositories;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 

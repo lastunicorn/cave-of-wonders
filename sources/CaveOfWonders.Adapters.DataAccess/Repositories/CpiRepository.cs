@@ -17,7 +17,7 @@
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
-namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
+namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.Repositories;
 
 public class CpiRepository : ICpiRepository
 {
