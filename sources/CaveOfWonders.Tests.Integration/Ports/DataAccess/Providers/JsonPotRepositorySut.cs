@@ -4,22 +4,27 @@ using DustInTheWind.CaveOfWonders.Tests.Utils;
 
 namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Providers;
 
-internal class JsonPotRepositoryProvider : ISutProvider<IPotRepository>
+internal class JsonPotRepositorySut : ISut<IPotRepository>
 {
     private readonly string dbDirectoryPath = Path.Combine(Path.GetTempPath(), $"test-database-{Guid.NewGuid()}");
 
     private Database database;
 
-    public async Task<IPotRepository> CreateAsync(CancellationToken cancellationToken = default)
+    public IPotRepository Instance { get; private set; }
+
+    public async Task CreateInstanceAsync(CancellationToken cancellationToken = default)
     {
         database = new Database(dbDirectoryPath);
         await database.LoadAsync(cancellationToken);
-        return new PotRepository(database);
+        Instance = new PotRepository(database);
     }
 
-    public Task ReleaseAsync(IPotRepository repository, CancellationToken cancellationToken = default)
+    public async Task ReleaseInstanceAsync(CancellationToken cancellationToken = default)
     {
-        return database.SaveAsync(cancellationToken);
+        await database.SaveAsync(cancellationToken);
+        
+        database = null;
+        Instance = null;
     }
 
     public void Reset()

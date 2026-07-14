@@ -3,7 +3,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// <summary>
 /// A fluent builder that runs an Arrange/Act/Assert integration test against a system under test (SUT), addressed
 /// only through its interface (<typeparamref name="TSut"/>), so the same test can be executed against any concrete
-/// implementation (e.g. a repository backed by JSON, LiteDb, or SQLite) supplied via an <see cref="ISutProvider{T}"/>
+/// implementation (e.g. a repository backed by JSON, LiteDb, or SQLite) supplied via an <see cref="ISut{T}"/>
 /// at runtime.
 /// </summary>
 /// <remarks>
@@ -13,11 +13,11 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// <see cref="ExecuteAsync"/> is called.
 /// </para>
 /// <para>
-/// Every phase obtains and releases its own SUT instance (via the injected <see cref="ISutProvider{T}"/>'s
-/// <see cref="ISutProvider{T}.CreateAsync"/>/<see cref="ISutProvider{T}.ReleaseAsync(T, System.Threading.CancellationToken)"/>
-/// members), rather than sharing one instance across the whole test. For a SUT backed by persistent storage, this
-/// forces data to be actually persisted to and reloaded between phases, so the test exercises real persistence
-/// instead of asserting against an in-memory object graph that was never saved.
+/// Every phase obtains and releases its own SUT instance (via the injected <see cref="ISut{T}"/>'s
+/// <see cref="ISut{T}.CreateInstanceAsync"/>/<see cref="ISut{T}.ReleaseInstanceAsync"/> members, exposed meanwhile through
+/// <see cref="ISut{T}.Instance"/>), rather than sharing one instance across the whole test. For a SUT backed by
+/// persistent storage, this forces data to be actually persisted to and reloaded between phases, so the test
+/// exercises real persistence instead of asserting against an in-memory object graph that was never saved.
 /// </para>
 /// <para>
 /// Both synchronous and asynchronous overloads are provided for each phase, and each phase may be set at most once
@@ -37,7 +37,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// </remarks>
 public class GenericTest<TSut>
 {
-    private readonly ISutProvider<TSut> sutProvider;
+    private readonly ISut<TSut> sut;
 
     private Func<TSut, dynamic, Task> arrangeAction1;
     private Action<TSut, dynamic> arrangeAction2;
@@ -48,9 +48,9 @@ public class GenericTest<TSut>
     private Func<TSut, dynamic, Task> assertAction1;
     private Action<TSut, dynamic> assertAction2;
 
-    public GenericTest(ISutProvider<TSut> sutProvider)
+    public GenericTest(ISut<TSut> sut)
     {
-        this.sutProvider = sutProvider ?? throw new ArgumentNullException(nameof(sutProvider));
+        this.sut = sut ?? throw new ArgumentNullException(nameof(sut));
     }
 
     public GenericTest<TSut> Arrange(Func<TSut, dynamic, Task> action)
@@ -115,49 +115,49 @@ public class GenericTest<TSut>
 
             if (arrangeAction1 != null)
             {
-                TSut sut = await sutProvider.CreateAsync(cancellationToken);
-                await arrangeAction1(sut, context);
-                await sutProvider.ReleaseAsync(sut, cancellationToken);
+                await sut.CreateInstanceAsync(cancellationToken);
+                await arrangeAction1(sut.Instance, context);
+                await sut.ReleaseInstanceAsync(cancellationToken);
             }
 
             if (arrangeAction2 != null)
             {
-                TSut sut = await sutProvider.CreateAsync(cancellationToken);
-                arrangeAction2(sut, context);
-                await sutProvider.ReleaseAsync(sut, cancellationToken);
+                await sut.CreateInstanceAsync(cancellationToken);
+                arrangeAction2(sut.Instance, context);
+                await sut.ReleaseInstanceAsync(cancellationToken);
             }
 
             if (actAction1 != null)
             {
-                TSut sut = await sutProvider.CreateAsync(cancellationToken);
-                await actAction1(sut, context);
-                await sutProvider.ReleaseAsync(sut, cancellationToken);
+                await sut.CreateInstanceAsync(cancellationToken);
+                await actAction1(sut.Instance, context);
+                await sut.ReleaseInstanceAsync(cancellationToken);
             }
 
             if (actAction2 != null)
             {
-                TSut sut = await sutProvider.CreateAsync(cancellationToken);
-                actAction2(sut, context);
-                await sutProvider.ReleaseAsync(sut, cancellationToken);
+                await sut.CreateInstanceAsync(cancellationToken);
+                actAction2(sut.Instance, context);
+                await sut.ReleaseInstanceAsync(cancellationToken);
             }
 
             if (assertAction1 != null)
             {
-                TSut sut = await sutProvider.CreateAsync(cancellationToken);
-                await assertAction1(sut, context);
-                await sutProvider.ReleaseAsync(sut, cancellationToken);
+                await sut.CreateInstanceAsync(cancellationToken);
+                await assertAction1(sut.Instance, context);
+                await sut.ReleaseInstanceAsync(cancellationToken);
             }
 
             if (assertAction2 != null)
             {
-                TSut sut = await sutProvider.CreateAsync(cancellationToken);
-                assertAction2(sut, context);
-                await sutProvider.ReleaseAsync(sut, cancellationToken);
+                await sut.CreateInstanceAsync(cancellationToken);
+                assertAction2(sut.Instance, context);
+                await sut.ReleaseInstanceAsync(cancellationToken);
             }
         }
         finally
         {
-            sutProvider.Reset();
+            sut.Reset();
         }
     }
 }

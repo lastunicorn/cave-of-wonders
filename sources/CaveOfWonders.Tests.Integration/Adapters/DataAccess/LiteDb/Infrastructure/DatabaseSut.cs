@@ -3,19 +3,24 @@ using DustInTheWind.CaveOfWonders.Tests.Utils;
 
 namespace DustInTheWind.CaveOfWonders.Tests.Integration.Adapters.DataAccess.LiteDb.Infrastructure;
 
-internal class DatabaseProvider : ISutProvider<DbContext>
+internal class DatabaseSut : ISut<DbContext>
 {
     private readonly string dbFilePath = Path.Combine(Path.GetTempPath(), $"test-dbContext-{Guid.NewGuid()}");
 
-    public Task<DbContext> CreateAsync(CancellationToken cancellationToken = default)
+    public DbContext Instance { get; private set; }
+
+    public Task CreateInstanceAsync(CancellationToken cancellationToken = default)
     {
-        DbContext dbContext = new(dbFilePath);
-        return Task.FromResult(dbContext);
+        Instance = new DbContext(dbFilePath);
+        
+        return Task.CompletedTask;
     }
 
-    public Task ReleaseAsync(DbContext dbContext, CancellationToken cancellationToken = default)
+    public Task ReleaseInstanceAsync(CancellationToken cancellationToken = default)
     {
-        dbContext.Dispose();
+        Instance.Dispose();
+        Instance = null;
+        
         return Task.CompletedTask;
     }
 

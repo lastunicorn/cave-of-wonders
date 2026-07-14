@@ -15,7 +15,7 @@ public class GetInstancesTests
     [Fact]
     public async Task GetInstances_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection()
     {
-        await new GenericTest<DbContext>(new DatabaseProvider())
+        await new GenericTest<DbContext>(new DatabaseSut())
             .Act(async (dbContext, context) =>
             {
                 PotRepository potRepository = new(dbContext);
@@ -33,7 +33,7 @@ public class GetInstancesTests
     [Fact]
     public async Task GetInstances_WithActivePot_ShouldReturnPotInstance()
     {
-        await new GenericTest<DbContext>(new DatabaseProvider())
+        await new GenericTest<DbContext>(new DatabaseSut())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity potDbEntity = new()
@@ -74,7 +74,7 @@ public class GetInstancesTests
     [Fact]
     public async Task GetInstances_WithInactivePot_ShouldNotReturnPotWhenIncludeInactiveIsFalse()
     {
-        await new GenericTest<DbContext>(new DatabaseProvider())
+        await new GenericTest<DbContext>(new DatabaseSut())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity potDbEntity = new()
@@ -105,7 +105,7 @@ public class GetInstancesTests
     [Fact]
     public async Task GetInstances_WithInactivePot_ShouldReturnPotWhenIncludeInactiveIsTrue()
     {
-        await new GenericTest<DbContext>(new DatabaseProvider())
+        await new GenericTest<DbContext>(new DatabaseSut())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity potDbEntity = new()
@@ -142,7 +142,7 @@ public class GetInstancesTests
     [Fact]
     public async Task GetInstances_WithPotEndingBeforeCurrentDate_ShouldNotReturnPotWhenIncludeInactiveIsFalse()
     {
-        await new GenericTest<DbContext>(new DatabaseProvider())
+        await new GenericTest<DbContext>(new DatabaseSut())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity potDbEntity = new()
@@ -174,7 +174,7 @@ public class GetInstancesTests
     [Fact]
     public async Task GetInstances_WithExactDateMatchingMode_ShouldReturnOnlyExactDateSnapshot()
     {
-        await new GenericTest<DbContext>(new DatabaseProvider())
+        await new GenericTest<DbContext>(new DatabaseSut())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity potDbEntity = new()
@@ -215,7 +215,7 @@ public class GetInstancesTests
     [Fact]
     public async Task GetInstances_WithExactDateMatchingMode_ShouldReturnNullSnapshotWhenNoExactDateExists()
     {
-        await new GenericTest<DbContext>(new DatabaseProvider())
+        await new GenericTest<DbContext>(new DatabaseSut())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity potDbEntity = new()
@@ -253,7 +253,7 @@ public class GetInstancesTests
     [Fact]
     public async Task GetInstances_WithLastAvailableDateMatchingMode_ShouldReturnLastAvailableSnapshot()
     {
-        await new GenericTest<DbContext>(new DatabaseProvider())
+        await new GenericTest<DbContext>(new DatabaseSut())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity potDbEntity = new()
@@ -293,7 +293,7 @@ public class GetInstancesTests
     [Fact]
     public async Task GetInstances_WithLastAvailableDateMatchingMode_ShouldReturnNullSnapshotWhenNoSnapshotBeforeDate()
     {
-        await new GenericTest<DbContext>(new DatabaseProvider())
+        await new GenericTest<DbContext>(new DatabaseSut())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity potDbEntity = new()
@@ -330,7 +330,7 @@ public class GetInstancesTests
     [Fact]
     public async Task GetInstances_WithMultiplePots_ShouldReturnAllActivePots()
     {
-        await new GenericTest<DbContext>(new DatabaseProvider())
+        await new GenericTest<DbContext>(new DatabaseSut())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity activePot1 = new()
@@ -410,7 +410,7 @@ public class GetInstancesTests
     [Fact]
     public async Task GetInstances_WithMultiplePotsAndIncludeInactiveTrue_ShouldReturnAllPots()
     {
-        await new GenericTest<DbContext>(new DatabaseProvider())
+        await new GenericTest<DbContext>(new DatabaseSut())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity activePot = new()

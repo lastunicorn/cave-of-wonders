@@ -4,22 +4,28 @@ using DustInTheWind.CaveOfWonders.Tests.Utils;
 
 namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Providers;
 
-internal class LiteDbPotRepositoryProvider : ISutProvider<IPotRepository>
+internal class LiteDbPotRepositorySut : ISut<IPotRepository>
 {
     private readonly string dbFilePath = Path.Combine(Path.GetTempPath(), $"test-dbContext-{Guid.NewGuid()}");
 
     private DbContext dbContext;
+    
+    public IPotRepository Instance { get; private set; }
 
-    public Task<IPotRepository> CreateAsync(CancellationToken cancellationToken = default)
+    public Task CreateInstanceAsync(CancellationToken cancellationToken = default)
     {
         dbContext = new DbContext(dbFilePath);
-        IPotRepository repository = new PotRepository(dbContext);
-        return Task.FromResult(repository);
+        Instance = new PotRepository(dbContext);
+        
+        return Task.CompletedTask;
     }
 
-    public Task ReleaseAsync(IPotRepository repository, CancellationToken cancellationToken = default)
+    public Task ReleaseInstanceAsync(CancellationToken cancellationToken = default)
     {
         dbContext.Dispose();
+        dbContext = null;
+        Instance = null;
+        
         return Task.CompletedTask;
     }
 

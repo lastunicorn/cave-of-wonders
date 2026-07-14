@@ -10,7 +10,7 @@ public class GetAllTests
 {
     [Theory]
     [PotRepositoryProviders]
-    public async Task GetAll_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ISutProvider<IPotRepository> provider)
+    public async Task GetAll_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ISut<IPotRepository> provider)
     {
         await new GenericTest<IPotRepository>(provider)
             .Act(async (repository, context) =>
@@ -28,7 +28,7 @@ public class GetAllTests
 
     [Theory]
     [PotRepositoryProviders]
-    public async Task GetAll_WithOnePot_ShouldReturnOnePot(ISutProvider<IPotRepository> provider)
+    public async Task GetAll_WithOnePot_ShouldReturnOnePot(ISut<IPotRepository> provider)
     {
         await new GenericTest<IPotRepository>(provider)
             .Arrange((repository, context) =>
@@ -67,7 +67,7 @@ public class GetAllTests
 
     [Theory]
     [PotRepositoryProviders]
-    public async Task GetAll_WithMultiplePots_ShouldReturnAllPots(ISutProvider<IPotRepository> provider)
+    public async Task GetAll_WithMultiplePots_ShouldReturnAllPots(ISut<IPotRepository> provider)
     {
         await new GenericTest<IPotRepository>(provider)
             .Arrange((repository, context) =>

@@ -3,20 +3,22 @@ using DustInTheWind.CaveOfWonders.Tests.Utils;
 
 namespace DustInTheWind.CaveOfWonders.Tests.Integration.Adapters.DataAccess.Json.Infrastructure;
 
-internal class DatabaseProvider : ISutProvider<Database>
+internal class DatabaseSut : ISut<Database>
 {
     private readonly string dbDirectoryPath = Path.Combine(Path.GetTempPath(), $"test-database-{Guid.NewGuid()}");
 
-    public async Task<Database> CreateAsync(CancellationToken cancellationToken = default)
+    public Database Instance { get; private set; }
+
+    public async Task CreateInstanceAsync(CancellationToken cancellationToken = default)
     {
-        Database database = new(dbDirectoryPath);
-        await database.LoadAsync(cancellationToken);
-        return database;
+        Instance = new Database(dbDirectoryPath);
+        await Instance.LoadAsync(cancellationToken);
     }
 
-    public Task ReleaseAsync(Database database, CancellationToken cancellationToken = default)
+    public async Task ReleaseInstanceAsync(CancellationToken cancellationToken = default)
     {
-        return database.SaveAsync(cancellationToken);
+        await Instance.SaveAsync(cancellationToken);
+        Instance = null;
     }
 
     public void Reset()

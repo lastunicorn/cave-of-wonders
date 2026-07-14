@@ -11,7 +11,7 @@ public class GetAllTests
     [Fact]
     public async Task GetAll_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection()
     {
-        await new GenericTest<Database>(new DatabaseProvider())
+        await new GenericTest<Database>(new DatabaseSut())
             .Act(async (database, context) =>
             {
                 PotRepository potRepository = new(database);
@@ -29,7 +29,7 @@ public class GetAllTests
     [Fact]
     public async Task GetAll_WithOnePot_ShouldReturnOnePot()
     {
-        await new GenericTest<Database>(new DatabaseProvider())
+        await new GenericTest<Database>(new DatabaseSut())
             .Arrange((database, context) =>
             {
                 Pot potInDb = new()
@@ -68,7 +68,7 @@ public class GetAllTests
     [Fact]
     public async Task GetAll_WithMultiplePots_ShouldReturnAllPots()
     {
-        await new GenericTest<Database>(new DatabaseProvider())
+        await new GenericTest<Database>(new DatabaseSut())
             .Arrange((database, context) =>
             {
                 Pot pot1 = new()
@@ -133,7 +133,7 @@ public class GetAllTests
     [Fact]
     public async Task GetAll_WithPotsContainingSnapshots_ShouldReturnPotsWithSnapshots()
     {
-        await new GenericTest<Database>(new DatabaseProvider())
+        await new GenericTest<Database>(new DatabaseSut())
             .Arrange((database, context) =>
             {
                 Pot potInDb = new()
@@ -182,7 +182,7 @@ public class GetAllTests
     [Fact]
     public async Task GetAll_WithPotsContainingLabels_ShouldReturnPotsWithLabels()
     {
-        await new GenericTest<Database>(new DatabaseProvider())
+        await new GenericTest<Database>(new DatabaseSut())
             .Arrange((database, context) =>
             {
                 Pot potInDb = new()
