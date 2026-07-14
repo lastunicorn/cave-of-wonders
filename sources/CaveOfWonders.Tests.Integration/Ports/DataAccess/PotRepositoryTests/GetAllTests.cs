@@ -15,8 +15,8 @@ public class GetAllTests
 		await new GenericTest<IPotRepository>(sutFixture)
 			.Act(async (repository, context) =>
 			{
-				List<Pot> pots = await repository.GetAllAsync().ToListAsync();
-				context.Pots = pots;
+				context.Pots = await repository.GetAllAsync()
+					.ToListAsync();
 			})
 			.Assert((repository, context) =>
 			{
@@ -46,8 +46,8 @@ public class GetAllTests
 			})
 			.Act(async (repository, context) =>
 			{
-				List<Pot> pots = await repository.GetAllAsync().ToListAsync();
-				context.Pots = pots;
+				context.Pots = await repository.GetAllAsync()
+					.ToListAsync();
 			})
 			.Assert((repository, context) =>
 			{
@@ -109,8 +109,8 @@ public class GetAllTests
 			})
 			.Act(async (repository, context) =>
 			{
-				List<Pot> pots = await repository.GetAllAsync().ToListAsync();
-				context.Pots = pots;
+				context.Pots = await repository.GetAllAsync()
+					.ToListAsync();
 			})
 			.Assert((repository, context) =>
 			{
@@ -161,8 +161,8 @@ public class GetAllTests
 			})
 			.Act(async (repository, context) =>
 			{
-				List<Pot> pots = await repository.GetAllAsync().ToListAsync();
-				context.Pots = pots;
+				context.Pots = await repository.GetAllAsync()
+					.ToListAsync();
 			})
 			.Assert((repository, context) =>
 			{
@@ -208,8 +208,8 @@ public class GetAllTests
 			})
 			.Act(async (repository, context) =>
 			{
-				List<Pot> pots = await repository.GetAllAsync().ToListAsync();
-				context.Pots = pots;
+				context.Pots = await repository.GetAllAsync()
+					.ToListAsync();
 			})
 			.Assert((repository, context) =>
 			{
@@ -250,8 +250,8 @@ public class GetAllTests
 			})
 			.Act(async (repository, context) =>
 			{
-				List<Pot> pots = await repository.GetAllAsync().ToListAsync();
-				context.Pots = pots;
+				context.Pots = await repository.GetAllAsync()
+					.ToListAsync();
 			})
 			.Assert((repository, context) =>
 			{

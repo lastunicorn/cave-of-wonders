@@ -17,13 +17,13 @@ public class GetSnapshotsTests
 		await new GenericTest<IPotRepository>(sutFixture)
 			.Act(async (repository, context) =>
 			{
-				List<PotSnapshot> potInstances = (await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false)).ToList();
-				context.PotInstances = potInstances;
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false);
+				context.Snapshots = snapshotEnumerable.ToList();
 			})
 			.Assert((repository, context) =>
 			{
-				List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
-				potInstances.Should().BeEmpty();
+				List<PotSnapshot> snapshots = context.Snapshots as List<PotSnapshot>;
+				snapshots.Should().BeEmpty();
 			})
 			.ExecuteAsync();
 	}
@@ -56,8 +56,8 @@ public class GetSnapshotsTests
 			})
 			.Act(async (repository, context) =>
 			{
-				List<PotSnapshot> potInstances = (await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false)).ToList();
-				context.PotInstances = potInstances;
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false);
+				context.PotInstances = snapshotEnumerable.ToList();
 			})
 			.Assert((repository, context) =>
 			{
@@ -92,8 +92,8 @@ public class GetSnapshotsTests
 			})
 			.Act(async (repository, context) =>
 			{
-				List<PotSnapshot> potInstances = (await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false)).ToList();
-				context.PotInstances = potInstances;
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false);
+				context.PotInstances = snapshotEnumerable.ToList();
 			})
 			.Assert((repository, context) =>
 			{
@@ -130,8 +130,8 @@ public class GetSnapshotsTests
 			})
 			.Act(async (repository, context) =>
 			{
-				List<PotSnapshot> potInstances = (await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, true)).ToList();
-				context.PotInstances = potInstances;
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, true);
+				context.PotInstances = snapshotEnumerable.ToList();
 			})
 			.Assert((repository, context) =>
 			{
@@ -166,8 +166,8 @@ public class GetSnapshotsTests
 			})
 			.Act(async (repository, context) =>
 			{
-				List<PotSnapshot> potInstances = (await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false)).ToList();
-				context.PotInstances = potInstances;
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false);
+				context.PotInstances = snapshotEnumerable.ToList();
 			})
 			.Assert((repository, context) =>
 			{
@@ -220,8 +220,8 @@ public class GetSnapshotsTests
 			})
 			.Act(async (repository, context) =>
 			{
-				List<PotSnapshot> potInstances = (await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false)).ToList();
-				context.PotInstances = potInstances;
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false);
+				context.PotInstances = snapshotEnumerable.ToList();
 			})
 			.Assert((repository, context) =>
 			{
@@ -272,8 +272,8 @@ public class GetSnapshotsTests
 			})
 			.Act(async (repository, context) =>
 			{
-				List<PotSnapshot> potInstances = (await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false)).ToList();
-				context.PotInstances = potInstances;
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false);
+				context.PotInstances = snapshotEnumerable.ToList();
 			})
 			.Assert((repository, context) =>
 			{
@@ -368,8 +368,8 @@ public class GetSnapshotsTests
 			})
 			.Act(async (repository, context) =>
 			{
-				List<PotSnapshot> potInstances = (await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.LastAvailable, false)).ToList();
-				context.PotInstances = potInstances;
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.LastAvailable, false);
+				context.PotInstances = snapshotEnumerable.ToList();
 			})
 			.Assert((repository, context) =>
 			{
@@ -435,8 +435,8 @@ public class GetSnapshotsTests
 			})
 			.Act(async (repository, context) =>
 			{
-				List<PotSnapshot> potInstances = (await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.LastAvailable, false)).ToList();
-				context.PotInstances = potInstances;
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.LastAvailable, false);
+				context.PotInstances = snapshotEnumerable.ToList();
 			})
 			.Assert((repository, context) =>
 			{
@@ -524,8 +524,8 @@ public class GetSnapshotsTests
 			})
 			.Act(async (repository, context) =>
 			{
-				List<PotSnapshot> potInstances = (await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, true)).ToList();
-				context.PotInstances = potInstances;
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, true);
+				context.PotInstances = snapshotEnumerable.ToList();
 			})
 			.Assert((repository, context) =>
 			{
