@@ -38,7 +38,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// </remarks>
 public class GenericTest<TSut>
 {
-	private readonly ISutFixture<TSut> sut;
+	private readonly ISutFixture<TSut> sutFixture;
 
 	private Func<TSut, dynamic, Task> arrangeAction1;
 	private Action<TSut, dynamic> arrangeAction2;
@@ -49,9 +49,9 @@ public class GenericTest<TSut>
 	private Func<TSut, dynamic, Task> assertAction1;
 	private Action<TSut, dynamic> assertAction2;
 
-	public GenericTest(ISutFixture<TSut> sut)
+	public GenericTest(ISutFixture<TSut> sutFixture)
 	{
-		this.sut = sut ?? throw new ArgumentNullException(nameof(sut));
+		this.sutFixture = sutFixture ?? throw new ArgumentNullException(nameof(sutFixture));
 	}
 
 	public GenericTest<TSut> Arrange(Func<TSut, dynamic, Task> action)
@@ -116,50 +116,50 @@ public class GenericTest<TSut>
 
 			if (arrangeAction1 != null)
 			{
-				await sut.CreateInstanceAsync(cancellationToken);
-				await arrangeAction1(sut.Instance, context);
-				await sut.ReleaseInstanceAsync(cancellationToken);
+				await sutFixture.CreateInstanceAsync(cancellationToken);
+				await arrangeAction1(sutFixture.Instance, context);
+				await sutFixture.ReleaseInstanceAsync(cancellationToken);
 			}
 
 			if (arrangeAction2 != null)
 			{
-				await sut.CreateInstanceAsync(cancellationToken);
-				arrangeAction2(sut.Instance, context);
-				await sut.ReleaseInstanceAsync(cancellationToken);
+				await sutFixture.CreateInstanceAsync(cancellationToken);
+				arrangeAction2(sutFixture.Instance, context);
+				await sutFixture.ReleaseInstanceAsync(cancellationToken);
 			}
 
 			if (actAction1 != null)
 			{
-				await sut.CreateInstanceAsync(cancellationToken);
-				await actAction1(sut.Instance, context);
-				await sut.ReleaseInstanceAsync(cancellationToken);
+				await sutFixture.CreateInstanceAsync(cancellationToken);
+				await actAction1(sutFixture.Instance, context);
+				await sutFixture.ReleaseInstanceAsync(cancellationToken);
 			}
 
 			if (actAction2 != null)
 			{
-				await sut.CreateInstanceAsync(cancellationToken);
-				actAction2(sut.Instance, context);
-				await sut.ReleaseInstanceAsync(cancellationToken);
+				await sutFixture.CreateInstanceAsync(cancellationToken);
+				actAction2(sutFixture.Instance, context);
+				await sutFixture.ReleaseInstanceAsync(cancellationToken);
 			}
 
 			if (assertAction1 != null)
 			{
-				await sut.CreateInstanceAsync(cancellationToken);
-				await assertAction1(sut.Instance, context);
-				await sut.ReleaseInstanceAsync(cancellationToken);
+				await sutFixture.CreateInstanceAsync(cancellationToken);
+				await assertAction1(sutFixture.Instance, context);
+				await sutFixture.ReleaseInstanceAsync(cancellationToken);
 			}
 
 			if (assertAction2 != null)
 			{
-				await sut.CreateInstanceAsync(cancellationToken);
-				assertAction2(sut.Instance, context);
-				await sut.ReleaseInstanceAsync(cancellationToken);
+				await sutFixture.CreateInstanceAsync(cancellationToken);
+				assertAction2(sutFixture.Instance, context);
+				await sutFixture.ReleaseInstanceAsync(cancellationToken);
 			}
 		}
 		finally
 		{
-			sut.Dispose();
-			await sut.ResetAsync(cancellationToken);
+			sutFixture.Dispose();
+			await sutFixture.ResetAsync(cancellationToken);
 		}
 	}
 }

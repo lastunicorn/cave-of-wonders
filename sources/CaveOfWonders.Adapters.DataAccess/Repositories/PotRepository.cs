@@ -69,6 +69,11 @@ public class PotRepository : IPotRepository
         if (pot == null)
             throw new ArgumentNullException(nameof(pot));
 
+        bool alreadyExists = database.Pots.Any(x => x.Id == pot.Id);
+
+        if (alreadyExists)
+            throw new ArgumentException($"A pot with id '{pot.Id}' already exists.", nameof(pot));
+
         database.Pots.Add(pot);
     }
 }
