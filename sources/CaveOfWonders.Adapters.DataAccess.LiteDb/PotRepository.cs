@@ -40,35 +40,24 @@ public class PotRepository : IPotRepository
         return pots.ToAsyncEnumerable(cancellationToken);
     }
 
-    public Task<Pot> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public Task<Pot> GetAsync(Guid id, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<PotSnapshot>> GetSnapshots(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive)
+    public Task<IEnumerable<PotSnapshot>> GetSnapshotsAsync(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive)
     {
         IEnumerable<PotSnapshot> potInstances = dbContext.Pots
             .FindAll()
             .Select(x => x.ToDomainEntity())
             .Where(x => includeInactive || x.IsActive(date))
-            .Select(x => x.GetSnapshot(date, dateMatchingMode));
+            .Select(x => x.GetSnapshot(date, dateMatchingMode))
+            .Where(x => x != null);
 
         return Task.FromResult(potInstances);
     }
 
-    public IAsyncEnumerable<Pot> GetByPartialIdAsync(string partialPotId, CancellationToken cancellationToken = default)
-    {
-        string idWithoutDashes = partialPotId.Trim().Replace("-", string.Empty);
-
-        IEnumerable<Pot> pots = dbContext.Pots
-            .FindAll()
-            .Where(x => x.Id.ToString("N").Contains(idWithoutDashes, StringComparison.InvariantCultureIgnoreCase))
-            .Select(x => x.ToDomainEntity());
-
-        return pots.ToAsyncEnumerable(cancellationToken);
-    }
-
-    public IAsyncEnumerable<Pot> GetByIdOrNameAsync(PotFlexId potFlexId, CancellationToken cancellationToken)
+    public IAsyncEnumerable<Pot> GetAsync(PotFlexId potFlexId, CancellationToken cancellationToken)
     {
         IEnumerable<Pot> pots = dbContext.Pots
             .FindAll()

@@ -1,24 +1,29 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb;
+using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Adapters.DataAccess.LiteDb.Infrastructure;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures;
 
-internal class DatabaseSut : ISutFixture<DbContext>
+internal class LiteDbPotRepositoryFixture : ISutFixture<IPotRepository>
 {
 	private readonly string dbFilePath = Path.Combine(Path.GetTempPath(), $"test-dbContext-{Guid.NewGuid()}");
 
-	public DbContext Instance { get; private set; }
+	private DbContext dbContext;
+
+	public IPotRepository Instance { get; private set; }
 
 	public Task CreateInstanceAsync(CancellationToken cancellationToken = default)
 	{
-		Instance = new DbContext(dbFilePath);
+		dbContext = new DbContext(dbFilePath);
+		Instance = new PotRepository(dbContext);
 
 		return Task.CompletedTask;
 	}
 
 	public Task ReleaseInstanceAsync(CancellationToken cancellationToken = default)
 	{
-		Instance.Dispose();
+		dbContext.Dispose();
+		dbContext = null;
 		Instance = null;
 
 		return Task.CompletedTask;
@@ -34,10 +39,16 @@ internal class DatabaseSut : ISutFixture<DbContext>
 
 	public void Dispose()
 	{
-		Instance?.Dispose();
+		dbContext?.Dispose();
+		dbContext = null;
 		Instance = null;
 
 		if (File.Exists(dbFilePath))
 			File.Delete(dbFilePath);
+	}
+
+	public override string ToString()
+	{
+		return "LiteDb";
 	}
 }

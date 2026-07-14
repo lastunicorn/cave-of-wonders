@@ -46,7 +46,7 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
     {
         try
         {
-            return await unitOfWork.PotRepository.GetByIdOrNameAsync(potFlexId, cancellationToken)
+            return await unitOfWork.PotRepository.GetAsync(potFlexId, cancellationToken)
                 .SingleAsync(cancellationToken);
         }
         catch (Exception ex)

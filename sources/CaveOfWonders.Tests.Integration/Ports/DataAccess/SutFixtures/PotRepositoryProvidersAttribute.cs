@@ -1,8 +1,8 @@
-using System.Reflection;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using System.Reflection;
 using Xunit.Sdk;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Providers;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures;
 
 /// <summary>
 /// Supplies one <see cref="IPotRepository"/> provider per adapter configured for "IPotRepository" in

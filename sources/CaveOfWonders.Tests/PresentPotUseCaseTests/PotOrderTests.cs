@@ -145,7 +145,7 @@ public class PotOrderTests
         };
 
         potRepository
-            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<PotFlexId>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetAsync(It.IsAny<PotFlexId>(), It.IsAny<CancellationToken>()))
             .Returns(potsFromRepository.ToAsyncEnumerable());
 
         // Act

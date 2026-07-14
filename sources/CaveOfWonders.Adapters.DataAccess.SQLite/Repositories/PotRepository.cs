@@ -27,7 +27,7 @@ internal class PotRepository : IPotRepository
         return pots.ToAsyncEnumerable(cancellationToken);
     }
 
-    public async Task<Pot> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Pot> GetAsync(Guid id, CancellationToken cancellationToken = default)
     {
         PotEntity entity = await dbContext.Pots
             .Include(x => x.Snapshots)
@@ -39,7 +39,7 @@ internal class PotRepository : IPotRepository
             : MapToDomain(entity);
     }
 
-    public async Task<IEnumerable<PotSnapshot>> GetSnapshots(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive)
+    public async Task<IEnumerable<PotSnapshot>> GetSnapshotsAsync(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive)
     {
         List<PotEntity> entities = await dbContext.Pots
             .Include(x => x.Snapshots)
@@ -52,21 +52,7 @@ internal class PotRepository : IPotRepository
             .Where(x => x != null);
     }
 
-    public IAsyncEnumerable<Pot> GetByPartialIdAsync(string partialPotId, CancellationToken cancellationToken = default)
-    {
-        string idWithoutDashes = partialPotId.Trim().Replace("-", string.Empty);
-
-        IEnumerable<Pot> pots = dbContext.Pots
-            .Include(x => x.Snapshots)
-            .Include(x => x.Labels)
-            .AsEnumerable()
-            .Where(x => x.Id.ToString("N").Contains(idWithoutDashes, StringComparison.InvariantCultureIgnoreCase))
-            .Select(MapToDomain);
-
-        return pots.ToAsyncEnumerable(cancellationToken);
-    }
-
-    public IAsyncEnumerable<Pot> GetByIdOrNameAsync(PotFlexId potFlexId, CancellationToken cancellationToken = default)
+    public IAsyncEnumerable<Pot> GetAsync(PotFlexId potFlexId, CancellationToken cancellationToken = default)
     {
         IEnumerable<Pot> pots = dbContext.Pots
             .Include(x => x.Snapshots)

@@ -1,7 +1,7 @@
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Providers;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures;
 
 internal static class PotRepositoryProviderCatalog
 {
@@ -9,8 +9,8 @@ internal static class PotRepositoryProviderCatalog
 	{
 		return config.Adapter switch
 		{
-			"Json" => new JsonPotRepositorySut(),
-			"LiteDb" => new LiteDbPotRepositorySut(),
+			"Json" => new JsonPotRepositoryFixture(),
+			"LiteDb" => new LiteDbPotRepositoryFixture(),
 			_ => throw new NotSupportedException($"Unknown adapter '{config.Adapter}' for {nameof(IPotRepository)}.")
 		};
 	}

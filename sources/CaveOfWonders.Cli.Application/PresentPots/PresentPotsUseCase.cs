@@ -71,7 +71,7 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
 
     private async Task<IEnumerable<PotSnapshot>> RetrievePotSnapshotsFromStorage(DateOnly date, bool includeInactive)
     {
-        IEnumerable<PotSnapshot> potSnapshots = await unitOfWork.PotRepository.GetSnapshots(date, DateMatchingMode.LastAvailable, includeInactive);
+        IEnumerable<PotSnapshot> potSnapshots = await unitOfWork.PotRepository.GetSnapshotsAsync(date, DateMatchingMode.LastAvailable, includeInactive);
         return potSnapshots.OrderBy(x => x.Pot.DisplayOrder);
     }
 

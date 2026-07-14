@@ -87,7 +87,7 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
         };
 
         return isIdentifierSpecified
-            ? unitOfWork.PotRepository.GetByIdOrNameAsync(potFlexId, cancellationToken)
+            ? unitOfWork.PotRepository.GetAsync(potFlexId, cancellationToken)
             : unitOfWork.PotRepository.GetAllAsync(cancellationToken);
     }
 }
