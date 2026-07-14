@@ -3,6 +3,7 @@ using DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.Entities;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Tests.Integration.Adapters.DataAccess.LiteDb.Infrastructure;
+using DustInTheWind.CaveOfWonders.Tests.Utils;
 using FluentAssertions;
 
 namespace DustInTheWind.CaveOfWonders.Tests.Integration.Adapters.DataAccess.LiteDb.PotRepositoryTests;
@@ -14,7 +15,7 @@ public class GetInstancesTests
     [Fact]
     public async Task GetInstances_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection()
     {
-        await DatabaseTest.Create()
+        await new GenericTest<DbContext>(new DatabaseProvider())
             .Act(async (dbContext, context) =>
             {
                 PotRepository potRepository = new(dbContext);
@@ -26,13 +27,13 @@ public class GetInstancesTests
                 List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
                 potInstances.Should().BeEmpty();
             })
-            .Execute();
+            .ExecuteAsync();
     }
 
     [Fact]
     public async Task GetInstances_WithActivePot_ShouldReturnPotInstance()
     {
-        await DatabaseTest.Create()
+        await new GenericTest<DbContext>(new DatabaseProvider())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity potDbEntity = new()
@@ -67,13 +68,13 @@ public class GetInstancesTests
                 potInstances[0].Pot.Name.Should().Be("Test Pot");
                 potInstances[0].Should().BeNull();
             })
-            .Execute();
+            .ExecuteAsync();
     }
 
     [Fact]
     public async Task GetInstances_WithInactivePot_ShouldNotReturnPotWhenIncludeInactiveIsFalse()
     {
-        await DatabaseTest.Create()
+        await new GenericTest<DbContext>(new DatabaseProvider())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity potDbEntity = new()
@@ -98,13 +99,13 @@ public class GetInstancesTests
                 List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
                 potInstances.Should().BeEmpty();
             })
-            .Execute();
+            .ExecuteAsync();
     }
 
     [Fact]
     public async Task GetInstances_WithInactivePot_ShouldReturnPotWhenIncludeInactiveIsTrue()
     {
-        await DatabaseTest.Create()
+        await new GenericTest<DbContext>(new DatabaseProvider())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity potDbEntity = new()
@@ -135,13 +136,13 @@ public class GetInstancesTests
                 potInstances[0].Pot.Name.Should().Be("Inactive Pot - Future");
                 potInstances[0].Should().BeNull();
             })
-            .Execute();
+            .ExecuteAsync();
     }
 
     [Fact]
     public async Task GetInstances_WithPotEndingBeforeCurrentDate_ShouldNotReturnPotWhenIncludeInactiveIsFalse()
     {
-        await DatabaseTest.Create()
+        await new GenericTest<DbContext>(new DatabaseProvider())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity potDbEntity = new()
@@ -167,13 +168,13 @@ public class GetInstancesTests
                 List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
                 potInstances.Should().BeEmpty();
             })
-            .Execute();
+            .ExecuteAsync();
     }
 
     [Fact]
     public async Task GetInstances_WithExactDateMatchingMode_ShouldReturnOnlyExactDateSnapshot()
     {
-        await DatabaseTest.Create()
+        await new GenericTest<DbContext>(new DatabaseProvider())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity potDbEntity = new()
@@ -208,13 +209,13 @@ public class GetInstancesTests
                 potInstances[0].Value.Should().Be(200m);
                 potInstances[0].Date.Should().Be(currentDate);
             })
-            .Execute();
+            .ExecuteAsync();
     }
 
     [Fact]
     public async Task GetInstances_WithExactDateMatchingMode_ShouldReturnNullSnapshotWhenNoExactDateExists()
     {
-        await DatabaseTest.Create()
+        await new GenericTest<DbContext>(new DatabaseProvider())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity potDbEntity = new()
@@ -246,13 +247,13 @@ public class GetInstancesTests
                 potInstances.Should().HaveCount(1);
                 potInstances[0].Should().BeNull();
             })
-            .Execute();
+            .ExecuteAsync();
     }
 
     [Fact]
     public async Task GetInstances_WithLastAvailableDateMatchingMode_ShouldReturnLastAvailableSnapshot()
     {
-        await DatabaseTest.Create()
+        await new GenericTest<DbContext>(new DatabaseProvider())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity potDbEntity = new()
@@ -286,13 +287,13 @@ public class GetInstancesTests
                 potInstances[0].Value.Should().Be(150m);
                 potInstances[0].Date.Should().Be(currentDate.AddDays(-10));
             })
-            .Execute();
+            .ExecuteAsync();
     }
 
     [Fact]
     public async Task GetInstances_WithLastAvailableDateMatchingMode_ShouldReturnNullSnapshotWhenNoSnapshotBeforeDate()
     {
-        await DatabaseTest.Create()
+        await new GenericTest<DbContext>(new DatabaseProvider())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity potDbEntity = new()
@@ -323,13 +324,13 @@ public class GetInstancesTests
                 potInstances.Should().HaveCount(1);
                 potInstances[0].Should().BeNull();
             })
-            .Execute();
+            .ExecuteAsync();
     }
 
     [Fact]
     public async Task GetInstances_WithMultiplePots_ShouldReturnAllActivePots()
     {
-        await DatabaseTest.Create()
+        await new GenericTest<DbContext>(new DatabaseProvider())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity activePot1 = new()
@@ -403,13 +404,13 @@ public class GetInstancesTests
                 instance2.Should().NotBeNull();
                 instance2!.Value.Should().Be(200m);
             })
-            .Execute();
+            .ExecuteAsync();
     }
 
     [Fact]
     public async Task GetInstances_WithMultiplePotsAndIncludeInactiveTrue_ShouldReturnAllPots()
     {
-        await DatabaseTest.Create()
+        await new GenericTest<DbContext>(new DatabaseProvider())
             .Arrange((dbContext, context) =>
             {
                 PotDbEntity activePot = new()
@@ -468,6 +469,6 @@ public class GetInstancesTests
                 Guid expectedInactivePot2Id = context.InactivePot2Id;
                 potInstances.Should().Contain(x => x.Pot.Id == expectedInactivePot2Id);
             })
-            .Execute();
+            .ExecuteAsync();
     }
 }

@@ -11,7 +11,7 @@ public class GetAllTests
     [Fact]
     public async Task GetAll_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection()
     {
-        await DatabaseTest.Create()
+        await new GenericTest<Database>(new DatabaseProvider())
             .Act(async (database, context) =>
             {
                 PotRepository potRepository = new(database);
@@ -23,13 +23,13 @@ public class GetAllTests
                 List<Pot> pots = context.Pots as List<Pot>;
                 pots.Should().BeEmpty();
             })
-            .Execute();
+            .ExecuteAsync();
     }
 
     [Fact]
     public async Task GetAll_WithOnePot_ShouldReturnOnePot()
     {
-        await DatabaseTest.Create()
+        await new GenericTest<Database>(new DatabaseProvider())
             .Arrange((database, context) =>
             {
                 Pot potInDb = new()
@@ -62,13 +62,13 @@ public class GetAllTests
                 pot.StartDate.Should().Be(new DateOnly(2023, 1, 1));
                 pot.Currency.Should().Be("USD");
             })
-            .Execute();
+            .ExecuteAsync();
     }
 
     [Fact]
     public async Task GetAll_WithMultiplePots_ShouldReturnAllPots()
     {
-        await DatabaseTest.Create()
+        await new GenericTest<Database>(new DatabaseProvider())
             .Arrange((database, context) =>
             {
                 Pot pot1 = new()
@@ -127,13 +127,13 @@ public class GetAllTests
                 Guid expectedPot3Id = (Guid)context.Pot3Id;
                 pots.Should().ContainSingle(x => x.Id == expectedPot3Id && x.Name == "Test Pot 3");
             })
-            .Execute();
+            .ExecuteAsync();
     }
 
     [Fact]
     public async Task GetAll_WithPotsContainingSnapshots_ShouldReturnPotsWithSnapshots()
     {
-        await DatabaseTest.Create()
+        await new GenericTest<Database>(new DatabaseProvider())
             .Arrange((database, context) =>
             {
                 Pot potInDb = new()
@@ -176,13 +176,13 @@ public class GetAllTests
                 pot.Snapshots.Should().ContainSingle(x => x.Date == new DateOnly(2023, 1, 15) && x.Value == 100.50m);
                 pot.Snapshots.Should().ContainSingle(x => x.Date == new DateOnly(2023, 2, 15) && x.Value == 120.75m);
             })
-            .Execute();
+            .ExecuteAsync();
     }
 
     [Fact]
     public async Task GetAll_WithPotsContainingLabels_ShouldReturnPotsWithLabels()
     {
-        await DatabaseTest.Create()
+        await new GenericTest<Database>(new DatabaseProvider())
             .Arrange((database, context) =>
             {
                 Pot potInDb = new()
@@ -219,6 +219,6 @@ public class GetAllTests
                 pot.Labels.Should().Contain("Long-term");
                 pot.Labels.Should().Contain("Important");
             })
-            .Execute();
+            .ExecuteAsync();
     }
 }

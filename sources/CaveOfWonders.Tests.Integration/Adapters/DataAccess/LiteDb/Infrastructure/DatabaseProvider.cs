@@ -3,30 +3,25 @@ using DustInTheWind.CaveOfWonders.Tests.Utils;
 
 namespace DustInTheWind.CaveOfWonders.Tests.Integration.Adapters.DataAccess.LiteDb.Infrastructure;
 
-internal class DatabaseTest : DatabaseTest<DbContext>
+internal class DatabaseProvider : ISutProvider<DbContext>
 {
     private readonly string dbFilePath = Path.Combine(Path.GetTempPath(), $"test-dbContext-{Guid.NewGuid()}");
 
-    public static DatabaseTest Create()
-    {
-        return new DatabaseTest();
-    }
-
-    protected override Task<DbContext> OpenDatabaseAsync()
+    public Task<DbContext> CreateAsync()
     {
         DbContext dbContext = new(dbFilePath);
         return Task.FromResult(dbContext);
     }
 
-    protected override Task CloseDatabaseAsync(DbContext dbContext)
+    public Task ReleaseAsync(DbContext dbContext)
     {
         dbContext.Dispose();
         return Task.CompletedTask;
     }
 
-    protected override void ResetDatabase()
+    public void Reset()
     {
-        if (Directory.Exists(dbFilePath))
-            Directory.Delete(dbFilePath, true);
+        if (File.Exists(dbFilePath))
+            File.Delete(dbFilePath);
     }
 }
