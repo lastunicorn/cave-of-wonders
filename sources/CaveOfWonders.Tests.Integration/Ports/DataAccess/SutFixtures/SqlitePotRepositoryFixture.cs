@@ -1,4 +1,5 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite;
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Repositories;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -10,11 +11,10 @@ internal class SqlitePotRepositoryFixture : ISutFixture<IPotRepository>
 	private readonly string dbFilePath = Path.Combine(Path.GetTempPath(), $"test-database-{Guid.NewGuid()}.db");
 
 	private CaveOfWondersDbContext dbContext;
-	private UnitOfWork unitOfWork;
 
 	public IPotRepository Instance { get; private set; }
 
-	public async Task CreateInstanceAsync(CancellationToken cancellationToken = default)
+	public async Task CreateSutAsync(CancellationToken cancellationToken = default)
 	{
 		DbContextOptions<CaveOfWondersDbContext> options = new DbContextOptionsBuilder<CaveOfWondersDbContext>()
 			.UseSqlite($"Data Source={dbFilePath}")
@@ -23,19 +23,14 @@ internal class SqlitePotRepositoryFixture : ISutFixture<IPotRepository>
 		dbContext = new CaveOfWondersDbContext(options);
 		await dbContext.Database.EnsureCreatedAsync(cancellationToken);
 
-		unitOfWork = new UnitOfWork(dbContext);
-		Instance = unitOfWork.PotRepository;
+		Instance = new PotRepository(dbContext);
 	}
 
-	public async Task ReleaseInstanceAsync(CancellationToken cancellationToken = default)
+	public async Task ReleaseSutAsync(CancellationToken cancellationToken = default)
 	{
-		// IPotRepository.Add only stages changes on the EF Core change tracker; they aren't
-		// written to the database until SaveChanges runs, so flush here to mirror how a real
-		// caller would go through IUnitOfWork.SaveChangesAsync before the next phase reads back.
-		await unitOfWork.SaveChangesAsync(cancellationToken);
+		await dbContext.SaveChangesAsync(cancellationToken);
 
-		unitOfWork.Dispose();
-		unitOfWork = null;
+		await dbContext.DisposeAsync();
 		dbContext = null;
 		Instance = null;
 	}
@@ -50,8 +45,7 @@ internal class SqlitePotRepositoryFixture : ISutFixture<IPotRepository>
 
 	public void Dispose()
 	{
-		unitOfWork?.Dispose();
-		unitOfWork = null;
+		dbContext?.Dispose();
 		dbContext = null;
 		Instance = null;
 

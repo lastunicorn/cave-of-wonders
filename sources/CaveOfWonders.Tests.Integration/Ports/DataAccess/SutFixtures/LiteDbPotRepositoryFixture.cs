@@ -12,7 +12,7 @@ internal class LiteDbPotRepositoryFixture : ISutFixture<IPotRepository>
 
 	public IPotRepository Instance { get; private set; }
 
-	public Task CreateInstanceAsync(CancellationToken cancellationToken = default)
+	public Task CreateSutAsync(CancellationToken cancellationToken = default)
 	{
 		dbContext = new DbContext(dbFilePath);
 		Instance = new PotRepository(dbContext);
@@ -20,7 +20,7 @@ internal class LiteDbPotRepositoryFixture : ISutFixture<IPotRepository>
 		return Task.CompletedTask;
 	}
 
-	public Task ReleaseInstanceAsync(CancellationToken cancellationToken = default)
+	public Task ReleaseSutAsync(CancellationToken cancellationToken = default)
 	{
 		dbContext.Dispose();
 		dbContext = null;

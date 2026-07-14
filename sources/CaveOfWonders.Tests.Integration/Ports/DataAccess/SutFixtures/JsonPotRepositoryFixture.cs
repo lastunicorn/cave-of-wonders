@@ -13,14 +13,14 @@ internal class JsonPotRepositoryFixture : ISutFixture<IPotRepository>
 
 	public IPotRepository Instance { get; private set; }
 
-	public async Task CreateInstanceAsync(CancellationToken cancellationToken = default)
+	public async Task CreateSutAsync(CancellationToken cancellationToken = default)
 	{
 		database = new Database(dbDirectoryPath);
 		await database.LoadAsync(cancellationToken);
 		Instance = new PotRepository(database);
 	}
 
-	public async Task ReleaseInstanceAsync(CancellationToken cancellationToken = default)
+	public async Task ReleaseSutAsync(CancellationToken cancellationToken = default)
 	{
 		await database.SaveAsync(cancellationToken);
 

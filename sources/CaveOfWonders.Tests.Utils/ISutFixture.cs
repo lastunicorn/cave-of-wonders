@@ -10,11 +10,11 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// </summary>
 /// <remarks>
 /// A single <see cref="ISutFixture{T}"/> instance is reused across every phase of one <see cref="GenericTest{TSut}"/> run:
-/// <see cref="CreateInstanceAsync"/> is called once per phase (Arrange/Act/Assert) to stand up a fresh <typeparamref name="T"/>
-/// backed by the same underlying state, setting <see cref="Instance"/> to it, and <see cref="ReleaseInstanceAsync"/> is called
+/// <see cref="CreateSutAsync"/> is called once per phase (Arrange/Act/Assert) to stand up a fresh <typeparamref name="T"/>
+/// backed by the same underlying state, setting <see cref="Instance"/> to it, and <see cref="ReleaseSutAsync"/> is called
 /// right after to persist and release it. <see cref="Dispose"/> and <see cref="ResetAsync"/> are both called exactly once,
 /// at the very end, regardless of outcome: <see cref="Dispose"/> releases any resource left open because a phase's action
-/// threw before its <see cref="ReleaseInstanceAsync"/> could run and resets the external resource synchronously, while
+/// threw before its <see cref="ReleaseSutAsync"/> could run and resets the external resource synchronously, while
 /// <see cref="ResetAsync"/> is the equivalent async entry point, for callers that can await it directly instead of relying
 /// on <see cref="Dispose"/>.
 /// </remarks>
@@ -22,9 +22,9 @@ public interface ISutFixture<out T> : IDisposable
 {
 	T Instance { get; }
 
-	Task CreateInstanceAsync(CancellationToken cancellationToken = default);
+	Task CreateSutAsync(CancellationToken cancellationToken = default);
 
-	Task ReleaseInstanceAsync(CancellationToken cancellationToken = default);
+	Task ReleaseSutAsync(CancellationToken cancellationToken = default);
 
 	Task ResetAsync(CancellationToken cancellationToken = default);
 }
