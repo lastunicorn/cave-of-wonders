@@ -174,4 +174,96 @@ public class GetAllTests
 			})
 			.ExecuteAsync();
 	}
+
+	[Theory]
+	[PotRepositoryProviders]
+	public async Task GetAll_WithPotsContainingSnapshots_ShouldReturnPotsWithSnapshots(ISutFixture<IPotRepository> sutFixture)
+	{
+		await new GenericTest<IPotRepository>(sutFixture)
+			.Arrange((repository, context) =>
+			{
+				Pot potInDb = new()
+				{
+					Id = Guid.NewGuid(),
+					Name = "Test Pot with Snapshots",
+					DisplayOrder = 1,
+					StartDate = new DateOnly(2023, 1, 1),
+					Currency = "USD"
+				};
+
+				potInDb.Snapshots.AddRange([
+					new PotSnapshot
+					{
+						Date = new DateOnly(2023, 1, 15),
+						Value = 100.50m
+					},
+					new PotSnapshot
+					{
+						Date = new DateOnly(2023, 2, 15),
+						Value = 120.75m
+					}
+				]);
+
+				repository.Add(potInDb);
+			})
+			.Act(async (repository, context) =>
+			{
+				List<Pot> pots = await repository.GetAllAsync().ToListAsync();
+				context.Pots = pots;
+			})
+			.Assert((repository, context) =>
+			{
+				List<Pot> pots = context.Pots as List<Pot>;
+
+				pots.Should().HaveCount(1);
+				Pot pot = pots.First();
+				pot.Snapshots.Should().HaveCount(2);
+				pot.Snapshots.Should().ContainSingle(x => x.Date == new DateOnly(2023, 1, 15) && x.Value == 100.50m);
+				pot.Snapshots.Should().ContainSingle(x => x.Date == new DateOnly(2023, 2, 15) && x.Value == 120.75m);
+			})
+			.ExecuteAsync();
+	}
+
+	[Theory]
+	[PotRepositoryProviders]
+	public async Task GetAll_WithPotsContainingLabels_ShouldReturnPotsWithLabels(ISutFixture<IPotRepository> sutFixture)
+	{
+		await new GenericTest<IPotRepository>(sutFixture)
+			.Arrange((repository, context) =>
+			{
+				Pot potInDb = new()
+				{
+					Id = Guid.NewGuid(),
+					Name = "Test Pot with Labels",
+					DisplayOrder = 1,
+					StartDate = new DateOnly(2023, 1, 1),
+					Currency = "USD"
+				};
+
+				potInDb.Labels.AddRange([
+					"Savings",
+					"Long-term",
+					"Important"
+				]);
+
+				repository.Add(potInDb);
+			})
+			.Act(async (repository, context) =>
+			{
+				List<Pot> pots = await repository.GetAllAsync().ToListAsync();
+				context.Pots = pots;
+			})
+			.Assert((repository, context) =>
+			{
+				List<Pot> pots = context.Pots as List<Pot>;
+
+				pots.Should().HaveCount(1);
+				Pot pot = pots.First();
+				pot.Labels.Should().HaveCount(3);
+				pot.Labels.Should().Contain("Savings");
+				pot.Labels.Should().Contain("Long-term");
+				pot.Labels.Should().Contain("Important");
+			})
+			.ExecuteAsync();
+	}
 }
