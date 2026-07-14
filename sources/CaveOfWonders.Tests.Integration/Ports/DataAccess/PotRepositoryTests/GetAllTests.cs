@@ -10,9 +10,9 @@ public class GetAllTests
 {
 	[Theory]
 	[PotRepositoryProviders]
-	public async Task GetAll_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ISutFixture<IPotRepository> provider)
+	public async Task GetAll_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ISutFixture<IPotRepository> sutFixture)
 	{
-		await new GenericTest<IPotRepository>(provider)
+		await new GenericTest<IPotRepository>(sutFixture)
 			.Act(async (repository, context) =>
 			{
 				List<Pot> pots = await repository.GetAllAsync().ToListAsync();
@@ -28,9 +28,9 @@ public class GetAllTests
 
 	[Theory]
 	[PotRepositoryProviders]
-	public async Task GetAll_WithOnePot_ShouldReturnOnePot(ISutFixture<IPotRepository> provider)
+	public async Task GetAll_WithOnePot_ShouldReturnOnePot(ISutFixture<IPotRepository> sutFixture)
 	{
-		await new GenericTest<IPotRepository>(provider)
+		await new GenericTest<IPotRepository>(sutFixture)
 			.Arrange((repository, context) =>
 			{
 				Pot potInDb = new()
@@ -67,9 +67,9 @@ public class GetAllTests
 
 	[Theory]
 	[PotRepositoryProviders]
-	public async Task GetAll_WithMultiplePots_ShouldReturnAllPots(ISutFixture<IPotRepository> provider)
+	public async Task GetAll_WithMultiplePots_ShouldReturnAllPots(ISutFixture<IPotRepository> sutFixture)
 	{
-		await new GenericTest<IPotRepository>(provider)
+		await new GenericTest<IPotRepository>(sutFixture)
 			.Arrange((repository, context) =>
 			{
 				Pot pot1 = new()
@@ -126,6 +126,51 @@ public class GetAllTests
 
 				Guid expectedPot3Id = (Guid)context.Pot3Id;
 				pots.Should().ContainSingle(x => x.Id == expectedPot3Id && x.Name == "Test Pot 3");
+			})
+			.ExecuteAsync();
+	}
+
+	[Theory]
+	[PotRepositoryProviders]
+	public async Task GetAll_WithPotsContainingEndDate_ShouldReturnPotsWithEndDate(ISutFixture<IPotRepository> sutFixture)
+	{
+		await new GenericTest<IPotRepository>(sutFixture)
+			.Arrange((repository, context) =>
+			{
+				Pot potWithEndDate = new()
+				{
+					Id = Guid.NewGuid(),
+					Name = "Test Pot with EndDate",
+					DisplayOrder = 1,
+					StartDate = new DateOnly(2023, 1, 1),
+					EndDate = new DateOnly(2023, 12, 31),
+					Currency = "USD"
+				};
+
+				Pot potWithoutEndDate = new()
+				{
+					Id = Guid.NewGuid(),
+					Name = "Test Pot without EndDate",
+					DisplayOrder = 2,
+					StartDate = new DateOnly(2023, 1, 1),
+					Currency = "USD"
+				};
+
+				repository.Add(potWithEndDate);
+				repository.Add(potWithoutEndDate);
+			})
+			.Act(async (repository, context) =>
+			{
+				List<Pot> pots = await repository.GetAllAsync().ToListAsync();
+				context.Pots = pots;
+			})
+			.Assert((repository, context) =>
+			{
+				List<Pot> pots = context.Pots as List<Pot>;
+
+				pots.Should().HaveCount(2);
+				pots.Should().ContainSingle(x => x.Name == "Test Pot with EndDate" && x.EndDate == new DateOnly(2023, 12, 31));
+				pots.Should().ContainSingle(x => x.Name == "Test Pot without EndDate" && x.EndDate == null);
 			})
 			.ExecuteAsync();
 	}

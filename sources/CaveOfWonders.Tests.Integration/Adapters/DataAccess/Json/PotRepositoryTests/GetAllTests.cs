@@ -221,4 +221,49 @@ public class GetAllTests
             })
             .ExecuteAsync();
     }
+
+    [Fact]
+    public async Task GetAll_WithPotsContainingEndDate_ShouldReturnPotsWithEndDate()
+    {
+        await new GenericTest<Database>(new DatabaseSut())
+            .Arrange((database, context) =>
+            {
+                Pot potWithEndDate = new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Test Pot with EndDate",
+                    DisplayOrder = 1,
+                    StartDate = new DateOnly(2023, 1, 1),
+                    EndDate = new DateOnly(2023, 12, 31),
+                    Currency = "USD"
+                };
+
+                Pot potWithoutEndDate = new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Test Pot without EndDate",
+                    DisplayOrder = 2,
+                    StartDate = new DateOnly(2023, 1, 1),
+                    Currency = "USD"
+                };
+
+                database.Pots.Add(potWithEndDate);
+                database.Pots.Add(potWithoutEndDate);
+            })
+            .Act(async (database, context) =>
+            {
+                PotRepository potRepository = new(database);
+                List<Pot> pots = await potRepository.GetAllAsync().ToListAsync();
+                context.Pots = pots;
+            })
+            .Assert((database, context) =>
+            {
+                List<Pot> pots = context.Pots as List<Pot>;
+
+                pots.Should().HaveCount(2);
+                pots.Should().ContainSingle(x => x.Name == "Test Pot with EndDate" && x.EndDate == new DateOnly(2023, 12, 31));
+                pots.Should().ContainSingle(x => x.Name == "Test Pot without EndDate" && x.EndDate == null);
+            })
+            .ExecuteAsync();
+    }
 }
