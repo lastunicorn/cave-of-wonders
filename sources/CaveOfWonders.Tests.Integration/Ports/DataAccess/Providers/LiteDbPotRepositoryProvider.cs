@@ -10,14 +10,14 @@ internal class LiteDbPotRepositoryProvider : ISutProvider<IPotRepository>
 
     private DbContext dbContext;
 
-    public Task<IPotRepository> CreateAsync()
+    public Task<IPotRepository> CreateAsync(CancellationToken cancellationToken = default)
     {
         dbContext = new DbContext(dbFilePath);
         IPotRepository repository = new PotRepository(dbContext);
         return Task.FromResult(repository);
     }
 
-    public Task ReleaseAsync(IPotRepository repository)
+    public Task ReleaseAsync(IPotRepository repository, CancellationToken cancellationToken = default)
     {
         dbContext.Dispose();
         return Task.CompletedTask;

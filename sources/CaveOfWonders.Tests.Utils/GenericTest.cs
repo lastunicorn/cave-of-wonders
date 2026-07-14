@@ -14,10 +14,10 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// </para>
 /// <para>
 /// Every phase obtains and releases its own SUT instance (via the injected <see cref="ISutProvider{T}"/>'s
-/// <see cref="ISutProvider{T}.CreateAsync"/>/<see cref="ISutProvider{T}.ReleaseAsync(T)"/> members), rather than
-/// sharing one instance across the whole test. For a SUT backed by persistent storage, this forces data to be
-/// actually persisted to and reloaded between phases, so the test exercises real persistence instead of asserting
-/// against an in-memory object graph that was never saved.
+/// <see cref="ISutProvider{T}.CreateAsync"/>/<see cref="ISutProvider{T}.ReleaseAsync(T, System.Threading.CancellationToken)"/>
+/// members), rather than sharing one instance across the whole test. For a SUT backed by persistent storage, this
+/// forces data to be actually persisted to and reloaded between phases, so the test exercises real persistence
+/// instead of asserting against an in-memory object graph that was never saved.
 /// </para>
 /// <para>
 /// Both synchronous and asynchronous overloads are provided for each phase, and each phase may be set at most once
@@ -37,7 +37,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// </remarks>
 public class GenericTest<TSut>
 {
-    private readonly ISutProvider<TSut> provider;
+    private readonly ISutProvider<TSut> sutProvider;
 
     private Func<TSut, dynamic, Task> arrangeAction1;
     private Action<TSut, dynamic> arrangeAction2;
@@ -48,9 +48,9 @@ public class GenericTest<TSut>
     private Func<TSut, dynamic, Task> assertAction1;
     private Action<TSut, dynamic> assertAction2;
 
-    public GenericTest(ISutProvider<TSut> provider)
+    public GenericTest(ISutProvider<TSut> sutProvider)
     {
-        this.provider = provider ?? throw new ArgumentNullException(nameof(provider));
+        this.sutProvider = sutProvider ?? throw new ArgumentNullException(nameof(sutProvider));
     }
 
     public GenericTest<TSut> Arrange(Func<TSut, dynamic, Task> action)
@@ -107,7 +107,7 @@ public class GenericTest<TSut>
         return this;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken = default)
     {
         try
         {
@@ -115,49 +115,49 @@ public class GenericTest<TSut>
 
             if (arrangeAction1 != null)
             {
-                TSut sut = await provider.CreateAsync();
+                TSut sut = await sutProvider.CreateAsync(cancellationToken);
                 await arrangeAction1(sut, context);
-                await provider.ReleaseAsync(sut);
+                await sutProvider.ReleaseAsync(sut, cancellationToken);
             }
 
             if (arrangeAction2 != null)
             {
-                TSut sut = await provider.CreateAsync();
+                TSut sut = await sutProvider.CreateAsync(cancellationToken);
                 arrangeAction2(sut, context);
-                await provider.ReleaseAsync(sut);
+                await sutProvider.ReleaseAsync(sut, cancellationToken);
             }
 
             if (actAction1 != null)
             {
-                TSut sut = await provider.CreateAsync();
+                TSut sut = await sutProvider.CreateAsync(cancellationToken);
                 await actAction1(sut, context);
-                await provider.ReleaseAsync(sut);
+                await sutProvider.ReleaseAsync(sut, cancellationToken);
             }
 
             if (actAction2 != null)
             {
-                TSut sut = await provider.CreateAsync();
+                TSut sut = await sutProvider.CreateAsync(cancellationToken);
                 actAction2(sut, context);
-                await provider.ReleaseAsync(sut);
+                await sutProvider.ReleaseAsync(sut, cancellationToken);
             }
 
             if (assertAction1 != null)
             {
-                TSut sut = await provider.CreateAsync();
+                TSut sut = await sutProvider.CreateAsync(cancellationToken);
                 await assertAction1(sut, context);
-                await provider.ReleaseAsync(sut);
+                await sutProvider.ReleaseAsync(sut, cancellationToken);
             }
 
             if (assertAction2 != null)
             {
-                TSut sut = await provider.CreateAsync();
+                TSut sut = await sutProvider.CreateAsync(cancellationToken);
                 assertAction2(sut, context);
-                await provider.ReleaseAsync(sut);
+                await sutProvider.ReleaseAsync(sut, cancellationToken);
             }
         }
         finally
         {
-            provider.Reset();
+            sutProvider.Reset();
         }
     }
 }

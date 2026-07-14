@@ -7,16 +7,16 @@ internal class DatabaseProvider : ISutProvider<Database>
 {
     private readonly string dbDirectoryPath = Path.Combine(Path.GetTempPath(), $"test-database-{Guid.NewGuid()}");
 
-    public async Task<Database> CreateAsync()
+    public async Task<Database> CreateAsync(CancellationToken cancellationToken = default)
     {
         Database database = new(dbDirectoryPath);
-        await database.LoadAsync(CancellationToken.None);
+        await database.LoadAsync(cancellationToken);
         return database;
     }
 
-    public Task ReleaseAsync(Database database)
+    public Task ReleaseAsync(Database database, CancellationToken cancellationToken = default)
     {
-        return database.SaveAsync(CancellationToken.None);
+        return database.SaveAsync(cancellationToken);
     }
 
     public void Reset()

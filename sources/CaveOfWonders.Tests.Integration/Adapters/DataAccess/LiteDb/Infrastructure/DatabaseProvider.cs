@@ -7,13 +7,13 @@ internal class DatabaseProvider : ISutProvider<DbContext>
 {
     private readonly string dbFilePath = Path.Combine(Path.GetTempPath(), $"test-dbContext-{Guid.NewGuid()}");
 
-    public Task<DbContext> CreateAsync()
+    public Task<DbContext> CreateAsync(CancellationToken cancellationToken = default)
     {
         DbContext dbContext = new(dbFilePath);
         return Task.FromResult(dbContext);
     }
 
-    public Task ReleaseAsync(DbContext dbContext)
+    public Task ReleaseAsync(DbContext dbContext, CancellationToken cancellationToken = default)
     {
         dbContext.Dispose();
         return Task.CompletedTask;

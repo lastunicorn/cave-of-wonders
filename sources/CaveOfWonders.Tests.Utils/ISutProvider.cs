@@ -16,9 +16,9 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// </remarks>
 public interface ISutProvider<T>
 {
-    Task<T> CreateAsync();
+    Task<T> CreateAsync(CancellationToken cancellationToken = default);
 
-    Task ReleaseAsync(T sut);
+    Task ReleaseAsync(T sut, CancellationToken cancellationToken = default);
 
     void Reset();
 }

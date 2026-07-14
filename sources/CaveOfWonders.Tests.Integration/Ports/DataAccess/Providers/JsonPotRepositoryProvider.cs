@@ -10,16 +10,16 @@ internal class JsonPotRepositoryProvider : ISutProvider<IPotRepository>
 
     private Database database;
 
-    public async Task<IPotRepository> CreateAsync()
+    public async Task<IPotRepository> CreateAsync(CancellationToken cancellationToken = default)
     {
         database = new Database(dbDirectoryPath);
-        await database.LoadAsync(CancellationToken.None);
+        await database.LoadAsync(cancellationToken);
         return new PotRepository(database);
     }
 
-    public Task ReleaseAsync(IPotRepository repository)
+    public Task ReleaseAsync(IPotRepository repository, CancellationToken cancellationToken = default)
     {
-        return database.SaveAsync(CancellationToken.None);
+        return database.SaveAsync(cancellationToken);
     }
 
     public void Reset()
