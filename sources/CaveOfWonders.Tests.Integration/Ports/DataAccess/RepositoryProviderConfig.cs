@@ -7,13 +7,13 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess;
 /// </summary>
 internal readonly struct RepositoryProviderConfig
 {
-    public string Adapter { get; }
+	public string Adapter { get; }
 
-    public JsonElement Settings { get; }
+	public JsonElement Settings { get; }
 
-    public RepositoryProviderConfig(string adapter, JsonElement settings)
-    {
-        Adapter = adapter;
-        Settings = settings;
-    }
+	public RepositoryProviderConfig(string adapter, JsonElement settings)
+	{
+		Adapter = adapter;
+		Settings = settings;
+	}
 }

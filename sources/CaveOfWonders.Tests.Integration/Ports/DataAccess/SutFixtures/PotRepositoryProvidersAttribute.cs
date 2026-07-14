@@ -1,4 +1,5 @@
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Tests.Utils;
 using System.Reflection;
 using Xunit.Sdk;
 
@@ -10,9 +11,14 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixt
 /// </summary>
 internal class PotRepositoryProvidersAttribute : DataAttribute
 {
-    public override IEnumerable<object[]> GetData(MethodInfo testMethod)
-    {
-        foreach (RepositoryProviderConfig config in RepositoryTestConfig.GetProviders(nameof(IPotRepository)))
-            yield return [PotRepositoryProviderCatalog.Create(config)];
-    }
+	public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+	{
+		IEnumerable<RepositoryProviderConfig> configs = RepositoryTestConfig.GetProviders(nameof(IPotRepository));
+		
+		foreach (RepositoryProviderConfig config in configs)
+		{
+			ISutFixture<IPotRepository> sutFixture = PotRepositoryProviderCatalog.Create(config);
+			yield return [sutFixture];
+		}
+	}
 }
