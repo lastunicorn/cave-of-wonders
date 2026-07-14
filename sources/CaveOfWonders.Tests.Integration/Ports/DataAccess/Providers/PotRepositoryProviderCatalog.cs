@@ -5,13 +5,13 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Provide
 
 internal static class PotRepositoryProviderCatalog
 {
-    public static ISut<IPotRepository> Create(RepositoryProviderConfig config)
-    {
-        return config.Adapter switch
-        {
-            "Json" => new JsonPotRepositorySut(),
-            "LiteDb" => new LiteDbPotRepositorySut(),
-            _ => throw new NotSupportedException($"Unknown adapter '{config.Adapter}' for {nameof(IPotRepository)}.")
-        };
-    }
+	public static ISutFixture<IPotRepository> Create(RepositoryProviderConfig config)
+	{
+		return config.Adapter switch
+		{
+			"Json" => new JsonPotRepositorySut(),
+			"LiteDb" => new LiteDbPotRepositorySut(),
+			_ => throw new NotSupportedException($"Unknown adapter '{config.Adapter}' for {nameof(IPotRepository)}.")
+		};
+	}
 }

@@ -3,32 +3,41 @@ using DustInTheWind.CaveOfWonders.Tests.Utils;
 
 namespace DustInTheWind.CaveOfWonders.Tests.Integration.Adapters.DataAccess.LiteDb.Infrastructure;
 
-internal class DatabaseSut : ISut<DbContext>
+internal class DatabaseSut : ISutFixture<DbContext>
 {
-    private readonly string dbFilePath = Path.Combine(Path.GetTempPath(), $"test-dbContext-{Guid.NewGuid()}");
+	private readonly string dbFilePath = Path.Combine(Path.GetTempPath(), $"test-dbContext-{Guid.NewGuid()}");
 
-    public DbContext Instance { get; private set; }
+	public DbContext Instance { get; private set; }
 
-    public Task CreateInstanceAsync(CancellationToken cancellationToken = default)
-    {
-        Instance = new DbContext(dbFilePath);
-        
-        return Task.CompletedTask;
-    }
+	public Task CreateInstanceAsync(CancellationToken cancellationToken = default)
+	{
+		Instance = new DbContext(dbFilePath);
 
-    public Task ReleaseInstanceAsync(CancellationToken cancellationToken = default)
-    {
-        Instance.Dispose();
-        Instance = null;
-        
-        return Task.CompletedTask;
-    }
+		return Task.CompletedTask;
+	}
 
-    public Task ResetAsync(CancellationToken cancellationToken = default)
-    {
-        if (File.Exists(dbFilePath))
-            File.Delete(dbFilePath);
+	public Task ReleaseInstanceAsync(CancellationToken cancellationToken = default)
+	{
+		Instance.Dispose();
+		Instance = null;
 
-        return Task.CompletedTask;
-    }
+		return Task.CompletedTask;
+	}
+
+	public Task ResetAsync(CancellationToken cancellationToken = default)
+	{
+		if (File.Exists(dbFilePath))
+			File.Delete(dbFilePath);
+
+		return Task.CompletedTask;
+	}
+
+	public void Dispose()
+	{
+		Instance?.Dispose();
+		Instance = null;
+
+		if (File.Exists(dbFilePath))
+			File.Delete(dbFilePath);
+	}
 }

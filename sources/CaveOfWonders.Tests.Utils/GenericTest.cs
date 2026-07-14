@@ -3,7 +3,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// <summary>
 /// A fluent builder that runs an Arrange/Act/Assert integration test against a system under test (SUT), addressed
 /// only through its interface (<typeparamref name="TSut"/>), so the same test can be executed against any concrete
-/// implementation (e.g. a repository backed by JSON, LiteDb, or SQLite) supplied via an <see cref="ISut{T}"/>
+/// implementation (e.g. a repository backed by JSON, LiteDb, or SQLite) supplied via an <see cref="ISutFixture{T}"/>
 /// at runtime.
 /// </summary>
 /// <remarks>
@@ -13,9 +13,9 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// <see cref="ExecuteAsync"/> is called.
 /// </para>
 /// <para>
-/// Every phase obtains and releases its own SUT instance (via the injected <see cref="ISut{T}"/>'s
-/// <see cref="ISut{T}.CreateInstanceAsync"/>/<see cref="ISut{T}.ReleaseInstanceAsync"/> members, exposed meanwhile through
-/// <see cref="ISut{T}.Instance"/>), rather than sharing one instance across the whole test. For a SUT backed by
+/// Every phase obtains and releases its own SUT instance (via the injected <see cref="ISutFixture{T}"/>'s
+/// <see cref="ISutFixture{T}.CreateInstanceAsync"/>/<see cref="ISutFixture{T}.ReleaseInstanceAsync"/> members, exposed meanwhile through
+/// <see cref="ISutFixture{T}.Instance"/>), rather than sharing one instance across the whole test. For a SUT backed by
 /// persistent storage, this forces data to be actually persisted to and reloaded between phases, so the test
 /// exercises real persistence instead of asserting against an in-memory object graph that was never saved.
 /// </para>
@@ -31,133 +31,135 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// dedicated fields on the test class.
 /// </para>
 /// <para>
-/// The provider's <see cref="ISut{T}.ResetAsync"/> is always called in a <c>finally</c> block, so temporary storage
-/// created for the run is removed even if one of the phases throws.
+/// The provider's <see cref="IDisposable.Dispose"/> and <see cref="ISutFixture{T}.ResetAsync"/> are both always
+/// called in a <c>finally</c> block, so a resource left open by a failed phase is released and the external
+/// resource created for the run is reset/removed, even if one of the phases throws.
 /// </para>
 /// </remarks>
 public class GenericTest<TSut>
 {
-    private readonly ISut<TSut> sut;
+	private readonly ISutFixture<TSut> sut;
 
-    private Func<TSut, dynamic, Task> arrangeAction1;
-    private Action<TSut, dynamic> arrangeAction2;
+	private Func<TSut, dynamic, Task> arrangeAction1;
+	private Action<TSut, dynamic> arrangeAction2;
 
-    private Func<TSut, dynamic, Task> actAction1;
-    private Action<TSut, dynamic> actAction2;
+	private Func<TSut, dynamic, Task> actAction1;
+	private Action<TSut, dynamic> actAction2;
 
-    private Func<TSut, dynamic, Task> assertAction1;
-    private Action<TSut, dynamic> assertAction2;
+	private Func<TSut, dynamic, Task> assertAction1;
+	private Action<TSut, dynamic> assertAction2;
 
-    public GenericTest(ISut<TSut> sut)
-    {
-        this.sut = sut ?? throw new ArgumentNullException(nameof(sut));
-    }
+	public GenericTest(ISutFixture<TSut> sut)
+	{
+		this.sut = sut ?? throw new ArgumentNullException(nameof(sut));
+	}
 
-    public GenericTest<TSut> Arrange(Func<TSut, dynamic, Task> action)
-    {
-        if (arrangeAction1 != null || arrangeAction2 != null)
-            throw new InvalidOperationException("Arrange can only be called once.");
+	public GenericTest<TSut> Arrange(Func<TSut, dynamic, Task> action)
+	{
+		if (arrangeAction1 != null || arrangeAction2 != null)
+			throw new InvalidOperationException("Arrange can only be called once.");
 
-        arrangeAction1 = action;
-        return this;
-    }
+		arrangeAction1 = action;
+		return this;
+	}
 
-    public GenericTest<TSut> Arrange(Action<TSut, dynamic> action)
-    {
-        if (arrangeAction1 != null || arrangeAction2 != null)
-            throw new InvalidOperationException("Arrange can only be called once.");
+	public GenericTest<TSut> Arrange(Action<TSut, dynamic> action)
+	{
+		if (arrangeAction1 != null || arrangeAction2 != null)
+			throw new InvalidOperationException("Arrange can only be called once.");
 
-        arrangeAction2 = action;
-        return this;
-    }
+		arrangeAction2 = action;
+		return this;
+	}
 
-    public GenericTest<TSut> Act(Func<TSut, dynamic, Task> action)
-    {
-        if (actAction1 != null || actAction2 != null)
-            throw new InvalidOperationException("Act can only be called once.");
+	public GenericTest<TSut> Act(Func<TSut, dynamic, Task> action)
+	{
+		if (actAction1 != null || actAction2 != null)
+			throw new InvalidOperationException("Act can only be called once.");
 
-        actAction1 = action;
-        return this;
-    }
+		actAction1 = action;
+		return this;
+	}
 
-    public GenericTest<TSut> Act(Action<TSut, dynamic> action)
-    {
-        if (actAction1 != null || actAction2 != null)
-            throw new InvalidOperationException("Act can only be called once.");
+	public GenericTest<TSut> Act(Action<TSut, dynamic> action)
+	{
+		if (actAction1 != null || actAction2 != null)
+			throw new InvalidOperationException("Act can only be called once.");
 
-        actAction2 = action;
-        return this;
-    }
+		actAction2 = action;
+		return this;
+	}
 
-    public GenericTest<TSut> Assert(Func<TSut, dynamic, Task> action)
-    {
-        if (assertAction1 != null || assertAction2 != null)
-            throw new InvalidOperationException("Assert can only be called once.");
+	public GenericTest<TSut> Assert(Func<TSut, dynamic, Task> action)
+	{
+		if (assertAction1 != null || assertAction2 != null)
+			throw new InvalidOperationException("Assert can only be called once.");
 
-        assertAction1 = action;
-        return this;
-    }
+		assertAction1 = action;
+		return this;
+	}
 
-    public GenericTest<TSut> Assert(Action<TSut, dynamic> action)
-    {
-        if (assertAction1 != null || assertAction2 != null)
-            throw new InvalidOperationException("Assert can only be called once.");
+	public GenericTest<TSut> Assert(Action<TSut, dynamic> action)
+	{
+		if (assertAction1 != null || assertAction2 != null)
+			throw new InvalidOperationException("Assert can only be called once.");
 
-        assertAction2 = action;
-        return this;
-    }
+		assertAction2 = action;
+		return this;
+	}
 
-    public async Task ExecuteAsync(CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            GenericTestContext context = new();
+	public async Task ExecuteAsync(CancellationToken cancellationToken = default)
+	{
+		try
+		{
+			GenericTestContext context = new();
 
-            if (arrangeAction1 != null)
-            {
-                await sut.CreateInstanceAsync(cancellationToken);
-                await arrangeAction1(sut.Instance, context);
-                await sut.ReleaseInstanceAsync(cancellationToken);
-            }
+			if (arrangeAction1 != null)
+			{
+				await sut.CreateInstanceAsync(cancellationToken);
+				await arrangeAction1(sut.Instance, context);
+				await sut.ReleaseInstanceAsync(cancellationToken);
+			}
 
-            if (arrangeAction2 != null)
-            {
-                await sut.CreateInstanceAsync(cancellationToken);
-                arrangeAction2(sut.Instance, context);
-                await sut.ReleaseInstanceAsync(cancellationToken);
-            }
+			if (arrangeAction2 != null)
+			{
+				await sut.CreateInstanceAsync(cancellationToken);
+				arrangeAction2(sut.Instance, context);
+				await sut.ReleaseInstanceAsync(cancellationToken);
+			}
 
-            if (actAction1 != null)
-            {
-                await sut.CreateInstanceAsync(cancellationToken);
-                await actAction1(sut.Instance, context);
-                await sut.ReleaseInstanceAsync(cancellationToken);
-            }
+			if (actAction1 != null)
+			{
+				await sut.CreateInstanceAsync(cancellationToken);
+				await actAction1(sut.Instance, context);
+				await sut.ReleaseInstanceAsync(cancellationToken);
+			}
 
-            if (actAction2 != null)
-            {
-                await sut.CreateInstanceAsync(cancellationToken);
-                actAction2(sut.Instance, context);
-                await sut.ReleaseInstanceAsync(cancellationToken);
-            }
+			if (actAction2 != null)
+			{
+				await sut.CreateInstanceAsync(cancellationToken);
+				actAction2(sut.Instance, context);
+				await sut.ReleaseInstanceAsync(cancellationToken);
+			}
 
-            if (assertAction1 != null)
-            {
-                await sut.CreateInstanceAsync(cancellationToken);
-                await assertAction1(sut.Instance, context);
-                await sut.ReleaseInstanceAsync(cancellationToken);
-            }
+			if (assertAction1 != null)
+			{
+				await sut.CreateInstanceAsync(cancellationToken);
+				await assertAction1(sut.Instance, context);
+				await sut.ReleaseInstanceAsync(cancellationToken);
+			}
 
-            if (assertAction2 != null)
-            {
-                await sut.CreateInstanceAsync(cancellationToken);
-                assertAction2(sut.Instance, context);
-                await sut.ReleaseInstanceAsync(cancellationToken);
-            }
-        }
-        finally
-        {
-            await sut.ResetAsync(cancellationToken);
-        }
-    }
+			if (assertAction2 != null)
+			{
+				await sut.CreateInstanceAsync(cancellationToken);
+				assertAction2(sut.Instance, context);
+				await sut.ReleaseInstanceAsync(cancellationToken);
+			}
+		}
+		finally
+		{
+			sut.Dispose();
+			await sut.ResetAsync(cancellationToken);
+		}
+	}
 }
