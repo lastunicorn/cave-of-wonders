@@ -27,6 +27,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess.LiteDb\CaveOfWonders.Adapters.DataAccess.LiteDb.csproj" />
+      <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess.SQLite\CaveOfWonders.Adapters.DataAccess.SQLite.csproj" />
       <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess\CaveOfWonders.Adapters.DataAccess.Json.csproj" />
       <ProjectReference Include="..\CaveOfWonders.DataTypes\CaveOfWonders.DataTypes.csproj" />
       <ProjectReference Include="..\CaveOfWonders.Domain\CaveOfWonders.Domain.csproj" />

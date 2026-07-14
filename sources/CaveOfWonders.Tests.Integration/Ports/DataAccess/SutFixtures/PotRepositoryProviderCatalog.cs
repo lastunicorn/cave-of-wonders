@@ -11,6 +11,7 @@ internal static class PotRepositoryProviderCatalog
 		{
 			"Json" => new JsonPotRepositoryFixture(),
 			"LiteDb" => new LiteDbPotRepositoryFixture(),
+			"SQLite" => new SqlitePotRepositoryFixture(),
 			_ => throw new NotSupportedException($"Unknown adapter '{config.Adapter}' for {nameof(IPotRepository)}.")
 		};
 	}

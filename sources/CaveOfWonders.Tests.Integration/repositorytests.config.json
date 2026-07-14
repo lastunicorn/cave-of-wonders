@@ -1,6 +1,7 @@
 {
   "IPotRepository": [
     { "adapter": "Json" },
-    { "adapter": "LiteDb" }
+    { "adapter": "LiteDb" },
+    { "adapter": "SQLite" }
   ]
 }
