@@ -1,5 +1,6 @@
 ﻿using DustInTheWind.CaveOfWonders.Cli.Application;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
@@ -32,7 +33,7 @@ public class HandleTests
     [InlineData("")]
     [InlineData(" ")]
     [InlineData("\t")]
-    public async Task HavingNullOrEmptyOrWhiteSpaceIdentifier_WhenPresentingPot_ThenThrows(string potIdentifier)
+    public async Task HavingNullOrEmptyOrWhiteSpaceIdentifier_WhenPresentingPot_ThenDoesNotThrow(string potIdentifier)
     {
         // Arrange
         PresentPotRequest request = new()
@@ -40,11 +41,19 @@ public class HandleTests
             PotFlexId = potIdentifier
         };
 
+        potRepository
+            .Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
+            .Returns(Array.Empty<Pot>().ToAsyncEnumerable());
+
+        potRepository
+            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<PotFlexId>(), It.IsAny<CancellationToken>()))
+            .Returns(Array.Empty<Pot>().ToAsyncEnumerable());
+
         // Act
         Func<Task> action = async () => await useCase.Handle(request, CancellationToken.None);
 
         // Assert
-        await action.Should().ThrowAsync<PotIdentifierNotSpecifiedException>();
+        await action.Should().NotThrowAsync();
     }
 
     [Fact]
@@ -57,7 +66,7 @@ public class HandleTests
         };
 
         potRepository
-            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<PotFlexId>(), It.IsAny<CancellationToken>()))
             .Returns(Array.Empty<Pot>().ToAsyncEnumerable());
 
         // Act
@@ -77,7 +86,7 @@ public class HandleTests
             PotFlexId = "dummy-id"
         };
         potRepository
-            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<PotFlexId>(), It.IsAny<CancellationToken>()))
             .Throws(new Exception("Repository is inaccessible."));
 
         // Act
@@ -97,7 +106,7 @@ public class HandleTests
         };
 
         potRepository
-            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<PotFlexId>(), It.IsAny<CancellationToken>()))
             .Returns(Array.Empty<Pot>().ToAsyncEnumerable());
 
         // Act
@@ -117,7 +126,7 @@ public class HandleTests
         };
 
         potRepository
-            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<PotFlexId>(), It.IsAny<CancellationToken>()))
             .Returns(new List<Pot> { new() }.ToAsyncEnumerable());
 
         // Act
@@ -137,7 +146,7 @@ public class HandleTests
         };
 
         potRepository
-            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<PotFlexId>(), It.IsAny<CancellationToken>()))
             .Returns(new List<Pot> { new(), new() }.ToAsyncEnumerable());
 
         // Act

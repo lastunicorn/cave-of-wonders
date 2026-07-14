@@ -1,4 +1,5 @@
 ﻿using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
@@ -144,7 +145,7 @@ public class PotOrderTests
         };
 
         potRepository
-            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetByIdOrNameAsync(It.IsAny<PotFlexId>(), It.IsAny<CancellationToken>()))
             .Returns(potsFromRepository.ToAsyncEnumerable());
 
         // Act
