@@ -3,5 +3,9 @@
     { "adapter": "Json" },
     { "adapter": "LiteDb" },
     { "adapter": "SQLite" }
+  ],
+  "ICpiRepository": [
+    { "adapter": "Json" },
+    { "adapter": "SQLite" }
   ]
 }
