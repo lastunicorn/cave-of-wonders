@@ -36,7 +36,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="repositorytests.config.json" CopyToOutputDirectory="PreserveNewest" />
+      <None Include="tests-config.json" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
 </Project>

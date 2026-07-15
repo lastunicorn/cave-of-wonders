@@ -7,17 +7,17 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixt
 
 /// <summary>
 /// Supplies one <see cref="IPotRepository"/> provider per adapter configured for "IPotRepository" in
-/// <c>repositorytests.config.json</c>, so a <c>[Theory]</c> using this attribute runs once per configured adapter.
+/// <c>tests-config.json</c>, so a <c>[Theory]</c> using this attribute runs once per configured adapter.
 /// </summary>
 internal class PotRepositoryProvidersAttribute : DataAttribute
 {
 	public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 	{
-		IEnumerable<RepositoryProviderConfig> configs = RepositoryTestConfig.GetProviders(nameof(IPotRepository));
+		IEnumerable<PortTestConfig> configs = RepositoryTestConfig.GetPortTestConfigs(nameof(IPotRepository));
 
-		foreach (RepositoryProviderConfig config in configs)
+		foreach (PortTestConfig config in configs)
 		{
-			ISutFixture<IPotRepository> sutFixture = (ISutFixture<IPotRepository>)Activator.CreateInstance(config.FixtureType);
+			ISutFixture<IPotRepository> sutFixture = (ISutFixture<IPotRepository>)Activator.CreateInstance(config.AdaptorType);
 			yield return [sutFixture];
 		}
 	}

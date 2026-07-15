@@ -6,17 +6,17 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixt
 
 /// <summary>
 /// Supplies one <see cref="IGemRepositorySutFixture"/> per adapter configured for "IGemRepository" in
-/// <c>repositorytests.config.json</c>, so a <c>[Theory]</c> using this attribute runs once per configured adapter.
+/// <c>tests-config.json</c>, so a <c>[Theory]</c> using this attribute runs once per configured adapter.
 /// </summary>
 internal class GemRepositoryProvidersAttribute : DataAttribute
 {
 	public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 	{
-		IEnumerable<RepositoryProviderConfig> configs = RepositoryTestConfig.GetProviders(nameof(IGemRepository));
+		IEnumerable<PortTestConfig> configs = RepositoryTestConfig.GetPortTestConfigs(nameof(IGemRepository));
 
-		foreach (RepositoryProviderConfig config in configs)
+		foreach (PortTestConfig config in configs)
 		{
-			IGemRepositorySutFixture sutFixture = (IGemRepositorySutFixture)Activator.CreateInstance(config.FixtureType);
+			IGemRepositorySutFixture sutFixture = (IGemRepositorySutFixture)Activator.CreateInstance(config.AdaptorType);
 			yield return [sutFixture];
 		}
 	}
