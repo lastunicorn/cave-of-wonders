@@ -16,7 +16,7 @@ internal class GemRepositoryProvidersAttribute : DataAttribute
 
 		foreach (RepositoryProviderConfig config in configs)
 		{
-			IGemRepositorySutFixture sutFixture = GemRepositoryProviderCatalog.Create(config);
+			IGemRepositorySutFixture sutFixture = (IGemRepositorySutFixture)Activator.CreateInstance(config.FixtureType);
 			yield return [sutFixture];
 		}
 	}

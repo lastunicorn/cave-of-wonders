@@ -14,10 +14,10 @@ internal class PotRepositoryProvidersAttribute : DataAttribute
 	public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 	{
 		IEnumerable<RepositoryProviderConfig> configs = RepositoryTestConfig.GetProviders(nameof(IPotRepository));
-		
+
 		foreach (RepositoryProviderConfig config in configs)
 		{
-			ISutFixture<IPotRepository> sutFixture = PotRepositoryProviderCatalog.Create(config);
+			ISutFixture<IPotRepository> sutFixture = (ISutFixture<IPotRepository>)Activator.CreateInstance(config.FixtureType);
 			yield return [sutFixture];
 		}
 	}

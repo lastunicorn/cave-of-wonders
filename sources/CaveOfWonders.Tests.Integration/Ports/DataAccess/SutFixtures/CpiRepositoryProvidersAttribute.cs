@@ -17,7 +17,7 @@ internal class CpiRepositoryProvidersAttribute : DataAttribute
 
 		foreach (RepositoryProviderConfig config in configs)
 		{
-			ISutFixture<ICpiRepository> sutFixture = CpiRepositoryProviderCatalog.Create(config);
+			ISutFixture<ICpiRepository> sutFixture = (ISutFixture<ICpiRepository>)Activator.CreateInstance(config.FixtureType);
 			yield return [sutFixture];
 		}
 	}

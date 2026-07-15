@@ -3,8 +3,8 @@ using System.Text.Json;
 namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess;
 
 /// <summary>
-/// Loads <c>repositorytests.config.json</c>, which declares, per repository interface, which adapters to run the
-/// interface's test suite against.
+/// Loads <c>repositorytests.config.json</c>, which declares, per repository interface, the fully-qualified SUT
+/// fixture types to run the interface's test suite against.
 /// </summary>
 internal static class RepositoryTestConfig
 {
@@ -16,8 +16,9 @@ internal static class RepositoryTestConfig
 
 		foreach (JsonElement item in section.EnumerateArray())
 		{
-			string adapter = item.GetProperty("adapter").GetString();
-			yield return new RepositoryProviderConfig(adapter, item);
+			string typeName = item.GetProperty("type").GetString();
+			Type fixtureType = Type.GetType(typeName, throwOnError: true);
+			yield return new RepositoryProviderConfig(fixtureType, item);
 		}
 	}
 

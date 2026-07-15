@@ -1,15 +1,15 @@
 {
   "IPotRepository": [
-    { "adapter": "Json" },
-    { "adapter": "LiteDb" },
-    { "adapter": "SQLite" }
+    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.JsonPotRepositoryFixture, DustInTheWind.CaveOfWonders.Tests.Integration" },
+    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.LiteDbPotRepositoryFixture, DustInTheWind.CaveOfWonders.Tests.Integration" },
+    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.SqlitePotRepositoryFixture, DustInTheWind.CaveOfWonders.Tests.Integration" }
   ],
   "ICpiRepository": [
-    { "adapter": "Json" },
-    { "adapter": "SQLite" }
+    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.JsonCpiRepositoryFixture, DustInTheWind.CaveOfWonders.Tests.Integration" },
+    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.SqliteCpiRepositoryFixture, DustInTheWind.CaveOfWonders.Tests.Integration" }
   ],
   "IGemRepository": [
-    { "adapter": "Json" },
-    { "adapter": "SQLite" }
+    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.JsonGemRepositoryFixture, DustInTheWind.CaveOfWonders.Tests.Integration" },
+    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.SqliteGemRepositoryFixture, DustInTheWind.CaveOfWonders.Tests.Integration" }
   ]
 }
