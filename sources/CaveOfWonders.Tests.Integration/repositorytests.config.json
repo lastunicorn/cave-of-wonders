@@ -7,5 +7,9 @@
   "ICpiRepository": [
     { "adapter": "Json" },
     { "adapter": "SQLite" }
+  ],
+  "IGemRepository": [
+    { "adapter": "Json" },
+    { "adapter": "SQLite" }
   ]
 }
