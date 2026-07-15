@@ -31,7 +31,7 @@ internal class PresentInflationUseCase : IRequestHandler<PresentInflationRequest
 
     public async Task<PresentInflationResponse> Handle(PresentInflationRequest request, CancellationToken cancellationToken)
     {
-        IEnumerable<Cpi> inflationRecords = await RetrieveCpiRecordsFromStorage();
+        IEnumerable<Cpi> inflationRecords = await RetrieveCpiRecordsFromStorage(cancellationToken);
 
         return new PresentInflationResponse
         {
@@ -41,9 +41,10 @@ internal class PresentInflationUseCase : IRequestHandler<PresentInflationRequest
         };
     }
 
-    private async Task<IEnumerable<Cpi>> RetrieveCpiRecordsFromStorage()
+    private async Task<IEnumerable<Cpi>> RetrieveCpiRecordsFromStorage(CancellationToken cancellationToken)
     {
-        IEnumerable<Cpi> cpis = await unitOfWork.CpiRepository.GetAll();
+        List<Cpi> cpis = await unitOfWork.CpiRepository.GetAllAsync(cancellationToken)
+            .ToListAsync(cancellationToken);
 
         return cpis
             .OrderBy(x => x.Year);

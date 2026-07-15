@@ -4,7 +4,7 @@ namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
 public interface ICpiRepository
 {
-    Task<IEnumerable<Cpi>> GetAll();
+    IAsyncEnumerable<Cpi> GetAllAsync(CancellationToken cancellationToken = default);
 
     Task<Cpi> GetByYear(int year);
 

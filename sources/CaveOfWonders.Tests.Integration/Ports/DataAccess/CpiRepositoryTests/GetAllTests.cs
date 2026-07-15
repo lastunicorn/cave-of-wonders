@@ -15,8 +15,8 @@ public class GetAllTests
 		await new GenericTest<ICpiRepository>(sutFixture)
 			.Act(async (repository, context) =>
 			{
-				context.CpiRecords = (await repository.GetAll())
-					.ToList();
+				context.CpiRecords = await repository.GetAllAsync()
+					.ToListAsync();
 			})
 			.Assert((repository, context) =>
 			{
@@ -43,8 +43,8 @@ public class GetAllTests
 			})
 			.Act(async (repository, context) =>
 			{
-				context.CpiRecords = (await repository.GetAll())
-					.ToList();
+				context.CpiRecords = await repository.GetAllAsync()
+					.ToListAsync();
 			})
 			.Assert((repository, context) =>
 			{
@@ -89,8 +89,8 @@ public class GetAllTests
 			})
 			.Act(async (repository, context) =>
 			{
-				context.CpiRecords = (await repository.GetAll())
-					.ToList();
+				context.CpiRecords = await repository.GetAllAsync()
+					.ToListAsync();
 			})
 			.Assert((repository, context) =>
 			{
@@ -135,8 +135,8 @@ public class GetAllTests
 			})
 			.Act(async (repository, context) =>
 			{
-				context.CpiRecords = (await repository.GetAll())
-					.ToList();
+				context.CpiRecords = await repository.GetAllAsync()
+					.ToListAsync();
 			})
 			.Assert((repository, context) =>
 			{
@@ -167,8 +167,8 @@ public class GetAllTests
 			})
 			.Act(async (repository, context) =>
 			{
-				context.CpiRecords = (await repository.GetAll())
-					.ToList();
+				context.CpiRecords = await repository.GetAllAsync()
+					.ToListAsync();
 			})
 			.Assert((repository, context) =>
 			{
@@ -197,8 +197,8 @@ public class GetAllTests
 			})
 			.Act(async (repository, context) =>
 			{
-				context.CpiRecords = (await repository.GetAll())
-					.ToList();
+				context.CpiRecords = await repository.GetAllAsync()
+					.ToListAsync();
 			})
 			.Assert((repository, context) =>
 			{
@@ -227,8 +227,8 @@ public class GetAllTests
 			})
 			.Act(async (repository, context) =>
 			{
-				context.CpiRecords = (await repository.GetAll())
-					.ToList();
+				context.CpiRecords = await repository.GetAllAsync()
+					.ToListAsync();
 			})
 			.Assert((repository, context) =>
 			{

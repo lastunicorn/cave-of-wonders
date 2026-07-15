@@ -24,7 +24,7 @@ internal class ExportInflationUseCase : IRequestHandler<ExportInflationRequest>
 
         using InflationDocument exportDocument = CreateExportFile(request.OutputPath);
 
-        IEnumerable<Cpi> cpiRecords = await RetrieveCpiRecordsFromStorage();
+        IEnumerable<Cpi> cpiRecords = await RetrieveCpiRecordsFromStorage(cancellationToken);
 
         foreach (Cpi inflationRecord in cpiRecords)
             await WriteToExportDocument(exportDocument, inflationRecord);
@@ -36,9 +36,10 @@ internal class ExportInflationUseCase : IRequestHandler<ExportInflationRequest>
         return new InflationDocument(exportStream);
     }
 
-    private async Task<IEnumerable<Cpi>> RetrieveCpiRecordsFromStorage()
+    private async Task<IEnumerable<Cpi>> RetrieveCpiRecordsFromStorage(CancellationToken cancellationToken)
     {
-        IEnumerable<Cpi> cpiRecords = await unitOfWork.CpiRepository.GetAll();
+        List<Cpi> cpiRecords = await unitOfWork.CpiRepository.GetAllAsync(cancellationToken)
+            .ToListAsync(cancellationToken);
 
         return cpiRecords
             .OrderBy(x => x.Year);
