@@ -17,21 +17,6 @@ internal class GemRepository : IGemRepository
         this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    public async IAsyncEnumerable<Gem> GetByDateAsync(Guid potId, DateTime date, [EnumeratorCancellation] CancellationToken cancellationToken = default)
-    {
-        List<GemEntity> entities = await dbContext.Gems
-            .Include(x => x.Parameters)
-            .Include(x => x.Pot)
-            .Where(x => x.PotId == potId && x.Date == date)
-            .ToListAsync(cancellationToken);
-
-        foreach (GemEntity entity in entities)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            yield return MapToDomain(entity);
-        }
-    }
-
     public async IAsyncEnumerable<Gem> FindByDateAsync(Guid potId, DateOnly date, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         List<GemEntity> entities = await dbContext.Gems
@@ -78,23 +63,6 @@ internal class GemRepository : IGemRepository
             .Include(x => x.Parameters)
             .Include(x => x.Pot)
             .Where(x => x.PotId == potId && x.Date.Year == month.Year && x.Date.Month == month.Month)
-            .ToListAsync(cancellationToken);
-
-        foreach (GemEntity entity in entities)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            yield return MapToDomain(entity);
-        }
-    }
-
-    public async IAsyncEnumerable<Gem> FindByMonthAndCategoryAsync(MonthDate month, GemCategory category, [EnumeratorCancellation] CancellationToken cancellationToken = default)
-    {
-        int categoryValue = (int)category;
-
-        List<GemEntity> entities = await dbContext.Gems
-            .Include(x => x.Parameters)
-            .Include(x => x.Pot)
-            .Where(x => x.Date.Year == month.Year && x.Date.Month == month.Month && x.Category == categoryValue)
             .ToListAsync(cancellationToken);
 
         foreach (GemEntity entity in entities)
