@@ -15,7 +15,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// <para>
 /// Every phase obtains and releases its own SUT instance (via the injected <see cref="ISutFixture{T}"/>'s
 /// <see cref="ISutFixture{T}.CreateSutAsync"/>/<see cref="ISutFixture{T}.ReleaseSutAsync"/> members, exposed meanwhile through
-/// <see cref="ISutFixture{T}.Instance"/>), rather than sharing one instance across the whole test. For a SUT backed by
+/// <see cref="ISutFixture{T}.Sut"/>), rather than sharing one instance across the whole test. For a SUT backed by
 /// persistent storage, this forces data to be actually persisted to and reloaded between phases, so the test
 /// exercises real persistence instead of asserting against an in-memory object graph that was never saved.
 /// </para>
@@ -125,14 +125,14 @@ public class GenericTest<TSut>
 			if (arrangeAction1 != null)
 			{
 				await sutFixture.CreateSutAsync(cancellationToken);
-				await arrangeAction1(sutFixture.Instance, context);
+				await arrangeAction1(sutFixture.Sut, context);
 				await sutFixture.ReleaseSutAsync(cancellationToken);
 			}
 
 			if (arrangeAction2 != null)
 			{
 				await sutFixture.CreateSutAsync(cancellationToken);
-				arrangeAction2(sutFixture.Instance, context);
+				arrangeAction2(sutFixture.Sut, context);
 				await sutFixture.ReleaseSutAsync(cancellationToken);
 			}
 
@@ -141,14 +141,14 @@ public class GenericTest<TSut>
 				if (actAction1 != null)
 				{
 					await sutFixture.CreateSutAsync(cancellationToken);
-					await actAction1(sutFixture.Instance, context);
+					await actAction1(sutFixture.Sut, context);
 					await sutFixture.ReleaseSutAsync(cancellationToken);
 				}
 
 				if (actAction2 != null)
 				{
 					await sutFixture.CreateSutAsync(cancellationToken);
-					actAction2(sutFixture.Instance, context);
+					actAction2(sutFixture.Sut, context);
 					await sutFixture.ReleaseSutAsync(cancellationToken);
 				}
 			}
@@ -168,14 +168,14 @@ public class GenericTest<TSut>
 			if (assertAction1 != null)
 			{
 				await sutFixture.CreateSutAsync(cancellationToken);
-				await assertAction1(sutFixture.Instance, context);
+				await assertAction1(sutFixture.Sut, context);
 				await sutFixture.ReleaseSutAsync(cancellationToken);
 			}
 
 			if (assertAction2 != null)
 			{
 				await sutFixture.CreateSutAsync(cancellationToken);
-				assertAction2(sutFixture.Instance, context);
+				assertAction2(sutFixture.Sut, context);
 				await sutFixture.ReleaseSutAsync(cancellationToken);
 			}
 

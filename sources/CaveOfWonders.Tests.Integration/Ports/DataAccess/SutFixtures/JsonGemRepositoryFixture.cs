@@ -12,14 +12,14 @@ internal class JsonGemRepositoryFixture : IGemRepositorySutFixture
 	private Database database;
 	private IPotRepository potRepository;
 
-	public IGemRepository Instance { get; private set; }
+	public IGemRepository Sut { get; private set; }
 
 	public async Task CreateSutAsync(CancellationToken cancellationToken = default)
 	{
 		database = new Database(dbDirectoryPath);
 		await database.LoadAsync(cancellationToken);
 
-		Instance = new GemRepository(database);
+		Sut = new GemRepository(database);
 		potRepository = new PotRepository(database);
 	}
 
@@ -34,11 +34,15 @@ internal class JsonGemRepositoryFixture : IGemRepositorySutFixture
 
 		database = null;
 		potRepository = null;
-		Instance = null;
+		Sut = null;
 	}
 
 	public Task ResetAsync(CancellationToken cancellationToken = default)
 	{
+		database = null;
+		potRepository = null;
+		Sut = null;
+
 		if (Directory.Exists(dbDirectoryPath))
 			Directory.Delete(dbDirectoryPath, true);
 
@@ -49,7 +53,7 @@ internal class JsonGemRepositoryFixture : IGemRepositorySutFixture
 	{
 		database = null;
 		potRepository = null;
-		Instance = null;
+		Sut = null;
 
 		if (Directory.Exists(dbDirectoryPath))
 			Directory.Delete(dbDirectoryPath, true);

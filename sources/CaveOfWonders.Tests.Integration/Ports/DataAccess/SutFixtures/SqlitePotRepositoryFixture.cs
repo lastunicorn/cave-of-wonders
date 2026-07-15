@@ -10,16 +10,14 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixt
 internal class SqlitePotRepositoryFixture : ISutFixture<IPotRepository>
 {
 	private readonly string dbDirectoryPath = Path.Combine(Path.GetTempPath(), $"test-database-{Guid.NewGuid()}");
-	private readonly string dbFilePath;
 	private readonly string connectionString;
-
 	private CaveOfWondersDbContext dbContext;
 
-	public IPotRepository Instance { get; private set; }
+	public IPotRepository Sut { get; private set; }
 
 	public SqlitePotRepositoryFixture()
 	{
-		dbFilePath = Path.Combine(dbDirectoryPath, "test-database.db");
+		string dbFilePath = Path.Combine(dbDirectoryPath, "test-database.db");
 		connectionString = $"Data Source={dbFilePath}";
 	}
 
@@ -34,7 +32,7 @@ internal class SqlitePotRepositoryFixture : ISutFixture<IPotRepository>
 		dbContext = new CaveOfWondersDbContext(options);
 		await dbContext.Database.EnsureCreatedAsync(cancellationToken);
 
-		Instance = new PotRepository(dbContext);
+		Sut = new PotRepository(dbContext);
 	}
 
 	public async Task ReleaseSutAsync(CancellationToken cancellationToken = default)
@@ -43,11 +41,15 @@ internal class SqlitePotRepositoryFixture : ISutFixture<IPotRepository>
 
 		await dbContext.DisposeAsync();
 		dbContext = null;
-		Instance = null;
+		Sut = null;
 	}
 
 	public Task ResetAsync(CancellationToken cancellationToken = default)
 	{
+		dbContext?.Dispose();
+		dbContext = null;
+		Sut = null;
+
 		DeleteDatabaseDirectory();
 		return Task.CompletedTask;
 	}
@@ -56,7 +58,7 @@ internal class SqlitePotRepositoryFixture : ISutFixture<IPotRepository>
 	{
 		dbContext?.Dispose();
 		dbContext = null;
-		Instance = null;
+		Sut = null;
 
 		DeleteDatabaseDirectory();
 	}

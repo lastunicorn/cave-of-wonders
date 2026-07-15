@@ -1,30 +1,39 @@
+// Cave of Wonders
+// Copyright (C) 2023-2024 Dust in the Wind
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite;
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Repositories;
-using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures;
 
-internal class SqliteGemRepositoryFixture : IGemRepositorySutFixture
+internal sealed class TempSqliteDatabase : IDisposable, IAsyncDisposable
 {
 	private readonly string dbDirectoryPath = Path.Combine(Path.GetTempPath(), $"test-database-{Guid.NewGuid()}");
-	private readonly string dbFilePath;
 	private readonly string connectionString;
-
+	
 	private CaveOfWondersDbContext dbContext;
-	private IPotRepository potRepository;
-
-	public IGemRepository Sut { get; private set; }
-
-	public SqliteGemRepositoryFixture()
+	
+	public TempSqliteDatabase()
 	{
-		dbFilePath = Path.Combine(dbDirectoryPath, "test-database.db");
+		string dbFilePath = Path.Combine(dbDirectoryPath, "test-database.db");
 		connectionString = $"Data Source={dbFilePath}";
 	}
 
-	public async Task CreateSutAsync(CancellationToken cancellationToken = default)
+	public async Task OpenAsync(CancellationToken cancellationToken = default)
 	{
 		Directory.CreateDirectory(dbDirectoryPath);
 
@@ -34,43 +43,20 @@ internal class SqliteGemRepositoryFixture : IGemRepositorySutFixture
 
 		dbContext = new CaveOfWondersDbContext(options);
 		await dbContext.Database.EnsureCreatedAsync(cancellationToken);
-
-		Sut = new GemRepository(dbContext);
-		potRepository = new PotRepository(dbContext);
 	}
 
-	public void SeedPot(Pot pot)
-	{
-		potRepository.Add(pot);
-	}
-
-	public async Task ReleaseSutAsync(CancellationToken cancellationToken = default)
+	public async Task CloseAsync(CancellationToken cancellationToken = default)
 	{
 		await dbContext.SaveChangesAsync(cancellationToken);
 
 		await dbContext.DisposeAsync();
 		dbContext = null;
-		potRepository = null;
-		Sut = null;
 	}
-
-	public Task ResetAsync(CancellationToken cancellationToken = default)
-	{
-		dbContext?.Dispose();
-		dbContext = null;
-		potRepository = null;
-		Sut = null;
-
-		DeleteDatabaseDirectory();
-		return Task.CompletedTask;
-	}
-
+	
 	public void Dispose()
 	{
 		dbContext?.Dispose();
 		dbContext = null;
-		potRepository = null;
-		Sut = null;
 
 		DeleteDatabaseDirectory();
 	}
@@ -86,8 +72,14 @@ internal class SqliteGemRepositoryFixture : IGemRepositorySutFixture
 			Directory.Delete(dbDirectoryPath, true);
 	}
 
-	public override string ToString()
+	public async ValueTask DisposeAsync()
 	{
-		return "SQLite";
+		if (dbContext != null)
+		{
+			await dbContext.DisposeAsync();
+			dbContext = null;
+		}
+		
+		DeleteDatabaseDirectory();
 	}
 }

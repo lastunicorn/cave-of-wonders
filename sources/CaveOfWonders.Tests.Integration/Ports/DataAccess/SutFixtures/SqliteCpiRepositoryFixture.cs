@@ -15,7 +15,7 @@ internal class SqliteCpiRepositoryFixture : ISutFixture<ICpiRepository>
 
 	private CaveOfWondersDbContext dbContext;
 
-	public ICpiRepository Instance { get; private set; }
+	public ICpiRepository Sut { get; private set; }
 
 	public SqliteCpiRepositoryFixture()
 	{
@@ -34,7 +34,7 @@ internal class SqliteCpiRepositoryFixture : ISutFixture<ICpiRepository>
 		dbContext = new CaveOfWondersDbContext(options);
 		await dbContext.Database.EnsureCreatedAsync(cancellationToken);
 
-		Instance = new CpiRepository(dbContext);
+		Sut = new CpiRepository(dbContext);
 	}
 
 	public async Task ReleaseSutAsync(CancellationToken cancellationToken = default)
@@ -43,11 +43,15 @@ internal class SqliteCpiRepositoryFixture : ISutFixture<ICpiRepository>
 
 		await dbContext.DisposeAsync();
 		dbContext = null;
-		Instance = null;
+		Sut = null;
 	}
 
 	public Task ResetAsync(CancellationToken cancellationToken = default)
 	{
+		dbContext?.Dispose();
+		dbContext = null;
+		Sut = null;
+
 		DeleteDatabaseDirectory();
 		return Task.CompletedTask;
 	}
@@ -56,7 +60,7 @@ internal class SqliteCpiRepositoryFixture : ISutFixture<ICpiRepository>
 	{
 		dbContext?.Dispose();
 		dbContext = null;
-		Instance = null;
+		Sut = null;
 
 		DeleteDatabaseDirectory();
 	}

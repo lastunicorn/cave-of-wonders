@@ -10,12 +10,12 @@ internal class LiteDbPotRepositoryFixture : ISutFixture<IPotRepository>
 
 	private DbContext dbContext;
 
-	public IPotRepository Instance { get; private set; }
+	public IPotRepository Sut { get; private set; }
 
 	public Task CreateSutAsync(CancellationToken cancellationToken = default)
 	{
 		dbContext = new DbContext(dbFilePath);
-		Instance = new PotRepository(dbContext);
+		Sut = new PotRepository(dbContext);
 
 		return Task.CompletedTask;
 	}
@@ -24,13 +24,17 @@ internal class LiteDbPotRepositoryFixture : ISutFixture<IPotRepository>
 	{
 		dbContext.Dispose();
 		dbContext = null;
-		Instance = null;
+		Sut = null;
 
 		return Task.CompletedTask;
 	}
 
 	public Task ResetAsync(CancellationToken cancellationToken = default)
 	{
+		dbContext?.Dispose();
+		dbContext = null;
+		Sut = null;
+
 		if (File.Exists(dbFilePath))
 			File.Delete(dbFilePath);
 
@@ -41,7 +45,7 @@ internal class LiteDbPotRepositoryFixture : ISutFixture<IPotRepository>
 	{
 		dbContext?.Dispose();
 		dbContext = null;
-		Instance = null;
+		Sut = null;
 
 		if (File.Exists(dbFilePath))
 			File.Delete(dbFilePath);

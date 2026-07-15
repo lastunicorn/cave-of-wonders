@@ -11,13 +11,13 @@ internal class JsonPotRepositoryFixture : ISutFixture<IPotRepository>
 
 	private Database database;
 
-	public IPotRepository Instance { get; private set; }
+	public IPotRepository Sut { get; private set; }
 
 	public async Task CreateSutAsync(CancellationToken cancellationToken = default)
 	{
 		database = new Database(dbDirectoryPath);
 		await database.LoadAsync(cancellationToken);
-		Instance = new PotRepository(database);
+		Sut = new PotRepository(database);
 	}
 
 	public async Task ReleaseSutAsync(CancellationToken cancellationToken = default)
@@ -25,11 +25,14 @@ internal class JsonPotRepositoryFixture : ISutFixture<IPotRepository>
 		await database.SaveAsync(cancellationToken);
 
 		database = null;
-		Instance = null;
+		Sut = null;
 	}
 
 	public Task ResetAsync(CancellationToken cancellationToken = default)
 	{
+		database = null;
+		Sut = null;
+
 		if (Directory.Exists(dbDirectoryPath))
 			Directory.Delete(dbDirectoryPath, true);
 
@@ -39,7 +42,7 @@ internal class JsonPotRepositoryFixture : ISutFixture<IPotRepository>
 	public void Dispose()
 	{
 		database = null;
-		Instance = null;
+		Sut = null;
 
 		if (Directory.Exists(dbDirectoryPath))
 			Directory.Delete(dbDirectoryPath, true);

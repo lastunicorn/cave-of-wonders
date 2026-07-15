@@ -11,13 +11,13 @@ internal class JsonCpiRepositoryFixture : ISutFixture<ICpiRepository>
 
 	private Database database;
 
-	public ICpiRepository Instance { get; private set; }
+	public ICpiRepository Sut { get; private set; }
 
 	public async Task CreateSutAsync(CancellationToken cancellationToken = default)
 	{
 		database = new Database(dbDirectoryPath);
 		await database.LoadAsync(cancellationToken);
-		Instance = new CpiRepository(database);
+		Sut = new CpiRepository(database);
 	}
 
 	public async Task ReleaseSutAsync(CancellationToken cancellationToken = default)
@@ -25,11 +25,14 @@ internal class JsonCpiRepositoryFixture : ISutFixture<ICpiRepository>
 		await database.SaveAsync(cancellationToken);
 
 		database = null;
-		Instance = null;
+		Sut = null;
 	}
 
 	public Task ResetAsync(CancellationToken cancellationToken = default)
 	{
+		database = null;
+		Sut = null;
+		
 		if (Directory.Exists(dbDirectoryPath))
 			Directory.Delete(dbDirectoryPath, true);
 
@@ -39,7 +42,7 @@ internal class JsonCpiRepositoryFixture : ISutFixture<ICpiRepository>
 	public void Dispose()
 	{
 		database = null;
-		Instance = null;
+		Sut = null;
 
 		if (Directory.Exists(dbDirectoryPath))
 			Directory.Delete(dbDirectoryPath, true);
