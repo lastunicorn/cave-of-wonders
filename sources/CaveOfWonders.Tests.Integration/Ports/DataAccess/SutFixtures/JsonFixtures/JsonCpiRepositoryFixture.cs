@@ -3,21 +3,21 @@ using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.Repositories;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.JsonFixtures;
 
-internal class JsonPotRepositoryFixture : ISutFixture<IPotRepository>
+internal class JsonCpiRepositoryFixture : ISutFixture<ICpiRepository>
 {
 	private readonly string dbDirectoryPath = Path.Combine(Path.GetTempPath(), $"test-database-{Guid.NewGuid()}");
 
 	private Database database;
 
-	public IPotRepository Sut { get; private set; }
+	public ICpiRepository Sut { get; private set; }
 
 	public async Task CreateSutAsync(CancellationToken cancellationToken = default)
 	{
 		database = new Database(dbDirectoryPath);
 		await database.LoadAsync(cancellationToken);
-		Sut = new PotRepository(database);
+		Sut = new CpiRepository(database);
 	}
 
 	public async Task ReleaseSutAsync(CancellationToken cancellationToken = default)
@@ -32,7 +32,7 @@ internal class JsonPotRepositoryFixture : ISutFixture<IPotRepository>
 	{
 		database = null;
 		Sut = null;
-
+		
 		if (Directory.Exists(dbDirectoryPath))
 			Directory.Delete(dbDirectoryPath, true);
 

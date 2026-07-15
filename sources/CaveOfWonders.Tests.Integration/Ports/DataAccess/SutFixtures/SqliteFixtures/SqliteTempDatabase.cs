@@ -1,30 +1,25 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite;
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Repositories;
-using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.SqliteFixtures;
 
-internal class SqliteGemRepositoryFixture : IGemRepositorySutFixture
+internal sealed class SqliteTempDatabase : IDisposable, IAsyncDisposable
 {
 	private readonly string dbDirectoryPath = Path.Combine(Path.GetTempPath(), $"test-database-{Guid.NewGuid()}");
-	private readonly string dbFilePath;
 	private readonly string connectionString;
-
+	
 	private CaveOfWondersDbContext dbContext;
-	private IPotRepository potRepository;
 
-	public IGemRepository Sut { get; private set; }
+	public CaveOfWondersDbContext DbContext => dbContext;
 
-	public SqliteGemRepositoryFixture()
+	public SqliteTempDatabase()
 	{
-		dbFilePath = Path.Combine(dbDirectoryPath, "test-database.db");
+		string dbFilePath = Path.Combine(dbDirectoryPath, "test-database.db");
 		connectionString = $"Data Source={dbFilePath}";
 	}
 
-	public async Task CreateSutAsync(CancellationToken cancellationToken = default)
+	public async Task OpenAsync(CancellationToken cancellationToken = default)
 	{
 		Directory.CreateDirectory(dbDirectoryPath);
 
@@ -34,43 +29,20 @@ internal class SqliteGemRepositoryFixture : IGemRepositorySutFixture
 
 		dbContext = new CaveOfWondersDbContext(options);
 		await dbContext.Database.EnsureCreatedAsync(cancellationToken);
-
-		Sut = new GemRepository(dbContext);
-		potRepository = new PotRepository(dbContext);
 	}
 
-	public void SeedPot(Pot pot)
-	{
-		potRepository.Add(pot);
-	}
-
-	public async Task ReleaseSutAsync(CancellationToken cancellationToken = default)
+	public async Task CloseAsync(CancellationToken cancellationToken = default)
 	{
 		await dbContext.SaveChangesAsync(cancellationToken);
 
 		await dbContext.DisposeAsync();
 		dbContext = null;
-		potRepository = null;
-		Sut = null;
 	}
-
-	public Task ResetAsync(CancellationToken cancellationToken = default)
-	{
-		dbContext?.Dispose();
-		dbContext = null;
-		potRepository = null;
-		Sut = null;
-
-		DeleteDatabaseDirectory();
-		return Task.CompletedTask;
-	}
-
+	
 	public void Dispose()
 	{
 		dbContext?.Dispose();
 		dbContext = null;
-		potRepository = null;
-		Sut = null;
 
 		DeleteDatabaseDirectory();
 	}
@@ -86,8 +58,14 @@ internal class SqliteGemRepositoryFixture : IGemRepositorySutFixture
 			Directory.Delete(dbDirectoryPath, true);
 	}
 
-	public override string ToString()
+	public async ValueTask DisposeAsync()
 	{
-		return "SQLite";
+		if (dbContext != null)
+		{
+			await dbContext.DisposeAsync();
+			dbContext = null;
+		}
+		
+		DeleteDatabaseDirectory();
 	}
 }

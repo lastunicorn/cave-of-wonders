@@ -1,23 +1,31 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.Repositories;
+using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CaveOfWonders.Tests.Utils;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.JsonFixtures;
 
-internal class JsonCpiRepositoryFixture : ISutFixture<ICpiRepository>
+internal class JsonGemRepositoryFixture : IGemRepositorySutFixture
 {
 	private readonly string dbDirectoryPath = Path.Combine(Path.GetTempPath(), $"test-database-{Guid.NewGuid()}");
 
 	private Database database;
+	private IPotRepository potRepository;
 
-	public ICpiRepository Sut { get; private set; }
+	public IGemRepository Sut { get; private set; }
 
 	public async Task CreateSutAsync(CancellationToken cancellationToken = default)
 	{
 		database = new Database(dbDirectoryPath);
 		await database.LoadAsync(cancellationToken);
-		Sut = new CpiRepository(database);
+
+		Sut = new GemRepository(database);
+		potRepository = new PotRepository(database);
+	}
+
+	public void SeedPot(Pot pot)
+	{
+		potRepository.Add(pot);
 	}
 
 	public async Task ReleaseSutAsync(CancellationToken cancellationToken = default)
@@ -25,14 +33,16 @@ internal class JsonCpiRepositoryFixture : ISutFixture<ICpiRepository>
 		await database.SaveAsync(cancellationToken);
 
 		database = null;
+		potRepository = null;
 		Sut = null;
 	}
 
 	public Task ResetAsync(CancellationToken cancellationToken = default)
 	{
 		database = null;
+		potRepository = null;
 		Sut = null;
-		
+
 		if (Directory.Exists(dbDirectoryPath))
 			Directory.Delete(dbDirectoryPath, true);
 
@@ -42,6 +52,7 @@ internal class JsonCpiRepositoryFixture : ISutFixture<ICpiRepository>
 	public void Dispose()
 	{
 		database = null;
+		potRepository = null;
 		Sut = null;
 
 		if (Directory.Exists(dbDirectoryPath))
