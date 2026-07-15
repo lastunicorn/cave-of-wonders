@@ -108,6 +108,9 @@ public class GemRepository : IGemRepository
 
     public void Add(Gem gem)
     {
+        if (gem == null)
+            throw new ArgumentNullException(nameof(gem));
+
         database.Gems.Add(gem);
     }
 }

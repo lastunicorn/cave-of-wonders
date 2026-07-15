@@ -48,7 +48,7 @@ public class GenericTest<TSut>
 
 	private Func<TSut, dynamic, Task> assertAction1;
 	private Action<TSut, dynamic> assertAction2;
-	
+
 	private Action<Exception> errorHandler;
 
 	public GenericTest(ISutFixture<TSut> sutFixture)
@@ -136,18 +136,33 @@ public class GenericTest<TSut>
 				await sutFixture.ReleaseSutAsync(cancellationToken);
 			}
 
-			if (actAction1 != null)
+			try
 			{
-				await sutFixture.CreateSutAsync(cancellationToken);
-				await actAction1(sutFixture.Instance, context);
-				await sutFixture.ReleaseSutAsync(cancellationToken);
-			}
+				if (actAction1 != null)
+				{
+					await sutFixture.CreateSutAsync(cancellationToken);
+					await actAction1(sutFixture.Instance, context);
+					await sutFixture.ReleaseSutAsync(cancellationToken);
+				}
 
-			if (actAction2 != null)
+				if (actAction2 != null)
+				{
+					await sutFixture.CreateSutAsync(cancellationToken);
+					actAction2(sutFixture.Instance, context);
+					await sutFixture.ReleaseSutAsync(cancellationToken);
+				}
+			}
+			catch (Exception ex)
 			{
-				await sutFixture.CreateSutAsync(cancellationToken);
-				actAction2(sutFixture.Instance, context);
-				await sutFixture.ReleaseSutAsync(cancellationToken);
+				if (errorHandler != null)
+				{
+					errorHandler(ex);
+					return;
+				}
+				else
+				{
+					throw;
+				}
 			}
 
 			if (assertAction1 != null)
@@ -163,13 +178,9 @@ public class GenericTest<TSut>
 				assertAction2(sutFixture.Instance, context);
 				await sutFixture.ReleaseSutAsync(cancellationToken);
 			}
-		}
-		catch (Exception ex)
-		{
+
 			if (errorHandler != null)
-				errorHandler(ex);
-			else
-				throw;
+				errorHandler(null);
 		}
 		finally
 		{
