@@ -178,3 +178,11 @@ public class GenericTest<TSut>
 		}
 	}
 }
+
+public static class GenericTest
+{
+	public static GenericTest<TSut> Create<TSut>(ISutFixture<TSut> sutFixture)
+	{
+		return new GenericTest<TSut>(sutFixture);
+	}
+}
