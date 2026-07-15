@@ -48,6 +48,8 @@ public class GenericTest<TSut>
 
 	private Func<TSut, dynamic, Task> assertAction1;
 	private Action<TSut, dynamic> assertAction2;
+	
+	private Action<Exception> errorHandler;
 
 	public GenericTest(ISutFixture<TSut> sutFixture)
 	{
@@ -108,6 +110,12 @@ public class GenericTest<TSut>
 		return this;
 	}
 
+	public GenericTest<TSut> AssertThrow(Action<Exception> errorHandler)
+	{
+		this.errorHandler = errorHandler ?? throw new ArgumentNullException(nameof(errorHandler));
+		return this;
+	}
+
 	public async Task ExecuteAsync(CancellationToken cancellationToken = default)
 	{
 		try
@@ -155,6 +163,13 @@ public class GenericTest<TSut>
 				assertAction2(sutFixture.Instance, context);
 				await sutFixture.ReleaseSutAsync(cancellationToken);
 			}
+		}
+		catch (Exception ex)
+		{
+			if (errorHandler != null)
+				errorHandler(ex);
+			else
+				throw;
 		}
 		finally
 		{

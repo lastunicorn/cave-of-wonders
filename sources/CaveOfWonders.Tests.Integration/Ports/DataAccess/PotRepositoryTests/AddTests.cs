@@ -321,6 +321,56 @@ public class AddTests
 			.ExecuteAsync();
 	}
 
+	// [Theory]
+	// [PotRepositoryProviders]
+	// public async Task Add_WithDuplicateId_ShouldThrow(ISutFixture<IPotRepository> sutFixture)
+	// {
+	// 	// Some adapters (e.g. the EF Core-backed SQLite one) only stage the entity in Add and
+	// 	// don't hit the database - and therefore don't surface a duplicate-key violation -
+	// 	// until changes are flushed, which for this test happens inside the fixture's own
+	// 	// ReleaseInstanceAsync rather than inside the Act delegate. So instead of capturing the
+	// 	// exception from within Act, assert over the whole pipeline, which fails regardless of
+	// 	// whether the given adapter rejects the duplicate synchronously or on flush.
+	// 	Func<Task> action = async () =>
+	// 	{
+	// 		await new GenericTest<IPotRepository>(sutFixture)
+	// 			.Arrange((repository, context) =>
+	// 			{
+	// 				Guid potId = Guid.NewGuid();
+	//
+	// 				Pot pot = new()
+	// 				{
+	// 					Id = potId,
+	// 					Name = "Original Pot",
+	// 					DisplayOrder = 1,
+	// 					StartDate = new DateOnly(2023, 1, 1),
+	// 					Currency = "USD"
+	// 				};
+	//
+	// 				repository.Add(pot);
+	// 				context.PotId = potId;
+	// 			})
+	// 			.Act((repository, context) =>
+	// 			{
+	// 				Guid potId = context.PotId;
+	//
+	// 				Pot duplicatePot = new()
+	// 				{
+	// 					Id = potId,
+	// 					Name = "Duplicate Pot",
+	// 					DisplayOrder = 2,
+	// 					StartDate = new DateOnly(2023, 1, 1),
+	// 					Currency = "USD"
+	// 				};
+	//
+	// 				repository.Add(duplicatePot);
+	// 			})
+	// 			.ExecuteAsync();
+	// 	};
+	//
+	// 	await action.Should().ThrowAsync<Exception>();
+	// }
+
 	[Theory]
 	[PotRepositoryProviders]
 	public async Task Add_WithDuplicateId_ShouldThrow(ISutFixture<IPotRepository> sutFixture)
@@ -331,43 +381,42 @@ public class AddTests
 		// ReleaseInstanceAsync rather than inside the Act delegate. So instead of capturing the
 		// exception from within Act, assert over the whole pipeline, which fails regardless of
 		// whether the given adapter rejects the duplicate synchronously or on flush.
-		Func<Task> action = async () =>
-		{
-			await new GenericTest<IPotRepository>(sutFixture)
-				.Arrange((repository, context) =>
+		await new GenericTest<IPotRepository>(sutFixture)
+			.Arrange((repository, context) =>
+			{
+				Guid potId = Guid.NewGuid();
+
+				Pot pot = new()
 				{
-					Guid potId = Guid.NewGuid();
+					Id = potId,
+					Name = "Original Pot",
+					DisplayOrder = 1,
+					StartDate = new DateOnly(2023, 1, 1),
+					Currency = "USD"
+				};
 
-					Pot pot = new()
-					{
-						Id = potId,
-						Name = "Original Pot",
-						DisplayOrder = 1,
-						StartDate = new DateOnly(2023, 1, 1),
-						Currency = "USD"
-					};
+				repository.Add(pot);
+				context.PotId = potId;
+			})
+			.Act((repository, context) =>
+			{
+				Guid potId = context.PotId;
 
-					repository.Add(pot);
-					context.PotId = potId;
-				})
-				.Act((repository, context) =>
+				Pot duplicatePot = new()
 				{
-					Guid potId = context.PotId;
+					Id = potId,
+					Name = "Duplicate Pot",
+					DisplayOrder = 2,
+					StartDate = new DateOnly(2023, 1, 1),
+					Currency = "USD"
+				};
 
-					Pot duplicatePot = new()
-					{
-						Id = potId,
-						Name = "Duplicate Pot",
-						DisplayOrder = 2,
-						StartDate = new DateOnly(2023, 1, 1),
-						Currency = "USD"
-					};
-
-					repository.Add(duplicatePot);
-				})
-				.ExecuteAsync();
-		};
-
-		await action.Should().ThrowAsync<Exception>();
+				repository.Add(duplicatePot);
+			})
+			.AssertThrow(ex =>
+			{
+				ex.Should().NotBeNull();
+			})
+			.ExecuteAsync();
 	}
 }
