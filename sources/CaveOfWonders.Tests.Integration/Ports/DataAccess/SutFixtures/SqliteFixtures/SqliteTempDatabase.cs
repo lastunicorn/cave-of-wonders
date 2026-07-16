@@ -21,14 +21,25 @@ internal sealed class SqliteTempDatabase : IDisposable, IAsyncDisposable
 
 	public async Task OpenAsync(CancellationToken cancellationToken = default)
 	{
+		dbContext = await CreateSessionAsync(cancellationToken);
+	}
+
+	/// <summary>
+	/// Opens an additional, independent session over the same database file. Unlike <see cref="OpenAsync"/>,
+	/// the returned <see cref="CaveOfWondersDbContext"/> is not tracked by this instance; the caller owns it and
+	/// is responsible for saving and disposing it. Used by storage gateways that must not share the SUT's session.
+	/// </summary>
+	public async Task<CaveOfWondersDbContext> CreateSessionAsync(CancellationToken cancellationToken = default)
+	{
 		Directory.CreateDirectory(dbDirectoryPath);
 
 		DbContextOptions<CaveOfWondersDbContext> options = new DbContextOptionsBuilder<CaveOfWondersDbContext>()
 			.UseSqlite(connectionString)
 			.Options;
 
-		dbContext = new CaveOfWondersDbContext(options);
-		await dbContext.Database.EnsureCreatedAsync(cancellationToken);
+		CaveOfWondersDbContext session = new(options);
+		await session.Database.EnsureCreatedAsync(cancellationToken);
+		return session;
 	}
 
 	public async Task CloseAsync(CancellationToken cancellationToken = default)

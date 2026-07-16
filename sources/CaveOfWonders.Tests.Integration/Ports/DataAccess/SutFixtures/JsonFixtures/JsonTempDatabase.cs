@@ -12,8 +12,19 @@ internal sealed class JsonTempDatabase : IDisposable
 
 	public async Task OpenAsync(CancellationToken cancellationToken = default)
 	{
-		database = new Database(dbDirectoryPath);
-		await database.LoadAsync(cancellationToken);
+		database = await CreateSessionAsync(cancellationToken);
+	}
+
+	/// <summary>
+	/// Opens an additional, independent session over the same database directory. Unlike <see cref="OpenAsync"/>,
+	/// the returned <c>Database</c> is not tracked by this instance; the caller owns it and is
+	/// responsible for saving it. Used by storage gateways that must not share the SUT's session.
+	/// </summary>
+	public async Task<Database> CreateSessionAsync(CancellationToken cancellationToken = default)
+	{
+		Database session = new(dbDirectoryPath);
+		await session.LoadAsync(cancellationToken);
+		return session;
 	}
 
 	public async Task CloseAsync(CancellationToken cancellationToken = default)
