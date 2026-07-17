@@ -47,12 +47,7 @@ public class ExchangeRateRepository : IExchangeRateRepository
         IEnumerable<ExchangeRate> exchangeRates = query
              .OrderBy(x => x.Date)
              .ToEnumerable()
-             .Select(x => new ExchangeRate
-             {
-                 Date = x.Date,
-                 CurrencyPair = x.CurrencyPair,
-                 Value = x.Value
-             });
+             .Select(dbContext.ExchangeRateTracker.GetOrAttach);
 
         return Task.FromResult(exchangeRates);
     }
@@ -70,12 +65,7 @@ public class ExchangeRateRepository : IExchangeRateRepository
         if (exchangeRateDbEntity == null)
             return Task.FromResult<ExchangeRate>(null);
 
-        ExchangeRate exchangeRate = new()
-        {
-            Date = exchangeRateDbEntity.Date,
-            CurrencyPair = exchangeRateDbEntity.CurrencyPair,
-            Value = exchangeRateDbEntity.Value
-        };
+        ExchangeRate exchangeRate = dbContext.ExchangeRateTracker.GetOrAttach(exchangeRateDbEntity);
 
         return Task.FromResult(exchangeRate);
     }
@@ -92,12 +82,7 @@ public class ExchangeRateRepository : IExchangeRateRepository
             .GroupBy(x => x.Date)
             .OrderByDescending(x => x.Key)
             .FirstOrDefault()
-            .Select(x => new ExchangeRate
-            {
-                Date = x.Date,
-                CurrencyPair = x.CurrencyPair,
-                Value = x.Value
-            });
+            .Select(dbContext.ExchangeRateTracker.GetOrAttach);
 
         return Task.FromResult(exchangeRates);
     }
@@ -125,12 +110,7 @@ public class ExchangeRateRepository : IExchangeRateRepository
 
         IEnumerable<ExchangeRate> exchangeRates = query
             .ToEnumerable()
-            .Select(x => new ExchangeRate
-            {
-                Date = x.Date,
-                CurrencyPair = x.CurrencyPair,
-                Value = x.Value
-            });
+            .Select(dbContext.ExchangeRateTracker.GetOrAttach);
 
         return Task.FromResult(exchangeRates);
     }
@@ -149,12 +129,7 @@ public class ExchangeRateRepository : IExchangeRateRepository
 
         IEnumerable<ExchangeRate> exchangeRates = query
             .ToEnumerable()
-            .Select(x => new ExchangeRate
-            {
-                Date = x.Date,
-                CurrencyPair = x.CurrencyPair,
-                Value = x.Value
-            });
+            .Select(dbContext.ExchangeRateTracker.GetOrAttach);
 
         return Task.FromResult(exchangeRates);
     }
@@ -181,12 +156,7 @@ public class ExchangeRateRepository : IExchangeRateRepository
 
         IEnumerable<ExchangeRate> exchangeRates = query
             .ToEnumerable()
-            .Select(x => new ExchangeRate
-            {
-                Date = x.Date,
-                CurrencyPair = x.CurrencyPair,
-                Value = x.Value
-            });
+            .Select(dbContext.ExchangeRateTracker.GetOrAttach);
 
         return Task.FromResult(exchangeRates);
     }
@@ -201,12 +171,7 @@ public class ExchangeRateRepository : IExchangeRateRepository
         if (entity == null)
             return Task.FromResult<ExchangeRate>(null);
 
-        ExchangeRate exchangeRate = new()
-        {
-            Date = entity.Date,
-            CurrencyPair = entity.CurrencyPair,
-            Value = entity.Value
-        };
+        ExchangeRate exchangeRate = dbContext.ExchangeRateTracker.GetOrAttach(entity);
 
         return Task.FromResult(exchangeRate);
     }

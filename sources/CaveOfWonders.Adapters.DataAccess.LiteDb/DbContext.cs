@@ -25,6 +25,8 @@ public sealed class DbContext : IDisposable
     private ILiteCollection<ExchangeRateDbEntity> exchangeRates;
     private ILiteCollection<PotDbEntity> pots;
 
+    internal ExchangeRateTracker ExchangeRateTracker { get; } = new();
+
     internal ILiteCollection<ExchangeRateDbEntity> ExchangeRates
     {
         get
@@ -61,6 +63,11 @@ public sealed class DbContext : IDisposable
         // access from multiple LiteDatabase instances (e.g. parallel test runs), which can
         // corrupt reads for types like DateOnly and throw ArgumentOutOfRangeException.
         db = new LiteDatabase(filePath, new BsonMapper());
+    }
+
+    public void SaveChanges()
+    {
+        ExchangeRateTracker.SaveChanges(ExchangeRates);
     }
 
     public void Dispose()
