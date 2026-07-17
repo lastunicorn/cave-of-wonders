@@ -11,7 +11,7 @@ public class GetSnapshotsTests
 	private readonly DateOnly currentDate = new(2023, 7, 1);
 
 	[Theory]
-	[PotRepositoryEnvironments]
+	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetSnapshots_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -29,7 +29,7 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryEnvironments]
+	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetSnapshots_WithActivePot_ShouldReturnPotInstance(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -73,7 +73,7 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryEnvironments]
+	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetSnapshots_WithInactivePot_ShouldNotReturnPotWhenIncludeInactiveIsFalse(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -104,7 +104,7 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryEnvironments]
+	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetSnapshots_WithInactivePot_ShouldReturnPotWhenIncludeInactiveIsTrue(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -146,7 +146,7 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryEnvironments]
+	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetSnapshots_WithPotEndingBeforeCurrentDate_ShouldNotReturnPotWhenIncludeInactiveIsFalse(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -178,7 +178,7 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryEnvironments]
+	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetSnapshots_WithExactDateMatchingMode_ShouldReturnOnlyExactDateSnapshot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -235,7 +235,7 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryEnvironments]
+	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetSnapshots_WithExactDateMatchingMode_ShouldNotReturnSnapshotWhenNoExactDateExists(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -284,7 +284,7 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryEnvironments]
+	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetSnapshots_WithLastAvailableDateMatchingMode_ShouldReturnLastAvailableSnapshot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -336,7 +336,7 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryEnvironments]
+	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetSnapshots_WithLastAvailableDateMatchingMode_ShouldNotReturnSnapshotWhenNoSnapshotBeforeDate(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -380,7 +380,7 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryEnvironments]
+	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetSnapshots_WithMultiplePots_ShouldReturnAllActivePots(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -460,7 +460,7 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryEnvironments]
+	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetSnapshots_WithMultiplePotsAndIncludeInactiveTrue_ShouldReturnAllPots(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)

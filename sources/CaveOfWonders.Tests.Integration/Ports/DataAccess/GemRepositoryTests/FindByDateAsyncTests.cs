@@ -10,7 +10,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.GemRepo
 public class FindByDateAsyncTests
 {
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByDateAsync_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -28,7 +28,7 @@ public class FindByDateAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByDateAsync_WithOneGemOnThatDate_ShouldReturnThatGem(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -85,7 +85,7 @@ public class FindByDateAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByDateAsync_WithMultipleGemsOnSameDate_ShouldReturnAllOfThem(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -151,7 +151,7 @@ public class FindByDateAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByDateAsync_WithGemsOnDifferentDates_ShouldReturnOnlyGemsOnRequestedDate(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -215,7 +215,7 @@ public class FindByDateAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByDateAsync_WithGemsForDifferentPotsOnSameDate_ShouldReturnOnlyGemsForRequestedPot(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -281,7 +281,7 @@ public class FindByDateAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByDateAsync_WithNonExistentPotId_ShouldReturnEmptyCollection(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -324,7 +324,7 @@ public class FindByDateAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByDateAsync_WithNonMatchingDate_ShouldReturnEmptyCollection(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -370,7 +370,7 @@ public class FindByDateAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByDateAsync_WhenGemDateHasTimeComponent_ShouldMatchOnDateOnly(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -418,7 +418,7 @@ public class FindByDateAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByDateAsync_ShouldPopulateGemsWithMatchingPotReference(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -470,7 +470,7 @@ public class FindByDateAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByDateAsync_WithGemParameters_ShouldPreserveParameters(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -522,7 +522,7 @@ public class FindByDateAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByDateAsync_WithDecimalAmount_ShouldPreserveDecimalPrecision(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)

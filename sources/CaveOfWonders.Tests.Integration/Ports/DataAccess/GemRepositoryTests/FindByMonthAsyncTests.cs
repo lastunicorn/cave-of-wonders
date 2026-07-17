@@ -11,7 +11,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.GemRepo
 public class FindByMonthAsyncTests
 {
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByMonthAsync_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -29,7 +29,7 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByMonthAsync_WithOneGemInThatMonth_ShouldReturnThatGem(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -86,7 +86,7 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByMonthAsync_WithMultipleGemsInSameMonth_ShouldReturnAllOfThem(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -152,7 +152,7 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByMonthAsync_WithGemsInDifferentMonths_ShouldReturnOnlyGemsInRequestedMonth(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -216,7 +216,7 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByMonthAsync_WithSameMonthNumberInDifferentYear_ShouldReturnOnlyGemsInRequestedYear(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -272,7 +272,7 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByMonthAsync_WithGemsForDifferentPotsInSameMonth_ShouldReturnOnlyGemsForRequestedPot(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -338,7 +338,7 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByMonthAsync_WithNonExistentPotId_ShouldReturnEmptyCollection(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -381,7 +381,7 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByMonthAsync_WithNonMatchingMonth_ShouldReturnEmptyCollection(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -427,7 +427,7 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByMonthAsync_ShouldPopulateGemsWithMatchingPotReference(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -479,7 +479,7 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByMonthAsync_WithGemParameters_ShouldPreserveParameters(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -531,7 +531,7 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryEnvironments]
+	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindByMonthAsync_WithDecimalAmount_ShouldPreserveDecimalPrecision(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
