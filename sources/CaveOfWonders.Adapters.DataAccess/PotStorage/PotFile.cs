@@ -27,7 +27,7 @@ internal class PotFile
     {
         IsoDateTimeConverter dateTimeConverter = new()
         {
-            DateTimeFormat = "yyy-MM-dd"
+            DateTimeFormat = "yyyy-MM-dd"
         };
         string json = JsonConvert.SerializeObject(jPot, Formatting.Indented, dateTimeConverter);
 

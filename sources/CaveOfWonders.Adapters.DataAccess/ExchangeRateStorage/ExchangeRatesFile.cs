@@ -24,7 +24,7 @@ internal class ExchangeRatesFile
     {
         IsoDateTimeConverter dateTimeConverter = new()
         {
-            DateTimeFormat = "yyy-MM-dd"
+            DateTimeFormat = "yyyy-MM-dd"
         };
         string json = JsonConvert.SerializeObject(conversionRates, Formatting.Indented, dateTimeConverter);
 

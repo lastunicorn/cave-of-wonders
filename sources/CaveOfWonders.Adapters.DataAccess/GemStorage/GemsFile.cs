@@ -27,7 +27,7 @@ internal class GemsFile
     {
         IsoDateTimeConverter dateTimeConverter = new()
         {
-            DateTimeFormat = "yyy-MM-dd HH:mm:ss"
+            DateTimeFormat = "yyyy-MM-dd HH:mm:ss"
         };
         string json = JsonConvert.SerializeObject(jGems, Formatting.Indented, dateTimeConverter);
 
