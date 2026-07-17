@@ -31,7 +31,7 @@ public sealed class DbContext : IDisposable
         {
             if (exchangeRates == null)
             {
-                exchangeRates = db.GetCollection<ExchangeRateDbEntity>("exchange-rates");
+                exchangeRates = db.GetCollection<ExchangeRateDbEntity>("exchange_rates");
                 exchangeRates.EnsureIndex(static x => x.Date);
             }
 
