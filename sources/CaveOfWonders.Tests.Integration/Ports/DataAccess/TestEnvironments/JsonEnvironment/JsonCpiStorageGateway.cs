@@ -1,8 +1,7 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.Repositories;
 using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Gateways;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.JsonFixtures;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.JsonEnvironment;
 
 internal class JsonCpiStorageGateway : JsonStorageGateway, ICpiStorageGateway
 {

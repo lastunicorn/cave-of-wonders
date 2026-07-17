@@ -1,6 +1,6 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.JsonFixtures;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.JsonEnvironment;
 
 /// <summary>
 /// Base class for the JSON storage gateways. Owns the gateway's back-door session: a <c>Database</c>

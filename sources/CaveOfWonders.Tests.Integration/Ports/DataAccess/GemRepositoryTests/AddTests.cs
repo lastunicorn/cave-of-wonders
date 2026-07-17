@@ -1,8 +1,7 @@
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Gateways;
-using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures;
+using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 using FluentAssertions;
 

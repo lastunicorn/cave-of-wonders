@@ -1,6 +1,6 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.JsonFixtures;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.JsonEnvironment;
 
 internal sealed class JsonTempDatabase : IDisposable
 {

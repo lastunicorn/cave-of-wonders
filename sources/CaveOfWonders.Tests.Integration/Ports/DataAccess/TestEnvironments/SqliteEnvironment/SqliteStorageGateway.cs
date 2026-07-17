@@ -1,6 +1,6 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.SqliteFixtures;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.SqliteEnvironment;
 
 /// <summary>
 /// Base class for the SQLite storage gateways. Owns the gateway's back-door session: a

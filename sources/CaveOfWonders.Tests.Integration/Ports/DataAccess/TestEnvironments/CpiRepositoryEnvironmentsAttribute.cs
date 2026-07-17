@@ -1,10 +1,9 @@
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Gateways;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 using System.Reflection;
 using Xunit.Sdk;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments;
 
 /// <summary>
 /// Supplies one <see cref="ITestEnvironment{TSut,TGateway}"/> per adapter configured for "ICpiRepository" in the

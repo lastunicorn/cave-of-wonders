@@ -1,6 +1,6 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.LiteDbFixtures;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.LiteDbEnvironment;
 
 /// <summary>
 /// Base class for the LiteDb storage gateways. Owns the gateway's back-door session: a <see cref="DbContext"/>

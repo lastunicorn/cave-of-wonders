@@ -1,6 +1,6 @@
 using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Gateways;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments;
 
 /// <summary>
 /// Back-door access to the storage behind an <c>IPotRepository</c> under test. Used by Arrange to seed state and by

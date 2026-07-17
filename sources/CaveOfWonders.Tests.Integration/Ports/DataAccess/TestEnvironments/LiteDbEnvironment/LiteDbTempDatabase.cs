@@ -1,6 +1,6 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.LiteDbFixtures;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.LiteDbEnvironment;
 
 internal sealed class LiteDbTempDatabase : IDisposable
 {

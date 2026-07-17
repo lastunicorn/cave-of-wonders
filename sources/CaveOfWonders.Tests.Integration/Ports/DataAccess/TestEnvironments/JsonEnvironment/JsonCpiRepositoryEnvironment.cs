@@ -1,9 +1,8 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.Repositories;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Gateways;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.JsonFixtures;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.JsonEnvironment;
 
 internal class JsonCpiRepositoryEnvironment : ITestEnvironment<ICpiRepository, ICpiStorageGateway>
 {

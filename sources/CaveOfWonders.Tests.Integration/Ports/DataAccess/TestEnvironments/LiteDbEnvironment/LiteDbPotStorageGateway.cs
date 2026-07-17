@@ -1,9 +1,8 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb;
 using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Gateways;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.LiteDbFixtures;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.LiteDbEnvironment;
 
 internal class LiteDbPotStorageGateway : LiteDbStorageGateway, IPotStorageGateway
 {
