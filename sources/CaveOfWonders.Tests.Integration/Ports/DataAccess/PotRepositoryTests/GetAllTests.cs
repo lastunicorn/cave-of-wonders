@@ -1,5 +1,6 @@
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Gateways;
 using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 using FluentAssertions;
@@ -9,16 +10,16 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotRepo
 public class GetAllTests
 {
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetAll_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetAll_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
+		await GenericTest.Create(environment)
 			.Act(async (repository, context) =>
 			{
 				context.Pots = await repository.GetAllAsync()
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 				pots.Should().BeEmpty();
@@ -27,11 +28,11 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetAll_WithOnePot_ShouldReturnOnePot(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetAll_WithOnePot_ShouldReturnOnePot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot potInDb = new()
 				{
@@ -42,14 +43,14 @@ public class GetAllTests
 					StartDate = new DateOnly(2023, 1, 1),
 					Currency = "USD"
 				};
-				repository.Add(potInDb);
+				await gateway.SeedPotsAsync([potInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.Pots = await repository.GetAllAsync()
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -66,11 +67,11 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetAll_WithMultiplePots_ShouldReturnAllPots(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetAll_WithMultiplePots_ShouldReturnAllPots(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot pot1 = new()
 				{
@@ -99,9 +100,7 @@ public class GetAllTests
 					Currency = "GBP"
 				};
 
-				repository.Add(pot1);
-				repository.Add(pot2);
-				repository.Add(pot3);
+				await gateway.SeedPotsAsync([pot1, pot2, pot3]);
 
 				context.Pot1Id = pot1.Id;
 				context.Pot2Id = pot2.Id;
@@ -112,7 +111,7 @@ public class GetAllTests
 				context.Pots = await repository.GetAllAsync()
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -131,11 +130,11 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetAll_WithPotsContainingEndDate_ShouldReturnPotsWithEndDate(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetAll_WithPotsContainingEndDate_ShouldReturnPotsWithEndDate(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot potWithEndDate = new()
 				{
@@ -156,15 +155,14 @@ public class GetAllTests
 					Currency = "USD"
 				};
 
-				repository.Add(potWithEndDate);
-				repository.Add(potWithoutEndDate);
+				await gateway.SeedPotsAsync([potWithEndDate, potWithoutEndDate]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.Pots = await repository.GetAllAsync()
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -176,11 +174,11 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetAll_WithPotsContainingSnapshots_ShouldReturnPotsWithSnapshots(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetAll_WithPotsContainingSnapshots_ShouldReturnPotsWithSnapshots(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot potInDb = new()
 				{
@@ -204,14 +202,14 @@ public class GetAllTests
 					}
 				]);
 
-				repository.Add(potInDb);
+				await gateway.SeedPotsAsync([potInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.Pots = await repository.GetAllAsync()
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -225,11 +223,11 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetAll_WithPotsContainingLabels_ShouldReturnPotsWithLabels(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetAll_WithPotsContainingLabels_ShouldReturnPotsWithLabels(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot potInDb = new()
 				{
@@ -246,14 +244,14 @@ public class GetAllTests
 					"Important"
 				]);
 
-				repository.Add(potInDb);
+				await gateway.SeedPotsAsync([potInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.Pots = await repository.GetAllAsync()
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 

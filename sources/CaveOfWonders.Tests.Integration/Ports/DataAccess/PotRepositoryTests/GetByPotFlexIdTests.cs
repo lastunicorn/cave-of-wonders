@@ -1,6 +1,7 @@
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Gateways;
 using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 using FluentAssertions;
@@ -10,10 +11,10 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotRepo
 public class GetByPotFlexIdTests
 {
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetByPotFlexId_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetByPotFlexId_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
+		await GenericTest.Create(environment)
 			.Act(async (repository, context) =>
 			{
 				PotFlexId potFlexId = Guid.NewGuid();
@@ -21,7 +22,7 @@ public class GetByPotFlexIdTests
 				context.Pots = await repository.GetAsync(potFlexId)
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 				pots.Should().BeEmpty();
@@ -30,11 +31,11 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetByPotFlexId_WithMatchingGuid_ShouldReturnMatchingPot(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetByPotFlexId_WithMatchingGuid_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot pot = new()
 				{
@@ -46,7 +47,7 @@ public class GetByPotFlexIdTests
 					Currency = "USD"
 				};
 
-				repository.Add(pot);
+				await gateway.SeedPotsAsync([pot]);
 				context.PotId = pot.Id;
 			})
 			.Act(async (repository, context) =>
@@ -57,7 +58,7 @@ public class GetByPotFlexIdTests
 				context.Pots = await repository.GetAsync(potFlexId)
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -76,11 +77,11 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetByPotFlexId_WithNonMatchingGuid_ShouldReturnEmptyCollection(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetByPotFlexId_WithNonMatchingGuid_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot pot = new()
 				{
@@ -91,7 +92,7 @@ public class GetByPotFlexIdTests
 					Currency = "USD"
 				};
 
-				repository.Add(pot);
+				await gateway.SeedPotsAsync([pot]);
 			})
 			.Act(async (repository, context) =>
 			{
@@ -100,7 +101,7 @@ public class GetByPotFlexIdTests
 				context.Pots = await repository.GetAsync(potFlexId)
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 				pots.Should().BeEmpty();
@@ -109,11 +110,11 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetByPotFlexId_WithPartialGuid_ShouldReturnMatchingPot(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetByPotFlexId_WithPartialGuid_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot pot = new()
 				{
@@ -124,7 +125,7 @@ public class GetByPotFlexIdTests
 					Currency = "USD"
 				};
 
-				repository.Add(pot);
+				await gateway.SeedPotsAsync([pot]);
 				context.PotId = pot.Id;
 			})
 			.Act(async (repository, context) =>
@@ -136,7 +137,7 @@ public class GetByPotFlexIdTests
 				context.Pots = await repository.GetAsync(potFlexId)
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -149,11 +150,11 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetByPotFlexId_WithExactNameMatch_ShouldReturnMatchingPot(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetByPotFlexId_WithExactNameMatch_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot pot = new()
 				{
@@ -164,7 +165,7 @@ public class GetByPotFlexIdTests
 					Currency = "USD"
 				};
 
-				repository.Add(pot);
+				await gateway.SeedPotsAsync([pot]);
 				context.PotId = pot.Id;
 			})
 			.Act(async (repository, context) =>
@@ -174,7 +175,7 @@ public class GetByPotFlexIdTests
 				context.Pots = await repository.GetAsync(potFlexId)
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -187,11 +188,11 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetByPotFlexId_WithPartialNameMatch_ShouldReturnMatchingPot(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetByPotFlexId_WithPartialNameMatch_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot pot = new()
 				{
@@ -202,7 +203,7 @@ public class GetByPotFlexIdTests
 					Currency = "USD"
 				};
 
-				repository.Add(pot);
+				await gateway.SeedPotsAsync([pot]);
 				context.PotId = pot.Id;
 			})
 			.Act(async (repository, context) =>
@@ -212,7 +213,7 @@ public class GetByPotFlexIdTests
 				context.Pots = await repository.GetAsync(potFlexId)
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -225,11 +226,11 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetByPotFlexId_WithNameMatchDifferentCase_ShouldReturnMatchingPot(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetByPotFlexId_WithNameMatchDifferentCase_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot pot = new()
 				{
@@ -240,7 +241,7 @@ public class GetByPotFlexIdTests
 					Currency = "USD"
 				};
 
-				repository.Add(pot);
+				await gateway.SeedPotsAsync([pot]);
 				context.PotId = pot.Id;
 			})
 			.Act(async (repository, context) =>
@@ -250,7 +251,7 @@ public class GetByPotFlexIdTests
 				context.Pots = await repository.GetAsync(potFlexId)
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -263,11 +264,11 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetByPotFlexId_WithNonMatchingName_ShouldReturnEmptyCollection(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetByPotFlexId_WithNonMatchingName_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot pot = new()
 				{
@@ -278,7 +279,7 @@ public class GetByPotFlexIdTests
 					Currency = "USD"
 				};
 
-				repository.Add(pot);
+				await gateway.SeedPotsAsync([pot]);
 			})
 			.Act(async (repository, context) =>
 			{
@@ -287,7 +288,7 @@ public class GetByPotFlexIdTests
 				context.Pots = await repository.GetAsync(potFlexId)
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 				pots.Should().BeEmpty();
@@ -296,11 +297,11 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetByPotFlexId_WithMultipleMatchingPots_ShouldReturnAllMatches(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetByPotFlexId_WithMultipleMatchingPots_ShouldReturnAllMatches(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot savingsPot1 = new()
 				{
@@ -329,9 +330,7 @@ public class GetByPotFlexIdTests
 					Currency = "USD"
 				};
 
-				repository.Add(savingsPot1);
-				repository.Add(savingsPot2);
-				repository.Add(checkingPot);
+				await gateway.SeedPotsAsync([savingsPot1, savingsPot2, checkingPot]);
 
 				context.SavingsPot1Id = savingsPot1.Id;
 				context.SavingsPot2Id = savingsPot2.Id;
@@ -343,7 +342,7 @@ public class GetByPotFlexIdTests
 				context.Pots = await repository.GetAsync(potFlexId)
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -359,11 +358,11 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetByPotFlexId_WhenPotFlexIdIsEmpty_ShouldReturnEmptyCollection(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetByPotFlexId_WhenPotFlexIdIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot pot = new()
 				{
@@ -374,14 +373,14 @@ public class GetByPotFlexIdTests
 					Currency = "USD"
 				};
 
-				repository.Add(pot);
+				await gateway.SeedPotsAsync([pot]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.Pots = await repository.GetAsync(PotFlexId.Empty)
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 				pots.Should().BeEmpty();

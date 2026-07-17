@@ -1,5 +1,6 @@
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Gateways;
 using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 using FluentAssertions;
@@ -9,10 +10,10 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.CpiRepo
 public class AddTests
 {
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task Add_WithValidCpi_ShouldPersistCpi(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task Add_WithValidCpi_ShouldPersistCpi(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
+		await GenericTest.Create(environment)
 			.Act((repository, context) =>
 			{
 				Cpi cpi = new()
@@ -23,10 +24,9 @@ public class AddTests
 
 				repository.Add(cpi);
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
-				List<Cpi> cpiRecords = await repository.GetAllAsync()
-					.ToListAsync();
+				List<Cpi> cpiRecords = await gateway.GetAllCpisAsync();
 
 				cpiRecords.Should().HaveCount(1);
 				Cpi cpi = cpiRecords.First();
@@ -37,35 +37,26 @@ public class AddTests
 	}
 
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task Add_WithNullCpi_ShouldThrowArgumentNullException(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task Add_WithNullCpi_ShouldThrowArgumentNullException(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
+		await GenericTest.Create(environment)
 			.Act((repository, context) =>
 			{
-				try
-				{
-					repository.Add(null);
-					context.Exception = null;
-				}
-				catch (Exception ex)
-				{
-					context.Exception = ex;
-				}
+				repository.Add(null);
 			})
-			.Assert((repository, context) =>
+			.AssertThrow(ex =>
 			{
-				Exception exception = context.Exception;
-				exception.Should().BeOfType<ArgumentNullException>();
+				ex.Should().BeOfType<ArgumentNullException>();
 			})
 			.ExecuteAsync();
 	}
 
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task Add_WithMultipleCpiRecords_ShouldPersistAllCpiRecords(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task Add_WithMultipleCpiRecords_ShouldPersistAllCpiRecords(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
+		await GenericTest.Create(environment)
 			.Act((repository, context) =>
 			{
 				Cpi cpi2021 = new()
@@ -90,10 +81,9 @@ public class AddTests
 				repository.Add(cpi2022);
 				repository.Add(cpi2023);
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
-				List<Cpi> cpiRecords = await repository.GetAllAsync()
-					.ToListAsync();
+				List<Cpi> cpiRecords = await gateway.GetAllCpisAsync();
 
 				cpiRecords.Should().HaveCount(3);
 				cpiRecords.Should().ContainSingle(x => x.Year == 2021 && x.Value == 100.0m);
@@ -104,11 +94,11 @@ public class AddTests
 	}
 
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task Add_WithDuplicateYear_ShouldThrow(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task Add_WithDuplicateYear_ShouldThrow(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Cpi cpi = new()
 				{
@@ -116,7 +106,7 @@ public class AddTests
 					Value = 105.5m
 				};
 
-				repository.Add(cpi);
+				await gateway.SeedCpisAsync([cpi]);
 			})
 			.Act((repository, context) =>
 			{
@@ -136,10 +126,10 @@ public class AddTests
 	}
 
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task Add_WithDecimalValue_ShouldPreserveDecimalPrecision(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task Add_WithDecimalValue_ShouldPreserveDecimalPrecision(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
+		await GenericTest.Create(environment)
 			.Act((repository, context) =>
 			{
 				Cpi cpi = new()
@@ -150,10 +140,9 @@ public class AddTests
 
 				repository.Add(cpi);
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
-				List<Cpi> cpiRecords = await repository.GetAllAsync()
-					.ToListAsync();
+				List<Cpi> cpiRecords = await gateway.GetAllCpisAsync();
 
 				cpiRecords.Should().HaveCount(1);
 				cpiRecords.First().Value.Should().Be(123.456789m);
@@ -162,10 +151,10 @@ public class AddTests
 	}
 
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task Add_WithZeroValue_ShouldPersistZeroValue(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task Add_WithZeroValue_ShouldPersistZeroValue(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
+		await GenericTest.Create(environment)
 			.Act((repository, context) =>
 			{
 				Cpi cpi = new()
@@ -176,10 +165,9 @@ public class AddTests
 
 				repository.Add(cpi);
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
-				List<Cpi> cpiRecords = await repository.GetAllAsync()
-					.ToListAsync();
+				List<Cpi> cpiRecords = await gateway.GetAllCpisAsync();
 
 				cpiRecords.Should().HaveCount(1);
 				cpiRecords.First().Value.Should().Be(0m);
@@ -188,10 +176,10 @@ public class AddTests
 	}
 
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task Add_WithNegativeValue_ShouldPersistNegativeValue(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task Add_WithNegativeValue_ShouldPersistNegativeValue(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
+		await GenericTest.Create(environment)
 			.Act((repository, context) =>
 			{
 				Cpi cpi = new()
@@ -202,39 +190,12 @@ public class AddTests
 
 				repository.Add(cpi);
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
-				List<Cpi> cpiRecords = await repository.GetAllAsync()
-					.ToListAsync();
+				List<Cpi> cpiRecords = await gateway.GetAllCpisAsync();
 
 				cpiRecords.Should().HaveCount(1);
 				cpiRecords.First().Value.Should().Be(-2.4m);
-			})
-			.ExecuteAsync();
-	}
-
-	[Theory]
-	[CpiRepositoryProviders]
-	public async Task Add_WithCpiRecord_ShouldBeRetrievableByYear(ISutFixture<ICpiRepository> sutFixture)
-	{
-		await GenericTest.Create(sutFixture)
-			.Act((repository, context) =>
-			{
-				Cpi cpi = new()
-				{
-					Year = 2023,
-					Value = 105.5m
-				};
-
-				repository.Add(cpi);
-			})
-			.Assert(async (repository, context) =>
-			{
-				Cpi cpi = await repository.GetByYear(2023);
-
-				cpi.Should().NotBeNull();
-				cpi.Year.Should().Be(2023);
-				cpi.Value.Should().Be(105.5m);
 			})
 			.ExecuteAsync();
 	}

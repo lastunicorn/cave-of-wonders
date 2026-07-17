@@ -1,5 +1,6 @@
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Gateways;
 using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 using FluentAssertions;
@@ -9,15 +10,15 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.CpiRepo
 public class GetByYearTests
 {
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task GetByYear_WhenDatabaseIsEmpty_ShouldReturnNull(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task GetByYear_WhenDatabaseIsEmpty_ShouldReturnNull(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await new GenericTest<ICpiRepository>(sutFixture)
+		await GenericTest.Create(environment)
 			.Act(async (repository, context) =>
 			{
 				context.Cpi = await repository.GetByYear(2023);
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				Cpi cpi = context.Cpi as Cpi;
 				cpi.Should().BeNull();
@@ -26,11 +27,11 @@ public class GetByYearTests
 	}
 
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task GetByYear_WithMatchingYear_ShouldReturnThatCpiRecord(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task GetByYear_WithMatchingYear_ShouldReturnThatCpiRecord(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await new GenericTest<ICpiRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Cpi cpiInDb = new()
 				{
@@ -38,13 +39,13 @@ public class GetByYearTests
 					Value = 105.5m
 				};
 
-				repository.Add(cpiInDb);
+				await gateway.SeedCpisAsync([cpiInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.Cpi = await repository.GetByYear(2023);
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				Cpi cpi = context.Cpi as Cpi;
 
@@ -56,11 +57,11 @@ public class GetByYearTests
 	}
 
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task GetByYear_WithNoMatchingYear_ShouldReturnNull(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task GetByYear_WithNoMatchingYear_ShouldReturnNull(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await new GenericTest<ICpiRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Cpi cpiInDb = new()
 				{
@@ -68,13 +69,13 @@ public class GetByYearTests
 					Value = 105.5m
 				};
 
-				repository.Add(cpiInDb);
+				await gateway.SeedCpisAsync([cpiInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.Cpi = await repository.GetByYear(2024);
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				Cpi cpi = context.Cpi as Cpi;
 				cpi.Should().BeNull();
@@ -83,11 +84,11 @@ public class GetByYearTests
 	}
 
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task GetByYear_WithMultipleCpiRecords_ShouldReturnOnlyTheMatchingOne(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task GetByYear_WithMultipleCpiRecords_ShouldReturnOnlyTheMatchingOne(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await new GenericTest<ICpiRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Cpi cpi2021 = new()
 				{
@@ -107,15 +108,13 @@ public class GetByYearTests
 					Value = 118.9m
 				};
 
-				repository.Add(cpi2021);
-				repository.Add(cpi2022);
-				repository.Add(cpi2023);
+				await gateway.SeedCpisAsync([cpi2021, cpi2022, cpi2023]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.Cpi = await repository.GetByYear(2022);
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				Cpi cpi = context.Cpi as Cpi;
 
@@ -127,11 +126,11 @@ public class GetByYearTests
 	}
 
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task GetByYear_WithCpiRecordsAddedOutOfOrder_ShouldReturnTheMatchingOne(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task GetByYear_WithCpiRecordsAddedOutOfOrder_ShouldReturnTheMatchingOne(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await new GenericTest<ICpiRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Cpi cpi2023 = new()
 				{
@@ -151,15 +150,13 @@ public class GetByYearTests
 					Value = 112.3m
 				};
 
-				repository.Add(cpi2023);
-				repository.Add(cpi2021);
-				repository.Add(cpi2022);
+				await gateway.SeedCpisAsync([cpi2023, cpi2021, cpi2022]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.Cpi = await repository.GetByYear(2021);
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				Cpi cpi = context.Cpi as Cpi;
 
@@ -171,11 +168,11 @@ public class GetByYearTests
 	}
 
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task GetByYear_WithDecimalValue_ShouldPreserveDecimalPrecision(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task GetByYear_WithDecimalValue_ShouldPreserveDecimalPrecision(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await new GenericTest<ICpiRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Cpi cpiInDb = new()
 				{
@@ -183,13 +180,13 @@ public class GetByYearTests
 					Value = 123.456789m
 				};
 
-				repository.Add(cpiInDb);
+				await gateway.SeedCpisAsync([cpiInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.Cpi = await repository.GetByYear(2023);
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				Cpi cpi = context.Cpi as Cpi;
 
@@ -200,11 +197,11 @@ public class GetByYearTests
 	}
 
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task GetByYear_WithZeroValue_ShouldReturnZeroValue(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task GetByYear_WithZeroValue_ShouldReturnZeroValue(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await new GenericTest<ICpiRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Cpi cpiInDb = new()
 				{
@@ -212,13 +209,13 @@ public class GetByYearTests
 					Value = 0m
 				};
 
-				repository.Add(cpiInDb);
+				await gateway.SeedCpisAsync([cpiInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.Cpi = await repository.GetByYear(2023);
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				Cpi cpi = context.Cpi as Cpi;
 
@@ -229,11 +226,11 @@ public class GetByYearTests
 	}
 
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task GetByYear_WithNegativeValue_ShouldReturnNegativeValue(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task GetByYear_WithNegativeValue_ShouldReturnNegativeValue(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await new GenericTest<ICpiRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Cpi cpiInDb = new()
 				{
@@ -241,13 +238,13 @@ public class GetByYearTests
 					Value = -2.4m
 				};
 
-				repository.Add(cpiInDb);
+				await gateway.SeedCpisAsync([cpiInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.Cpi = await repository.GetByYear(2023);
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				Cpi cpi = context.Cpi as Cpi;
 

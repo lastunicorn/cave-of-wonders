@@ -1,5 +1,6 @@
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Gateways;
 using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 using FluentAssertions;
@@ -9,16 +10,16 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.CpiRepo
 public class GetAllTests
 {
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task GetAll_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task GetAll_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await new GenericTest<ICpiRepository>(sutFixture)
+		await GenericTest.Create(environment)
 			.Act(async (repository, context) =>
 			{
 				context.CpiRecords = await repository.GetAllAsync()
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Cpi> cpiRecords = context.CpiRecords as List<Cpi>;
 				cpiRecords.Should().BeEmpty();
@@ -27,11 +28,11 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task GetAll_WithOneCpiRecord_ShouldReturnOneCpiRecord(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task GetAll_WithOneCpiRecord_ShouldReturnOneCpiRecord(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await new GenericTest<ICpiRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Cpi cpiInDb = new()
 				{
@@ -39,14 +40,14 @@ public class GetAllTests
 					Value = 105.5m
 				};
 
-				repository.Add(cpiInDb);
+				await gateway.SeedCpisAsync([cpiInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.CpiRecords = await repository.GetAllAsync()
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Cpi> cpiRecords = context.CpiRecords as List<Cpi>;
 
@@ -59,11 +60,11 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task GetAll_WithMultipleCpiRecords_ShouldReturnAllCpiRecords(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task GetAll_WithMultipleCpiRecords_ShouldReturnAllCpiRecords(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await new GenericTest<ICpiRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Cpi cpi2021 = new()
 				{
@@ -83,16 +84,14 @@ public class GetAllTests
 					Value = 118.9m
 				};
 
-				repository.Add(cpi2021);
-				repository.Add(cpi2022);
-				repository.Add(cpi2023);
+				await gateway.SeedCpisAsync([cpi2021, cpi2022, cpi2023]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.CpiRecords = await repository.GetAllAsync()
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Cpi> cpiRecords = context.CpiRecords as List<Cpi>;
 
@@ -105,11 +104,11 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task GetAll_WithCpiRecordsAddedOutOfOrder_ShouldReturnAllCpiRecords(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task GetAll_WithCpiRecordsAddedOutOfOrder_ShouldReturnAllCpiRecords(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await new GenericTest<ICpiRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Cpi cpi2023 = new()
 				{
@@ -129,16 +128,14 @@ public class GetAllTests
 					Value = 112.3m
 				};
 
-				repository.Add(cpi2023);
-				repository.Add(cpi2021);
-				repository.Add(cpi2022);
+				await gateway.SeedCpisAsync([cpi2023, cpi2021, cpi2022]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.CpiRecords = await repository.GetAllAsync()
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Cpi> cpiRecords = context.CpiRecords as List<Cpi>;
 
@@ -151,11 +148,11 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task GetAll_WithDecimalValue_ShouldPreserveDecimalPrecision(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task GetAll_WithDecimalValue_ShouldPreserveDecimalPrecision(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await new GenericTest<ICpiRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Cpi cpiInDb = new()
 				{
@@ -163,14 +160,14 @@ public class GetAllTests
 					Value = 123.456789m
 				};
 
-				repository.Add(cpiInDb);
+				await gateway.SeedCpisAsync([cpiInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.CpiRecords = await repository.GetAllAsync()
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Cpi> cpiRecords = context.CpiRecords as List<Cpi>;
 
@@ -181,11 +178,11 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task GetAll_WithZeroValue_ShouldReturnZeroValue(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task GetAll_WithZeroValue_ShouldReturnZeroValue(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await new GenericTest<ICpiRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Cpi cpiInDb = new()
 				{
@@ -193,14 +190,14 @@ public class GetAllTests
 					Value = 0m
 				};
 
-				repository.Add(cpiInDb);
+				await gateway.SeedCpisAsync([cpiInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.CpiRecords = await repository.GetAllAsync()
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Cpi> cpiRecords = context.CpiRecords as List<Cpi>;
 
@@ -211,11 +208,11 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[CpiRepositoryProviders]
-	public async Task GetAll_WithNegativeValue_ShouldReturnNegativeValue(ISutFixture<ICpiRepository> sutFixture)
+	[CpiRepositoryEnvironments]
+	public async Task GetAll_WithNegativeValue_ShouldReturnNegativeValue(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
-		await new GenericTest<ICpiRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Cpi cpiInDb = new()
 				{
@@ -223,14 +220,14 @@ public class GetAllTests
 					Value = -2.4m
 				};
 
-				repository.Add(cpiInDb);
+				await gateway.SeedCpisAsync([cpiInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.CpiRecords = await repository.GetAllAsync()
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Cpi> cpiRecords = context.CpiRecords as List<Cpi>;
 

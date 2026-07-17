@@ -1,6 +1,8 @@
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Infrastructure;
+using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Gateways;
 using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 using FluentAssertions;
@@ -10,16 +12,16 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.GemRepo
 public class FindByMonthAsyncTests
 {
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task FindByMonthAsync_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task FindByMonthAsync_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
+		await GenericTest.Create(environment)
 			.Act(async (repository, context) =>
 			{
 				context.Gems = await repository.FindByMonthAsync(Guid.NewGuid(), new MonthDate(2023, 1))
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Gem> gems = context.Gems as List<Gem>;
 				gems.Should().BeEmpty();
@@ -28,15 +30,15 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task FindByMonthAsync_WithOneGemInThatMonth_ShouldReturnThatGem(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task FindByMonthAsync_WithOneGemInThatMonth_ShouldReturnThatGem(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -55,7 +57,7 @@ public class FindByMonthAsyncTests
 					Description = "Initial deposit",
 					Pot = new Pot { Id = potId }
 				};
-				repository.Add(gem);
+				await gateway.SeedGemsAsync([gem]);
 
 				context.PotId = potId;
 				context.GemId = gem.Id;
@@ -66,7 +68,7 @@ public class FindByMonthAsyncTests
 				context.Gems = await repository.FindByMonthAsync(potId, new MonthDate(2023, 5))
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Gem> gems = context.Gems as List<Gem>;
 
@@ -85,15 +87,15 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task FindByMonthAsync_WithMultipleGemsInSameMonth_ShouldReturnAllOfThem(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task FindByMonthAsync_WithMultipleGemsInSameMonth_ShouldReturnAllOfThem(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -102,32 +104,33 @@ public class FindByMonthAsyncTests
 					Currency = "USD"
 				});
 
-				repository.Add(new Gem
-				{
-					Id = Guid.NewGuid(),
-					Date = new DateTime(2023, 1, 5),
-					Category = GemCategory.Deposit,
-					Amount = 100m,
-					Pot = new Pot { Id = potId }
-				});
-
-				repository.Add(new Gem
-				{
-					Id = Guid.NewGuid(),
-					Date = new DateTime(2023, 1, 15),
-					Category = GemCategory.Withdrawal,
-					Amount = 50m,
-					Pot = new Pot { Id = potId }
-				});
-
-				repository.Add(new Gem
-				{
-					Id = Guid.NewGuid(),
-					Date = new DateTime(2023, 1, 25),
-					Category = GemCategory.Gain,
-					Amount = 25m,
-					Pot = new Pot { Id = potId }
-				});
+				await gateway.SeedGemsAsync(
+				[
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 5),
+						Category = GemCategory.Deposit,
+						Amount = 100m,
+						Pot = new Pot { Id = potId }
+					},
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 15),
+						Category = GemCategory.Withdrawal,
+						Amount = 50m,
+						Pot = new Pot { Id = potId }
+					},
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 25),
+						Category = GemCategory.Gain,
+						Amount = 25m,
+						Pot = new Pot { Id = potId }
+					}
+				]);
 
 				context.PotId = potId;
 			})
@@ -137,7 +140,7 @@ public class FindByMonthAsyncTests
 				context.Gems = await repository.FindByMonthAsync(potId, new MonthDate(2023, 1))
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Gem> gems = context.Gems as List<Gem>;
 
@@ -150,15 +153,15 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task FindByMonthAsync_WithGemsInDifferentMonths_ShouldReturnOnlyGemsInRequestedMonth(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task FindByMonthAsync_WithGemsInDifferentMonths_ShouldReturnOnlyGemsInRequestedMonth(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -167,32 +170,33 @@ public class FindByMonthAsyncTests
 					Currency = "USD"
 				});
 
-				repository.Add(new Gem
-				{
-					Id = Guid.NewGuid(),
-					Date = new DateTime(2022, 12, 31),
-					Category = GemCategory.Deposit,
-					Amount = 100m,
-					Pot = new Pot { Id = potId }
-				});
-
-				repository.Add(new Gem
-				{
-					Id = Guid.NewGuid(),
-					Date = new DateTime(2023, 1, 15),
-					Category = GemCategory.Deposit,
-					Amount = 200m,
-					Pot = new Pot { Id = potId }
-				});
-
-				repository.Add(new Gem
-				{
-					Id = Guid.NewGuid(),
-					Date = new DateTime(2023, 2, 1),
-					Category = GemCategory.Withdrawal,
-					Amount = 30m,
-					Pot = new Pot { Id = potId }
-				});
+				await gateway.SeedGemsAsync(
+				[
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2022, 12, 31),
+						Category = GemCategory.Deposit,
+						Amount = 100m,
+						Pot = new Pot { Id = potId }
+					},
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 15),
+						Category = GemCategory.Deposit,
+						Amount = 200m,
+						Pot = new Pot { Id = potId }
+					},
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 2, 1),
+						Category = GemCategory.Withdrawal,
+						Amount = 30m,
+						Pot = new Pot { Id = potId }
+					}
+				]);
 
 				context.PotId = potId;
 			})
@@ -202,7 +206,7 @@ public class FindByMonthAsyncTests
 				context.Gems = await repository.FindByMonthAsync(potId, new MonthDate(2023, 1))
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Gem> gems = context.Gems as List<Gem>;
 
@@ -213,15 +217,15 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task FindByMonthAsync_WithSameMonthNumberInDifferentYear_ShouldReturnOnlyGemsInRequestedYear(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task FindByMonthAsync_WithSameMonthNumberInDifferentYear_ShouldReturnOnlyGemsInRequestedYear(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -230,23 +234,25 @@ public class FindByMonthAsyncTests
 					Currency = "USD"
 				});
 
-				repository.Add(new Gem
-				{
-					Id = Guid.NewGuid(),
-					Date = new DateTime(2022, 3, 10),
-					Category = GemCategory.Deposit,
-					Amount = 100m,
-					Pot = new Pot { Id = potId }
-				});
-
-				repository.Add(new Gem
-				{
-					Id = Guid.NewGuid(),
-					Date = new DateTime(2023, 3, 10),
-					Category = GemCategory.Deposit,
-					Amount = 200m,
-					Pot = new Pot { Id = potId }
-				});
+				await gateway.SeedGemsAsync(
+				[
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2022, 3, 10),
+						Category = GemCategory.Deposit,
+						Amount = 100m,
+						Pot = new Pot { Id = potId }
+					},
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 3, 10),
+						Category = GemCategory.Deposit,
+						Amount = 200m,
+						Pot = new Pot { Id = potId }
+					}
+				]);
 
 				context.PotId = potId;
 			})
@@ -256,7 +262,7 @@ public class FindByMonthAsyncTests
 				context.Gems = await repository.FindByMonthAsync(potId, new MonthDate(2023, 3))
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Gem> gems = context.Gems as List<Gem>;
 
@@ -267,16 +273,16 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task FindByMonthAsync_WithGemsForDifferentPotsInSameMonth_ShouldReturnOnlyGemsForRequestedPot(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task FindByMonthAsync_WithGemsForDifferentPotsInSameMonth_ShouldReturnOnlyGemsForRequestedPot(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId1 = Guid.NewGuid();
 				Guid potId2 = Guid.NewGuid();
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId1,
 					Name = "Pot 1",
@@ -285,7 +291,7 @@ public class FindByMonthAsyncTests
 					Currency = "USD"
 				});
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId2,
 					Name = "Pot 2",
@@ -294,23 +300,25 @@ public class FindByMonthAsyncTests
 					Currency = "EUR"
 				});
 
-				repository.Add(new Gem
-				{
-					Id = Guid.NewGuid(),
-					Date = new DateTime(2023, 1, 10),
-					Category = GemCategory.Deposit,
-					Amount = 100m,
-					Pot = new Pot { Id = potId1 }
-				});
-
-				repository.Add(new Gem
-				{
-					Id = Guid.NewGuid(),
-					Date = new DateTime(2023, 1, 20),
-					Category = GemCategory.Withdrawal,
-					Amount = 30m,
-					Pot = new Pot { Id = potId2 }
-				});
+				await gateway.SeedGemsAsync(
+				[
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 10),
+						Category = GemCategory.Deposit,
+						Amount = 100m,
+						Pot = new Pot { Id = potId1 }
+					},
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 20),
+						Category = GemCategory.Withdrawal,
+						Amount = 30m,
+						Pot = new Pot { Id = potId2 }
+					}
+				]);
 
 				context.PotId1 = potId1;
 			})
@@ -320,7 +328,7 @@ public class FindByMonthAsyncTests
 				context.Gems = await repository.FindByMonthAsync(potId1, new MonthDate(2023, 1))
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Gem> gems = context.Gems as List<Gem>;
 
@@ -331,15 +339,15 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task FindByMonthAsync_WithNonExistentPotId_ShouldReturnEmptyCollection(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task FindByMonthAsync_WithNonExistentPotId_ShouldReturnEmptyCollection(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -348,21 +356,24 @@ public class FindByMonthAsyncTests
 					Currency = "USD"
 				});
 
-				repository.Add(new Gem
-				{
-					Id = Guid.NewGuid(),
-					Date = new DateTime(2023, 1, 10),
-					Category = GemCategory.Deposit,
-					Amount = 100m,
-					Pot = new Pot { Id = potId }
-				});
+				await gateway.SeedGemsAsync(
+				[
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 10),
+						Category = GemCategory.Deposit,
+						Amount = 100m,
+						Pot = new Pot { Id = potId }
+					}
+				]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.Gems = await repository.FindByMonthAsync(Guid.NewGuid(), new MonthDate(2023, 1))
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Gem> gems = context.Gems as List<Gem>;
 				gems.Should().BeEmpty();
@@ -371,15 +382,15 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task FindByMonthAsync_WithNonMatchingMonth_ShouldReturnEmptyCollection(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task FindByMonthAsync_WithNonMatchingMonth_ShouldReturnEmptyCollection(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -388,14 +399,17 @@ public class FindByMonthAsyncTests
 					Currency = "USD"
 				});
 
-				repository.Add(new Gem
-				{
-					Id = Guid.NewGuid(),
-					Date = new DateTime(2023, 1, 10),
-					Category = GemCategory.Deposit,
-					Amount = 100m,
-					Pot = new Pot { Id = potId }
-				});
+				await gateway.SeedGemsAsync(
+				[
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 10),
+						Category = GemCategory.Deposit,
+						Amount = 100m,
+						Pot = new Pot { Id = potId }
+					}
+				]);
 
 				context.PotId = potId;
 			})
@@ -405,7 +419,7 @@ public class FindByMonthAsyncTests
 				context.Gems = await repository.FindByMonthAsync(potId, new MonthDate(2023, 6))
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Gem> gems = context.Gems as List<Gem>;
 				gems.Should().BeEmpty();
@@ -414,15 +428,15 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task FindByMonthAsync_ShouldPopulateGemsWithMatchingPotReference(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task FindByMonthAsync_ShouldPopulateGemsWithMatchingPotReference(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Referenced Pot",
@@ -431,14 +445,17 @@ public class FindByMonthAsyncTests
 					Currency = "USD"
 				});
 
-				repository.Add(new Gem
-				{
-					Id = Guid.NewGuid(),
-					Date = new DateTime(2023, 1, 10),
-					Category = GemCategory.Deposit,
-					Amount = 100m,
-					Pot = new Pot { Id = potId }
-				});
+				await gateway.SeedGemsAsync(
+				[
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 10),
+						Category = GemCategory.Deposit,
+						Amount = 100m,
+						Pot = new Pot { Id = potId }
+					}
+				]);
 
 				context.PotId = potId;
 			})
@@ -448,7 +465,7 @@ public class FindByMonthAsyncTests
 				context.Gems = await repository.FindByMonthAsync(potId, new MonthDate(2023, 1))
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Gem> gems = context.Gems as List<Gem>;
 				Guid expectedPotId = context.PotId;
@@ -463,15 +480,15 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task FindByMonthAsync_WithGemParameters_ShouldPreserveParameters(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task FindByMonthAsync_WithGemParameters_ShouldPreserveParameters(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -491,7 +508,7 @@ public class FindByMonthAsyncTests
 				gem.Parameters["source"] = "mintos";
 				gem.Parameters["note"] = "monthly transfer";
 
-				repository.Add(gem);
+				await gateway.SeedGemsAsync([gem]);
 
 				context.PotId = potId;
 			})
@@ -501,7 +518,7 @@ public class FindByMonthAsyncTests
 				context.Gems = await repository.FindByMonthAsync(potId, new MonthDate(2023, 1))
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Gem> gems = context.Gems as List<Gem>;
 
@@ -515,15 +532,15 @@ public class FindByMonthAsyncTests
 	}
 
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task FindByMonthAsync_WithDecimalAmount_ShouldPreserveDecimalPrecision(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task FindByMonthAsync_WithDecimalAmount_ShouldPreserveDecimalPrecision(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -532,14 +549,17 @@ public class FindByMonthAsyncTests
 					Currency = "USD"
 				});
 
-				repository.Add(new Gem
-				{
-					Id = Guid.NewGuid(),
-					Date = new DateTime(2023, 1, 10),
-					Category = GemCategory.Deposit,
-					Amount = 123.456789m,
-					Pot = new Pot { Id = potId }
-				});
+				await gateway.SeedGemsAsync(
+				[
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 10),
+						Category = GemCategory.Deposit,
+						Amount = 123.456789m,
+						Pot = new Pot { Id = potId }
+					}
+				]);
 
 				context.PotId = potId;
 			})
@@ -549,7 +569,7 @@ public class FindByMonthAsyncTests
 				context.Gems = await repository.FindByMonthAsync(potId, new MonthDate(2023, 1))
 					.ToListAsync();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<Gem> gems = context.Gems as List<Gem>;
 

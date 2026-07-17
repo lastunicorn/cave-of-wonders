@@ -1,5 +1,7 @@
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Gateways;
 using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 using FluentAssertions;
@@ -9,15 +11,15 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.GemRepo
 public class AddTests
 {
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task Add_WithValidGem_ShouldPersistGem(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task Add_WithValidGem_ShouldPersistGem(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -50,11 +52,9 @@ public class AddTests
 
 				context.GemId = gem.Id;
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
-				Guid potId = context.PotId;
-				List<Gem> gems = await repository.GetByPotIdAsync(potId)
-					.ToListAsync();
+				List<Gem> gems = await gateway.GetAllGemsAsync();
 
 				gems.Should().HaveCount(1);
 				Gem gem = gems.First();
@@ -71,10 +71,10 @@ public class AddTests
 	}
 
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task Add_WithNullGem_ShouldThrowArgumentNullException(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task Add_WithNullGem_ShouldThrowArgumentNullException(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
+		await GenericTest.Create(environment)
 			.Act((repository, context) =>
 			{
 				repository.Add(null);
@@ -87,15 +87,15 @@ public class AddTests
 	}
 
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task Add_WithMultipleGems_ShouldPersistAllOfThem(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task Add_WithMultipleGems_ShouldPersistAllOfThem(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -146,11 +146,9 @@ public class AddTests
 					}
 				});
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
-				Guid potId = context.PotId;
-				List<Gem> gems = await repository.GetByPotIdAsync(potId)
-					.ToListAsync();
+				List<Gem> gems = await gateway.GetAllGemsAsync();
 
 				gems.Should().HaveCount(3);
 				gems.Should().ContainSingle(x => x.Category == GemCategory.Deposit && x.Amount == 100m);
@@ -161,16 +159,16 @@ public class AddTests
 	}
 
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task Add_WithGemsForDifferentPots_ShouldPersistEachUnderItsOwnPot(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task Add_WithGemsForDifferentPots_ShouldPersistEachUnderItsOwnPot(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId1 = Guid.NewGuid();
 				Guid potId2 = Guid.NewGuid();
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId1,
 					Name = "Pot 1",
@@ -179,7 +177,7 @@ public class AddTests
 					Currency = "USD"
 				});
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId2,
 					Name = "Pot 2",
@@ -220,15 +218,15 @@ public class AddTests
 					}
 				});
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
 				Guid potId1 = context.PotId1;
 				Guid potId2 = context.PotId2;
 
-				List<Gem> gemsForPot1 = await repository.GetByPotIdAsync(potId1)
-					.ToListAsync();
-				List<Gem> gemsForPot2 = await repository.GetByPotIdAsync(potId2)
-					.ToListAsync();
+				List<Gem> gems = await gateway.GetAllGemsAsync();
+
+				List<Gem> gemsForPot1 = gems.Where(x => x.Pot.Id == potId1).ToList();
+				List<Gem> gemsForPot2 = gems.Where(x => x.Pot.Id == potId2).ToList();
 
 				gemsForPot1.Should().HaveCount(1);
 				gemsForPot1.First().Amount.Should().Be(100m);
@@ -240,15 +238,15 @@ public class AddTests
 	}
 
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task Add_ShouldPersistPotReference(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task Add_ShouldPersistPotReference(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Referenced Pot",
@@ -275,11 +273,10 @@ public class AddTests
 					}
 				});
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
 				Guid potId = context.PotId;
-				List<Gem> gems = await repository.GetByPotIdAsync(potId)
-					.ToListAsync();
+				List<Gem> gems = await gateway.GetAllGemsAsync();
 
 				gems.Should().HaveCount(1);
 				Gem gem = gems.First();
@@ -291,15 +288,15 @@ public class AddTests
 	}
 
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task Add_WithGemParameters_ShouldPersistParameters(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task Add_WithGemParameters_ShouldPersistParameters(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -330,11 +327,9 @@ public class AddTests
 
 				repository.Add(gem);
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
-				Guid potId = context.PotId;
-				List<Gem> gems = await repository.GetByPotIdAsync(potId)
-					.ToListAsync();
+				List<Gem> gems = await gateway.GetAllGemsAsync();
 
 				gems.Should().HaveCount(1);
 				Gem gem = gems.First();
@@ -346,15 +341,15 @@ public class AddTests
 	}
 
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task Add_WithDecimalAmount_ShouldPreserveDecimalPrecision(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task Add_WithDecimalAmount_ShouldPreserveDecimalPrecision(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -381,11 +376,9 @@ public class AddTests
 					}
 				});
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
-				Guid potId = context.PotId;
-				List<Gem> gems = await repository.GetByPotIdAsync(potId)
-					.ToListAsync();
+				List<Gem> gems = await gateway.GetAllGemsAsync();
 
 				gems.Should().HaveCount(1);
 				gems.First().Amount.Should().Be(123.456789m);
@@ -394,15 +387,15 @@ public class AddTests
 	}
 
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task Add_WithAllGemCategories_ShouldPersistEachCategory(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task Add_WithAllGemCategories_ShouldPersistEachCategory(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -444,11 +437,9 @@ public class AddTests
 					});
 				}
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
-				Guid potId = context.PotId;
-				List<Gem> gems = await repository.GetByPotIdAsync(potId)
-					.ToListAsync();
+				List<Gem> gems = await gateway.GetAllGemsAsync();
 
 				gems.Should().HaveCount(7);
 				gems.Select(x => x.Category).Should().BeEquivalentTo(
@@ -466,15 +457,15 @@ public class AddTests
 	}
 
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task Add_WithoutExternalId_ShouldPersistGemWithNullExternalId(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task Add_WithoutExternalId_ShouldPersistGemWithNullExternalId(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -501,11 +492,9 @@ public class AddTests
 					}
 				});
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
-				Guid potId = context.PotId;
-				List<Gem> gems = await repository.GetByPotIdAsync(potId)
-					.ToListAsync();
+				List<Gem> gems = await gateway.GetAllGemsAsync();
 
 				gems.Should().HaveCount(1);
 				gems.First().ExternalId.Should().BeNull();
@@ -514,15 +503,15 @@ public class AddTests
 	}
 
 	[Theory]
-	[GemRepositoryProviders]
-	public async Task Add_WithGem_ShouldBeRetrievableByExternalId(IGemRepositorySutFixture sutFixture)
+	[GemRepositoryEnvironments]
+	public async Task Add_WithExternalId_ShouldPersistExternalId(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
-		await GenericTest.Create(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				sutFixture.SeedPot(new Pot
+				await gateway.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -550,14 +539,11 @@ public class AddTests
 					}
 				});
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
-				Guid potId = context.PotId;
-				Gem gem = await repository.GetByExternalIdAsync(potId, "mintos-12345", CancellationToken.None);
+				List<Gem> gems = await gateway.GetAllGemsAsync();
 
-				gem.Should().NotBeNull();
-				gem.ExternalId.Should().Be("mintos-12345");
-				gem.Amount.Should().Be(100m);
+				gems.Should().ContainSingle(x => x.ExternalId == "mintos-12345" && x.Amount == 100m);
 			})
 			.ExecuteAsync();
 	}

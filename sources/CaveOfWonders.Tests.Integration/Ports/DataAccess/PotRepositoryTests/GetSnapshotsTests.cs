@@ -1,5 +1,6 @@
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Gateways;
 using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 using FluentAssertions;
@@ -11,16 +12,16 @@ public class GetSnapshotsTests
 	private readonly DateOnly currentDate = new(2023, 7, 1);
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetSnapshots_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetSnapshots_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
+		await GenericTest.Create(environment)
 			.Act(async (repository, context) =>
 			{
 				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false);
 				context.Snapshots = snapshotEnumerable.ToList();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<PotSnapshot> snapshots = context.Snapshots as List<PotSnapshot>;
 				snapshots.Should().BeEmpty();
@@ -29,11 +30,11 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetSnapshots_WithActivePot_ShouldReturnPotInstance(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetSnapshots_WithActivePot_ShouldReturnPotInstance(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot pot = new()
 				{
@@ -51,7 +52,7 @@ public class GetSnapshotsTests
 					Value = 100m
 				});
 
-				repository.Add(pot);
+				await gateway.SeedPotsAsync([pot]);
 				context.PotId = pot.Id;
 			})
 			.Act(async (repository, context) =>
@@ -59,7 +60,7 @@ public class GetSnapshotsTests
 				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false);
 				context.PotInstances = snapshotEnumerable.ToList();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
 
@@ -73,11 +74,11 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetSnapshots_WithInactivePot_ShouldNotReturnPotWhenIncludeInactiveIsFalse(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetSnapshots_WithInactivePot_ShouldNotReturnPotWhenIncludeInactiveIsFalse(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot pot = new()
 				{
@@ -88,14 +89,14 @@ public class GetSnapshotsTests
 					Currency = "USD"
 				};
 
-				repository.Add(pot);
+				await gateway.SeedPotsAsync([pot]);
 			})
 			.Act(async (repository, context) =>
 			{
 				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false);
 				context.PotInstances = snapshotEnumerable.ToList();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
 				potInstances.Should().BeEmpty();
@@ -104,11 +105,11 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetSnapshots_WithInactivePot_ShouldReturnPotWhenIncludeInactiveIsTrue(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetSnapshots_WithInactivePot_ShouldReturnPotWhenIncludeInactiveIsTrue(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot pot = new()
 				{
@@ -125,7 +126,7 @@ public class GetSnapshotsTests
 					Value = 100m
 				});
 
-				repository.Add(pot);
+				await gateway.SeedPotsAsync([pot]);
 				context.PotId = pot.Id;
 			})
 			.Act(async (repository, context) =>
@@ -133,7 +134,7 @@ public class GetSnapshotsTests
 				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, true);
 				context.PotInstances = snapshotEnumerable.ToList();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
 				potInstances.Should().HaveCount(1);
@@ -146,11 +147,11 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetSnapshots_WithPotEndingBeforeCurrentDate_ShouldNotReturnPotWhenIncludeInactiveIsFalse(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetSnapshots_WithPotEndingBeforeCurrentDate_ShouldNotReturnPotWhenIncludeInactiveIsFalse(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot pot = new()
 				{
@@ -162,14 +163,14 @@ public class GetSnapshotsTests
 					Currency = "USD"
 				};
 
-				repository.Add(pot);
+				await gateway.SeedPotsAsync([pot]);
 			})
 			.Act(async (repository, context) =>
 			{
 				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false);
 				context.PotInstances = snapshotEnumerable.ToList();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
 				potInstances.Should().BeEmpty();
@@ -178,11 +179,11 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetSnapshots_WithExactDateMatchingMode_ShouldReturnOnlyExactDateSnapshot(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetSnapshots_WithExactDateMatchingMode_ShouldReturnOnlyExactDateSnapshot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot pot = new()
 				{
@@ -216,14 +217,14 @@ public class GetSnapshotsTests
 					}
 				]);
 
-				repository.Add(pot);
+				await gateway.SeedPotsAsync([pot]);
 			})
 			.Act(async (repository, context) =>
 			{
 				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false);
 				context.PotInstances = snapshotEnumerable.ToList();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
 				potInstances.Should().HaveCount(1);
@@ -235,11 +236,11 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetSnapshots_WithExactDateMatchingMode_ShouldNotReturnSnapshotWhenNoExactDateExists(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetSnapshots_WithExactDateMatchingMode_ShouldNotReturnSnapshotWhenNoExactDateExists(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot pot = new()
 				{
@@ -268,14 +269,14 @@ public class GetSnapshotsTests
 					}
 				]);
 
-				repository.Add(pot);
+				await gateway.SeedPotsAsync([pot]);
 			})
 			.Act(async (repository, context) =>
 			{
 				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false);
 				context.PotInstances = snapshotEnumerable.ToList();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
 				potInstances.Should().BeEmpty();
@@ -284,11 +285,11 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetSnapshots_WithLastAvailableDateMatchingMode_ShouldReturnLastAvailableSnapshot(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetSnapshots_WithLastAvailableDateMatchingMode_ShouldReturnLastAvailableSnapshot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot pot = new()
 				{
@@ -317,14 +318,14 @@ public class GetSnapshotsTests
 					}
 				]);
 
-				repository.Add(pot);
+				await gateway.SeedPotsAsync([pot]);
 			})
 			.Act(async (repository, context) =>
 			{
 				List<PotSnapshot> potInstances = (await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.LastAvailable, false)).ToList();
 				context.PotInstances = potInstances;
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
 				potInstances.Should().HaveCount(1);
@@ -336,11 +337,11 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetSnapshots_WithLastAvailableDateMatchingMode_ShouldNotReturnSnapshotWhenNoSnapshotBeforeDate(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetSnapshots_WithLastAvailableDateMatchingMode_ShouldNotReturnSnapshotWhenNoSnapshotBeforeDate(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot pot = new()
 				{
@@ -364,14 +365,14 @@ public class GetSnapshotsTests
 					}
 				]);
 
-				repository.Add(pot);
+				await gateway.SeedPotsAsync([pot]);
 			})
 			.Act(async (repository, context) =>
 			{
 				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.LastAvailable, false);
 				context.PotInstances = snapshotEnumerable.ToList();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
 				potInstances.Should().BeEmpty();
@@ -380,11 +381,11 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetSnapshots_WithMultiplePots_ShouldReturnAllActivePots(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetSnapshots_WithMultiplePots_ShouldReturnAllActivePots(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot activePot1 = new()
 				{
@@ -426,9 +427,7 @@ public class GetSnapshotsTests
 					Currency = "GBP"
 				};
 
-				repository.Add(activePot1);
-				repository.Add(activePot2);
-				repository.Add(inactivePot);
+				await gateway.SeedPotsAsync([activePot1, activePot2, inactivePot]);
 
 				context.ActivePot1Id = activePot1.Id;
 				context.ActivePot2Id = activePot2.Id;
@@ -438,7 +437,7 @@ public class GetSnapshotsTests
 				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.LastAvailable, false);
 				context.PotInstances = snapshotEnumerable.ToList();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
 
@@ -462,11 +461,11 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task GetSnapshots_WithMultiplePotsAndIncludeInactiveTrue_ShouldReturnAllPots(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task GetSnapshots_WithMultiplePotsAndIncludeInactiveTrue_ShouldReturnAllPots(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Pot activePot = new()
 				{
@@ -514,9 +513,7 @@ public class GetSnapshotsTests
 					Value = 300m
 				});
 
-				repository.Add(activePot);
-				repository.Add(inactivePot1);
-				repository.Add(inactivePot2);
+				await gateway.SeedPotsAsync([activePot, inactivePot1, inactivePot2]);
 
 				context.ActivePotId = activePot.Id;
 				context.InactivePot1Id = inactivePot1.Id;
@@ -527,7 +524,7 @@ public class GetSnapshotsTests
 				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, true);
 				context.PotInstances = snapshotEnumerable.ToList();
 			})
-			.Assert((repository, context) =>
+			.Assert((gateway, context) =>
 			{
 				List<PotSnapshot> potInstances = context.PotInstances as List<PotSnapshot>;
 				potInstances.Should().HaveCount(3);

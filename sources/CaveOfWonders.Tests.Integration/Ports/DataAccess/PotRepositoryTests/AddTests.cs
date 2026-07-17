@@ -1,5 +1,6 @@
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Gateways;
 using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 using FluentAssertions;
@@ -9,10 +10,10 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotRepo
 public class AddTests
 {
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task Add_WithValidPot_ShouldPersistPot(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task Add_WithValidPot_ShouldPersistPot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
+		await GenericTest.Create(environment)
 			.Act((repository, context) =>
 			{
 				Pot pot = new()
@@ -28,10 +29,9 @@ public class AddTests
 				repository.Add(pot);
 				context.PotId = pot.Id;
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
-				List<Pot> pots = await repository.GetAllAsync()
-					.ToListAsync();
+				List<Pot> pots = await gateway.GetAllPotsAsync();
 
 				pots.Should().HaveCount(1);
 				Pot pot = pots.First();
@@ -48,35 +48,26 @@ public class AddTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task Add_WithNullPot_ShouldThrowArgumentNullException(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task Add_WithNullPot_ShouldThrowArgumentNullException(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
+		await GenericTest.Create(environment)
 			.Act((repository, context) =>
 			{
-				try
-				{
-					repository.Add(null);
-					context.Exception = null;
-				}
-				catch (Exception ex)
-				{
-					context.Exception = ex;
-				}
+				repository.Add(null);
 			})
-			.Assert((repository, context) =>
+			.AssertThrow(ex =>
 			{
-				Exception exception = context.Exception;
-				exception.Should().BeOfType<ArgumentNullException>();
+				ex.Should().BeOfType<ArgumentNullException>();
 			})
 			.ExecuteAsync();
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task Add_WithMultiplePots_ShouldPersistAllPots(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task Add_WithMultiplePots_ShouldPersistAllPots(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
+		await GenericTest.Create(environment)
 			.Act((repository, context) =>
 			{
 				Pot pot1 = new()
@@ -114,10 +105,9 @@ public class AddTests
 				context.Pot2Id = pot2.Id;
 				context.Pot3Id = pot3.Id;
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
-				List<Pot> pots = await repository.GetAllAsync()
-					.ToListAsync();
+				List<Pot> pots = await gateway.GetAllPotsAsync();
 
 				pots.Should().HaveCount(3);
 
@@ -134,10 +124,10 @@ public class AddTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task Add_WithPotContainingSnapshots_ShouldPersistSnapshots(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task Add_WithPotContainingSnapshots_ShouldPersistSnapshots(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
+		await GenericTest.Create(environment)
 			.Act((repository, context) =>
 			{
 				Pot pot = new()
@@ -164,10 +154,9 @@ public class AddTests
 
 				repository.Add(pot);
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
-				List<Pot> pots = await repository.GetAllAsync()
-					.ToListAsync();
+				List<Pot> pots = await gateway.GetAllPotsAsync();
 
 				pots.Should().HaveCount(1);
 				Pot pot = pots.First();
@@ -179,10 +168,10 @@ public class AddTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task Add_WithPotContainingLabels_ShouldPersistLabels(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task Add_WithPotContainingLabels_ShouldPersistLabels(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
+		await GenericTest.Create(environment)
 			.Act((repository, context) =>
 			{
 				Pot pot = new()
@@ -202,10 +191,9 @@ public class AddTests
 
 				repository.Add(pot);
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
-				List<Pot> pots = await repository.GetAllAsync()
-					.ToListAsync();
+				List<Pot> pots = await gateway.GetAllPotsAsync();
 
 				pots.Should().HaveCount(1);
 				Pot pot = pots.First();
@@ -218,10 +206,10 @@ public class AddTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task Add_WithPotContainingEndDate_ShouldPersistEndDate(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task Add_WithPotContainingEndDate_ShouldPersistEndDate(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
+		await GenericTest.Create(environment)
 			.Act((repository, context) =>
 			{
 				Pot potWithEndDate = new()
@@ -246,10 +234,9 @@ public class AddTests
 				repository.Add(potWithEndDate);
 				repository.Add(potWithoutEndDate);
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
-				List<Pot> pots = await repository.GetAllAsync()
-					.ToListAsync();
+				List<Pot> pots = await gateway.GetAllPotsAsync();
 
 				pots.Should().HaveCount(2);
 				pots.Should().ContainSingle(x => x.Name == "Test Pot with EndDate" && x.EndDate == new DateOnly(2023, 12, 31));
@@ -259,10 +246,10 @@ public class AddTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task Add_WithNullDescription_ShouldPersistNullDescription(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task Add_WithNullDescription_ShouldPersistNullDescription(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
+		await GenericTest.Create(environment)
 			.Act((repository, context) =>
 			{
 				Pot pot = new()
@@ -277,10 +264,9 @@ public class AddTests
 
 				repository.Add(pot);
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
-				List<Pot> pots = await repository.GetAllAsync()
-					.ToListAsync();
+				List<Pot> pots = await gateway.GetAllPotsAsync();
 
 				pots.Should().HaveCount(1);
 				pots.First().Description.Should().BeNull();
@@ -289,10 +275,10 @@ public class AddTests
 	}
 
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task Add_WithNoSnapshotsOrLabels_ShouldPersistEmptyCollections(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task Add_WithNoSnapshotsOrLabels_ShouldPersistEmptyCollections(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
-		await new GenericTest<IPotRepository>(sutFixture)
+		await GenericTest.Create(environment)
 			.Act((repository, context) =>
 			{
 				Pot pot = new()
@@ -306,10 +292,9 @@ public class AddTests
 
 				repository.Add(pot);
 			})
-			.Assert(async (repository, context) =>
+			.Assert(async (gateway, context) =>
 			{
-				List<Pot> pots = await repository.GetAllAsync()
-					.ToListAsync();
+				List<Pot> pots = await gateway.GetAllPotsAsync();
 
 				pots.Should().HaveCount(1);
 				Pot pot = pots.First();
@@ -321,68 +306,18 @@ public class AddTests
 			.ExecuteAsync();
 	}
 
-	// [Theory]
-	// [PotRepositoryProviders]
-	// public async Task Add_WithDuplicateId_ShouldThrow(ISutFixture<IPotRepository> sutFixture)
-	// {
-	// 	// Some adapters (e.g. the EF Core-backed SQLite one) only stage the entity in Add and
-	// 	// don't hit the database - and therefore don't surface a duplicate-key violation -
-	// 	// until changes are flushed, which for this test happens inside the fixture's own
-	// 	// ReleaseInstanceAsync rather than inside the Act delegate. So instead of capturing the
-	// 	// exception from within Act, assert over the whole pipeline, which fails regardless of
-	// 	// whether the given adapter rejects the duplicate synchronously or on flush.
-	// 	Func<Task> action = async () =>
-	// 	{
-	// 		await new GenericTest<IPotRepository>(sutFixture)
-	// 			.Arrange((repository, context) =>
-	// 			{
-	// 				Guid potId = Guid.NewGuid();
-	//
-	// 				Pot pot = new()
-	// 				{
-	// 					Id = potId,
-	// 					Name = "Original Pot",
-	// 					DisplayOrder = 1,
-	// 					StartDate = new DateOnly(2023, 1, 1),
-	// 					Currency = "USD"
-	// 				};
-	//
-	// 				repository.Add(pot);
-	// 				context.PotId = potId;
-	// 			})
-	// 			.Act((repository, context) =>
-	// 			{
-	// 				Guid potId = context.PotId;
-	//
-	// 				Pot duplicatePot = new()
-	// 				{
-	// 					Id = potId,
-	// 					Name = "Duplicate Pot",
-	// 					DisplayOrder = 2,
-	// 					StartDate = new DateOnly(2023, 1, 1),
-	// 					Currency = "USD"
-	// 				};
-	//
-	// 				repository.Add(duplicatePot);
-	// 			})
-	// 			.ExecuteAsync();
-	// 	};
-	//
-	// 	await action.Should().ThrowAsync<Exception>();
-	// }
-
 	[Theory]
-	[PotRepositoryProviders]
-	public async Task Add_WithDuplicateId_ShouldThrow(ISutFixture<IPotRepository> sutFixture)
+	[PotRepositoryEnvironments]
+	public async Task Add_WithDuplicateId_ShouldThrow(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		// Some adapters (e.g. the EF Core-backed SQLite one) only stage the entity in Add and
 		// don't hit the database - and therefore don't surface a duplicate-key violation -
-		// until changes are flushed, which for this test happens inside the fixture's own
-		// ReleaseInstanceAsync rather than inside the Act delegate. So instead of capturing the
-		// exception from within Act, assert over the whole pipeline, which fails regardless of
-		// whether the given adapter rejects the duplicate synchronously or on flush.
-		await new GenericTest<IPotRepository>(sutFixture)
-			.Arrange((repository, context) =>
+		// until changes are flushed, which for this test happens inside the environment's own
+		// ReleaseSutAsync rather than inside the Act delegate. AssertThrow captures the
+		// exception from the whole Act phase, so the test passes regardless of whether the
+		// given adapter rejects the duplicate synchronously or on flush.
+		await GenericTest.Create(environment)
+			.Arrange(async (gateway, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
@@ -395,7 +330,7 @@ public class AddTests
 					Currency = "USD"
 				};
 
-				repository.Add(pot);
+				await gateway.SeedPotsAsync([pot]);
 				context.PotId = potId;
 			})
 			.Act((repository, context) =>
