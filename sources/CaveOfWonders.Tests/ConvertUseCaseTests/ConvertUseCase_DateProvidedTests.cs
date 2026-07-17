@@ -2,8 +2,8 @@ using DustInTheWind.CaveOfWonders.Cli.Application.ConvertCurrency;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using FluentAssertions;
 using Moq;
 
@@ -19,7 +19,7 @@ public class ConvertUseCase_DateProvidedTests
 		Mock<IUnitOfWork> unitOfWork = new();
 		exchangeRateRepository = new Mock<IExchangeRateRepository>();
 
-		convertCurrencyUseCase = new(unitOfWork.Object, Mock.Of<ISystemClock>());
+		convertCurrencyUseCase = new(unitOfWork.Object, Mock.Of<IClock>());
 
 		unitOfWork
 			.SetupGet(x => x.ExchangeRateRepository)

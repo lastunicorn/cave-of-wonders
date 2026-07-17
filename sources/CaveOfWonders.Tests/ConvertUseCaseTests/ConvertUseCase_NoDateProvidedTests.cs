@@ -2,8 +2,8 @@ using DustInTheWind.CaveOfWonders.Cli.Application.ConvertCurrency;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using FluentAssertions;
 using Moq;
 
@@ -13,15 +13,15 @@ public class ConvertUseCase_NoDateProvidedTests
 {
 	private readonly ConvertCurrencyUseCase convertCurrencyUseCase;
 	private readonly Mock<IExchangeRateRepository> exchangeRateRepository;
-	private readonly Mock<ISystemClock> systemClock;
+	private readonly Mock<IClock> clock;
 
 	public ConvertUseCase_NoDateProvidedTests()
 	{
 		Mock<IUnitOfWork> unitOfWork = new();
-		systemClock = new Mock<ISystemClock>();
+		clock = new Mock<IClock>();
 		exchangeRateRepository = new Mock<IExchangeRateRepository>();
 
-		convertCurrencyUseCase = new(unitOfWork.Object, systemClock.Object);
+		convertCurrencyUseCase = new(unitOfWork.Object, clock.Object);
 
 		unitOfWork
 			.SetupGet(x => x.ExchangeRateRepository)
@@ -43,13 +43,13 @@ public class ConvertUseCase_NoDateProvidedTests
 		}
 		catch { }
 
-		systemClock.VerifyGet(x => x.Today, Times.Once);
+		clock.VerifyGet(x => x.Today, Times.Once);
 	}
 
 	[Fact]
 	public async Task HavingNoDateProvided_AndSystemDateReturnsDateAsToday_ThenExchangeRateIsRequestedForSystemDateToday()
 	{
-		systemClock
+		clock
 			.SetupGet(x => x.Today)
 			.Returns(new DateOnly(2000, 12, 04));
 
@@ -74,7 +74,7 @@ public class ConvertUseCase_NoDateProvidedTests
 	[Fact]
 	public async Task HavingNoDateProvided_AndSystemDateReturnsDateAsToday_AndExchangeRateDoesNotExistInStorage_ThenThrows()
 	{
-		systemClock
+		clock
 			.SetupGet(x => x.Today)
 			.Returns(new DateOnly(2000, 12, 04));
 
@@ -96,7 +96,7 @@ public class ConvertUseCase_NoDateProvidedTests
 	[Fact]
 	public async Task HavingNoDateProvided_AndSystemDateReturnsDateAsToday_AndExchangeRateExistsInStorage_ThenReturnsConvertedValue()
 	{
-		systemClock
+		clock
 			.SetupGet(x => x.Today)
 			.Returns(new DateOnly(2000, 12, 04));
 
@@ -130,7 +130,7 @@ public class ConvertUseCase_NoDateProvidedTests
 	[Fact]
 	public async Task HavingNoDateProvided_AndSystemDateReturnsDateAsToday_AndExchangeRateExistsInStorageForAPreviousDate_ThenReturnsConvertedValue()
 	{
-		systemClock
+		clock
 			.SetupGet(x => x.Today)
 			.Returns(new DateOnly(2000, 12, 04));
 

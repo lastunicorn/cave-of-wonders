@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using DustInTheWind.CaveOfWonders.Adapters.BnrAccess;
+using DustInTheWind.CaveOfWonders.Adapters.ClockAccess;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 using DustInTheWind.CaveOfWonders.Adapters.FileAccess;
 using DustInTheWind.CaveOfWonders.Adapters.FintownAccess;
@@ -7,9 +8,9 @@ using DustInTheWind.CaveOfWonders.Adapters.InsAccess;
 using DustInTheWind.CaveOfWonders.Adapters.LogAccess;
 using DustInTheWind.CaveOfWonders.Adapters.MintosAccess;
 using DustInTheWind.CaveOfWonders.Adapters.SpreadsheetAccess;
-using DustInTheWind.CaveOfWonders.Adapters.SystemAccess;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using DustInTheWind.CaveOfWonders.Ports.BnrAccess;
+using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.FileAccess;
 using DustInTheWind.CaveOfWonders.Ports.FintownAccess;
@@ -17,7 +18,6 @@ using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 using DustInTheWind.CaveOfWonders.Ports.LogAccess;
 using DustInTheWind.CaveOfWonders.Ports.MintosAccess;
 using DustInTheWind.CaveOfWonders.Ports.SpreadsheetAccess;
-using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR.Extensions.Autofac.DependencyInjection;
 using MediatR.Extensions.Autofac.DependencyInjection.Builder;
 using Microsoft.Extensions.Configuration;
@@ -50,7 +50,7 @@ internal static class DependenciesSetup
 
         containerBuilder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
 
-        containerBuilder.RegisterType<SystemClock>().As<ISystemClock>();
+        containerBuilder.RegisterType<SystemClock>().As<IClock>();
         containerBuilder.RegisterType<BnrService>().As<IBnrService>();
         containerBuilder.RegisterType<InsService>().As<IInsService>();
         containerBuilder.RegisterType<MintosService>().As<IMintosService>();

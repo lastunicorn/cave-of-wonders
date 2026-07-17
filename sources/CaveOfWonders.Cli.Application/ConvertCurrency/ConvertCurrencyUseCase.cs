@@ -18,8 +18,8 @@ using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ConvertCurrency;
@@ -27,17 +27,17 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ConvertCurrency;
 internal class ConvertCurrencyUseCase : IRequestHandler<ConvertCurrencyRequest, ConvertCurrencyResponse>
 {
     private readonly IUnitOfWork unitOfWork;
-    private readonly ISystemClock systemClock;
+    private readonly IClock clock;
 
-    public ConvertCurrencyUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
+    public ConvertCurrencyUseCase(IUnitOfWork unitOfWork, IClock clock)
     {
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+        this.clock = clock ?? throw new ArgumentNullException(nameof(clock));
     }
 
     public async Task<ConvertCurrencyResponse> Handle(ConvertCurrencyRequest request, CancellationToken cancellationToken)
     {
-        DateOnly dateOfExchangeRate = request.Date ?? systemClock.Today;
+        DateOnly dateOfExchangeRate = request.Date ?? clock.Today;
         ExchangeRate exchangeRate = await RetrieveExchangeRate(request.CurrencyPair, dateOfExchangeRate);
 
         return new ConvertCurrencyResponse

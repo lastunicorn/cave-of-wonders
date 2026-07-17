@@ -13,6 +13,10 @@
 		<Project Path="sources/CaveOfWonders.Adapters.BnrAccess/CaveOfWonders.Adapters.BnrAccess.csproj" />
 		<Project Path="sources/CaveOfWonders.Ports.BnrAccess/CaveOfWonders.Ports.BnrAccess.csproj" />
 	</Folder>
+	<Folder Name="/Ports/ClockAccess/">
+		<Project Path="sources/CaveOfWonders.Adapters.ClockAccess/CaveOfWonders.Adapters.ClockAccess.csproj" />
+		<Project Path="sources/CaveOfWonders.Ports.ClockAccess/CaveOfWonders.Ports.ClockAccess.csproj" />
+	</Folder>
 	<Folder Name="/Ports/DataAccess/">
 		<Project Path="sources/CaveOfWonders.Adapters.DataAccess.LiteDb/CaveOfWonders.Adapters.DataAccess.LiteDb.csproj" />
 		<Project Path="sources/CaveOfWonders.Adapters.DataAccess.SQLite/CaveOfWonders.Adapters.DataAccess.SQLite.csproj" />
@@ -42,10 +46,6 @@
 	<Folder Name="/Ports/SpreadsheetAccess/">
 		<Project Path="sources/CaveOfWonders.Adapters.SpreadsheetAccess\CaveOfWonders.Adapters.SpreadsheetAccess.csproj" />
 		<Project Path="sources/CaveOfWonders.Ports.SpreadsheetAccess\CaveOfWonders.Ports.SpreadsheetAccess.csproj" />
-	</Folder>
-	<Folder Name="/Ports/SystemAccess/">
-		<Project Path="sources/CaveOfWonders.Adapters.SystemAccess/CaveOfWonders.Adapters.SystemAccess.csproj" />
-		<Project Path="sources/CaveOfWonders.Ports.SystemAccess/CaveOfWonders.Ports.SystemAccess.csproj" />
 	</Folder>
 	<Folder Name="/Tests/">
 		<Project Path="sources/CaveOfWonders.Tests.Utils/CaveOfWonders.Tests.Utils.csproj" />

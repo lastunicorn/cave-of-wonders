@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <ItemGroup>
         <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess\CaveOfWonders.Adapters.DataAccess.Json.csproj" />
         <ProjectReference Include="..\CaveOfWonders.Adapters.FileAccess\CaveOfWonders.Adapters.FileAccess.csproj" />
-        <ProjectReference Include="..\CaveOfWonders.Adapters.SystemAccess\CaveOfWonders.Adapters.SystemAccess.csproj" />
+        <ProjectReference Include="..\CaveOfWonders.Adapters.ClockAccess\CaveOfWonders.Adapters.ClockAccess.csproj" />
         <ProjectReference Include="..\CaveOfWonders.Cli.Application\CaveOfWonders.Cli.Application.csproj" />
         <ProjectReference Include="..\CaveOfWonders.Infrastructure\CaveOfWonders.Infrastructure.csproj" />
         <ProjectReference Include="..\CaveOfWonders.Ports.BnrAccess\CaveOfWonders.Ports.BnrAccess.csproj" />
@@ -43,7 +43,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <ProjectReference Include="..\CaveOfWonders.Ports.InsAccess\CaveOfWonders.Ports.InsAccess.csproj" />
         <ProjectReference Include="..\CaveOfWonders.Ports.LogAccess\CaveOfWonders.Ports.LogAccess.csproj" />
         <ProjectReference Include="..\CaveOfWonders.Ports.SpreadsheetAccess\CaveOfWonders.Ports.SpreadsheetAccess.csproj" />
-        <ProjectReference Include="..\CaveOfWonders.Ports.SystemAccess\CaveOfWonders.Ports.SystemAccess.csproj" />
+        <ProjectReference Include="..\CaveOfWonders.Ports.ClockAccess\CaveOfWonders.Ports.ClockAccess.csproj" />
         <ProjectReference Include="..\CaveOfWonders.Adapters.BnrAccess\CaveOfWonders.Adapters.BnrAccess.csproj" />
         <ProjectReference Include="..\CaveOfWonders.Adapters.InsAccess\CaveOfWonders.Adapters.InsAccess.csproj" />
         <ProjectReference Include="..\CaveOfWonders.Adapters.LogAccess\CaveOfWonders.Adapters.LogAccess.csproj" />

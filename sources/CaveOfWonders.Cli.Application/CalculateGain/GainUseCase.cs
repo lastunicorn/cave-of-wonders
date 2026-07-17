@@ -1,8 +1,8 @@
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Infrastructure;
+using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.CalculateGain;
@@ -10,12 +10,12 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.CalculateGain;
 internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 {
 	private readonly IUnitOfWork unitOfWork;
-	private readonly ISystemClock systemClock;
+	private readonly IClock clock;
 
-	public GainUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
+	public GainUseCase(IUnitOfWork unitOfWork, IClock clock)
 	{
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-		this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+		this.clock = clock ?? throw new ArgumentNullException(nameof(clock));
 	}
 
 	public async Task<GainResponse> Handle(GainRequest request, CancellationToken cancellationToken)
@@ -56,6 +56,6 @@ internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 	{
 		return request.Month.HasValue
 			? request.Month
-			: new MonthDate(systemClock.Today);
+			: new MonthDate(clock.Today);
 	}
 }

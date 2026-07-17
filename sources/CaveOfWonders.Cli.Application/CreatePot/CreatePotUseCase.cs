@@ -15,8 +15,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.CreatePot;
@@ -24,12 +24,12 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.CreatePot;
 public class CreatePotUseCase : IRequestHandler<CreatePotRequest, CreatePotResponse>
 {
     private readonly IUnitOfWork unitOfWork;
-    private readonly ISystemClock systemClock;
+    private readonly IClock clock;
 
-    public CreatePotUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
+    public CreatePotUseCase(IUnitOfWork unitOfWork, IClock clock)
     {
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+        this.clock = clock ?? throw new ArgumentNullException(nameof(clock));
     }
 
     public async Task<CreatePotResponse> Handle(CreatePotRequest request, CancellationToken cancellationToken)
@@ -40,7 +40,7 @@ public class CreatePotUseCase : IRequestHandler<CreatePotRequest, CreatePotRespo
         if (string.IsNullOrWhiteSpace(request.Currency))
             throw new PotCurrencyNotSpecifiedException();
 
-        DateOnly startDate = request.StartDate ?? systemClock.Today;
+        DateOnly startDate = request.StartDate ?? clock.Today;
         
         Pot pot = new()
         {

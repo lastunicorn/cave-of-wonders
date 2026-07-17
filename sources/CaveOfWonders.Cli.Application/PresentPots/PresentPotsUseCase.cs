@@ -16,21 +16,21 @@
 
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 
 public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPotsResponse>
 {
-    private readonly ISystemClock systemClock;
+    private readonly IClock clock;
     private readonly IUnitOfWork unitOfWork;
     private readonly CurrenciesConvertor currenciesConverter;
 
-    public PresentPotsUseCase(ISystemClock systemClock, IUnitOfWork unitOfWork)
+    public PresentPotsUseCase(IClock clock, IUnitOfWork unitOfWork)
     {
-        this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+        this.clock = clock ?? throw new ArgumentNullException(nameof(clock));
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
         currenciesConverter = new CurrenciesConvertor(unitOfWork);
@@ -38,7 +38,7 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
 
     public async Task<PresentPotsResponse> Handle(PresentPotsRequest request, CancellationToken cancellationToken)
     {
-        DateOnly currentDate = request.Date ?? systemClock.Today;
+        DateOnly currentDate = request.Date ?? clock.Today;
         string defaultCurrency = request.Currency ?? "RON";
 
         IEnumerable<PotSnapshot> potSnapshots = await RetrievePotSnapshotsFromStorage(currentDate, request.IncludeInactive);

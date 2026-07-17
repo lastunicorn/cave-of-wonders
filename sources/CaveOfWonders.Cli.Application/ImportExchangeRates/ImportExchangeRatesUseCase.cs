@@ -16,8 +16,8 @@
 
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.BnrAccess;
+using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
@@ -26,13 +26,13 @@ internal class ImportExchangeRatesUseCase : IRequestHandler<ImportExchangeRatesR
 {
     private readonly IBnrService bnrService;
     private readonly IUnitOfWork unitOfWork;
-    private readonly ISystemClock systemClock;
+    private readonly IClock clock;
 
-    public ImportExchangeRatesUseCase(IBnrService bnrService, IUnitOfWork unitOfWork, ISystemClock systemClock)
+    public ImportExchangeRatesUseCase(IBnrService bnrService, IUnitOfWork unitOfWork, IClock clock)
     {
         this.bnrService = bnrService ?? throw new ArgumentNullException(nameof(bnrService));
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+        this.clock = clock ?? throw new ArgumentNullException(nameof(clock));
     }
 
     public async Task<ImportExchangeRatesResponse> Handle(ImportExchangeRatesRequest request, CancellationToken cancellationToken)
@@ -59,7 +59,7 @@ internal class ImportExchangeRatesUseCase : IRequestHandler<ImportExchangeRatesR
 
     private async Task<IEnumerable<BnrExchangeRate>> ImportFromWebNbrFile(ImportExchangeRatesRequest request, CancellationToken cancellationToken)
     {
-        int year = request.Year ?? systemClock.Today.Year;
+        int year = request.Year ?? clock.Today.Year;
 
         try
         {

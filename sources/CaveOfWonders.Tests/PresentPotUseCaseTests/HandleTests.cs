@@ -2,8 +2,8 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using FluentAssertions;
 using Moq;
 
@@ -17,7 +17,7 @@ public class HandleTests
 	public HandleTests()
 	{
 		Mock<IUnitOfWork> unitOfWork = new();
-		Mock<ISystemClock> systemClock = new();
+		Mock<IClock> clock = new();
 
 		potRepository = new Mock<IPotRepository>();
 
@@ -25,7 +25,7 @@ public class HandleTests
 			.Setup(x => x.PotRepository)
 			.Returns(potRepository.Object);
 
-		useCase = new PresentPotUseCase(unitOfWork.Object, systemClock.Object);
+		useCase = new PresentPotUseCase(unitOfWork.Object, clock.Object);
 	}
 
 	[Theory]

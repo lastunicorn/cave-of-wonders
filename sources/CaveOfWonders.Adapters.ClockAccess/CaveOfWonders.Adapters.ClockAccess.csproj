@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CaveOfWonders.Ports.SystemAccess\CaveOfWonders.Ports.SystemAccess.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CaveOfWonders.Ports.ClockAccess\CaveOfWonders.Ports.ClockAccess.csproj" PrivateAssets="All" />
     </ItemGroup>
 
 </Project>

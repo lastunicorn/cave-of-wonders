@@ -16,8 +16,8 @@
 
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
@@ -25,12 +25,12 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPotResponse>
 {
     private readonly IUnitOfWork unitOfWork;
-    private readonly ISystemClock systemClock;
+    private readonly IClock clock;
 
-    public PresentPotUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
+    public PresentPotUseCase(IUnitOfWork unitOfWork, IClock clock)
     {
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+        this.clock = clock ?? throw new ArgumentNullException(nameof(clock));
     }
 
     public async Task<PresentPotResponse> Handle(PresentPotRequest request, CancellationToken cancellationToken)
@@ -65,7 +65,7 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
 
             if (!request.IncludeInactivePots)
             {
-                DateOnly today = systemClock.Today;
+                DateOnly today = clock.Today;
                 pots = pots.Where(x => x.IsActive(today));
             }
 

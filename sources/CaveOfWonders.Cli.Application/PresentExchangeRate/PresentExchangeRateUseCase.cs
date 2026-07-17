@@ -16,8 +16,8 @@
 
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CaveOfWonders.Ports.SystemAccess;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
@@ -25,13 +25,13 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateRequest, PresentExchangeRateResponse>
 {
     private readonly IUnitOfWork unitOfWork;
-    private readonly ISystemClock systemClock;
+    private readonly IClock clock;
     private PresentExchangeRateResponse response;
 
-    public PresentExchangeRateUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
+    public PresentExchangeRateUseCase(IUnitOfWork unitOfWork, IClock clock)
     {
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+        this.clock = clock ?? throw new ArgumentNullException(nameof(clock));
     }
 
     public async Task<PresentExchangeRateResponse> Handle(PresentExchangeRateRequest request, CancellationToken cancellationToken)
@@ -64,7 +64,7 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
         // If currency pair provided        => 1 currency; multiple dates       => display by currency
         // If currency pair NOT provided    => multiple currencies; multiple dates       => display by currency
 
-        DateOnly dateTime = systemClock.Today;
+        DateOnly dateTime = clock.Today;
         return RetrieveByDate(currencyPairs, dateTime);
     }
 

@@ -58,7 +58,7 @@ public List<GainItem> Items { get; init; } = [];
 internal class ExampleUseCase : IRequestHandler<ExampleRequest, ExampleResponse>
 {
     private readonly IUnitOfWork unitOfWork;
-    // Add ISystemClock only when the current date/time is needed as a default.
+    // Add IClock only when the current date/time is needed as a default.
 
     public ExampleUseCase(IUnitOfWork unitOfWork)
     {
@@ -74,7 +74,7 @@ internal class ExampleUseCase : IRequestHandler<ExampleRequest, ExampleResponse>
 
 Rules:
 - `IUnitOfWork` is the only data-access dependency. Never inject individual repositories (`IGemRepository`, `IPotRepository`, etc.) directly.
-- `ISystemClock` (from `Ports.SystemAccess`) is the only acceptable source of the current date or time.
+- `IClock` (from `Ports.ClockAccess`) is the only acceptable source of the current date or time.
 - Other port interfaces (`IBnrService`, `IMintosService`, `IFintownService`, etc.) may be injected when the use case explicitly orchestrates an external system.
 - All constructor parameters are null-checked with `?? throw new ArgumentNullException(nameof(...))`.
 
