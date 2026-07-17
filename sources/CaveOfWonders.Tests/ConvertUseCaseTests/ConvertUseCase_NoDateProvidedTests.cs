@@ -13,12 +13,12 @@ public class ConvertUseCase_NoDateProvidedTests
 {
 	private readonly ConvertCurrencyUseCase convertCurrencyUseCase;
 	private readonly Mock<IExchangeRateRepository> exchangeRateRepository;
-	private readonly Mock<IClock> clock;
+	private readonly Mock<ISystemClock> clock;
 
 	public ConvertUseCase_NoDateProvidedTests()
 	{
 		Mock<IUnitOfWork> unitOfWork = new();
-		clock = new Mock<IClock>();
+		clock = new Mock<ISystemClock>();
 		exchangeRateRepository = new Mock<IExchangeRateRepository>();
 
 		convertCurrencyUseCase = new(unitOfWork.Object, clock.Object);

@@ -10,12 +10,12 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.CalculateGain;
 internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 {
 	private readonly IUnitOfWork unitOfWork;
-	private readonly IClock clock;
+	private readonly ISystemClock systemClock;
 
-	public GainUseCase(IUnitOfWork unitOfWork, IClock clock)
+	public GainUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
 	{
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-		this.clock = clock ?? throw new ArgumentNullException(nameof(clock));
+		this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
 	}
 
 	public async Task<GainResponse> Handle(GainRequest request, CancellationToken cancellationToken)
@@ -56,6 +56,6 @@ internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 	{
 		return request.Month.HasValue
 			? request.Month
-			: new MonthDate(clock.Today);
+			: new MonthDate(systemClock.Today);
 	}
 }

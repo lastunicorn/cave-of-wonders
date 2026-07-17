@@ -25,12 +25,12 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPotResponse>
 {
     private readonly IUnitOfWork unitOfWork;
-    private readonly IClock clock;
+    private readonly ISystemClock systemClock;
 
-    public PresentPotUseCase(IUnitOfWork unitOfWork, IClock clock)
+    public PresentPotUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
     {
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        this.clock = clock ?? throw new ArgumentNullException(nameof(clock));
+        this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
     }
 
     public async Task<PresentPotResponse> Handle(PresentPotRequest request, CancellationToken cancellationToken)
@@ -65,7 +65,7 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
 
             if (!request.IncludeInactivePots)
             {
-                DateOnly today = clock.Today;
+                DateOnly today = systemClock.Today;
                 pots = pots.Where(x => x.IsActive(today));
             }
 

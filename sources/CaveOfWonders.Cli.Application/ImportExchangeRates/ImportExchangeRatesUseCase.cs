@@ -26,13 +26,13 @@ internal class ImportExchangeRatesUseCase : IRequestHandler<ImportExchangeRatesR
 {
     private readonly IBnrService bnrService;
     private readonly IUnitOfWork unitOfWork;
-    private readonly IClock clock;
+    private readonly ISystemClock systemClock;
 
-    public ImportExchangeRatesUseCase(IBnrService bnrService, IUnitOfWork unitOfWork, IClock clock)
+    public ImportExchangeRatesUseCase(IBnrService bnrService, IUnitOfWork unitOfWork, ISystemClock systemClock)
     {
         this.bnrService = bnrService ?? throw new ArgumentNullException(nameof(bnrService));
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        this.clock = clock ?? throw new ArgumentNullException(nameof(clock));
+        this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
     }
 
     public async Task<ImportExchangeRatesResponse> Handle(ImportExchangeRatesRequest request, CancellationToken cancellationToken)
@@ -59,7 +59,7 @@ internal class ImportExchangeRatesUseCase : IRequestHandler<ImportExchangeRatesR
 
     private async Task<IEnumerable<BnrExchangeRate>> ImportFromWebNbrFile(ImportExchangeRatesRequest request, CancellationToken cancellationToken)
     {
-        int year = request.Year ?? clock.Today.Year;
+        int year = request.Year ?? systemClock.Today.Year;
 
         try
         {

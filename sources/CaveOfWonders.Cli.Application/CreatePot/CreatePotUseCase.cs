@@ -24,12 +24,12 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.CreatePot;
 public class CreatePotUseCase : IRequestHandler<CreatePotRequest, CreatePotResponse>
 {
     private readonly IUnitOfWork unitOfWork;
-    private readonly IClock clock;
+    private readonly ISystemClock systemClock;
 
-    public CreatePotUseCase(IUnitOfWork unitOfWork, IClock clock)
+    public CreatePotUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
     {
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        this.clock = clock ?? throw new ArgumentNullException(nameof(clock));
+        this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
     }
 
     public async Task<CreatePotResponse> Handle(CreatePotRequest request, CancellationToken cancellationToken)
@@ -40,7 +40,7 @@ public class CreatePotUseCase : IRequestHandler<CreatePotRequest, CreatePotRespo
         if (string.IsNullOrWhiteSpace(request.Currency))
             throw new PotCurrencyNotSpecifiedException();
 
-        DateOnly startDate = request.StartDate ?? clock.Today;
+        DateOnly startDate = request.StartDate ?? systemClock.Today;
         
         Pot pot = new()
         {

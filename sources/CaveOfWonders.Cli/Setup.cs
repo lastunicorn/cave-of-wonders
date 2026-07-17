@@ -50,7 +50,7 @@ internal static class DependenciesSetup
 
         containerBuilder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
 
-        containerBuilder.RegisterType<SystemClock>().As<IClock>();
+        containerBuilder.RegisterType<SystemClock>().As<ISystemClock>();
         containerBuilder.RegisterType<BnrService>().As<IBnrService>();
         containerBuilder.RegisterType<InsService>().As<IInsService>();
         containerBuilder.RegisterType<MintosService>().As<IMintosService>();

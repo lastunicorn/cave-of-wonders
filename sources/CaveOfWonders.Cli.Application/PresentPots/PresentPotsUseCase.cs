@@ -24,13 +24,13 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 
 public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPotsResponse>
 {
-    private readonly IClock clock;
+    private readonly ISystemClock systemClock;
     private readonly IUnitOfWork unitOfWork;
     private readonly CurrenciesConvertor currenciesConverter;
 
-    public PresentPotsUseCase(IClock clock, IUnitOfWork unitOfWork)
+    public PresentPotsUseCase(ISystemClock systemClock, IUnitOfWork unitOfWork)
     {
-        this.clock = clock ?? throw new ArgumentNullException(nameof(clock));
+        this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
         currenciesConverter = new CurrenciesConvertor(unitOfWork);
@@ -38,7 +38,7 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
 
     public async Task<PresentPotsResponse> Handle(PresentPotsRequest request, CancellationToken cancellationToken)
     {
-        DateOnly currentDate = request.Date ?? clock.Today;
+        DateOnly currentDate = request.Date ?? systemClock.Today;
         string defaultCurrency = request.Currency ?? "RON";
 
         IEnumerable<PotSnapshot> potSnapshots = await RetrievePotSnapshotsFromStorage(currentDate, request.IncludeInactive);

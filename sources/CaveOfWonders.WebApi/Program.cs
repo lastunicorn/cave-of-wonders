@@ -73,7 +73,7 @@ internal static class Program
             return new Database(connectionString);
         });
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-        builder.Services.AddSingleton<IClock, SystemClock>();
+        builder.Services.AddSingleton<ISystemClock, SystemClock>();
         builder.Services.AddSingleton<IBnrService, BnrService>();
         builder.Services.AddSingleton<IInsService, InsService>();
         builder.Services.AddSingleton<ISheets, Sheets>();

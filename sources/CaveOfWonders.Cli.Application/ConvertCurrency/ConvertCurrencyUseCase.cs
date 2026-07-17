@@ -27,17 +27,17 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ConvertCurrency;
 internal class ConvertCurrencyUseCase : IRequestHandler<ConvertCurrencyRequest, ConvertCurrencyResponse>
 {
     private readonly IUnitOfWork unitOfWork;
-    private readonly IClock clock;
+    private readonly ISystemClock systemClock;
 
-    public ConvertCurrencyUseCase(IUnitOfWork unitOfWork, IClock clock)
+    public ConvertCurrencyUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
     {
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        this.clock = clock ?? throw new ArgumentNullException(nameof(clock));
+        this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
     }
 
     public async Task<ConvertCurrencyResponse> Handle(ConvertCurrencyRequest request, CancellationToken cancellationToken)
     {
-        DateOnly dateOfExchangeRate = request.Date ?? clock.Today;
+        DateOnly dateOfExchangeRate = request.Date ?? systemClock.Today;
         ExchangeRate exchangeRate = await RetrieveExchangeRate(request.CurrencyPair, dateOfExchangeRate);
 
         return new ConvertCurrencyResponse

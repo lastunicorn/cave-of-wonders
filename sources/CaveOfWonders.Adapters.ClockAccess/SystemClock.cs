@@ -2,9 +2,9 @@
 
 namespace DustInTheWind.CaveOfWonders.Adapters.ClockAccess;
 
-public class SystemClock : IClock
+public class SystemClock : ISystemClock
 {
-    public DateTime Now => DateTime.Now;
+	public DateTime Now => DateTime.Now;
 
-    public DateOnly Today => DateOnly.FromDateTime(DateTime.Today);
+	public DateOnly Today => DateOnly.FromDateTime(DateTime.Today);
 }

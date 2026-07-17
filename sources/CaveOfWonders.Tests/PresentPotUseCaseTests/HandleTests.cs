@@ -17,7 +17,7 @@ public class HandleTests
 	public HandleTests()
 	{
 		Mock<IUnitOfWork> unitOfWork = new();
-		Mock<IClock> clock = new();
+		Mock<ISystemClock> clock = new();
 
 		potRepository = new Mock<IPotRepository>();
 

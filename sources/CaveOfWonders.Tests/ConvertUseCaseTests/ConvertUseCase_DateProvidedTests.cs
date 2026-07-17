@@ -19,7 +19,7 @@ public class ConvertUseCase_DateProvidedTests
 		Mock<IUnitOfWork> unitOfWork = new();
 		exchangeRateRepository = new Mock<IExchangeRateRepository>();
 
-		convertCurrencyUseCase = new(unitOfWork.Object, Mock.Of<IClock>());
+		convertCurrencyUseCase = new(unitOfWork.Object, Mock.Of<ISystemClock>());
 
 		unitOfWork
 			.SetupGet(x => x.ExchangeRateRepository)
