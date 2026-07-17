@@ -2,7 +2,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 
 /// <summary>
 /// A fluent builder that runs an Arrange/Act/Assert integration test in which the phase/access-path rule is enforced
-/// by the compiler: the Arrange and Assert lambdas receive a back-door storage gateway (<typeparamref name="TGateway"/>)
+/// by the compiler: the Arrange and Assert lambdas receive a back door (<typeparamref name="TBackDoor"/>)
 /// that seeds and inspects the underlying storage directly, while only the Act lambda receives the system under test
 /// (<typeparamref name="TSut"/>). Arrange cannot touch the SUT and Act cannot touch the back door, so a mutation test
 /// verifies what was actually persisted instead of round-tripping through the SUT's own read path.
@@ -10,9 +10,9 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// <remarks>
 /// <para>
 /// Each phase is configured independently and executed only once <see cref="ExecuteAsync"/> is called. Every phase
-/// obtains and releases its own session via the injected <see cref="ITestEnvironment{TSut,TGateway}"/>: the gateway
-/// session (<see cref="ITestEnvironment{TSut,TGateway}.CreateGatewayAsync"/>/<see cref="ITestEnvironment{TSut,TGateway}.CloseGatewayAsync"/>)
-/// around Arrange and Assert, and the SUT session (<see cref="ITestEnvironment{TSut,TGateway}.CreateSutAsync"/>/<see cref="ITestEnvironment{TSut,TGateway}.CloseSutAsync"/>)
+/// obtains and releases its own session via the injected <see cref="ITestEnvironment{TSut,TBackDoor}"/>: the back-door
+/// session (<see cref="ITestEnvironment{TSut,TBackDoor}.CreateBackDoorAsync"/>/<see cref="ITestEnvironment{TSut,TBackDoor}.CloseBackDoorAsync"/>)
+/// around Arrange and Assert, and the SUT session (<see cref="ITestEnvironment{TSut,TBackDoor}.CreateSutAsync"/>/<see cref="ITestEnvironment{TSut,TBackDoor}.CloseSutAsync"/>)
 /// around Act. For a SUT backed by persistent storage, this forces data to be actually persisted to and reloaded
 /// between phases.
 /// </para>
@@ -29,32 +29,32 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// dedicated fields on the test class.
 /// </para>
 /// <para>
-/// The environment's <see cref="IDisposable.Dispose"/> and <see cref="ITestEnvironment{TSut,TGateway}.ResetAsync"/>
+/// The environment's <see cref="IDisposable.Dispose"/> and <see cref="ITestEnvironment{TSut,TBackDoor}.ResetAsync"/>
 /// are both always called in a <c>finally</c> block, so a resource left open by a failed phase is released and the
 /// external resource created for the run is reset/removed, even if one of the phases throws.
 /// </para>
 /// </remarks>
-public class GenericTest<TSut, TGateway>
+public class GenericTest<TSut, TBackDoor>
 {
-	private readonly ITestEnvironment<TSut, TGateway> environment;
+	private readonly ITestEnvironment<TSut, TBackDoor> environment;
 
-	private Func<TGateway, dynamic, Task> arrangeAction1;
-	private Action<TGateway, dynamic> arrangeAction2;
+	private Func<TBackDoor, dynamic, Task> arrangeAction1;
+	private Action<TBackDoor, dynamic> arrangeAction2;
 
 	private Func<TSut, dynamic, Task> actAction1;
 	private Action<TSut, dynamic> actAction2;
 
-	private Func<TGateway, dynamic, Task> assertAction1;
-	private Action<TGateway, dynamic> assertAction2;
+	private Func<TBackDoor, dynamic, Task> assertAction1;
+	private Action<TBackDoor, dynamic> assertAction2;
 
 	private Action<Exception> errorHandler;
 
-	public GenericTest(ITestEnvironment<TSut, TGateway> environment)
+	public GenericTest(ITestEnvironment<TSut, TBackDoor> environment)
 	{
 		this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
 	}
 
-	public GenericTest<TSut, TGateway> Arrange(Func<TGateway, dynamic, Task> action)
+	public GenericTest<TSut, TBackDoor> Arrange(Func<TBackDoor, dynamic, Task> action)
 	{
 		if (arrangeAction1 != null || arrangeAction2 != null)
 			throw new InvalidOperationException("Arrange can only be called once.");
@@ -63,7 +63,7 @@ public class GenericTest<TSut, TGateway>
 		return this;
 	}
 
-	public GenericTest<TSut, TGateway> Arrange(Action<TGateway, dynamic> action)
+	public GenericTest<TSut, TBackDoor> Arrange(Action<TBackDoor, dynamic> action)
 	{
 		if (arrangeAction1 != null || arrangeAction2 != null)
 			throw new InvalidOperationException("Arrange can only be called once.");
@@ -72,7 +72,7 @@ public class GenericTest<TSut, TGateway>
 		return this;
 	}
 
-	public GenericTest<TSut, TGateway> Act(Func<TSut, dynamic, Task> action)
+	public GenericTest<TSut, TBackDoor> Act(Func<TSut, dynamic, Task> action)
 	{
 		if (actAction1 != null || actAction2 != null)
 			throw new InvalidOperationException("Act can only be called once.");
@@ -81,7 +81,7 @@ public class GenericTest<TSut, TGateway>
 		return this;
 	}
 
-	public GenericTest<TSut, TGateway> Act(Action<TSut, dynamic> action)
+	public GenericTest<TSut, TBackDoor> Act(Action<TSut, dynamic> action)
 	{
 		if (actAction1 != null || actAction2 != null)
 			throw new InvalidOperationException("Act can only be called once.");
@@ -90,7 +90,7 @@ public class GenericTest<TSut, TGateway>
 		return this;
 	}
 
-	public GenericTest<TSut, TGateway> Assert(Func<TGateway, dynamic, Task> action)
+	public GenericTest<TSut, TBackDoor> Assert(Func<TBackDoor, dynamic, Task> action)
 	{
 		if (assertAction1 != null || assertAction2 != null)
 			throw new InvalidOperationException("Assert can only be called once.");
@@ -99,7 +99,7 @@ public class GenericTest<TSut, TGateway>
 		return this;
 	}
 
-	public GenericTest<TSut, TGateway> Assert(Action<TGateway, dynamic> action)
+	public GenericTest<TSut, TBackDoor> Assert(Action<TBackDoor, dynamic> action)
 	{
 		if (assertAction1 != null || assertAction2 != null)
 			throw new InvalidOperationException("Assert can only be called once.");
@@ -108,7 +108,7 @@ public class GenericTest<TSut, TGateway>
 		return this;
 	}
 
-	public GenericTest<TSut, TGateway> AssertThrow(Action<Exception> errorHandler)
+	public GenericTest<TSut, TBackDoor> AssertThrow(Action<Exception> errorHandler)
 	{
 		this.errorHandler = errorHandler ?? throw new ArgumentNullException(nameof(errorHandler));
 		return this;
@@ -122,16 +122,16 @@ public class GenericTest<TSut, TGateway>
 
 			if (arrangeAction1 != null)
 			{
-				await environment.CreateGatewayAsync(cancellationToken);
-				await arrangeAction1(environment.Gateway, context);
-				await environment.CloseGatewayAsync(cancellationToken);
+				await environment.CreateBackDoorAsync(cancellationToken);
+				await arrangeAction1(environment.BackDoor, context);
+				await environment.CloseBackDoorAsync(cancellationToken);
 			}
 
 			if (arrangeAction2 != null)
 			{
-				await environment.CreateGatewayAsync(cancellationToken);
-				arrangeAction2(environment.Gateway, context);
-				await environment.CloseGatewayAsync(cancellationToken);
+				await environment.CreateBackDoorAsync(cancellationToken);
+				arrangeAction2(environment.BackDoor, context);
+				await environment.CloseBackDoorAsync(cancellationToken);
 			}
 
 			try
@@ -165,16 +165,16 @@ public class GenericTest<TSut, TGateway>
 
 			if (assertAction1 != null)
 			{
-				await environment.CreateGatewayAsync(cancellationToken);
-				await assertAction1(environment.Gateway, context);
-				await environment.CloseGatewayAsync(cancellationToken);
+				await environment.CreateBackDoorAsync(cancellationToken);
+				await assertAction1(environment.BackDoor, context);
+				await environment.CloseBackDoorAsync(cancellationToken);
 			}
 
 			if (assertAction2 != null)
 			{
-				await environment.CreateGatewayAsync(cancellationToken);
-				assertAction2(environment.Gateway, context);
-				await environment.CloseGatewayAsync(cancellationToken);
+				await environment.CreateBackDoorAsync(cancellationToken);
+				assertAction2(environment.BackDoor, context);
+				await environment.CloseBackDoorAsync(cancellationToken);
 			}
 
 			if (errorHandler != null)

@@ -9,8 +9,8 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Average
 public class AddTests
 {
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task Add_WithValidAverageWage_ShouldPersistAverageWage(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task Add_WithValidAverageWage_ShouldPersistAverageWage(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -24,9 +24,9 @@ public class AddTests
 
 				repository.Add(averageWage);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<AverageWage> averageWages = await gateway.GetAllAverageWagesAsync();
+				List<AverageWage> averageWages = await backDoor.GetAllAverageWagesAsync();
 
 				averageWages.Should().HaveCount(1);
 				AverageWage averageWage = averageWages.First();
@@ -38,8 +38,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task Add_WithNullAverageWage_ShouldThrowArgumentNullException(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task Add_WithNullAverageWage_ShouldThrowArgumentNullException(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -54,8 +54,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task Add_WithMultipleAverageWageRecords_ShouldPersistAllAverageWageRecords(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task Add_WithMultipleAverageWageRecords_ShouldPersistAllAverageWageRecords(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -85,9 +85,9 @@ public class AddTests
 				repository.Add(averageWage2022);
 				repository.Add(averageWage2023);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<AverageWage> averageWages = await gateway.GetAllAverageWagesAsync();
+				List<AverageWage> averageWages = await backDoor.GetAllAverageWagesAsync();
 
 				averageWages.Should().HaveCount(3);
 				averageWages.Should().ContainSingle(x => x.Year == 2021 && x.GrossValue == 5500.0m && x.NetValue == 3300.0m);
@@ -98,11 +98,11 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task Add_ToDatabaseWithExistingRecords_ShouldPersistBothOldAndNewRecords(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task Add_ToDatabaseWithExistingRecords_ShouldPersistBothOldAndNewRecords(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				AverageWage averageWageInDb = new()
 				{
@@ -111,7 +111,7 @@ public class AddTests
 					NetValue = 3300.0m
 				};
 
-				await gateway.SeedAverageWagesAsync([averageWageInDb]);
+				await backDoor.SeedAverageWagesAsync([averageWageInDb]);
 			})
 			.Act((repository, context) =>
 			{
@@ -124,9 +124,9 @@ public class AddTests
 
 				repository.Add(newAverageWage);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<AverageWage> averageWages = await gateway.GetAllAverageWagesAsync();
+				List<AverageWage> averageWages = await backDoor.GetAllAverageWagesAsync();
 
 				averageWages.Should().HaveCount(2);
 				averageWages.Should().ContainSingle(x => x.Year == 2021 && x.GrossValue == 5500.0m && x.NetValue == 3300.0m);
@@ -136,8 +136,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task Add_WithDecimalValues_ShouldPreserveDecimalPrecision(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task Add_WithDecimalValues_ShouldPreserveDecimalPrecision(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -151,9 +151,9 @@ public class AddTests
 
 				repository.Add(averageWage);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<AverageWage> averageWages = await gateway.GetAllAverageWagesAsync();
+				List<AverageWage> averageWages = await backDoor.GetAllAverageWagesAsync();
 
 				averageWages.Should().HaveCount(1);
 				AverageWage averageWage = averageWages.First();
@@ -164,8 +164,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task Add_WithZeroValues_ShouldPersistZeroValues(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task Add_WithZeroValues_ShouldPersistZeroValues(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -179,9 +179,9 @@ public class AddTests
 
 				repository.Add(averageWage);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<AverageWage> averageWages = await gateway.GetAllAverageWagesAsync();
+				List<AverageWage> averageWages = await backDoor.GetAllAverageWagesAsync();
 
 				averageWages.Should().HaveCount(1);
 				AverageWage averageWage = averageWages.First();
@@ -192,8 +192,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task Add_WithNullGrossValue_ShouldPersistNullGrossValue(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task Add_WithNullGrossValue_ShouldPersistNullGrossValue(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -207,9 +207,9 @@ public class AddTests
 
 				repository.Add(averageWage);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<AverageWage> averageWages = await gateway.GetAllAverageWagesAsync();
+				List<AverageWage> averageWages = await backDoor.GetAllAverageWagesAsync();
 
 				averageWages.Should().HaveCount(1);
 				AverageWage averageWage = averageWages.First();
@@ -220,8 +220,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task Add_WithNullNetValue_ShouldPersistNullNetValue(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task Add_WithNullNetValue_ShouldPersistNullNetValue(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -235,9 +235,9 @@ public class AddTests
 
 				repository.Add(averageWage);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<AverageWage> averageWages = await gateway.GetAllAverageWagesAsync();
+				List<AverageWage> averageWages = await backDoor.GetAllAverageWagesAsync();
 
 				averageWages.Should().HaveCount(1);
 				AverageWage averageWage = averageWages.First();
@@ -248,8 +248,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task Add_WithBothValuesNull_ShouldPersistRecordWithNullValues(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task Add_WithBothValuesNull_ShouldPersistRecordWithNullValues(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -263,9 +263,9 @@ public class AddTests
 
 				repository.Add(averageWage);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<AverageWage> averageWages = await gateway.GetAllAverageWagesAsync();
+				List<AverageWage> averageWages = await backDoor.GetAllAverageWagesAsync();
 
 				averageWages.Should().HaveCount(1);
 				AverageWage averageWage = averageWages.First();
@@ -278,8 +278,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task Add_WithNegativeValues_ShouldPersistNegativeValues(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task Add_WithNegativeValues_ShouldPersistNegativeValues(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -293,9 +293,9 @@ public class AddTests
 
 				repository.Add(averageWage);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<AverageWage> averageWages = await gateway.GetAllAverageWagesAsync();
+				List<AverageWage> averageWages = await backDoor.GetAllAverageWagesAsync();
 
 				averageWages.Should().HaveCount(1);
 				AverageWage averageWage = averageWages.First();

@@ -9,8 +9,8 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Average
 public class DeleteTests
 {
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task Delete_WithNullAverageWage_ShouldThrowArgumentNullException(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task Delete_WithNullAverageWage_ShouldThrowArgumentNullException(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -25,11 +25,11 @@ public class DeleteTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task Delete_WithExistingRecord_ShouldRemoveIt(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task Delete_WithExistingRecord_ShouldRemoveIt(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				AverageWage averageWageInDb = new()
 				{
@@ -38,7 +38,7 @@ public class DeleteTests
 					NetValue = 4123.75m
 				};
 
-				await gateway.SeedAverageWagesAsync([averageWageInDb]);
+				await backDoor.SeedAverageWagesAsync([averageWageInDb]);
 			})
 			.Act((repository, context) =>
 			{
@@ -51,20 +51,20 @@ public class DeleteTests
 
 				repository.Delete(averageWageToDelete);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<AverageWage> averageWages = await gateway.GetAllAverageWagesAsync();
+				List<AverageWage> averageWages = await backDoor.GetAllAverageWagesAsync();
 				averageWages.Should().BeEmpty();
 			})
 			.ExecuteAsync();
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task Delete_WithRecordFetchedThroughGetAsync_ShouldRemoveIt(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task Delete_WithRecordFetchedThroughGetAsync_ShouldRemoveIt(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				AverageWage averageWageInDb = new()
 				{
@@ -73,27 +73,27 @@ public class DeleteTests
 					NetValue = 4123.75m
 				};
 
-				await gateway.SeedAverageWagesAsync([averageWageInDb]);
+				await backDoor.SeedAverageWagesAsync([averageWageInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				AverageWage fetchedAverageWage = await repository.GetAsync(2023, CancellationToken.None);
 				repository.Delete(fetchedAverageWage);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<AverageWage> averageWages = await gateway.GetAllAverageWagesAsync();
+				List<AverageWage> averageWages = await backDoor.GetAllAverageWagesAsync();
 				averageWages.Should().BeEmpty();
 			})
 			.ExecuteAsync();
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task Delete_WhenRecordDoesNotExist_ShouldNotThrowAndLeaveDatabaseUnchanged(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task Delete_WhenRecordDoesNotExist_ShouldNotThrowAndLeaveDatabaseUnchanged(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				AverageWage averageWageInDb = new()
 				{
@@ -102,7 +102,7 @@ public class DeleteTests
 					NetValue = 4123.75m
 				};
 
-				await gateway.SeedAverageWagesAsync([averageWageInDb]);
+				await backDoor.SeedAverageWagesAsync([averageWageInDb]);
 			})
 			.Act((repository, context) =>
 			{
@@ -115,9 +115,9 @@ public class DeleteTests
 
 				repository.Delete(nonExistentAverageWage);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<AverageWage> averageWages = await gateway.GetAllAverageWagesAsync();
+				List<AverageWage> averageWages = await backDoor.GetAllAverageWagesAsync();
 
 				averageWages.Should().HaveCount(1);
 				averageWages.Should().ContainSingle(x => x.Year == 2023 && x.GrossValue == 6789.50m && x.NetValue == 4123.75m);
@@ -126,8 +126,8 @@ public class DeleteTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task Delete_WhenDatabaseIsEmpty_ShouldNotThrow(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task Delete_WhenDatabaseIsEmpty_ShouldNotThrow(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -141,20 +141,20 @@ public class DeleteTests
 
 				repository.Delete(nonExistentAverageWage);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<AverageWage> averageWages = await gateway.GetAllAverageWagesAsync();
+				List<AverageWage> averageWages = await backDoor.GetAllAverageWagesAsync();
 				averageWages.Should().BeEmpty();
 			})
 			.ExecuteAsync();
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task Delete_WithMultipleRecords_ShouldRemoveOnlyTheSpecifiedRecord(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task Delete_WithMultipleRecords_ShouldRemoveOnlyTheSpecifiedRecord(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				AverageWage averageWage2021 = new()
 				{
@@ -177,7 +177,7 @@ public class DeleteTests
 					NetValue = 4123.75m
 				};
 
-				await gateway.SeedAverageWagesAsync([averageWage2021, averageWage2022, averageWage2023]);
+				await backDoor.SeedAverageWagesAsync([averageWage2021, averageWage2022, averageWage2023]);
 			})
 			.Act((repository, context) =>
 			{
@@ -190,9 +190,9 @@ public class DeleteTests
 
 				repository.Delete(averageWageToDelete);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<AverageWage> averageWages = await gateway.GetAllAverageWagesAsync();
+				List<AverageWage> averageWages = await backDoor.GetAllAverageWagesAsync();
 
 				averageWages.Should().HaveCount(2);
 				averageWages.Should().ContainSingle(x => x.Year == 2021 && x.GrossValue == 5500.0m && x.NetValue == 3300.0m);
@@ -203,11 +203,11 @@ public class DeleteTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task Delete_WithRecordHavingNullValues_ShouldRemoveIt(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task Delete_WithRecordHavingNullValues_ShouldRemoveIt(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				AverageWage averageWageInDb = new()
 				{
@@ -216,7 +216,7 @@ public class DeleteTests
 					NetValue = null
 				};
 
-				await gateway.SeedAverageWagesAsync([averageWageInDb]);
+				await backDoor.SeedAverageWagesAsync([averageWageInDb]);
 			})
 			.Act((repository, context) =>
 			{
@@ -229,20 +229,20 @@ public class DeleteTests
 
 				repository.Delete(averageWageToDelete);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<AverageWage> averageWages = await gateway.GetAllAverageWagesAsync();
+				List<AverageWage> averageWages = await backDoor.GetAllAverageWagesAsync();
 				averageWages.Should().BeEmpty();
 			})
 			.ExecuteAsync();
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task Delete_WhenAllRecordsAreDeleted_ShouldLeaveDatabaseEmpty(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task Delete_WhenAllRecordsAreDeleted_ShouldLeaveDatabaseEmpty(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				AverageWage averageWage2021 = new()
 				{
@@ -258,7 +258,7 @@ public class DeleteTests
 					NetValue = 3700.50m
 				};
 
-				await gateway.SeedAverageWagesAsync([averageWage2021, averageWage2022]);
+				await backDoor.SeedAverageWagesAsync([averageWage2021, averageWage2022]);
 			})
 			.Act(async (repository, context) =>
 			{
@@ -268,9 +268,9 @@ public class DeleteTests
 				repository.Delete(fetched2021);
 				repository.Delete(fetched2022);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<AverageWage> averageWages = await gateway.GetAllAverageWagesAsync();
+				List<AverageWage> averageWages = await backDoor.GetAllAverageWagesAsync();
 				averageWages.Should().BeEmpty();
 			})
 			.ExecuteAsync();

@@ -18,7 +18,7 @@ internal sealed class JsonTempDatabase : IDisposable
 	/// <summary>
 	/// Opens an additional, independent session over the same database directory. Unlike <see cref="OpenAsync"/>,
 	/// the returned <c>Database</c> is not tracked by this instance; the caller owns it and is
-	/// responsible for saving it. Used by storage gateways that must not share the SUT's session.
+	/// responsible for saving it. Used by storage back doors that must not share the SUT's session.
 	/// </summary>
 	public async Task<Database> CreateSessionAsync(CancellationToken cancellationToken = default)
 	{

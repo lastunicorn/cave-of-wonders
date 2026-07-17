@@ -9,8 +9,8 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.CpiRepo
 public class AddTests
 {
 	[Theory]
-	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
-	public async Task Add_WithValidCpi_ShouldPersistCpi(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
+	[TestEnvironments<ICpiRepository, ITestBackDoor>]
+	public async Task Add_WithValidCpi_ShouldPersistCpi(ITestEnvironment<ICpiRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -23,9 +23,9 @@ public class AddTests
 
 				repository.Add(cpi);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<Cpi> cpiRecords = await gateway.GetAllCpisAsync();
+				List<Cpi> cpiRecords = await backDoor.GetAllCpisAsync();
 
 				cpiRecords.Should().HaveCount(1);
 				Cpi cpi = cpiRecords.First();
@@ -36,8 +36,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
-	public async Task Add_WithNullCpi_ShouldThrowArgumentNullException(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
+	[TestEnvironments<ICpiRepository, ITestBackDoor>]
+	public async Task Add_WithNullCpi_ShouldThrowArgumentNullException(ITestEnvironment<ICpiRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -52,8 +52,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
-	public async Task Add_WithMultipleCpiRecords_ShouldPersistAllCpiRecords(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
+	[TestEnvironments<ICpiRepository, ITestBackDoor>]
+	public async Task Add_WithMultipleCpiRecords_ShouldPersistAllCpiRecords(ITestEnvironment<ICpiRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -80,9 +80,9 @@ public class AddTests
 				repository.Add(cpi2022);
 				repository.Add(cpi2023);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<Cpi> cpiRecords = await gateway.GetAllCpisAsync();
+				List<Cpi> cpiRecords = await backDoor.GetAllCpisAsync();
 
 				cpiRecords.Should().HaveCount(3);
 				cpiRecords.Should().ContainSingle(x => x.Year == 2021 && x.Value == 100.0m);
@@ -93,11 +93,11 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
-	public async Task Add_WithDuplicateYear_ShouldThrow(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
+	[TestEnvironments<ICpiRepository, ITestBackDoor>]
+	public async Task Add_WithDuplicateYear_ShouldThrow(ITestEnvironment<ICpiRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Cpi cpi = new()
 				{
@@ -105,7 +105,7 @@ public class AddTests
 					Value = 105.5m
 				};
 
-				await gateway.SeedCpisAsync([cpi]);
+				await backDoor.SeedCpisAsync([cpi]);
 			})
 			.Act((repository, context) =>
 			{
@@ -125,8 +125,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
-	public async Task Add_WithDecimalValue_ShouldPreserveDecimalPrecision(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
+	[TestEnvironments<ICpiRepository, ITestBackDoor>]
+	public async Task Add_WithDecimalValue_ShouldPreserveDecimalPrecision(ITestEnvironment<ICpiRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -139,9 +139,9 @@ public class AddTests
 
 				repository.Add(cpi);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<Cpi> cpiRecords = await gateway.GetAllCpisAsync();
+				List<Cpi> cpiRecords = await backDoor.GetAllCpisAsync();
 
 				cpiRecords.Should().HaveCount(1);
 				cpiRecords.First().Value.Should().Be(123.456789m);
@@ -150,8 +150,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
-	public async Task Add_WithZeroValue_ShouldPersistZeroValue(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
+	[TestEnvironments<ICpiRepository, ITestBackDoor>]
+	public async Task Add_WithZeroValue_ShouldPersistZeroValue(ITestEnvironment<ICpiRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -164,9 +164,9 @@ public class AddTests
 
 				repository.Add(cpi);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<Cpi> cpiRecords = await gateway.GetAllCpisAsync();
+				List<Cpi> cpiRecords = await backDoor.GetAllCpisAsync();
 
 				cpiRecords.Should().HaveCount(1);
 				cpiRecords.First().Value.Should().Be(0m);
@@ -175,8 +175,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
-	public async Task Add_WithNegativeValue_ShouldPersistNegativeValue(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
+	[TestEnvironments<ICpiRepository, ITestBackDoor>]
+	public async Task Add_WithNegativeValue_ShouldPersistNegativeValue(ITestEnvironment<ICpiRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -189,9 +189,9 @@ public class AddTests
 
 				repository.Add(cpi);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<Cpi> cpiRecords = await gateway.GetAllCpisAsync();
+				List<Cpi> cpiRecords = await backDoor.GetAllCpisAsync();
 
 				cpiRecords.Should().HaveCount(1);
 				cpiRecords.First().Value.Should().Be(-2.4m);

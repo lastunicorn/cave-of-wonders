@@ -10,15 +10,15 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.GemRepo
 public class GetByExternalIdAsyncTests
 {
 	[Theory]
-	[TestEnvironments<IGemRepository, IGemStorageGateway>]
-	public async Task GetByExternalIdAsync_WhenDatabaseIsEmpty_ShouldReturnNull(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task GetByExternalIdAsync_WhenDatabaseIsEmpty_ShouldReturnNull(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act(async (repository, context) =>
 			{
 				context.Gem = await repository.GetByExternalIdAsync(Guid.NewGuid(), "ext-1", CancellationToken.None);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				Gem gem = context.Gem;
 				gem.Should().BeNull();
@@ -27,11 +27,11 @@ public class GetByExternalIdAsyncTests
 	}
 
 	[Theory]
-	[TestEnvironments<IGemRepository, IGemStorageGateway>]
-	public async Task GetByExternalIdAsync_WithMatchingPotIdAndExternalId_ShouldReturnThatGem(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task GetByExternalIdAsync_WithMatchingPotIdAndExternalId_ShouldReturnThatGem(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
@@ -43,7 +43,7 @@ public class GetByExternalIdAsyncTests
 					StartDate = new DateOnly(2023, 1, 1),
 					Currency = "USD"
 				};
-				await gateway.SeedPotAsync(pot);
+				await backDoor.SeedPotAsync(pot);
 
 				Gem gem = new()
 				{
@@ -55,7 +55,7 @@ public class GetByExternalIdAsyncTests
 					Description = "Initial deposit",
 					Pot = new Pot { Id = potId }
 				};
-				await gateway.SeedGemsAsync([gem]);
+				await backDoor.SeedGemsAsync([gem]);
 
 				context.PotId = potId;
 				context.GemId = gem.Id;
@@ -65,7 +65,7 @@ public class GetByExternalIdAsyncTests
 				Guid potId = context.PotId;
 				context.Gem = await repository.GetByExternalIdAsync(potId, "ext-1", CancellationToken.None);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				Gem gem = context.Gem;
 				gem.Should().NotBeNull();
@@ -82,15 +82,15 @@ public class GetByExternalIdAsyncTests
 	}
 
 	[Theory]
-	[TestEnvironments<IGemRepository, IGemStorageGateway>]
-	public async Task GetByExternalIdAsync_WithNonExistentExternalId_ShouldReturnNull(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task GetByExternalIdAsync_WithNonExistentExternalId_ShouldReturnNull(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				await gateway.SeedPotAsync(new Pot
+				await backDoor.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -99,7 +99,7 @@ public class GetByExternalIdAsyncTests
 					Currency = "USD"
 				});
 
-				await gateway.SeedGemsAsync(
+				await backDoor.SeedGemsAsync(
 				[
 					new Gem
 					{
@@ -119,7 +119,7 @@ public class GetByExternalIdAsyncTests
 				Guid potId = context.PotId;
 				context.Gem = await repository.GetByExternalIdAsync(potId, "non-existent", CancellationToken.None);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				Gem gem = context.Gem;
 				gem.Should().BeNull();
@@ -128,16 +128,16 @@ public class GetByExternalIdAsyncTests
 	}
 
 	[Theory]
-	[TestEnvironments<IGemRepository, IGemStorageGateway>]
-	public async Task GetByExternalIdAsync_WithMatchingExternalIdButDifferentPotId_ShouldReturnNull(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task GetByExternalIdAsync_WithMatchingExternalIdButDifferentPotId_ShouldReturnNull(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Guid potId1 = Guid.NewGuid();
 				Guid potId2 = Guid.NewGuid();
 
-				await gateway.SeedPotAsync(new Pot
+				await backDoor.SeedPotAsync(new Pot
 				{
 					Id = potId1,
 					Name = "Pot 1",
@@ -146,7 +146,7 @@ public class GetByExternalIdAsyncTests
 					Currency = "USD"
 				});
 
-				await gateway.SeedPotAsync(new Pot
+				await backDoor.SeedPotAsync(new Pot
 				{
 					Id = potId2,
 					Name = "Pot 2",
@@ -155,7 +155,7 @@ public class GetByExternalIdAsyncTests
 					Currency = "EUR"
 				});
 
-				await gateway.SeedGemsAsync(
+				await backDoor.SeedGemsAsync(
 				[
 					new Gem
 					{
@@ -175,7 +175,7 @@ public class GetByExternalIdAsyncTests
 				Guid potId2 = context.PotId2;
 				context.Gem = await repository.GetByExternalIdAsync(potId2, "ext-1", CancellationToken.None);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				Gem gem = context.Gem;
 				gem.Should().BeNull();
@@ -184,15 +184,15 @@ public class GetByExternalIdAsyncTests
 	}
 
 	[Theory]
-	[TestEnvironments<IGemRepository, IGemStorageGateway>]
-	public async Task GetByExternalIdAsync_WithMultipleGemsHavingDifferentExternalIdsForSamePot_ShouldReturnOnlyMatchingGem(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task GetByExternalIdAsync_WithMultipleGemsHavingDifferentExternalIdsForSamePot_ShouldReturnOnlyMatchingGem(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				await gateway.SeedPotAsync(new Pot
+				await backDoor.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -201,7 +201,7 @@ public class GetByExternalIdAsyncTests
 					Currency = "USD"
 				});
 
-				await gateway.SeedGemsAsync(
+				await backDoor.SeedGemsAsync(
 				[
 					new Gem
 					{
@@ -230,7 +230,7 @@ public class GetByExternalIdAsyncTests
 				Guid potId = context.PotId;
 				context.Gem = await repository.GetByExternalIdAsync(potId, "ext-2", CancellationToken.None);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				Gem gem = context.Gem;
 				gem.Should().NotBeNull();
@@ -242,15 +242,15 @@ public class GetByExternalIdAsyncTests
 	}
 
 	[Theory]
-	[TestEnvironments<IGemRepository, IGemStorageGateway>]
-	public async Task GetByExternalIdAsync_ShouldPopulateGemWithMatchingPotReference(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task GetByExternalIdAsync_ShouldPopulateGemWithMatchingPotReference(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				await gateway.SeedPotAsync(new Pot
+				await backDoor.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Referenced Pot",
@@ -259,7 +259,7 @@ public class GetByExternalIdAsyncTests
 					Currency = "USD"
 				});
 
-				await gateway.SeedGemsAsync(
+				await backDoor.SeedGemsAsync(
 				[
 					new Gem
 					{
@@ -279,7 +279,7 @@ public class GetByExternalIdAsyncTests
 				Guid potId = context.PotId;
 				context.Gem = await repository.GetByExternalIdAsync(potId, "ext-1", CancellationToken.None);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				Gem gem = context.Gem;
 				Guid expectedPotId = context.PotId;
@@ -293,15 +293,15 @@ public class GetByExternalIdAsyncTests
 	}
 
 	[Theory]
-	[TestEnvironments<IGemRepository, IGemStorageGateway>]
-	public async Task GetByExternalIdAsync_WithGemParameters_ShouldPreserveParameters(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task GetByExternalIdAsync_WithGemParameters_ShouldPreserveParameters(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				await gateway.SeedPotAsync(new Pot
+				await backDoor.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -322,7 +322,7 @@ public class GetByExternalIdAsyncTests
 				gem.Parameters["source"] = "mintos";
 				gem.Parameters["note"] = "monthly transfer";
 
-				await gateway.SeedGemsAsync([gem]);
+				await backDoor.SeedGemsAsync([gem]);
 
 				context.PotId = potId;
 			})
@@ -331,7 +331,7 @@ public class GetByExternalIdAsyncTests
 				Guid potId = context.PotId;
 				context.Gem = await repository.GetByExternalIdAsync(potId, "ext-1", CancellationToken.None);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				Gem gem = context.Gem;
 
@@ -344,15 +344,15 @@ public class GetByExternalIdAsyncTests
 	}
 
 	[Theory]
-	[TestEnvironments<IGemRepository, IGemStorageGateway>]
-	public async Task GetByExternalIdAsync_WithDecimalAmount_ShouldPreserveDecimalPrecision(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task GetByExternalIdAsync_WithDecimalAmount_ShouldPreserveDecimalPrecision(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				await gateway.SeedPotAsync(new Pot
+				await backDoor.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -361,7 +361,7 @@ public class GetByExternalIdAsyncTests
 					Currency = "USD"
 				});
 
-				await gateway.SeedGemsAsync(
+				await backDoor.SeedGemsAsync(
 				[
 					new Gem
 					{
@@ -381,7 +381,7 @@ public class GetByExternalIdAsyncTests
 				Guid potId = context.PotId;
 				context.Gem = await repository.GetByExternalIdAsync(potId, "ext-1", CancellationToken.None);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				Gem gem = context.Gem;
 

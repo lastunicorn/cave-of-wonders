@@ -17,14 +17,14 @@
   },
   {
     "Port": "DustInTheWind.CaveOfWonders.Ports.FileAccess.IFileSystem",
-    "TestEnvironments": ["Real"]
+    "TestEnvironments": ["Default"]
   },
   {
     "Port": "DustInTheWind.CaveOfWonders.Ports.LogAccess.ILog",
-    "TestEnvironments": ["Real"]
+    "TestEnvironments": ["Default"]
   },
   {
     "Port": "DustInTheWind.CaveOfWonders.Ports.ClockAccess.ISystemClock",
-    "TestEnvironments": ["Real"]
+    "TestEnvironments": ["Default"]
   }
 ]

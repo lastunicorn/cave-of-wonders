@@ -9,8 +9,8 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotRepo
 public class GetAllTests
 {
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task GetAll_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task GetAll_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act(async (repository, context) =>
@@ -18,7 +18,7 @@ public class GetAllTests
 				context.Pots = await repository.GetAllAsync()
 					.ToListAsync();
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 				pots.Should().BeEmpty();
@@ -27,11 +27,11 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task GetAll_WithOnePot_ShouldReturnOnePot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task GetAll_WithOnePot_ShouldReturnOnePot(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Pot potInDb = new()
 				{
@@ -42,14 +42,14 @@ public class GetAllTests
 					StartDate = new DateOnly(2023, 1, 1),
 					Currency = "USD"
 				};
-				await gateway.SeedPotsAsync([potInDb]);
+				await backDoor.SeedPotsAsync([potInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.Pots = await repository.GetAllAsync()
 					.ToListAsync();
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -66,11 +66,11 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task GetAll_WithMultiplePots_ShouldReturnAllPots(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task GetAll_WithMultiplePots_ShouldReturnAllPots(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Pot pot1 = new()
 				{
@@ -99,7 +99,7 @@ public class GetAllTests
 					Currency = "GBP"
 				};
 
-				await gateway.SeedPotsAsync([pot1, pot2, pot3]);
+				await backDoor.SeedPotsAsync([pot1, pot2, pot3]);
 
 				context.Pot1Id = pot1.Id;
 				context.Pot2Id = pot2.Id;
@@ -110,7 +110,7 @@ public class GetAllTests
 				context.Pots = await repository.GetAllAsync()
 					.ToListAsync();
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -129,11 +129,11 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task GetAll_WithPotsContainingEndDate_ShouldReturnPotsWithEndDate(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task GetAll_WithPotsContainingEndDate_ShouldReturnPotsWithEndDate(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Pot potWithEndDate = new()
 				{
@@ -154,14 +154,14 @@ public class GetAllTests
 					Currency = "USD"
 				};
 
-				await gateway.SeedPotsAsync([potWithEndDate, potWithoutEndDate]);
+				await backDoor.SeedPotsAsync([potWithEndDate, potWithoutEndDate]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.Pots = await repository.GetAllAsync()
 					.ToListAsync();
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -173,11 +173,11 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task GetAll_WithPotsContainingSnapshots_ShouldReturnPotsWithSnapshots(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task GetAll_WithPotsContainingSnapshots_ShouldReturnPotsWithSnapshots(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Pot potInDb = new()
 				{
@@ -201,14 +201,14 @@ public class GetAllTests
 					}
 				]);
 
-				await gateway.SeedPotsAsync([potInDb]);
+				await backDoor.SeedPotsAsync([potInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.Pots = await repository.GetAllAsync()
 					.ToListAsync();
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -222,11 +222,11 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task GetAll_WithPotsContainingLabels_ShouldReturnPotsWithLabels(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task GetAll_WithPotsContainingLabels_ShouldReturnPotsWithLabels(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Pot potInDb = new()
 				{
@@ -243,14 +243,14 @@ public class GetAllTests
 					"Important"
 				]);
 
-				await gateway.SeedPotsAsync([potInDb]);
+				await backDoor.SeedPotsAsync([potInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.Pots = await repository.GetAllAsync()
 					.ToListAsync();
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 

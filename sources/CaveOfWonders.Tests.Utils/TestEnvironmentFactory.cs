@@ -4,22 +4,22 @@ using System.Reflection;
 namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 
 /// <summary>
-/// Locates and instantiates <see cref="ITestEnvironment{TSut,TGateway}"/> implementations decorated with a
+/// Locates and instantiates <see cref="ITestEnvironment{TSut,TBackDoor}"/> implementations decorated with a
 /// <see cref="TestEnvironmentAttribute"/> matching a requested label.
 /// </summary>
 /// <remarks>
 /// This class carries no built-in knowledge of any consumer assembly. Every assembly that declares
-/// <see cref="ITestEnvironment{TSut,TGateway}"/> implementations must register itself once via
+/// <see cref="ITestEnvironment{TSut,TBackDoor}"/> implementations must register itself once via
 /// <see cref="RegisterAssembly"/> - typically from a
 /// <see cref="System.Runtime.CompilerServices.ModuleInitializerAttribute"/> method - before
-/// <see cref="Create{TSut,TGateway}"/> is called.
+/// <see cref="Create{TSut,TBackDoor}"/> is called.
 /// </remarks>
 public static class TestEnvironmentFactory
 {
 	private static readonly object RegistrationLock = new();
 	private static readonly List<Assembly> RegisteredAssemblies = [];
 
-	private static readonly ConcurrentDictionary<(Type Sut, Type Gateway), Lazy<Dictionary<string, Type>>> EnvironmentsByPortType = new();
+	private static readonly ConcurrentDictionary<(Type Sut, Type BackDoor), Lazy<Dictionary<string, Type>>> EnvironmentsByPortType = new();
 
 	public static void RegisterAssembly(Assembly assembly)
 	{
@@ -30,23 +30,23 @@ public static class TestEnvironmentFactory
 		}
 	}
 
-	public static ITestEnvironment<TSut, TGateway> Create<TSut, TGateway>(string label)
+	public static ITestEnvironment<TSut, TBackDoor> Create<TSut, TBackDoor>(string label)
 	{
 		Dictionary<string, Type> environmentsByLabel = EnvironmentsByPortType
-			.GetOrAdd((typeof(TSut), typeof(TGateway)), _ => new Lazy<Dictionary<string, Type>>(ScanForEnvironments<TSut, TGateway>))
+			.GetOrAdd((typeof(TSut), typeof(TBackDoor)), _ => new Lazy<Dictionary<string, Type>>(ScanForEnvironments<TSut, TBackDoor>))
 			.Value;
 
 		if (!environmentsByLabel.TryGetValue(label, out Type environmentType))
 		{
 			throw new InvalidOperationException(
-				$"No {nameof(ITestEnvironment<TSut, TGateway>)} implementation tagged with " +
+				$"No {nameof(ITestEnvironment<TSut, TBackDoor>)} implementation tagged with " +
 				$"[{nameof(TestEnvironmentAttribute)}(\"{label}\")] was found in any registered assembly.");
 		}
 
-		return (ITestEnvironment<TSut, TGateway>)Activator.CreateInstance(environmentType);
+		return (ITestEnvironment<TSut, TBackDoor>)Activator.CreateInstance(environmentType);
 	}
 
-	private static Dictionary<string, Type> ScanForEnvironments<TSut, TGateway>()
+	private static Dictionary<string, Type> ScanForEnvironments<TSut, TBackDoor>()
 	{
 		Assembly[] assembliesSnapshot;
 
@@ -61,7 +61,7 @@ public static class TestEnvironmentFactory
 		{
 			foreach (Type type in GetLoadableTypes(assembly))
 			{
-				if (!typeof(ITestEnvironment<TSut, TGateway>).IsAssignableFrom(type))
+				if (!typeof(ITestEnvironment<TSut, TBackDoor>).IsAssignableFrom(type))
 					continue;
 
 				string label = type.GetCustomAttribute<TestEnvironmentAttribute>()?.Label;
@@ -74,7 +74,7 @@ public static class TestEnvironmentFactory
 					throw new InvalidOperationException(
 						$"Both '{existingType.FullName}' and '{type.FullName}' are tagged with " +
 						$"[{nameof(TestEnvironmentAttribute)}(\"{label}\")] for " +
-						$"{nameof(ITestEnvironment<TSut, TGateway>)}.");
+						$"{nameof(ITestEnvironment<TSut, TBackDoor>)}.");
 				}
 
 				environmentsByLabel.Add(label, type);

@@ -10,33 +10,33 @@ public class WriteInfoTests
 	private const string TimestampPattern = @"\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}\]";
 
 	[Theory]
-	[TestEnvironments<ILog, ILogGateway>]
-	public async Task WriteInfo_WithValidText_ShouldCreateLogFile(ITestEnvironment<ILog, ILogGateway> environment)
+	[TestEnvironments<ILog, ILogBackDoor>]
+	public async Task WriteInfo_WithValidText_ShouldCreateLogFile(ITestEnvironment<ILog, ILogBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((log, context) =>
 			{
 				log.WriteInfo("Application started");
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
-				gateway.LogFileExists().Should().BeTrue();
+				backDoor.LogFileExists().Should().BeTrue();
 			})
 			.ExecuteAsync();
 	}
 
 	[Theory]
-	[TestEnvironments<ILog, ILogGateway>]
-	public async Task WriteInfo_WithValidText_ShouldWriteLinePrefixedWithTimestamp(ITestEnvironment<ILog, ILogGateway> environment)
+	[TestEnvironments<ILog, ILogBackDoor>]
+	public async Task WriteInfo_WithValidText_ShouldWriteLinePrefixedWithTimestamp(ITestEnvironment<ILog, ILogBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((log, context) =>
 			{
 				log.WriteInfo("Application started");
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
-				List<string> lines = gateway.ReadAllLines();
+				List<string> lines = backDoor.ReadAllLines();
 
 				lines.Should().HaveCount(1);
 				lines[0].Should().MatchRegex($"^{TimestampPattern} Application started$");
@@ -45,8 +45,8 @@ public class WriteInfoTests
 	}
 
 	[Theory]
-	[TestEnvironments<ILog, ILogGateway>]
-	public async Task WriteInfo_CalledMultipleTimes_ShouldAppendEachMessageOnItsOwnLine(ITestEnvironment<ILog, ILogGateway> environment)
+	[TestEnvironments<ILog, ILogBackDoor>]
+	public async Task WriteInfo_CalledMultipleTimes_ShouldAppendEachMessageOnItsOwnLine(ITestEnvironment<ILog, ILogBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((log, context) =>
@@ -55,9 +55,9 @@ public class WriteInfoTests
 				log.WriteInfo("Second message");
 				log.WriteInfo("Third message");
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
-				List<string> lines = gateway.ReadAllLines();
+				List<string> lines = backDoor.ReadAllLines();
 
 				lines.Should().HaveCount(3);
 				lines[0].Should().MatchRegex($"^{TimestampPattern} First message$");
@@ -68,17 +68,17 @@ public class WriteInfoTests
 	}
 
 	[Theory]
-	[TestEnvironments<ILog, ILogGateway>]
-	public async Task WriteInfo_WithEmptyText_ShouldWriteLineWithTimestampOnly(ITestEnvironment<ILog, ILogGateway> environment)
+	[TestEnvironments<ILog, ILogBackDoor>]
+	public async Task WriteInfo_WithEmptyText_ShouldWriteLineWithTimestampOnly(ITestEnvironment<ILog, ILogBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((log, context) =>
 			{
 				log.WriteInfo(string.Empty);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
-				List<string> lines = gateway.ReadAllLines();
+				List<string> lines = backDoor.ReadAllLines();
 
 				lines.Should().HaveCount(1);
 				lines[0].Should().MatchRegex($"^{TimestampPattern} $");
@@ -87,17 +87,17 @@ public class WriteInfoTests
 	}
 
 	[Theory]
-	[TestEnvironments<ILog, ILogGateway>]
-	public async Task WriteInfo_WithNullText_ShouldNotThrowAndShouldWriteLineWithTimestampOnly(ITestEnvironment<ILog, ILogGateway> environment)
+	[TestEnvironments<ILog, ILogBackDoor>]
+	public async Task WriteInfo_WithNullText_ShouldNotThrowAndShouldWriteLineWithTimestampOnly(ITestEnvironment<ILog, ILogBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((log, context) =>
 			{
 				log.WriteInfo(null);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
-				List<string> lines = gateway.ReadAllLines();
+				List<string> lines = backDoor.ReadAllLines();
 
 				lines.Should().HaveCount(1);
 				lines[0].Should().MatchRegex($"^{TimestampPattern} $");
@@ -106,21 +106,21 @@ public class WriteInfoTests
 	}
 
 	[Theory]
-	[TestEnvironments<ILog, ILogGateway>]
-	public async Task WriteInfo_WhenLogFileAlreadyHasContent_ShouldAppendWithoutOverwritingExistingContent(ITestEnvironment<ILog, ILogGateway> environment)
+	[TestEnvironments<ILog, ILogBackDoor>]
+	public async Task WriteInfo_WhenLogFileAlreadyHasContent_ShouldAppendWithoutOverwritingExistingContent(ITestEnvironment<ILog, ILogBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange((gateway, context) =>
+			.Arrange((backDoor, context) =>
 			{
-				gateway.SeedLogFile($"[2023-01-01 00:00:00.000] Previous run entry{Environment.NewLine}");
+				backDoor.SeedLogFile($"[2023-01-01 00:00:00.000] Previous run entry{Environment.NewLine}");
 			})
 			.Act((log, context) =>
 			{
 				log.WriteInfo("New entry");
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
-				List<string> lines = gateway.ReadAllLines();
+				List<string> lines = backDoor.ReadAllLines();
 
 				lines.Should().HaveCount(2);
 				lines[0].Should().Be("[2023-01-01 00:00:00.000] Previous run entry");
@@ -130,17 +130,17 @@ public class WriteInfoTests
 	}
 
 	[Theory]
-	[TestEnvironments<ILog, ILogGateway>]
-	public async Task WriteInfo_WithSpecialCharactersAndUnicode_ShouldPreserveTextVerbatim(ITestEnvironment<ILog, ILogGateway> environment)
+	[TestEnvironments<ILog, ILogBackDoor>]
+	public async Task WriteInfo_WithSpecialCharactersAndUnicode_ShouldPreserveTextVerbatim(ITestEnvironment<ILog, ILogBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((log, context) =>
 			{
 				log.WriteInfo("Import finished: 100% – 42 gems imported [ok]");
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
-				List<string> lines = gateway.ReadAllLines();
+				List<string> lines = backDoor.ReadAllLines();
 
 				lines.Should().HaveCount(1);
 				lines[0].Should().MatchRegex($"^{TimestampPattern} Import finished: 100% – 42 gems imported \\[ok\\]$");

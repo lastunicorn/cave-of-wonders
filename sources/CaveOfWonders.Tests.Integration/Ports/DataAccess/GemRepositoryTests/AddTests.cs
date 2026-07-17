@@ -10,15 +10,15 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.GemRepo
 public class AddTests
 {
 	[Theory]
-	[TestEnvironments<IGemRepository, IGemStorageGateway>]
-	public async Task Add_WithValidGem_ShouldPersistGem(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task Add_WithValidGem_ShouldPersistGem(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				await gateway.SeedPotAsync(new Pot
+				await backDoor.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -51,9 +51,9 @@ public class AddTests
 
 				context.GemId = gem.Id;
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<Gem> gems = await gateway.GetAllGemsAsync();
+				List<Gem> gems = await backDoor.GetAllGemsAsync();
 
 				gems.Should().HaveCount(1);
 				Gem gem = gems.First();
@@ -70,8 +70,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IGemRepository, IGemStorageGateway>]
-	public async Task Add_WithNullGem_ShouldThrowArgumentNullException(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task Add_WithNullGem_ShouldThrowArgumentNullException(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -86,15 +86,15 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IGemRepository, IGemStorageGateway>]
-	public async Task Add_WithMultipleGems_ShouldPersistAllOfThem(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task Add_WithMultipleGems_ShouldPersistAllOfThem(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				await gateway.SeedPotAsync(new Pot
+				await backDoor.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -145,9 +145,9 @@ public class AddTests
 					}
 				});
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<Gem> gems = await gateway.GetAllGemsAsync();
+				List<Gem> gems = await backDoor.GetAllGemsAsync();
 
 				gems.Should().HaveCount(3);
 				gems.Should().ContainSingle(x => x.Category == GemCategory.Deposit && x.Amount == 100m);
@@ -158,16 +158,16 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IGemRepository, IGemStorageGateway>]
-	public async Task Add_WithGemsForDifferentPots_ShouldPersistEachUnderItsOwnPot(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task Add_WithGemsForDifferentPots_ShouldPersistEachUnderItsOwnPot(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Guid potId1 = Guid.NewGuid();
 				Guid potId2 = Guid.NewGuid();
 
-				await gateway.SeedPotAsync(new Pot
+				await backDoor.SeedPotAsync(new Pot
 				{
 					Id = potId1,
 					Name = "Pot 1",
@@ -176,7 +176,7 @@ public class AddTests
 					Currency = "USD"
 				});
 
-				await gateway.SeedPotAsync(new Pot
+				await backDoor.SeedPotAsync(new Pot
 				{
 					Id = potId2,
 					Name = "Pot 2",
@@ -217,12 +217,12 @@ public class AddTests
 					}
 				});
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
 				Guid potId1 = context.PotId1;
 				Guid potId2 = context.PotId2;
 
-				List<Gem> gems = await gateway.GetAllGemsAsync();
+				List<Gem> gems = await backDoor.GetAllGemsAsync();
 
 				List<Gem> gemsForPot1 = gems.Where(x => x.Pot.Id == potId1).ToList();
 				List<Gem> gemsForPot2 = gems.Where(x => x.Pot.Id == potId2).ToList();
@@ -237,15 +237,15 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IGemRepository, IGemStorageGateway>]
-	public async Task Add_ShouldPersistPotReference(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task Add_ShouldPersistPotReference(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				await gateway.SeedPotAsync(new Pot
+				await backDoor.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Referenced Pot",
@@ -272,10 +272,10 @@ public class AddTests
 					}
 				});
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
 				Guid potId = context.PotId;
-				List<Gem> gems = await gateway.GetAllGemsAsync();
+				List<Gem> gems = await backDoor.GetAllGemsAsync();
 
 				gems.Should().HaveCount(1);
 				Gem gem = gems.First();
@@ -287,15 +287,15 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IGemRepository, IGemStorageGateway>]
-	public async Task Add_WithGemParameters_ShouldPersistParameters(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task Add_WithGemParameters_ShouldPersistParameters(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				await gateway.SeedPotAsync(new Pot
+				await backDoor.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -326,9 +326,9 @@ public class AddTests
 
 				repository.Add(gem);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<Gem> gems = await gateway.GetAllGemsAsync();
+				List<Gem> gems = await backDoor.GetAllGemsAsync();
 
 				gems.Should().HaveCount(1);
 				Gem gem = gems.First();
@@ -340,15 +340,15 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IGemRepository, IGemStorageGateway>]
-	public async Task Add_WithDecimalAmount_ShouldPreserveDecimalPrecision(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task Add_WithDecimalAmount_ShouldPreserveDecimalPrecision(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				await gateway.SeedPotAsync(new Pot
+				await backDoor.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -375,9 +375,9 @@ public class AddTests
 					}
 				});
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<Gem> gems = await gateway.GetAllGemsAsync();
+				List<Gem> gems = await backDoor.GetAllGemsAsync();
 
 				gems.Should().HaveCount(1);
 				gems.First().Amount.Should().Be(123.456789m);
@@ -386,15 +386,15 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IGemRepository, IGemStorageGateway>]
-	public async Task Add_WithAllGemCategories_ShouldPersistEachCategory(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task Add_WithAllGemCategories_ShouldPersistEachCategory(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				await gateway.SeedPotAsync(new Pot
+				await backDoor.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -436,9 +436,9 @@ public class AddTests
 					});
 				}
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<Gem> gems = await gateway.GetAllGemsAsync();
+				List<Gem> gems = await backDoor.GetAllGemsAsync();
 
 				gems.Should().HaveCount(7);
 				gems.Select(x => x.Category).Should().BeEquivalentTo(
@@ -456,15 +456,15 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IGemRepository, IGemStorageGateway>]
-	public async Task Add_WithoutExternalId_ShouldPersistGemWithNullExternalId(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task Add_WithoutExternalId_ShouldPersistGemWithNullExternalId(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				await gateway.SeedPotAsync(new Pot
+				await backDoor.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -491,9 +491,9 @@ public class AddTests
 					}
 				});
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<Gem> gems = await gateway.GetAllGemsAsync();
+				List<Gem> gems = await backDoor.GetAllGemsAsync();
 
 				gems.Should().HaveCount(1);
 				gems.First().ExternalId.Should().BeNull();
@@ -502,15 +502,15 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IGemRepository, IGemStorageGateway>]
-	public async Task Add_WithExternalId_ShouldPersistExternalId(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task Add_WithExternalId_ShouldPersistExternalId(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
-				await gateway.SeedPotAsync(new Pot
+				await backDoor.SeedPotAsync(new Pot
 				{
 					Id = potId,
 					Name = "Test Pot",
@@ -538,9 +538,9 @@ public class AddTests
 					}
 				});
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<Gem> gems = await gateway.GetAllGemsAsync();
+				List<Gem> gems = await backDoor.GetAllGemsAsync();
 
 				gems.Should().ContainSingle(x => x.ExternalId == "mintos-12345" && x.Amount == 100m);
 			})

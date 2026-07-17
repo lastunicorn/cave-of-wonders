@@ -8,21 +8,21 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.ClockAccess.System
 public class NowTests
 {
 	[Theory]
-	[TestEnvironments<ISystemClock, ISystemClockGateway>]
-	public async Task Now_WhenAccessed_ShouldFallBetweenReferenceTimestampsTakenImmediatelyBeforeAndAfter(ITestEnvironment<ISystemClock, ISystemClockGateway> environment)
+	[TestEnvironments<ISystemClock, ISystemClockBackDoor>]
+	public async Task Now_WhenAccessed_ShouldFallBetweenReferenceTimestampsTakenImmediatelyBeforeAndAfter(ITestEnvironment<ISystemClock, ISystemClockBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange((gateway, context) =>
+			.Arrange((backDoor, context) =>
 			{
-				context.Before = gateway.GetCurrentTime();
+				context.Before = backDoor.GetCurrentTime();
 			})
 			.Act((clock, context) =>
 			{
 				context.Result = clock.Now;
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
-				DateTime after = gateway.GetCurrentTime();
+				DateTime after = backDoor.GetCurrentTime();
 
 				DateTime before = context.Before;
 				DateTime result = context.Result;
@@ -34,15 +34,15 @@ public class NowTests
 	}
 
 	[Theory]
-	[TestEnvironments<ISystemClock, ISystemClockGateway>]
-	public async Task Now_WhenAccessed_ShouldHaveLocalDateTimeKind(ITestEnvironment<ISystemClock, ISystemClockGateway> environment)
+	[TestEnvironments<ISystemClock, ISystemClockBackDoor>]
+	public async Task Now_WhenAccessed_ShouldHaveLocalDateTimeKind(ITestEnvironment<ISystemClock, ISystemClockBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((clock, context) =>
 			{
 				context.Result = clock.Now;
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				DateTime result = context.Result;
 				result.Kind.Should().Be(DateTimeKind.Local);
@@ -51,8 +51,8 @@ public class NowTests
 	}
 
 	[Theory]
-	[TestEnvironments<ISystemClock, ISystemClockGateway>]
-	public async Task Now_WhenAccessedTwiceInImmediateSuccession_ShouldNotMoveBackwards(ITestEnvironment<ISystemClock, ISystemClockGateway> environment)
+	[TestEnvironments<ISystemClock, ISystemClockBackDoor>]
+	public async Task Now_WhenAccessedTwiceInImmediateSuccession_ShouldNotMoveBackwards(ITestEnvironment<ISystemClock, ISystemClockBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((clock, context) =>
@@ -60,7 +60,7 @@ public class NowTests
 				context.First = clock.Now;
 				context.Second = clock.Now;
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				DateTime first = context.First;
 				DateTime second = context.Second;
@@ -71,8 +71,8 @@ public class NowTests
 	}
 
 	[Theory]
-	[TestEnvironments<ISystemClock, ISystemClockGateway>]
-	public async Task Now_WhenAccessedAgainAfterADelay_ShouldReturnALaterValueRatherThanACachedOne(ITestEnvironment<ISystemClock, ISystemClockGateway> environment)
+	[TestEnvironments<ISystemClock, ISystemClockBackDoor>]
+	public async Task Now_WhenAccessedAgainAfterADelay_ShouldReturnALaterValueRatherThanACachedOne(ITestEnvironment<ISystemClock, ISystemClockBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act(async (clock, context) =>
@@ -81,7 +81,7 @@ public class NowTests
 				await Task.Delay(50);
 				context.Second = clock.Now;
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				DateTime first = context.First;
 				DateTime second = context.Second;

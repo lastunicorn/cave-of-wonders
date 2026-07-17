@@ -19,7 +19,7 @@ internal sealed class LiteDbTempDatabase : IDisposable
 	/// <summary>
 	/// Opens an additional, independent session over the same database file. Unlike <see cref="OpenAsync"/>,
 	/// the returned <see cref="DbContext"/> is not tracked by this instance; the caller owns it and is
-	/// responsible for disposing it. Used by storage gateways that must not share the SUT's session.
+	/// responsible for disposing it. Used by storage back doors that must not share the SUT's session.
 	/// </summary>
 	public Task<DbContext> CreateSessionAsync(CancellationToken cancellationToken = default)
 	{

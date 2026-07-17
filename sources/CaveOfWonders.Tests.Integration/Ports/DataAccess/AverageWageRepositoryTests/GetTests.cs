@@ -9,15 +9,15 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Average
 public class GetTests
 {
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task GetAsync_WhenDatabaseIsEmpty_ShouldReturnNull(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task GetAsync_WhenDatabaseIsEmpty_ShouldReturnNull(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act(async (repository, context) =>
 			{
 				context.AverageWage = await repository.GetAsync(2023, CancellationToken.None);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				AverageWage averageWage = context.AverageWage as AverageWage;
 				averageWage.Should().BeNull();
@@ -26,11 +26,11 @@ public class GetTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task GetAsync_WithMatchingYear_ShouldReturnThatAverageWageRecord(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task GetAsync_WithMatchingYear_ShouldReturnThatAverageWageRecord(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				AverageWage averageWageInDb = new()
 				{
@@ -39,13 +39,13 @@ public class GetTests
 					NetValue = 4123.75m
 				};
 
-				await gateway.SeedAverageWagesAsync([averageWageInDb]);
+				await backDoor.SeedAverageWagesAsync([averageWageInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.AverageWage = await repository.GetAsync(2023, CancellationToken.None);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				AverageWage averageWage = context.AverageWage as AverageWage;
 
@@ -58,11 +58,11 @@ public class GetTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task GetAsync_WithNoMatchingYear_ShouldReturnNull(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task GetAsync_WithNoMatchingYear_ShouldReturnNull(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				AverageWage averageWageInDb = new()
 				{
@@ -71,13 +71,13 @@ public class GetTests
 					NetValue = 4123.75m
 				};
 
-				await gateway.SeedAverageWagesAsync([averageWageInDb]);
+				await backDoor.SeedAverageWagesAsync([averageWageInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.AverageWage = await repository.GetAsync(2024, CancellationToken.None);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				AverageWage averageWage = context.AverageWage as AverageWage;
 				averageWage.Should().BeNull();
@@ -86,11 +86,11 @@ public class GetTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task GetAsync_WithMultipleAverageWageRecords_ShouldReturnOnlyTheMatchingOne(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task GetAsync_WithMultipleAverageWageRecords_ShouldReturnOnlyTheMatchingOne(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				AverageWage averageWage2021 = new()
 				{
@@ -113,13 +113,13 @@ public class GetTests
 					NetValue = 4123.75m
 				};
 
-				await gateway.SeedAverageWagesAsync([averageWage2021, averageWage2022, averageWage2023]);
+				await backDoor.SeedAverageWagesAsync([averageWage2021, averageWage2022, averageWage2023]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.AverageWage = await repository.GetAsync(2022, CancellationToken.None);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				AverageWage averageWage = context.AverageWage as AverageWage;
 
@@ -132,11 +132,11 @@ public class GetTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task GetAsync_WithAverageWageRecordsAddedOutOfOrder_ShouldReturnTheMatchingOne(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task GetAsync_WithAverageWageRecordsAddedOutOfOrder_ShouldReturnTheMatchingOne(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				AverageWage averageWage2023 = new()
 				{
@@ -159,13 +159,13 @@ public class GetTests
 					NetValue = 3700.50m
 				};
 
-				await gateway.SeedAverageWagesAsync([averageWage2023, averageWage2021, averageWage2022]);
+				await backDoor.SeedAverageWagesAsync([averageWage2023, averageWage2021, averageWage2022]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.AverageWage = await repository.GetAsync(2021, CancellationToken.None);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				AverageWage averageWage = context.AverageWage as AverageWage;
 
@@ -178,11 +178,11 @@ public class GetTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task GetAsync_WithDecimalValues_ShouldPreserveDecimalPrecision(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task GetAsync_WithDecimalValues_ShouldPreserveDecimalPrecision(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				AverageWage averageWageInDb = new()
 				{
@@ -191,13 +191,13 @@ public class GetTests
 					NetValue = 4123.654321m
 				};
 
-				await gateway.SeedAverageWagesAsync([averageWageInDb]);
+				await backDoor.SeedAverageWagesAsync([averageWageInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.AverageWage = await repository.GetAsync(2023, CancellationToken.None);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				AverageWage averageWage = context.AverageWage as AverageWage;
 
@@ -209,11 +209,11 @@ public class GetTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task GetAsync_WithZeroValues_ShouldReturnZeroValues(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task GetAsync_WithZeroValues_ShouldReturnZeroValues(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				AverageWage averageWageInDb = new()
 				{
@@ -222,13 +222,13 @@ public class GetTests
 					NetValue = 0m
 				};
 
-				await gateway.SeedAverageWagesAsync([averageWageInDb]);
+				await backDoor.SeedAverageWagesAsync([averageWageInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.AverageWage = await repository.GetAsync(2023, CancellationToken.None);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				AverageWage averageWage = context.AverageWage as AverageWage;
 
@@ -240,11 +240,11 @@ public class GetTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task GetAsync_WithNullGrossValue_ShouldReturnNullGrossValue(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task GetAsync_WithNullGrossValue_ShouldReturnNullGrossValue(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				AverageWage averageWageInDb = new()
 				{
@@ -253,13 +253,13 @@ public class GetTests
 					NetValue = 4123.75m
 				};
 
-				await gateway.SeedAverageWagesAsync([averageWageInDb]);
+				await backDoor.SeedAverageWagesAsync([averageWageInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.AverageWage = await repository.GetAsync(2023, CancellationToken.None);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				AverageWage averageWage = context.AverageWage as AverageWage;
 
@@ -271,11 +271,11 @@ public class GetTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task GetAsync_WithNullNetValue_ShouldReturnNullNetValue(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task GetAsync_WithNullNetValue_ShouldReturnNullNetValue(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				AverageWage averageWageInDb = new()
 				{
@@ -284,13 +284,13 @@ public class GetTests
 					NetValue = null
 				};
 
-				await gateway.SeedAverageWagesAsync([averageWageInDb]);
+				await backDoor.SeedAverageWagesAsync([averageWageInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.AverageWage = await repository.GetAsync(2023, CancellationToken.None);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				AverageWage averageWage = context.AverageWage as AverageWage;
 
@@ -302,11 +302,11 @@ public class GetTests
 	}
 
 	[Theory]
-	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
-	public async Task GetAsync_WithBothValuesNull_ShouldReturnRecordWithNullValues(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
+	[TestEnvironments<IAverageWageRepository, ITestBackDoor>]
+	public async Task GetAsync_WithBothValuesNull_ShouldReturnRecordWithNullValues(ITestEnvironment<IAverageWageRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				AverageWage averageWageInDb = new()
 				{
@@ -315,13 +315,13 @@ public class GetTests
 					NetValue = null
 				};
 
-				await gateway.SeedAverageWagesAsync([averageWageInDb]);
+				await backDoor.SeedAverageWagesAsync([averageWageInDb]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.AverageWage = await repository.GetAsync(2023, CancellationToken.None);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				AverageWage averageWage = context.AverageWage as AverageWage;
 

@@ -7,7 +7,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration;
 
 /// <summary>
 /// Registers this assembly with <see cref="TestEnvironmentFactory"/> so its
-/// <see cref="ITestEnvironment{TSut,TGateway}"/> implementations are discoverable, without
+/// <see cref="ITestEnvironment{TSut,TBackDoor}"/> implementations are discoverable, without
 /// <see cref="TestEnvironmentFactory"/> needing any built-in knowledge of this project.
 /// </summary>
 internal static class TestsSetup
@@ -15,7 +15,7 @@ internal static class TestsSetup
 	[ModuleInitializer]
 	internal static void ModuleInitializer()
 	{
-		Assembly testEnvironmentAssembly = typeof(JsonPotRepositoryEnvironment).Assembly;
+		Assembly testEnvironmentAssembly = typeof(JsonTestEnvironment).Assembly;
 		TestEnvironmentFactory.RegisterAssembly(testEnvironmentAssembly);
 	}
 }

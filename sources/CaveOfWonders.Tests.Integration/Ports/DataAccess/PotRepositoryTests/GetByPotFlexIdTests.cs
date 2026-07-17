@@ -10,8 +10,8 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotRepo
 public class GetByPotFlexIdTests
 {
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task GetByPotFlexId_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task GetByPotFlexId_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act(async (repository, context) =>
@@ -21,7 +21,7 @@ public class GetByPotFlexIdTests
 				context.Pots = await repository.GetAsync(potFlexId)
 					.ToListAsync();
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 				pots.Should().BeEmpty();
@@ -30,11 +30,11 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task GetByPotFlexId_WithMatchingGuid_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task GetByPotFlexId_WithMatchingGuid_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Pot pot = new()
 				{
@@ -46,7 +46,7 @@ public class GetByPotFlexIdTests
 					Currency = "USD"
 				};
 
-				await gateway.SeedPotsAsync([pot]);
+				await backDoor.SeedPotsAsync([pot]);
 				context.PotId = pot.Id;
 			})
 			.Act(async (repository, context) =>
@@ -57,7 +57,7 @@ public class GetByPotFlexIdTests
 				context.Pots = await repository.GetAsync(potFlexId)
 					.ToListAsync();
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -76,11 +76,11 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task GetByPotFlexId_WithNonMatchingGuid_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task GetByPotFlexId_WithNonMatchingGuid_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Pot pot = new()
 				{
@@ -91,7 +91,7 @@ public class GetByPotFlexIdTests
 					Currency = "USD"
 				};
 
-				await gateway.SeedPotsAsync([pot]);
+				await backDoor.SeedPotsAsync([pot]);
 			})
 			.Act(async (repository, context) =>
 			{
@@ -100,7 +100,7 @@ public class GetByPotFlexIdTests
 				context.Pots = await repository.GetAsync(potFlexId)
 					.ToListAsync();
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 				pots.Should().BeEmpty();
@@ -109,11 +109,11 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task GetByPotFlexId_WithPartialGuid_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task GetByPotFlexId_WithPartialGuid_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Pot pot = new()
 				{
@@ -124,7 +124,7 @@ public class GetByPotFlexIdTests
 					Currency = "USD"
 				};
 
-				await gateway.SeedPotsAsync([pot]);
+				await backDoor.SeedPotsAsync([pot]);
 				context.PotId = pot.Id;
 			})
 			.Act(async (repository, context) =>
@@ -136,7 +136,7 @@ public class GetByPotFlexIdTests
 				context.Pots = await repository.GetAsync(potFlexId)
 					.ToListAsync();
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -149,11 +149,11 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task GetByPotFlexId_WithExactNameMatch_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task GetByPotFlexId_WithExactNameMatch_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Pot pot = new()
 				{
@@ -164,7 +164,7 @@ public class GetByPotFlexIdTests
 					Currency = "USD"
 				};
 
-				await gateway.SeedPotsAsync([pot]);
+				await backDoor.SeedPotsAsync([pot]);
 				context.PotId = pot.Id;
 			})
 			.Act(async (repository, context) =>
@@ -174,7 +174,7 @@ public class GetByPotFlexIdTests
 				context.Pots = await repository.GetAsync(potFlexId)
 					.ToListAsync();
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -187,11 +187,11 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task GetByPotFlexId_WithPartialNameMatch_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task GetByPotFlexId_WithPartialNameMatch_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Pot pot = new()
 				{
@@ -202,7 +202,7 @@ public class GetByPotFlexIdTests
 					Currency = "USD"
 				};
 
-				await gateway.SeedPotsAsync([pot]);
+				await backDoor.SeedPotsAsync([pot]);
 				context.PotId = pot.Id;
 			})
 			.Act(async (repository, context) =>
@@ -212,7 +212,7 @@ public class GetByPotFlexIdTests
 				context.Pots = await repository.GetAsync(potFlexId)
 					.ToListAsync();
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -225,11 +225,11 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task GetByPotFlexId_WithNameMatchDifferentCase_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task GetByPotFlexId_WithNameMatchDifferentCase_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Pot pot = new()
 				{
@@ -240,7 +240,7 @@ public class GetByPotFlexIdTests
 					Currency = "USD"
 				};
 
-				await gateway.SeedPotsAsync([pot]);
+				await backDoor.SeedPotsAsync([pot]);
 				context.PotId = pot.Id;
 			})
 			.Act(async (repository, context) =>
@@ -250,7 +250,7 @@ public class GetByPotFlexIdTests
 				context.Pots = await repository.GetAsync(potFlexId)
 					.ToListAsync();
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -263,11 +263,11 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task GetByPotFlexId_WithNonMatchingName_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task GetByPotFlexId_WithNonMatchingName_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Pot pot = new()
 				{
@@ -278,7 +278,7 @@ public class GetByPotFlexIdTests
 					Currency = "USD"
 				};
 
-				await gateway.SeedPotsAsync([pot]);
+				await backDoor.SeedPotsAsync([pot]);
 			})
 			.Act(async (repository, context) =>
 			{
@@ -287,7 +287,7 @@ public class GetByPotFlexIdTests
 				context.Pots = await repository.GetAsync(potFlexId)
 					.ToListAsync();
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 				pots.Should().BeEmpty();
@@ -296,11 +296,11 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task GetByPotFlexId_WithMultipleMatchingPots_ShouldReturnAllMatches(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task GetByPotFlexId_WithMultipleMatchingPots_ShouldReturnAllMatches(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Pot savingsPot1 = new()
 				{
@@ -329,7 +329,7 @@ public class GetByPotFlexIdTests
 					Currency = "USD"
 				};
 
-				await gateway.SeedPotsAsync([savingsPot1, savingsPot2, checkingPot]);
+				await backDoor.SeedPotsAsync([savingsPot1, savingsPot2, checkingPot]);
 
 				context.SavingsPot1Id = savingsPot1.Id;
 				context.SavingsPot2Id = savingsPot2.Id;
@@ -341,7 +341,7 @@ public class GetByPotFlexIdTests
 				context.Pots = await repository.GetAsync(potFlexId)
 					.ToListAsync();
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 
@@ -357,11 +357,11 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task GetByPotFlexId_WhenPotFlexIdIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task GetByPotFlexId_WhenPotFlexIdIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Pot pot = new()
 				{
@@ -372,14 +372,14 @@ public class GetByPotFlexIdTests
 					Currency = "USD"
 				};
 
-				await gateway.SeedPotsAsync([pot]);
+				await backDoor.SeedPotsAsync([pot]);
 			})
 			.Act(async (repository, context) =>
 			{
 				context.Pots = await repository.GetAsync(PotFlexId.Empty)
 					.ToListAsync();
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
 				List<Pot> pots = context.Pots as List<Pot>;
 				pots.Should().BeEmpty();

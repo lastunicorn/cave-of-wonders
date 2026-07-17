@@ -8,13 +8,13 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.FileAccess.FileSys
 public class CreateFileTests
 {
 	[Theory]
-	[TestEnvironments<IFileSystem, IFileSystemGateway>]
-	public async Task CreateFile_WithValidPath_ShouldCreateFileOnDisk(ITestEnvironment<IFileSystem, IFileSystemGateway> environment)
+	[TestEnvironments<IFileSystem, IFileSystemBackDoor>]
+	public async Task CreateFile_WithValidPath_ShouldCreateFileOnDisk(ITestEnvironment<IFileSystem, IFileSystemBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange((gateway, context) =>
+			.Arrange((backDoor, context) =>
 			{
-				context.FilePath = gateway.GetFullPath("new-file.txt");
+				context.FilePath = backDoor.GetFullPath("new-file.txt");
 			})
 			.Act((fileSystem, context) =>
 			{
@@ -22,21 +22,21 @@ public class CreateFileTests
 
 				using Stream stream = fileSystem.CreateFile(filePath);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
-				gateway.FileExists("new-file.txt").Should().BeTrue();
+				backDoor.FileExists("new-file.txt").Should().BeTrue();
 			})
 			.ExecuteAsync();
 	}
 
 	[Theory]
-	[TestEnvironments<IFileSystem, IFileSystemGateway>]
-	public async Task CreateFile_WithValidPath_ShouldCreateEmptyFile(ITestEnvironment<IFileSystem, IFileSystemGateway> environment)
+	[TestEnvironments<IFileSystem, IFileSystemBackDoor>]
+	public async Task CreateFile_WithValidPath_ShouldCreateEmptyFile(ITestEnvironment<IFileSystem, IFileSystemBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange((gateway, context) =>
+			.Arrange((backDoor, context) =>
 			{
-				context.FilePath = gateway.GetFullPath("empty-file.txt");
+				context.FilePath = backDoor.GetFullPath("empty-file.txt");
 			})
 			.Act((fileSystem, context) =>
 			{
@@ -44,21 +44,21 @@ public class CreateFileTests
 
 				using Stream stream = fileSystem.CreateFile(filePath);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
-				gateway.ReadAllText("empty-file.txt").Should().BeEmpty();
+				backDoor.ReadAllText("empty-file.txt").Should().BeEmpty();
 			})
 			.ExecuteAsync();
 	}
 
 	[Theory]
-	[TestEnvironments<IFileSystem, IFileSystemGateway>]
-	public async Task CreateFile_ShouldReturnWritableStream(ITestEnvironment<IFileSystem, IFileSystemGateway> environment)
+	[TestEnvironments<IFileSystem, IFileSystemBackDoor>]
+	public async Task CreateFile_ShouldReturnWritableStream(ITestEnvironment<IFileSystem, IFileSystemBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange((gateway, context) =>
+			.Arrange((backDoor, context) =>
 			{
-				context.FilePath = gateway.GetFullPath("written-file.txt");
+				context.FilePath = backDoor.GetFullPath("written-file.txt");
 			})
 			.Act(async (fileSystem, context) =>
 			{
@@ -68,22 +68,22 @@ public class CreateFileTests
 				await using StreamWriter writer = new(stream);
 				await writer.WriteAsync("gem data");
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
-				gateway.ReadAllText("written-file.txt").Should().Be("gem data");
+				backDoor.ReadAllText("written-file.txt").Should().Be("gem data");
 			})
 			.ExecuteAsync();
 	}
 
 	[Theory]
-	[TestEnvironments<IFileSystem, IFileSystemGateway>]
-	public async Task CreateFile_WhenFileAlreadyExists_ShouldOverwriteExistingContent(ITestEnvironment<IFileSystem, IFileSystemGateway> environment)
+	[TestEnvironments<IFileSystem, IFileSystemBackDoor>]
+	public async Task CreateFile_WhenFileAlreadyExists_ShouldOverwriteExistingContent(ITestEnvironment<IFileSystem, IFileSystemBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange((gateway, context) =>
+			.Arrange((backDoor, context) =>
 			{
-				gateway.WriteAllText("existing-file.txt", "old content that is longer than the new one");
-				context.FilePath = gateway.GetFullPath("existing-file.txt");
+				backDoor.WriteAllText("existing-file.txt", "old content that is longer than the new one");
+				context.FilePath = backDoor.GetFullPath("existing-file.txt");
 			})
 			.Act(async (fileSystem, context) =>
 			{
@@ -93,22 +93,22 @@ public class CreateFileTests
 				await using StreamWriter writer = new(stream);
 				await writer.WriteAsync("new");
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
-				gateway.ReadAllText("existing-file.txt").Should().Be("new");
+				backDoor.ReadAllText("existing-file.txt").Should().Be("new");
 			})
 			.ExecuteAsync();
 	}
 
 	[Theory]
-	[TestEnvironments<IFileSystem, IFileSystemGateway>]
-	public async Task CreateFile_WithNestedExistingDirectory_ShouldCreateFile(ITestEnvironment<IFileSystem, IFileSystemGateway> environment)
+	[TestEnvironments<IFileSystem, IFileSystemBackDoor>]
+	public async Task CreateFile_WithNestedExistingDirectory_ShouldCreateFile(ITestEnvironment<IFileSystem, IFileSystemBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange((gateway, context) =>
+			.Arrange((backDoor, context) =>
 			{
-				gateway.CreateDirectory(Path.Combine("level1", "level2"));
-				context.FilePath = gateway.GetFullPath(Path.Combine("level1", "level2", "nested-file.txt"));
+				backDoor.CreateDirectory(Path.Combine("level1", "level2"));
+				context.FilePath = backDoor.GetFullPath(Path.Combine("level1", "level2", "nested-file.txt"));
 			})
 			.Act((fileSystem, context) =>
 			{
@@ -116,21 +116,21 @@ public class CreateFileTests
 
 				using Stream stream = fileSystem.CreateFile(filePath);
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
-				gateway.FileExists(Path.Combine("level1", "level2", "nested-file.txt")).Should().BeTrue();
+				backDoor.FileExists(Path.Combine("level1", "level2", "nested-file.txt")).Should().BeTrue();
 			})
 			.ExecuteAsync();
 	}
 
 	[Theory]
-	[TestEnvironments<IFileSystem, IFileSystemGateway>]
-	public async Task CreateFile_WhenParentDirectoryDoesNotExist_ShouldThrowDirectoryNotFoundException(ITestEnvironment<IFileSystem, IFileSystemGateway> environment)
+	[TestEnvironments<IFileSystem, IFileSystemBackDoor>]
+	public async Task CreateFile_WhenParentDirectoryDoesNotExist_ShouldThrowDirectoryNotFoundException(ITestEnvironment<IFileSystem, IFileSystemBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange((gateway, context) =>
+			.Arrange((backDoor, context) =>
 			{
-				context.FilePath = gateway.GetFullPath(Path.Combine("missing-directory", "file.txt"));
+				context.FilePath = backDoor.GetFullPath(Path.Combine("missing-directory", "file.txt"));
 			})
 			.Act((fileSystem, context) =>
 			{
@@ -146,8 +146,8 @@ public class CreateFileTests
 	}
 
 	[Theory]
-	[TestEnvironments<IFileSystem, IFileSystemGateway>]
-	public async Task CreateFile_WithNullPath_ShouldThrowArgumentException(ITestEnvironment<IFileSystem, IFileSystemGateway> environment)
+	[TestEnvironments<IFileSystem, IFileSystemBackDoor>]
+	public async Task CreateFile_WithNullPath_ShouldThrowArgumentException(ITestEnvironment<IFileSystem, IFileSystemBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((fileSystem, context) =>
@@ -162,8 +162,8 @@ public class CreateFileTests
 	}
 
 	[Theory]
-	[TestEnvironments<IFileSystem, IFileSystemGateway>]
-	public async Task CreateFile_WithEmptyPath_ShouldThrowArgumentException(ITestEnvironment<IFileSystem, IFileSystemGateway> environment)
+	[TestEnvironments<IFileSystem, IFileSystemBackDoor>]
+	public async Task CreateFile_WithEmptyPath_ShouldThrowArgumentException(ITestEnvironment<IFileSystem, IFileSystemBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((fileSystem, context) =>
@@ -178,8 +178,8 @@ public class CreateFileTests
 	}
 
 	[Theory]
-	[TestEnvironments<IFileSystem, IFileSystemGateway>]
-	public async Task CreateFile_WithWhitespacePath_ShouldThrowArgumentException(ITestEnvironment<IFileSystem, IFileSystemGateway> environment)
+	[TestEnvironments<IFileSystem, IFileSystemBackDoor>]
+	public async Task CreateFile_WithWhitespacePath_ShouldThrowArgumentException(ITestEnvironment<IFileSystem, IFileSystemBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((fileSystem, context) =>
@@ -194,14 +194,14 @@ public class CreateFileTests
 	}
 
 	[Theory]
-	[TestEnvironments<IFileSystem, IFileSystemGateway>]
-	public async Task CreateFile_CalledForTwoDifferentPaths_ShouldCreateBothFilesIndependently(ITestEnvironment<IFileSystem, IFileSystemGateway> environment)
+	[TestEnvironments<IFileSystem, IFileSystemBackDoor>]
+	public async Task CreateFile_CalledForTwoDifferentPaths_ShouldCreateBothFilesIndependently(ITestEnvironment<IFileSystem, IFileSystemBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
-			.Arrange((gateway, context) =>
+			.Arrange((backDoor, context) =>
 			{
-				context.FilePath1 = gateway.GetFullPath("file1.txt");
-				context.FilePath2 = gateway.GetFullPath("file2.txt");
+				context.FilePath1 = backDoor.GetFullPath("file1.txt");
+				context.FilePath2 = backDoor.GetFullPath("file2.txt");
 			})
 			.Act(async (fileSystem, context) =>
 			{
@@ -216,10 +216,10 @@ public class CreateFileTests
 				await using (StreamWriter writer2 = new(stream2))
 					await writer2.WriteAsync("content 2");
 			})
-			.Assert((gateway, context) =>
+			.Assert((backDoor, context) =>
 			{
-				gateway.ReadAllText("file1.txt").Should().Be("content 1");
-				gateway.ReadAllText("file2.txt").Should().Be("content 2");
+				backDoor.ReadAllText("file1.txt").Should().Be("content 1");
+				backDoor.ReadAllText("file2.txt").Should().Be("content 2");
 			})
 			.ExecuteAsync();
 	}

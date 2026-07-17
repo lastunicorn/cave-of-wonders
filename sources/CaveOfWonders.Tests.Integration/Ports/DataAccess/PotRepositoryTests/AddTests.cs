@@ -9,8 +9,8 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotRepo
 public class AddTests
 {
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task Add_WithValidPot_ShouldPersistPot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task Add_WithValidPot_ShouldPersistPot(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -28,9 +28,9 @@ public class AddTests
 				repository.Add(pot);
 				context.PotId = pot.Id;
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<Pot> pots = await gateway.GetAllPotsAsync();
+				List<Pot> pots = await backDoor.GetAllPotsAsync();
 
 				pots.Should().HaveCount(1);
 				Pot pot = pots.First();
@@ -47,8 +47,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task Add_WithNullPot_ShouldThrowArgumentNullException(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task Add_WithNullPot_ShouldThrowArgumentNullException(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -63,8 +63,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task Add_WithMultiplePots_ShouldPersistAllPots(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task Add_WithMultiplePots_ShouldPersistAllPots(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -104,9 +104,9 @@ public class AddTests
 				context.Pot2Id = pot2.Id;
 				context.Pot3Id = pot3.Id;
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<Pot> pots = await gateway.GetAllPotsAsync();
+				List<Pot> pots = await backDoor.GetAllPotsAsync();
 
 				pots.Should().HaveCount(3);
 
@@ -123,8 +123,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task Add_WithPotContainingSnapshots_ShouldPersistSnapshots(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task Add_WithPotContainingSnapshots_ShouldPersistSnapshots(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -153,9 +153,9 @@ public class AddTests
 
 				repository.Add(pot);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<Pot> pots = await gateway.GetAllPotsAsync();
+				List<Pot> pots = await backDoor.GetAllPotsAsync();
 
 				pots.Should().HaveCount(1);
 				Pot pot = pots.First();
@@ -167,8 +167,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task Add_WithPotContainingLabels_ShouldPersistLabels(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task Add_WithPotContainingLabels_ShouldPersistLabels(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -190,9 +190,9 @@ public class AddTests
 
 				repository.Add(pot);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<Pot> pots = await gateway.GetAllPotsAsync();
+				List<Pot> pots = await backDoor.GetAllPotsAsync();
 
 				pots.Should().HaveCount(1);
 				Pot pot = pots.First();
@@ -205,8 +205,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task Add_WithPotContainingEndDate_ShouldPersistEndDate(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task Add_WithPotContainingEndDate_ShouldPersistEndDate(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -233,9 +233,9 @@ public class AddTests
 				repository.Add(potWithEndDate);
 				repository.Add(potWithoutEndDate);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<Pot> pots = await gateway.GetAllPotsAsync();
+				List<Pot> pots = await backDoor.GetAllPotsAsync();
 
 				pots.Should().HaveCount(2);
 				pots.Should().ContainSingle(x => x.Name == "Test Pot with EndDate" && x.EndDate == new DateOnly(2023, 12, 31));
@@ -245,8 +245,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task Add_WithNullDescription_ShouldPersistNullDescription(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task Add_WithNullDescription_ShouldPersistNullDescription(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -263,9 +263,9 @@ public class AddTests
 
 				repository.Add(pot);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<Pot> pots = await gateway.GetAllPotsAsync();
+				List<Pot> pots = await backDoor.GetAllPotsAsync();
 
 				pots.Should().HaveCount(1);
 				pots.First().Description.Should().BeNull();
@@ -274,8 +274,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task Add_WithNoSnapshotsOrLabels_ShouldPersistEmptyCollections(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task Add_WithNoSnapshotsOrLabels_ShouldPersistEmptyCollections(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -291,9 +291,9 @@ public class AddTests
 
 				repository.Add(pot);
 			})
-			.Assert(async (gateway, context) =>
+			.Assert(async (backDoor, context) =>
 			{
-				List<Pot> pots = await gateway.GetAllPotsAsync();
+				List<Pot> pots = await backDoor.GetAllPotsAsync();
 
 				pots.Should().HaveCount(1);
 				Pot pot = pots.First();
@@ -306,8 +306,8 @@ public class AddTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, IPotStorageGateway>]
-	public async Task Add_WithDuplicateId_ShouldThrow(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task Add_WithDuplicateId_ShouldThrow(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		// Some adapters (e.g. the EF Core-backed SQLite one) only stage the entity in Add and
 		// don't hit the database - and therefore don't surface a duplicate-key violation -
@@ -316,7 +316,7 @@ public class AddTests
 		// exception from the whole Act phase, so the test passes regardless of whether the
 		// given adapter rejects the duplicate synchronously or on flush.
 		await GenericTest.Create(environment)
-			.Arrange(async (gateway, context) =>
+			.Arrange(async (backDoor, context) =>
 			{
 				Guid potId = Guid.NewGuid();
 
@@ -329,7 +329,7 @@ public class AddTests
 					Currency = "USD"
 				};
 
-				await gateway.SeedPotsAsync([pot]);
+				await backDoor.SeedPotsAsync([pot]);
 				context.PotId = potId;
 			})
 			.Act((repository, context) =>

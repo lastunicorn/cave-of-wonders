@@ -27,7 +27,7 @@ internal sealed class SqliteTempDatabase : IDisposable, IAsyncDisposable
 	/// <summary>
 	/// Opens an additional, independent session over the same database file. Unlike <see cref="OpenAsync"/>,
 	/// the returned <see cref="CaveOfWondersDbContext"/> is not tracked by this instance; the caller owns it and
-	/// is responsible for saving and disposing it. Used by storage gateways that must not share the SUT's session.
+	/// is responsible for saving and disposing it. Used by storage back doors that must not share the SUT's session.
 	/// </summary>
 	public async Task<CaveOfWondersDbContext> CreateSessionAsync(CancellationToken cancellationToken = default)
 	{

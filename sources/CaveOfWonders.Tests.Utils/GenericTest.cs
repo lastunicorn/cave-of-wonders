@@ -2,8 +2,8 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 
 public static class GenericTest
 {
-	public static GenericTest<TSut, TGateway> Create<TSut, TGateway>(ITestEnvironment<TSut, TGateway> environment)
+	public static GenericTest<TSut, TBackDoor> Create<TSut, TBackDoor>(ITestEnvironment<TSut, TBackDoor> environment)
 	{
-		return new GenericTest<TSut, TGateway>(environment);
+		return new GenericTest<TSut, TBackDoor>(environment);
 	}
 }

@@ -5,7 +5,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// <summary>
 /// Loads <c>tests-config.json</c> from the test run's base directory. The file declares, per port
 /// interface, the labels (see <see cref="TestEnvironmentAttribute"/>) of the
-/// <see cref="ITestEnvironment{TSut,TGateway}"/> implementations to run the interface's test suite against.
+/// <see cref="ITestEnvironment{TSut,TBackDoor}"/> implementations to run the interface's test suite against.
 /// </summary>
 public static class TestsConfig
 {
