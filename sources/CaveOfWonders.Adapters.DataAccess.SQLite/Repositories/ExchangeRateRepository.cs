@@ -27,7 +27,7 @@ internal class ExchangeRateRepository : IExchangeRateRepository
 
         List<ExchangeRateEntity> entities = await query.OrderBy(x => x.Date).ToListAsync();
 
-        return entities.Select(MapToDomain);
+        return entities.Select(dbContext.ExchangeRateTracker.GetOrAttach);
     }
 
     public async Task<ExchangeRate> GetForLatestDayAvailable(CurrencyPair currencyPair, DateOnly date, bool allowInverted = false)
@@ -43,7 +43,7 @@ internal class ExchangeRateRepository : IExchangeRateRepository
             .OrderByDescending(x => x.Date)
             .FirstOrDefaultAsync();
 
-        return entity == null ? null : MapToDomain(entity);
+        return entity == null ? null : dbContext.ExchangeRateTracker.GetOrAttach(entity);
     }
 
     public async Task<IEnumerable<ExchangeRate>> GetForLatestDayAvailable(CurrencyPair[] currencyPairs, DateOnly date, bool allowInverted = false)
@@ -61,7 +61,7 @@ internal class ExchangeRateRepository : IExchangeRateRepository
             .Where(x => pairsAsStrings.Contains(x.CurrencyPair) && x.Date == maxDate)
             .ToListAsync();
 
-        return entities.Select(MapToDomain);
+        return entities.Select(dbContext.ExchangeRateTracker.GetOrAttach);
     }
 
     public async Task<IEnumerable<ExchangeRate>> GetByDateInterval(CurrencyPair[] currencyPairs, DateOnly? startDate, DateOnly? endDate)
@@ -82,7 +82,7 @@ internal class ExchangeRateRepository : IExchangeRateRepository
 
         List<ExchangeRateEntity> entities = await query.OrderBy(x => x.Date).ToListAsync();
 
-        return entities.Select(MapToDomain);
+        return entities.Select(dbContext.ExchangeRateTracker.GetOrAttach);
     }
 
     public async Task<IEnumerable<ExchangeRate>> GetByYear(CurrencyPair[] currencyPairs, uint year, uint? month)
@@ -102,7 +102,7 @@ internal class ExchangeRateRepository : IExchangeRateRepository
 
         List<ExchangeRateEntity> entities = await query.OrderBy(x => x.Date).ToListAsync();
 
-        return entities.Select(MapToDomain);
+        return entities.Select(dbContext.ExchangeRateTracker.GetOrAttach);
     }
 
     public async Task<ExchangeRate> Get(CurrencyPair currencyPair, DateOnly date)
@@ -112,7 +112,7 @@ internal class ExchangeRateRepository : IExchangeRateRepository
         ExchangeRateEntity entity = await dbContext.ExchangeRates
             .FirstOrDefaultAsync(x => x.Date == date && x.CurrencyPair == pairAsString);
 
-        return entity == null ? null : MapToDomain(entity);
+        return entity == null ? null : dbContext.ExchangeRateTracker.GetOrAttach(entity);
     }
 
     public async Task AddOrUpdate(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken)
@@ -140,15 +140,5 @@ internal class ExchangeRateRepository : IExchangeRateRepository
                 });
             }
         }
-    }
-
-    private static ExchangeRate MapToDomain(ExchangeRateEntity entity)
-    {
-        return new ExchangeRate
-        {
-            Date = entity.Date,
-            CurrencyPair = entity.CurrencyPair,
-            Value = entity.Value
-        };
     }
 }
