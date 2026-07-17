@@ -1,26 +1,26 @@
 [
   {
-    "Port": "IPotRepository",
+    "Port": "DustInTheWind.CaveOfWonders.Ports.DataAccess.IPotRepository",
     "TestEnvironments": ["Json", "LiteDb", "SQLite"]
   },
   {
-    "Port": "ICpiRepository",
+    "Port": "DustInTheWind.CaveOfWonders.Ports.DataAccess.ICpiRepository",
     "TestEnvironments": ["Json", "SQLite"]
   },
   {
-    "Port": "IGemRepository",
+    "Port": "DustInTheWind.CaveOfWonders.Ports.DataAccess.IGemRepository",
     "TestEnvironments": ["Json", "SQLite"]
   },
   {
-    "Port": "IAverageWageRepository",
+    "Port": "DustInTheWind.CaveOfWonders.Ports.DataAccess.IAverageWageRepository",
     "TestEnvironments": ["Json", "SQLite"]
   },
   {
-    "Port": "IFileSystem",
+    "Port": "DustInTheWind.CaveOfWonders.Ports.FileAccess.IFileSystem",
     "TestEnvironments": ["Real"]
   },
   {
-    "Port": "ILog",
+    "Port": "DustInTheWind.CaveOfWonders.Ports.LogAccess.ILog",
     "TestEnvironments": ["Real"]
   }
 ]
