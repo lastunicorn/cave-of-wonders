@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using DustInTheWind.CaveOfWonders.Adapters.BnrAccess;
 using DustInTheWind.CaveOfWonders.Adapters.ClockAccess;
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite;
 using DustInTheWind.CaveOfWonders.Adapters.FileAccess;
 using DustInTheWind.CaveOfWonders.Adapters.FintownAccess;
 using DustInTheWind.CaveOfWonders.Adapters.InsAccess;
@@ -20,6 +20,8 @@ using DustInTheWind.CaveOfWonders.Ports.MintosAccess;
 using DustInTheWind.CaveOfWonders.Ports.SpreadsheetAccess;
 using MediatR.Extensions.Autofac.DependencyInjection;
 using MediatR.Extensions.Autofac.DependencyInjection.Builder;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace DustInTheWind.CaveOfWonders.Cli;
@@ -44,7 +46,20 @@ internal static class DependenciesSetup
                 IConfiguration configuration = configurationBuilder.Build();
                 string connectionString = configuration.GetConnectionString("DefaultConnection");
 
-                return new Database(connectionString);
+                string dataSource = new SqliteConnectionStringBuilder(connectionString).DataSource;
+                string databaseDirectoryPath = Path.GetDirectoryName(Path.GetFullPath(dataSource, AppContext.BaseDirectory));
+
+                if (!string.IsNullOrEmpty(databaseDirectoryPath) && !Directory.Exists(databaseDirectoryPath))
+                    Directory.CreateDirectory(databaseDirectoryPath);
+
+                DbContextOptions<CaveOfWondersDbContext> options = new DbContextOptionsBuilder<CaveOfWondersDbContext>()
+                    .UseSqlite(connectionString)
+                    .Options;
+
+                CaveOfWondersDbContext dbContext = new(options);
+                dbContext.Database.EnsureCreated();
+
+                return dbContext;
             })
             .AsSelf();
 
