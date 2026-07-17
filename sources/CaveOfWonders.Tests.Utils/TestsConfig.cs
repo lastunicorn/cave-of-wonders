@@ -9,26 +9,19 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// </summary>
 public static class TestsConfig
 {
-	private static readonly Lazy<JsonElement> Root = new(LoadRoot);
+	private static readonly Lazy<List<PortTestConfig>> Root = new(LoadRoot);
 
-	public static IEnumerable<PortTestConfig> GetEnvironmentTestConfigs(string portName)
+	public static IEnumerable<string> GetEnvironmentLabels(string portName)
 	{
-		return GetConfigs(Root.Value.GetProperty(portName));
+		return Root.Value
+			.Where(x => x.Port == portName)
+			.SelectMany(x => x.TestEnvironments);
 	}
 
-	private static IEnumerable<PortTestConfig> GetConfigs(JsonElement section)
-	{
-		foreach (JsonElement item in section.EnumerateArray())
-		{
-			string label = item.GetProperty("label").GetString();
-			yield return new PortTestConfig(label, item);
-		}
-	}
-
-	private static JsonElement LoadRoot()
+	private static List<PortTestConfig> LoadRoot()
 	{
 		string path = Path.Combine(AppContext.BaseDirectory, "tests-config.json");
 		string json = File.ReadAllText(path);
-		return JsonDocument.Parse(json).RootElement;
+		return JsonSerializer.Deserialize<List<PortTestConfig>>(json);
 	}
 }

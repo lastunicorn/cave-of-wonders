@@ -1,19 +1,18 @@
-{
-  "IPotRepository": [
-    { "label": "Json" },
-    { "label": "LiteDb" },
-    { "label": "SQLite" }
-  ],
-  "ICpiRepository": [
-    { "label": "Json" },
-    { "label": "SQLite" }
-  ],
-  "IGemRepository": [
-    { "label": "Json" },
-    { "label": "SQLite" }
-  ],
-  "IAverageWageRepository": [
-    { "label": "Json" },
-    { "label": "SQLite" }
-  ]
-}
+[
+  {
+    "Port": "IPotRepository",
+    "TestEnvironments": ["Json", "LiteDb", "SQLite"]
+  },
+  {
+    "Port": "ICpiRepository",
+    "TestEnvironments": ["Json", "SQLite"]
+  },
+  {
+    "Port": "IGemRepository",
+    "TestEnvironments": ["Json", "SQLite"]
+  },
+  {
+    "Port": "IAverageWageRepository",
+    "TestEnvironments": ["Json", "SQLite"]
+  }
+]

@@ -12,11 +12,11 @@ public class RepositoryEnvironmentsAttribute<TSut, TGateway> : DataAttribute
 {
 	public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 	{
-		IEnumerable<PortTestConfig> configs = TestsConfig.GetEnvironmentTestConfigs(typeof(TSut).Name);
+		IEnumerable<string> labels = TestsConfig.GetEnvironmentLabels(typeof(TSut).Name);
 
-		foreach (PortTestConfig config in configs)
+		foreach (string label in labels)
 		{
-			ITestEnvironment<TSut, TGateway> environment = TestEnvironmentFactory.Create<TSut, TGateway>(config.Label);
+			ITestEnvironment<TSut, TGateway> environment = TestEnvironmentFactory.Create<TSut, TGateway>(label);
 
 			yield return [environment];
 		}

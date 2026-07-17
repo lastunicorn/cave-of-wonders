@@ -1,20 +1,13 @@
-using System.Text.Json;
-
 namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 
 /// <summary>
-/// One entry from <c>tests-config.json</c>: the label identifying the <see cref="ITestEnvironment{TSut,TGateway}"/>
-/// to test through (see <see cref="TestEnvironmentAttribute"/>), plus any adapter-specific settings.
+/// One entry from <c>tests-config.json</c>: a port interface name plus the labels (see
+/// <see cref="TestEnvironmentAttribute"/>) of the <see cref="ITestEnvironment{TSut,TGateway}"/> implementations to
+/// run that port's test suite against.
 /// </summary>
-public readonly struct PortTestConfig
+public sealed class PortTestConfig
 {
-	public string Label { get; }
+	public string Port { get; init; }
 
-	public JsonElement Settings { get; }
-
-	public PortTestConfig(string label, JsonElement settings)
-	{
-		Label = label;
-		Settings = settings;
-	}
+	public List<string> TestEnvironments { get; init; } = [];
 }
