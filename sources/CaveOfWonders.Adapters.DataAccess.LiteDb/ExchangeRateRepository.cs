@@ -191,11 +191,49 @@ public class ExchangeRateRepository : IExchangeRateRepository
         return Task.FromResult(exchangeRates);
     }
 
-    public Task<ExchangeRateImportReport> Import(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken)
+    public Task<ExchangeRate> Get(CurrencyPair currencyPair, DateOnly date)
     {
-        ImportProcedure importProcedure = new(dbContext.ExchangeRates);
-        importProcedure.Execute(exchangeRates);
+        string currencyPairAsString = currencyPair.ToString();
 
-        return Task.FromResult(importProcedure.Report);
+        ExchangeRateDbEntity entity = dbContext.ExchangeRates
+            .FindOne(x => x.Date == date && x.CurrencyPair == currencyPairAsString);
+
+        if (entity == null)
+            return Task.FromResult<ExchangeRate>(null);
+
+        ExchangeRate exchangeRate = new()
+        {
+            Date = entity.Date,
+            CurrencyPair = entity.CurrencyPair,
+            Value = entity.Value
+        };
+
+        return Task.FromResult(exchangeRate);
     }
+
+    public Task AddOrUpdate(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken)
+    {
+        foreach (ExchangeRate exchangeRate in exchangeRates)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            string currencyPairAsString = exchangeRate.CurrencyPair;
+
+            ExchangeRateDbEntity existingEntity = dbContext.ExchangeRates
+                .FindOne(x => x.Date == exchangeRate.Date && x.CurrencyPair == currencyPairAsString);
+
+            if (existingEntity != null)
+            {
+                existingEntity.Value = exchangeRate.Value;
+                dbContext.ExchangeRates.Update(existingEntity);
+            }
+            else
+            {
+                dbContext.ExchangeRates.Insert(new ExchangeRateDbEntity(exchangeRate));
+            }
+        }
+
+        return Task.CompletedTask;
+    }
+
 }

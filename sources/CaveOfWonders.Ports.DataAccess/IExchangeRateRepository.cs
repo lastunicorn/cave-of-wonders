@@ -15,5 +15,15 @@ public interface IExchangeRateRepository
 
     Task<IEnumerable<ExchangeRate>> GetByYear(CurrencyPair[] currencyPairs, uint year, uint? month);
 
-    Task<ExchangeRateImportReport> Import(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken);
+    /// <summary>
+    /// Retrieves the exchange rate for the exact currency pair and date. Returns null if no such record exists.
+    /// No date-nearest fallback and no pair inversion are performed.
+    /// </summary>
+    Task<ExchangeRate> Get(CurrencyPair currencyPair, DateOnly date);
+
+    /// <summary>
+    /// For each item, updates the existing record with the same (CurrencyPair, Date) or inserts a new one.
+    /// The caller must ensure <paramref name="exchangeRates"/> contains at most one item per (CurrencyPair, Date) pair.
+    /// </summary>
+    Task AddOrUpdate(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken);
 }

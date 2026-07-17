@@ -105,76 +105,41 @@ internal class ExchangeRateRepository : IExchangeRateRepository
         return entities.Select(MapToDomain);
     }
 
-    public async Task<ExchangeRateImportReport> Import(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken)
+    public async Task<ExchangeRate> Get(CurrencyPair currencyPair, DateOnly date)
     {
-        ExchangeRateImportReport report = new();
-        Dictionary<(DateOnly, string), ExchangeRateEntity> pendingAdds = new();
+        string pairAsString = currencyPair.ToString();
 
+        ExchangeRateEntity entity = await dbContext.ExchangeRates
+            .FirstOrDefaultAsync(x => x.Date == date && x.CurrencyPair == pairAsString);
+
+        return entity == null ? null : MapToDomain(entity);
+    }
+
+    public async Task AddOrUpdate(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken)
+    {
         foreach (ExchangeRate exchangeRate in exchangeRates)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             string pairAsString = exchangeRate.CurrencyPair;
-            var key = (exchangeRate.Date, pairAsString);
 
             ExchangeRateEntity existing = await dbContext.ExchangeRates
                 .FirstOrDefaultAsync(x => x.Date == exchangeRate.Date && x.CurrencyPair == pairAsString, cancellationToken);
 
             if (existing != null)
             {
-                if (existing.Value == exchangeRate.Value)
-                {
-                    report.ExistingIdenticalCount++;
-                }
-                else
-                {
-                    report.Updates.Add(new UpdateReport
-                    {
-                        Date = existing.Date,
-                        CurrencyPair = existing.CurrencyPair,
-                        OldValue = existing.Value,
-                        NewValue = exchangeRate.Value
-                    });
-                    existing.Value = exchangeRate.Value;
-                    report.ExistingUpdatedCount++;
-                }
-            }
-            else if (pendingAdds.TryGetValue(key, out ExchangeRateEntity pending))
-            {
-                if (pending.Value == exchangeRate.Value)
-                {
-                    report.NewDuplicateIdenticalCount++;
-                }
-                else
-                {
-                    report.Duplicates.Add(new DuplicateReport
-                    {
-                        Date = pending.Date,
-                        CurrencyPair = pending.CurrencyPair,
-                        Value1 = pending.Value,
-                        Value2 = exchangeRate.Value
-                    });
-                    pending.Value = exchangeRate.Value;
-                    report.NewDuplicateDifferentCount++;
-                }
+                existing.Value = exchangeRate.Value;
             }
             else
             {
-                ExchangeRateEntity newEntity = new()
+                dbContext.ExchangeRates.Add(new ExchangeRateEntity
                 {
                     Date = exchangeRate.Date,
                     CurrencyPair = pairAsString,
                     Value = exchangeRate.Value
-                };
-                dbContext.ExchangeRates.Add(newEntity);
-                pendingAdds[key] = newEntity;
-                report.AddedCount++;
+                });
             }
-
-            report.TotalCount++;
         }
-
-        return report;
     }
 
     private static ExchangeRate MapToDomain(ExchangeRateEntity entity)

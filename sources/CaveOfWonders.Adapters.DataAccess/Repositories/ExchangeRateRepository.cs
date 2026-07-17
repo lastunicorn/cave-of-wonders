@@ -105,12 +105,41 @@ public class ExchangeRateRepository : IExchangeRateRepository
         return Task.FromResult(exchangeRates);
     }
 
-    public Task<ExchangeRateImportReport> Import(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken)
+    public Task<ExchangeRate> Get(CurrencyPair currencyPair, DateOnly date)
     {
-        ImportProcedure importProcedure = new(database.ExchangeRates);
-        importProcedure.Execute(exchangeRates);
+        ExchangeRate exchangeRate = database.ExchangeRates
+            .FirstOrDefault(x => x.Date == date && x.CurrencyPair == currencyPair);
 
-        return Task.FromResult(importProcedure.Report);
+        return Task.FromResult(exchangeRate);
+    }
+
+    public Task AddOrUpdate(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken)
+    {
+        foreach (ExchangeRate exchangeRate in exchangeRates)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            ExchangeRate existingExchangeRate = database.ExchangeRates
+                .FirstOrDefault(x => x.CurrencyPair == exchangeRate.CurrencyPair && x.Date == exchangeRate.Date);
+
+            if (existingExchangeRate != null)
+            {
+                existingExchangeRate.Value = exchangeRate.Value;
+            }
+            else
+            {
+                ExchangeRate newExchangeRate = new()
+                {
+                    CurrencyPair = exchangeRate.CurrencyPair,
+                    Date = exchangeRate.Date,
+                    Value = exchangeRate.Value
+                };
+
+                database.ExchangeRates.Add(newExchangeRate);
+            }
+        }
+
+        return Task.CompletedTask;
     }
 
     private static CurrencyPair[] ExpandCurrencyPairs(CurrencyPair[] currencyPairs, bool allowInverted)
