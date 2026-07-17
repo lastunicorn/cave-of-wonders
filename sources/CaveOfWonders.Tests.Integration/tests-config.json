@@ -16,6 +16,10 @@
     "TestEnvironments": ["Json", "SQLite"]
   },
   {
+    "Port": "DustInTheWind.CaveOfWonders.Ports.DataAccess.IExchangeRateRepository",
+    "TestEnvironments": ["Json", "LiteDb", "SQLite"]
+  },
+  {
     "Port": "DustInTheWind.CaveOfWonders.Ports.FileAccess.IFileSystem",
     "TestEnvironments": ["Default"]
   },

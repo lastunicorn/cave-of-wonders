@@ -34,19 +34,14 @@ internal class ExchangeRateRepository : IExchangeRateRepository
     {
         string pairAsString = currencyPair.ToString();
 
+        List<string> pairsAsStrings = allowInverted
+            ? [pairAsString, currencyPair.Invert().ToString()]
+            : [pairAsString];
+
         ExchangeRateEntity entity = await dbContext.ExchangeRates
-            .Where(x => x.CurrencyPair == pairAsString && x.Date <= date)
+            .Where(x => pairsAsStrings.Contains(x.CurrencyPair) && x.Date <= date)
             .OrderByDescending(x => x.Date)
             .FirstOrDefaultAsync();
-
-        if (entity == null && allowInverted)
-        {
-            string invertedPairAsString = currencyPair.Invert().ToString();
-            entity = await dbContext.ExchangeRates
-                .Where(x => x.CurrencyPair == invertedPairAsString && x.Date <= date)
-                .OrderByDescending(x => x.Date)
-                .FirstOrDefaultAsync();
-        }
 
         return entity == null ? null : MapToDomain(entity);
     }

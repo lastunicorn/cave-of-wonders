@@ -54,11 +54,15 @@ public class ExchangeRateRepository : IExchangeRateRepository
     public Task<ExchangeRate> GetForLatestDayAvailable(CurrencyPair currencyPair, DateOnly date, bool allowInverted = false)
     {
         string currencyPairAsString = currencyPair.ToString();
+        string invertedCurrencyPairAsString = currencyPair.Invert().ToString();
 
         ExchangeRateDbEntity exchangeRateDbEntity = dbContext.ExchangeRates.Query()
-            .Where(x => x.CurrencyPair == currencyPairAsString && x.Date <= date)
+            .Where(x => x.Date <= date && (x.CurrencyPair == currencyPairAsString || (allowInverted && x.CurrencyPair == invertedCurrencyPairAsString)))
             .OrderByDescending(x => x.Date)
             .FirstOrDefault();
+
+        if (exchangeRateDbEntity == null)
+            return Task.FromResult<ExchangeRate>(null);
 
         ExchangeRate exchangeRate = new()
         {
