@@ -1,12 +1,12 @@
 using System.Text.Json;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess;
+namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 
 /// <summary>
-/// Loads <c>tests-config.json</c>, which declares, per repository interface, the fully-qualified SUT
-/// fixture types to run the interface's test suite against.
+/// Loads <c>tests-config.json</c> from the test run's base directory. The file declares, per port
+/// interface, the fully-qualified SUT fixture types to run the interface's test suite against.
 /// </summary>
-internal static class RepositoryTestConfig
+public static class TestsConfig
 {
 	private static readonly Lazy<JsonElement> Root = new(LoadRoot);
 

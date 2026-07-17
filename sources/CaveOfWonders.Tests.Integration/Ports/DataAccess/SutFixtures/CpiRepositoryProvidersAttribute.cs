@@ -13,7 +13,7 @@ internal class CpiRepositoryProvidersAttribute : DataAttribute
 {
 	public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 	{
-		IEnumerable<PortTestConfig> configs = RepositoryTestConfig.GetPortTestConfigs(nameof(ICpiRepository));
+		IEnumerable<PortTestConfig> configs = TestsConfig.GetPortTestConfigs(nameof(ICpiRepository));
 
 		foreach (PortTestConfig config in configs)
 		{

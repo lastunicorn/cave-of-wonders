@@ -13,7 +13,7 @@ internal class PotRepositoryProvidersAttribute : DataAttribute
 {
 	public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 	{
-		IEnumerable<PortTestConfig> configs = RepositoryTestConfig.GetPortTestConfigs(nameof(IPotRepository));
+		IEnumerable<PortTestConfig> configs = TestsConfig.GetPortTestConfigs(nameof(IPotRepository));
 
 		foreach (PortTestConfig config in configs)
 		{

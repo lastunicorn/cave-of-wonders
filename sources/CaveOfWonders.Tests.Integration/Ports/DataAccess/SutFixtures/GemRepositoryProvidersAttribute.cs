@@ -1,4 +1,5 @@
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Tests.Utils;
 using System.Reflection;
 using Xunit.Sdk;
 
@@ -12,7 +13,7 @@ internal class GemRepositoryProvidersAttribute : DataAttribute
 {
 	public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 	{
-		IEnumerable<PortTestConfig> configs = RepositoryTestConfig.GetPortTestConfigs(nameof(IGemRepository));
+		IEnumerable<PortTestConfig> configs = TestsConfig.GetPortTestConfigs(nameof(IGemRepository));
 
 		foreach (PortTestConfig config in configs)
 		{
