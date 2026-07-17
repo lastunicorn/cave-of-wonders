@@ -9,7 +9,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotRepo
 public class AddTests
 {
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task Add_WithValidPot_ShouldPersistPot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -47,7 +47,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task Add_WithNullPot_ShouldThrowArgumentNullException(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -63,7 +63,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task Add_WithMultiplePots_ShouldPersistAllPots(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -123,7 +123,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task Add_WithPotContainingSnapshots_ShouldPersistSnapshots(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -167,7 +167,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task Add_WithPotContainingLabels_ShouldPersistLabels(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -205,7 +205,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task Add_WithPotContainingEndDate_ShouldPersistEndDate(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -245,7 +245,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task Add_WithNullDescription_ShouldPersistNullDescription(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -274,7 +274,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task Add_WithNoSnapshotsOrLabels_ShouldPersistEmptyCollections(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -306,7 +306,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task Add_WithDuplicateId_ShouldThrow(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		// Some adapters (e.g. the EF Core-backed SQLite one) only stage the entity in Add and

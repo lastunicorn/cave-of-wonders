@@ -10,7 +10,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.GemRepo
 public class AddTests
 {
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task Add_WithValidGem_ShouldPersistGem(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -70,7 +70,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task Add_WithNullGem_ShouldThrowArgumentNullException(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -86,7 +86,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task Add_WithMultipleGems_ShouldPersistAllOfThem(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -158,7 +158,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task Add_WithGemsForDifferentPots_ShouldPersistEachUnderItsOwnPot(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -237,7 +237,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task Add_ShouldPersistPotReference(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -287,7 +287,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task Add_WithGemParameters_ShouldPersistParameters(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -340,7 +340,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task Add_WithDecimalAmount_ShouldPreserveDecimalPrecision(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -386,7 +386,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task Add_WithAllGemCategories_ShouldPersistEachCategory(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -456,7 +456,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task Add_WithoutExternalId_ShouldPersistGemWithNullExternalId(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -502,7 +502,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task Add_WithExternalId_ShouldPersistExternalId(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)

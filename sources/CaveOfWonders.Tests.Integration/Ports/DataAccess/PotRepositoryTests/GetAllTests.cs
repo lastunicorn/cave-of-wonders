@@ -9,7 +9,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotRepo
 public class GetAllTests
 {
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetAll_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -27,7 +27,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetAll_WithOnePot_ShouldReturnOnePot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -66,7 +66,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetAll_WithMultiplePots_ShouldReturnAllPots(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -129,7 +129,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetAll_WithPotsContainingEndDate_ShouldReturnPotsWithEndDate(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -173,7 +173,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetAll_WithPotsContainingSnapshots_ShouldReturnPotsWithSnapshots(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -222,7 +222,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetAll_WithPotsContainingLabels_ShouldReturnPotsWithLabels(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)

@@ -14,5 +14,9 @@
   {
     "Port": "IAverageWageRepository",
     "TestEnvironments": ["Json", "SQLite"]
+  },
+  {
+    "Port": "IFileSystem",
+    "TestEnvironments": ["Real"]
   }
 ]

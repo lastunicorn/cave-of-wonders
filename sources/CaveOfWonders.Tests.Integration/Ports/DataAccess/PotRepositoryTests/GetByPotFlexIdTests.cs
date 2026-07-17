@@ -10,7 +10,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotRepo
 public class GetByPotFlexIdTests
 {
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetByPotFlexId_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -30,7 +30,7 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetByPotFlexId_WithMatchingGuid_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -76,7 +76,7 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetByPotFlexId_WithNonMatchingGuid_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -109,7 +109,7 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetByPotFlexId_WithPartialGuid_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -149,7 +149,7 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetByPotFlexId_WithExactNameMatch_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -187,7 +187,7 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetByPotFlexId_WithPartialNameMatch_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -225,7 +225,7 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetByPotFlexId_WithNameMatchDifferentCase_ShouldReturnMatchingPot(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -263,7 +263,7 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetByPotFlexId_WithNonMatchingName_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -296,7 +296,7 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetByPotFlexId_WithMultipleMatchingPots_ShouldReturnAllMatches(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -357,7 +357,7 @@ public class GetByPotFlexIdTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IPotRepository, IPotStorageGateway>]
+	[TestEnvironments<IPotRepository, IPotStorageGateway>]
 	public async Task GetByPotFlexId_WhenPotFlexIdIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, IPotStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)

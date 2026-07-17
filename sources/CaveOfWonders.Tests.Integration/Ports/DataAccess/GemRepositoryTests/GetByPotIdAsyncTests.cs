@@ -10,7 +10,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.GemRepo
 public class GetByPotIdAsyncTests
 {
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task GetByPotIdAsync_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -28,7 +28,7 @@ public class GetByPotIdAsyncTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task GetByPotIdAsync_WithOneGemForPot_ShouldReturnThatGem(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -86,7 +86,7 @@ public class GetByPotIdAsyncTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task GetByPotIdAsync_WithMultipleGemsForSamePot_ShouldReturnAllGems(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -154,7 +154,7 @@ public class GetByPotIdAsyncTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task GetByPotIdAsync_WithGemsForDifferentPots_ShouldReturnOnlyGemsForRequestedPot(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -228,7 +228,7 @@ public class GetByPotIdAsyncTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task GetByPotIdAsync_WithNonExistentPotId_ShouldReturnEmptyCollection(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -271,7 +271,7 @@ public class GetByPotIdAsyncTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task GetByPotIdAsync_ShouldPopulateGemsWithMatchingPotReference(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -323,7 +323,7 @@ public class GetByPotIdAsyncTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task GetByPotIdAsync_WithGemParameters_ShouldPreserveParameters(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -375,7 +375,7 @@ public class GetByPotIdAsyncTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task GetByPotIdAsync_WithDecimalAmount_ShouldPreserveDecimalPrecision(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -423,7 +423,7 @@ public class GetByPotIdAsyncTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task GetByPotIdAsync_WithAllGemCategories_ShouldPreserveEachCategory(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -493,7 +493,7 @@ public class GetByPotIdAsyncTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task GetByPotIdAsync_WithExternalId_ShouldPreserveExternalId(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)

@@ -9,7 +9,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.Average
 public class GetAllTests
 {
 	[Theory]
-	[RepositoryEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
+	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
 	public async Task GetAll_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -27,7 +27,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
+	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
 	public async Task GetAll_WithOneAverageWageRecord_ShouldReturnOneAverageWageRecord(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -61,7 +61,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
+	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
 	public async Task GetAll_WithMultipleAverageWageRecords_ShouldReturnAllAverageWageRecords(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -108,7 +108,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
+	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
 	public async Task GetAll_WithAverageWageRecordsAddedOutOfOrder_ShouldReturnAllAverageWageRecords(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -155,7 +155,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
+	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
 	public async Task GetAll_WithDecimalValues_ShouldPreserveDecimalPrecision(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -188,7 +188,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
+	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
 	public async Task GetAll_WithNullGrossValue_ShouldReturnNullGrossValue(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -221,7 +221,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
+	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
 	public async Task GetAll_WithNullNetValue_ShouldReturnNullNetValue(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -254,7 +254,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
+	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
 	public async Task GetAll_WithBothValuesNull_ShouldReturnRecordWithNullValues(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -289,7 +289,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
+	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
 	public async Task GetAll_WithZeroValues_ShouldReturnZeroValues(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -322,7 +322,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
+	[TestEnvironments<IAverageWageRepository, IAverageWageStorageGateway>]
 	public async Task GetAll_WithMixOfCompleteAndPartialRecords_ShouldReturnAllRecordsAsSeeded(ITestEnvironment<IAverageWageRepository, IAverageWageStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)

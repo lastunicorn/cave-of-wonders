@@ -9,7 +9,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.CpiRepo
 public class AddTests
 {
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task Add_WithValidCpi_ShouldPersistCpi(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -36,7 +36,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task Add_WithNullCpi_ShouldThrowArgumentNullException(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -52,7 +52,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task Add_WithMultipleCpiRecords_ShouldPersistAllCpiRecords(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -93,7 +93,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task Add_WithDuplicateYear_ShouldThrow(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -125,7 +125,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task Add_WithDecimalValue_ShouldPreserveDecimalPrecision(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -150,7 +150,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task Add_WithZeroValue_ShouldPersistZeroValue(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -175,7 +175,7 @@ public class AddTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task Add_WithNegativeValue_ShouldPersistNegativeValue(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)

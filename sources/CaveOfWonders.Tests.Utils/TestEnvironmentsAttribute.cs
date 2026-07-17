@@ -8,7 +8,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// <c>typeof(TSut).Name</c> in <c>tests-config.json</c>, so a <c>[Theory]</c> using this attribute runs once per
 /// configured adapter.
 /// </summary>
-public class RepositoryEnvironmentsAttribute<TSut, TGateway> : DataAttribute
+public class TestEnvironmentsAttribute<TSut, TGateway> : DataAttribute
 {
 	public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 	{

@@ -29,10 +29,12 @@
       <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess.LiteDb\CaveOfWonders.Adapters.DataAccess.LiteDb.csproj" PrivateAssets="All" />
       <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess.SQLite\CaveOfWonders.Adapters.DataAccess.SQLite.csproj" PrivateAssets="All" />
       <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess\CaveOfWonders.Adapters.DataAccess.Json.csproj" PrivateAssets="All" />
+      <ProjectReference Include="..\CaveOfWonders.Adapters.FileAccess\CaveOfWonders.Adapters.FileAccess.csproj" PrivateAssets="All" />
       <ProjectReference Include="..\CaveOfWonders.DataTypes\CaveOfWonders.DataTypes.csproj" PrivateAssets="All" />
       <ProjectReference Include="..\CaveOfWonders.Domain\CaveOfWonders.Domain.csproj" PrivateAssets="All" />
       <ProjectReference Include="..\CaveOfWonders.Infrastructure\CaveOfWonders.Infrastructure.csproj" PrivateAssets="All" />
       <ProjectReference Include="..\CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj" PrivateAssets="All" />
+      <ProjectReference Include="..\CaveOfWonders.Ports.FileAccess\CaveOfWonders.Ports.FileAccess.csproj" PrivateAssets="All" />
       <ProjectReference Include="..\CaveOfWonders.Tests.Utils\CaveOfWonders.Tests.Utils.csproj" PrivateAssets="All" />
     </ItemGroup>
 

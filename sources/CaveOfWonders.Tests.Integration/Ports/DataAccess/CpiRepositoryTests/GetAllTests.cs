@@ -9,7 +9,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.CpiRepo
 public class GetAllTests
 {
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task GetAll_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -27,7 +27,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task GetAll_WithOneCpiRecord_ShouldReturnOneCpiRecord(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -59,7 +59,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task GetAll_WithMultipleCpiRecords_ShouldReturnAllCpiRecords(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -103,7 +103,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task GetAll_WithCpiRecordsAddedOutOfOrder_ShouldReturnAllCpiRecords(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -147,7 +147,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task GetAll_WithDecimalValue_ShouldPreserveDecimalPrecision(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -177,7 +177,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task GetAll_WithZeroValue_ShouldReturnZeroValue(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -207,7 +207,7 @@ public class GetAllTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task GetAll_WithNegativeValue_ShouldReturnNegativeValue(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)

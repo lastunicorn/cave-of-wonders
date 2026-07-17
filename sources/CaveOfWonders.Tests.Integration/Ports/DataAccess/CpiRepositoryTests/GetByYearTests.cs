@@ -9,7 +9,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.CpiRepo
 public class GetByYearTests
 {
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task GetByYear_WhenDatabaseIsEmpty_ShouldReturnNull(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -26,7 +26,7 @@ public class GetByYearTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task GetByYear_WithMatchingYear_ShouldReturnThatCpiRecord(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -56,7 +56,7 @@ public class GetByYearTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task GetByYear_WithNoMatchingYear_ShouldReturnNull(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -83,7 +83,7 @@ public class GetByYearTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task GetByYear_WithMultipleCpiRecords_ShouldReturnOnlyTheMatchingOne(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -125,7 +125,7 @@ public class GetByYearTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task GetByYear_WithCpiRecordsAddedOutOfOrder_ShouldReturnTheMatchingOne(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -167,7 +167,7 @@ public class GetByYearTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task GetByYear_WithDecimalValue_ShouldPreserveDecimalPrecision(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -196,7 +196,7 @@ public class GetByYearTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task GetByYear_WithZeroValue_ShouldReturnZeroValue(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -225,7 +225,7 @@ public class GetByYearTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<ICpiRepository, ICpiStorageGateway>]
+	[TestEnvironments<ICpiRepository, ICpiStorageGateway>]
 	public async Task GetByYear_WithNegativeValue_ShouldReturnNegativeValue(ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)

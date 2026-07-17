@@ -11,7 +11,7 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.GemRepo
 public class FindAsyncTests
 {
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindAsync_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -33,7 +33,7 @@ public class FindAsyncTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindAsync_WithEmptyFilter_ShouldReturnAllGems(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -101,7 +101,7 @@ public class FindAsyncTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindAsync_WithPotIdFilter_ShouldReturnOnlyGemsForThatPot(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -188,7 +188,7 @@ public class FindAsyncTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindAsync_WithDateFilter_ShouldReturnOnlyGemsOnThatDate(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -251,7 +251,7 @@ public class FindAsyncTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindAsync_WithMonthFilter_ShouldReturnOnlyGemsInThatMonth(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -325,7 +325,7 @@ public class FindAsyncTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindAsync_WithCategoriesFilter_ShouldReturnOnlyGemsWithMatchingCategories(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -399,7 +399,7 @@ public class FindAsyncTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindAsync_WithExternalIdFilter_ShouldReturnOnlyGemWithMatchingExternalId(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -465,7 +465,7 @@ public class FindAsyncTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindAsync_WithCombinedPotIdAndCategoryFilters_ShouldReturnGemsMatchingAllCriteria(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -553,7 +553,7 @@ public class FindAsyncTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindAsync_WithNonMatchingFilter_ShouldReturnEmptyCollection(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
@@ -603,7 +603,7 @@ public class FindAsyncTests
 	}
 
 	[Theory]
-	[RepositoryEnvironments<IGemRepository, IGemStorageGateway>]
+	[TestEnvironments<IGemRepository, IGemStorageGateway>]
 	public async Task FindAsync_ShouldPopulateGemsWithMatchingPotReference(ITestEnvironment<IGemRepository, IGemStorageGateway> environment)
 	{
 		await GenericTest.Create(environment)
