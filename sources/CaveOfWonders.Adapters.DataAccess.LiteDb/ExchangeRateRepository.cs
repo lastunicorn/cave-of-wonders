@@ -161,7 +161,34 @@ public class ExchangeRateRepository : IExchangeRateRepository
 
     public Task<IEnumerable<ExchangeRate>> GetByYear(CurrencyPair[] currencyPairs, uint year, uint? month)
     {
-        throw new NotImplementedException();
+        ILiteQueryable<ExchangeRateDbEntity> query = dbContext.ExchangeRates.Query();
+
+        if (currencyPairs != null && currencyPairs.Length > 0)
+        {
+            string[] currencyPairsAsStrings = currencyPairs
+                .Select(x => x.ToString())
+                .ToArray();
+
+            query = query.Where(x => currencyPairsAsStrings.Contains(x.CurrencyPair));
+        }
+
+        query = query.Where(x => x.Date.Year == year);
+
+        if (month != null)
+            query = query.Where(x => x.Date.Month == month.Value);
+
+        query = query.OrderBy(x => x.Date);
+
+        IEnumerable<ExchangeRate> exchangeRates = query
+            .ToEnumerable()
+            .Select(x => new ExchangeRate
+            {
+                Date = x.Date,
+                CurrencyPair = x.CurrencyPair,
+                Value = x.Value
+            });
+
+        return Task.FromResult(exchangeRates);
     }
 
     public Task<ExchangeRateImportReport> Import(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken)
