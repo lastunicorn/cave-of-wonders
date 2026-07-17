@@ -7,15 +7,15 @@ using Moq;
 
 namespace CaveOfWonders.Tests.ImportExchangeRatesTests;
 
-public class ImportProcedureTests
+public class ImportOperationTests
 {
 	private readonly Mock<IExchangeRateRepository> exchangeRateRepository;
-	private readonly ImportProcedure importProcedure;
+	private readonly ImportOperation importOperation;
 
-	public ImportProcedureTests()
+	public ImportOperationTests()
 	{
 		exchangeRateRepository = new Mock<IExchangeRateRepository>();
-		importProcedure = new ImportProcedure(exchangeRateRepository.Object);
+		importOperation = new ImportOperation(exchangeRateRepository.Object);
 	}
 
 	[Fact]
@@ -32,7 +32,7 @@ public class ImportProcedureTests
 			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>()))
 			.ReturnsAsync((ExchangeRate)null);
 
-		ExchangeRateImportReport report = await importProcedure.Execute([newRate], CancellationToken.None);
+		ExchangeRateImportReport report = await importOperation.Execute([newRate], CancellationToken.None);
 
 		report.AddedCount.Should().Be(1);
 		report.TotalCount.Should().Be(1);
@@ -66,7 +66,7 @@ public class ImportProcedureTests
 			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>()))
 			.ReturnsAsync(existingRate);
 
-		ExchangeRateImportReport report = await importProcedure.Execute([incomingRate], CancellationToken.None);
+		ExchangeRateImportReport report = await importOperation.Execute([incomingRate], CancellationToken.None);
 
 		report.ExistingIdenticalCount.Should().Be(1);
 		report.TotalCount.Should().Be(1);
@@ -96,7 +96,7 @@ public class ImportProcedureTests
 			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>()))
 			.ReturnsAsync(existingRate);
 
-		ExchangeRateImportReport report = await importProcedure.Execute([incomingRate], CancellationToken.None);
+		ExchangeRateImportReport report = await importOperation.Execute([incomingRate], CancellationToken.None);
 
 		report.ExistingUpdatedCount.Should().Be(1);
 		report.TotalCount.Should().Be(1);
@@ -132,7 +132,7 @@ public class ImportProcedureTests
 			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>()))
 			.ReturnsAsync((ExchangeRate)null);
 
-		ExchangeRateImportReport report = await importProcedure.Execute([rate1, rate2], CancellationToken.None);
+		ExchangeRateImportReport report = await importOperation.Execute([rate1, rate2], CancellationToken.None);
 
 		report.AddedCount.Should().Be(1);
 		report.NewDuplicateIdenticalCount.Should().Be(1);
@@ -165,7 +165,7 @@ public class ImportProcedureTests
 			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>()))
 			.ReturnsAsync((ExchangeRate)null);
 
-		ExchangeRateImportReport report = await importProcedure.Execute([rate1, rate2], CancellationToken.None);
+		ExchangeRateImportReport report = await importOperation.Execute([rate1, rate2], CancellationToken.None);
 
 		report.AddedCount.Should().Be(1);
 		report.NewDuplicateDifferentCount.Should().Be(1);
@@ -217,7 +217,7 @@ public class ImportProcedureTests
 			.Setup(x => x.Get((CurrencyPair)"EURUSD", new DateOnly(2023, 6, 12)))
 			.ReturnsAsync(new ExchangeRate { Date = new DateOnly(2023, 6, 12), CurrencyPair = "EURUSD", Value = 4.6000m });
 
-		ExchangeRateImportReport report = await importProcedure.Execute([newRate, existingIdenticalRate, existingUpdatedRate], CancellationToken.None);
+		ExchangeRateImportReport report = await importOperation.Execute([newRate, existingIdenticalRate, existingUpdatedRate], CancellationToken.None);
 
 		report.AddedCount.Should().Be(1);
 		report.ExistingIdenticalCount.Should().Be(1);
@@ -251,7 +251,7 @@ public class ImportProcedureTests
 		using CancellationTokenSource cancellationTokenSource = new();
 		cancellationTokenSource.Cancel();
 
-		Func<Task> action = async () => await importProcedure.Execute([rate1, rate2], cancellationTokenSource.Token);
+		Func<Task> action = async () => await importOperation.Execute([rate1, rate2], cancellationTokenSource.Token);
 
 		await action.Should().ThrowAsync<OperationCanceledException>();
 
@@ -280,7 +280,7 @@ public class ImportProcedureTests
 			yield return rate;
 		}
 
-		await importProcedure.Execute(CountingSource(), CancellationToken.None);
+		await importOperation.Execute(CountingSource(), CancellationToken.None);
 
 		enumerationCount.Should().Be(1);
 	}

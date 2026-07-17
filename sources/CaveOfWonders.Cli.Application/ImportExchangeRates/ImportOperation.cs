@@ -19,11 +19,11 @@ using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportExchangeRates;
 
-internal class ImportProcedure
+internal class ImportOperation
 {
     private readonly IExchangeRateRepository exchangeRateRepository;
 
-    public ImportProcedure(IExchangeRateRepository exchangeRateRepository)
+    public ImportOperation(IExchangeRateRepository exchangeRateRepository)
     {
         this.exchangeRateRepository = exchangeRateRepository ?? throw new ArgumentNullException(nameof(exchangeRateRepository));
     }

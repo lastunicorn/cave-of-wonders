@@ -123,12 +123,12 @@ internal class ExchangeRateRepository : IExchangeRateRepository
 
             string pairAsString = exchangeRate.CurrencyPair;
 
-            ExchangeRateEntity existing = await dbContext.ExchangeRates
+            ExchangeRateEntity existingEntity = await dbContext.ExchangeRates
                 .FirstOrDefaultAsync(x => x.Date == exchangeRate.Date && x.CurrencyPair == pairAsString, cancellationToken);
 
-            if (existing != null)
+            if (existingEntity != null)
             {
-                existing.Value = exchangeRate.Value;
+                existingEntity.Value = exchangeRate.Value;
             }
             else
             {
