@@ -30,6 +30,11 @@ public class CpiRepository : ICpiRepository
 	{
 		if (cpi == null) throw new ArgumentNullException(nameof(cpi));
 
+		bool alreadyExists = database.CpiRecords.Any(x => x.Year == cpi.Year);
+
+		if (alreadyExists)
+			throw new ArgumentException($"A CPI record for year '{cpi.Year}' already exists.", nameof(cpi));
+
 		database.CpiRecords.Add(cpi);
 	}
 }
