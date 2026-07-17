@@ -19,8 +19,8 @@ internal class GemRepositoryEnvironmentsAttribute : DataAttribute
 		foreach (PortTestConfig config in configs)
 		{
 			ITestEnvironment<IGemRepository, IGemStorageGateway> environment =
-				(ITestEnvironment<IGemRepository, IGemStorageGateway>)Activator.CreateInstance(config.AdaptorType);
-			
+				TestEnvironmentFactory.Create<IGemRepository, IGemStorageGateway>(GetType().Assembly, config.Label);
+
 			yield return [environment];
 		}
 	}

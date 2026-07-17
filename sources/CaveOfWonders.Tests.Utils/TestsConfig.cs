@@ -4,8 +4,8 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 
 /// <summary>
 /// Loads <c>tests-config.json</c> from the test run's base directory. The file declares, per port
-/// interface, the fully-qualified <see cref="ITestEnvironment{TSut,TGateway}"/> types to run the
-/// interface's test suite against.
+/// interface, the labels (see <see cref="TestEnvironmentAttribute"/>) of the
+/// <see cref="ITestEnvironment{TSut,TGateway}"/> implementations to run the interface's test suite against.
 /// </summary>
 public static class TestsConfig
 {
@@ -20,9 +20,8 @@ public static class TestsConfig
 	{
 		foreach (JsonElement item in section.EnumerateArray())
 		{
-			string typeName = item.GetProperty("type").GetString();
-			Type type = Type.GetType(typeName, throwOnError: true);
-			yield return new PortTestConfig(type, item);
+			string label = item.GetProperty("label").GetString();
+			yield return new PortTestConfig(label, item);
 		}
 	}
 

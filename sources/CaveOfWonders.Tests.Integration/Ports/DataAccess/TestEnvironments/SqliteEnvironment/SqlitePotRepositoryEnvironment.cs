@@ -4,6 +4,7 @@ using DustInTheWind.CaveOfWonders.Tests.Utils;
 
 namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.SqliteEnvironment;
 
+[TestEnvironment("SQLite")]
 internal class SqlitePotRepositoryEnvironment : ITestEnvironment<IPotRepository, IPotStorageGateway>
 {
 	private readonly SqliteTempDatabase sqliteTempDatabase = new();

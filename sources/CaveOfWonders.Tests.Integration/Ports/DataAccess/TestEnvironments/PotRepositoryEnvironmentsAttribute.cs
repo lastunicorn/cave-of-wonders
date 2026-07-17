@@ -19,8 +19,8 @@ internal class PotRepositoryEnvironmentsAttribute : DataAttribute
 		foreach (PortTestConfig config in configs)
 		{
 			ITestEnvironment<IPotRepository, IPotStorageGateway> environment =
-				(ITestEnvironment<IPotRepository, IPotStorageGateway>)Activator.CreateInstance(config.AdaptorType);
-			
+				TestEnvironmentFactory.Create<IPotRepository, IPotStorageGateway>(GetType().Assembly, config.Label);
+
 			yield return [environment];
 		}
 	}

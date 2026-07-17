@@ -4,6 +4,7 @@ using DustInTheWind.CaveOfWonders.Tests.Utils;
 
 namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.LiteDbEnvironment;
 
+[TestEnvironment("LiteDb")]
 internal class LiteDbPotRepositoryEnvironment : ITestEnvironment<IPotRepository, IPotStorageGateway>
 {
 	private readonly LiteDbTempDatabase liteDbTempDatabase = new();

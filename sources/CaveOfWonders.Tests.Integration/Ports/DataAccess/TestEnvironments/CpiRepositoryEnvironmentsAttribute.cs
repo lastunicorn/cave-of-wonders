@@ -19,8 +19,8 @@ internal class CpiRepositoryEnvironmentsAttribute : DataAttribute
 		foreach (PortTestConfig config in configs)
 		{
 			ITestEnvironment<ICpiRepository, ICpiStorageGateway> environment =
-				(ITestEnvironment<ICpiRepository, ICpiStorageGateway>)Activator.CreateInstance(config.AdaptorType);
-			
+				TestEnvironmentFactory.Create<ICpiRepository, ICpiStorageGateway>(GetType().Assembly, config.Label);
+
 			yield return [environment];
 		}
 	}

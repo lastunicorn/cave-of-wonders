@@ -4,6 +4,7 @@ using DustInTheWind.CaveOfWonders.Tests.Utils;
 
 namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.JsonEnvironment;
 
+[TestEnvironment("Json")]
 internal class JsonPotRepositoryEnvironment : ITestEnvironment<IPotRepository, IPotStorageGateway>
 {
 	private readonly JsonTempDatabase jsonTempDatabase = new();

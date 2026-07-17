@@ -3,18 +3,18 @@ using System.Text.Json;
 namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 
 /// <summary>
-/// One entry from <c>tests-config.json</c>: the <see cref="ITestEnvironment{TSut,TGateway}"/> type to test
-/// through, plus any adapter-specific settings.
+/// One entry from <c>tests-config.json</c>: the label identifying the <see cref="ITestEnvironment{TSut,TGateway}"/>
+/// to test through (see <see cref="TestEnvironmentAttribute"/>), plus any adapter-specific settings.
 /// </summary>
 public readonly struct PortTestConfig
 {
-	public Type AdaptorType { get; }
+	public string Label { get; }
 
 	public JsonElement Settings { get; }
 
-	public PortTestConfig(Type adaptorType, JsonElement settings)
+	public PortTestConfig(string label, JsonElement settings)
 	{
-		AdaptorType = adaptorType;
+		Label = label;
 		Settings = settings;
 	}
 }
