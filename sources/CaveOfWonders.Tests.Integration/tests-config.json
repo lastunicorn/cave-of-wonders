@@ -18,5 +18,9 @@
   {
     "Port": "IFileSystem",
     "TestEnvironments": ["Real"]
+  },
+  {
+    "Port": "ILog",
+    "TestEnvironments": ["Real"]
   }
 ]
