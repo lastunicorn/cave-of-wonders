@@ -113,10 +113,10 @@ internal class GemRepository : IGemRepository
             Description = gem.Description,
             PotId = gem.Pot.Id,
             Parameters = gem.Parameters
-                .Select(p => new GemParameterEntity
+                .Select(x => new GemParameterEntity
                 {
-                    Key = p.Key,
-                    Value = p.Value
+                    Key = x.Key,
+                    Value = x.Value
                 })
                 .ToList()
         };

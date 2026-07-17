@@ -1,6 +1,6 @@
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Repositories;
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Entities;
 using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CaveOfWonders.Tests.Utils;
+using Microsoft.EntityFrameworkCore;
 
 namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.AverageWageRepositoryTests.TestEnvironments;
 
@@ -11,21 +11,26 @@ internal class SqliteAverageWageStorageGateway : SqliteStorageGatewayBase, IAver
 	{
 	}
 
-	public Task SeedAverageWagesAsync(IEnumerable<AverageWage> averageWages, CancellationToken cancellationToken = default)
+	public async Task SeedAverageWagesAsync(IEnumerable<AverageWage> averageWages, CancellationToken cancellationToken = default)
 	{
-		AverageWageRepository averageWageRepository = new(DbContext);
-
-		foreach (AverageWage averageWage in averageWages)
-			averageWageRepository.Add(averageWage);
-
-		return Task.CompletedTask;
+		await DbContext.AverageWages.AddRangeAsync(averageWages
+			.Select(x => new AverageWageEntity
+			{
+				Year = x.Year,
+				GrossValue = x.GrossValue,
+				NetValue = x.NetValue
+			}), cancellationToken);
 	}
 
-	public Task<List<AverageWage>> GetAllAverageWagesAsync(CancellationToken cancellationToken = default)
+	public async Task<List<AverageWage>> GetAllAverageWagesAsync(CancellationToken cancellationToken = default)
 	{
-		AverageWageRepository averageWageRepository = new(DbContext);
-
-		return averageWageRepository.GetAllAsync(cancellationToken)
-			.ToListAsync();
+		return await DbContext.AverageWages
+			.Select(x => new AverageWage
+			{
+				Year = x.Year,
+				GrossValue = x.GrossValue,
+				NetValue = x.NetValue
+			})
+			.ToListAsync(cancellationToken);
 	}
 }
