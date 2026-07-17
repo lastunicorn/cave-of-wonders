@@ -24,11 +24,6 @@ public sealed class Log : ILog, IDisposable, IAsyncDisposable
         streamWriter = new StreamWriter(filePath, fileStreamOptions);
     }
 
-    public void WriteSeparator()
-    {
-        WriteInfo(new string('-', 100));
-    }
-
     public void WriteInfo(string text)
     {
         DateTime now = DateTime.Now;
@@ -48,36 +43,6 @@ public sealed class Log : ILog, IDisposable, IAsyncDisposable
             await streamWriter.DisposeAsync();
     }
 
-    public void ExecuteInfo(string title, Action action)
-    {
-        WriteSeparator();
-        WriteInfo(title);
-
-        try
-        {
-            action?.Invoke();
-        }
-        finally
-        {
-            WriteSeparator();
-        }
-    }
-
-    public Task ExecuteInfo(string title, Func<Task> action)
-    {
-        WriteSeparator();
-        WriteInfo(title);
-
-        try
-        {
-            return action?.Invoke();
-        }
-        finally
-        {
-            WriteSeparator();
-        }
-    }
-
     public Task<T> ExecuteInfo<T>(string title, Func<Task<T>> action)
     {
         WriteSeparator();
@@ -91,5 +56,10 @@ public sealed class Log : ILog, IDisposable, IAsyncDisposable
         {
             WriteSeparator();
         }
+    }
+
+    private void WriteSeparator()
+    {
+	    WriteInfo(new string('-', 100));
     }
 }
