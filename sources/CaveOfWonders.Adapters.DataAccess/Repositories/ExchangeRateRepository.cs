@@ -23,23 +23,6 @@ public class ExchangeRateRepository : IExchangeRateRepository
         return Task.FromResult(exchangeRates);
     }
 
-    public Task<IEnumerable<ExchangeRate>> Get(DateOnly date)
-    {
-        IEnumerable<ExchangeRate> exchangeRates = database.ExchangeRates
-            .Where(x => x.Date == date);
-
-        return Task.FromResult(exchangeRates);
-    }
-
-    public Task<IEnumerable<ExchangeRate>> Get(CurrencyPair currencyPair, List<DateOnly> dates)
-    {
-        string currencyPairAsString = currencyPair.ToString();
-        IEnumerable<ExchangeRate> exchangeRates = database.ExchangeRates
-            .Where(x => x.CurrencyPair == currencyPairAsString && dates.Contains(x.Date));
-
-        return Task.FromResult(exchangeRates);
-    }
-
     public Task<ExchangeRate> GetForLatestDayAvailable(CurrencyPair currencyPair, DateOnly date, bool allowInverted = false)
     {
         CurrencyPair invertedCurrencyPair = currencyPair.Invert();

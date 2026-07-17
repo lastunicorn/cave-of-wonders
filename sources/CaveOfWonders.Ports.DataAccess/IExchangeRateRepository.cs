@@ -7,10 +7,6 @@ public interface IExchangeRateRepository
 {
     Task<IEnumerable<ExchangeRate>> Get(CurrencyPair[] currencyPairs);
 
-    Task<IEnumerable<ExchangeRate>> Get(DateOnly date);
-
-    Task<IEnumerable<ExchangeRate>> Get(CurrencyPair currencyPair, List<DateOnly> dates);
-
     Task<ExchangeRate> GetForLatestDayAvailable(CurrencyPair currencyPair, DateOnly date, bool allowInverted = false);
 
     Task<IEnumerable<ExchangeRate>> GetForLatestDayAvailable(CurrencyPair[] currencyPairs, DateOnly date, bool allowInverted = false);

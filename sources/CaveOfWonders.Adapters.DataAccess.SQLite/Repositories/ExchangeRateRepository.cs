@@ -30,27 +30,6 @@ internal class ExchangeRateRepository : IExchangeRateRepository
         return entities.Select(MapToDomain);
     }
 
-    public async Task<IEnumerable<ExchangeRate>> Get(DateOnly date)
-    {
-        List<ExchangeRateEntity> entities = await dbContext.ExchangeRates
-            .Where(x => x.Date == date)
-            .ToListAsync();
-
-        return entities.Select(MapToDomain);
-    }
-
-    public async Task<IEnumerable<ExchangeRate>> Get(CurrencyPair currencyPair, List<DateOnly> dates)
-    {
-        string pairAsString = currencyPair.ToString();
-
-        List<ExchangeRateEntity> entities = await dbContext.ExchangeRates
-            .Where(x => x.CurrencyPair == pairAsString && dates.Contains(x.Date))
-            .OrderBy(x => x.Date)
-            .ToListAsync();
-
-        return entities.Select(MapToDomain);
-    }
-
     public async Task<ExchangeRate> GetForLatestDayAvailable(CurrencyPair currencyPair, DateOnly date, bool allowInverted = false)
     {
         string pairAsString = currencyPair.ToString();

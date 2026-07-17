@@ -51,26 +51,6 @@ public class ExchangeRateRepository : IExchangeRateRepository
         return Task.FromResult(exchangeRates);
     }
 
-    public Task<IEnumerable<ExchangeRate>> Get(DateOnly date)
-    {
-        IEnumerable<ExchangeRate> exchangeRates = dbContext.ExchangeRates.Query()
-            .Where(x => x.Date == date)
-            .ToEnumerable()
-            .Select(x => new ExchangeRate
-            {
-                Date = x.Date,
-                CurrencyPair = x.CurrencyPair,
-                Value = x.Value
-            });
-
-        return Task.FromResult(exchangeRates);
-    }
-
-    public Task<IEnumerable<ExchangeRate>> Get(CurrencyPair currencyPair, List<DateOnly> dates)
-    {
-        throw new NotImplementedException();
-    }
-
     public Task<ExchangeRate> GetForLatestDayAvailable(CurrencyPair currencyPair, DateOnly date, bool allowInverted = false)
     {
         string currencyPairAsString = currencyPair.ToString();
