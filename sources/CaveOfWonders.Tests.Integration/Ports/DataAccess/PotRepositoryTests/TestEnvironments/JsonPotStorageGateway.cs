@@ -1,4 +1,3 @@
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.Repositories;
 using DustInTheWind.CaveOfWonders.Domain;
 
 namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotRepositoryTests.TestEnvironments;
@@ -12,16 +11,13 @@ internal class JsonPotStorageGateway : JsonStorageGatewayBase, IPotStorageGatewa
 
 	public Task SeedPotsAsync(IEnumerable<Pot> pots, CancellationToken cancellationToken = default)
 	{
-		PotRepository potRepository = new(Database);
-
-		foreach (Pot pot in pots)
-			potRepository.Add(pot);
-
+		Database.Pots.AddRange(pots);
 		return Task.CompletedTask;
 	}
 
 	public Task<List<Pot>> GetAllPotsAsync(CancellationToken cancellationToken = default)
 	{
-		return Task.FromResult(Database.Pots.ToList());
+		List<Pot> pots = Database.Pots.ToList();
+		return Task.FromResult(pots);
 	}
 }

@@ -1,4 +1,3 @@
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.Repositories;
 using DustInTheWind.CaveOfWonders.Domain;
 
 namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.AverageWageRepositoryTests.TestEnvironments;
@@ -12,11 +11,7 @@ internal class JsonAverageWageStorageGateway : JsonStorageGatewayBase, IAverageW
 
 	public Task SeedAverageWagesAsync(IEnumerable<AverageWage> averageWages, CancellationToken cancellationToken = default)
 	{
-		AverageWageRepository averageWageRepository = new(Database);
-
-		foreach (AverageWage averageWage in averageWages)
-			averageWageRepository.Add(averageWage);
-
+		Database.AverageWages.AddRange(averageWages);
 		return Task.CompletedTask;
 	}
 

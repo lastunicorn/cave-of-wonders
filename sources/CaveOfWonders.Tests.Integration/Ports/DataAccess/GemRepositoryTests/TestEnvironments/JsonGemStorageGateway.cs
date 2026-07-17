@@ -1,4 +1,3 @@
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.Repositories;
 using DustInTheWind.CaveOfWonders.Domain;
 
 namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.GemRepositoryTests.TestEnvironments;
@@ -12,19 +11,13 @@ internal class JsonGemStorageGateway : JsonStorageGatewayBase, IGemStorageGatewa
 
 	public Task SeedPotAsync(Pot pot, CancellationToken cancellationToken = default)
 	{
-		PotRepository potRepository = new(Database);
-		potRepository.Add(pot);
-
+		Database.Pots.Add(pot);
 		return Task.CompletedTask;
 	}
 
 	public Task SeedGemsAsync(IEnumerable<Gem> gems, CancellationToken cancellationToken = default)
 	{
-		GemRepository gemRepository = new(Database);
-
-		foreach (Gem gem in gems)
-			gemRepository.Add(gem);
-
+		Database.Gems.AddRange(gems);
 		return Task.CompletedTask;
 	}
 
