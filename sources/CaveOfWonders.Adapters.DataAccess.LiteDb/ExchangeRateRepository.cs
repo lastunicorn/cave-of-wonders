@@ -107,7 +107,13 @@ public class ExchangeRateRepository : IExchangeRateRepository
         ILiteQueryable<ExchangeRateDbEntity> query = dbContext.ExchangeRates.Query();
 
         if (currencyPairs != null && currencyPairs.Length > 0)
-            query = query.Where(x => currencyPairs.Contains(x.CurrencyPair));
+        {
+            string[] currencyPairsAsStrings = currencyPairs
+                .Select(x => x.ToString())
+                .ToArray();
+
+            query = query.Where(x => currencyPairsAsStrings.Contains(x.CurrencyPair));
+        }
 
         if (startDate != null)
             query = query.Where(x => x.Date >= startDate.Value);
