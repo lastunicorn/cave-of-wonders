@@ -45,8 +45,10 @@ public class PotRepository : IPotRepository
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<PotSnapshot>> GetSnapshotsAsync(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive)
+    public Task<IEnumerable<PotSnapshot>> GetSnapshotsAsync(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         IEnumerable<PotSnapshot> potInstances = dbContext.Pots
             .FindAll()
             .Select(x => x.ToDomainEntity())
@@ -57,7 +59,7 @@ public class PotRepository : IPotRepository
         return Task.FromResult(potInstances);
     }
 
-    public IAsyncEnumerable<Pot> GetAsync(PotFlexId potFlexId, CancellationToken cancellationToken)
+    public IAsyncEnumerable<Pot> GetAsync(PotFlexId potFlexId, CancellationToken cancellationToken = default)
     {
         IEnumerable<Pot> pots = dbContext.Pots
             .FindAll()

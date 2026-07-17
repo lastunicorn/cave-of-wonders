@@ -45,8 +45,10 @@ public class PotRepository : IPotRepository
         return Task.FromResult(pot);
     }
 
-    public Task<IEnumerable<PotSnapshot>> GetSnapshotsAsync(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive)
+    public Task<IEnumerable<PotSnapshot>> GetSnapshotsAsync(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         IEnumerable<PotSnapshot> potInstances = database.Pots
             .Where(x => includeInactive || x.IsActive(date))
             .Select(x => x.GetSnapshot(date, dateMatchingMode))

@@ -27,9 +27,9 @@ internal class CpiRepository : ICpiRepository
 			.AsAsyncEnumerable();
 	}
 
-	public async Task<Cpi> GetByYear(int year)
+	public async Task<Cpi> GetByYear(int year, CancellationToken cancellationToken = default)
 	{
-		CpiEntity entity = await dbContext.Cpis.FindAsync(year);
+		CpiEntity entity = await dbContext.Cpis.FindAsync([year], cancellationToken);
 		return entity?.ToDomain();
 	}
 

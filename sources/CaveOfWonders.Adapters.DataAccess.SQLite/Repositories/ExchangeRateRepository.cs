@@ -15,7 +15,7 @@ internal class ExchangeRateRepository : IExchangeRateRepository
         this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    public async Task<IEnumerable<ExchangeRate>> Get(CurrencyPair[] currencyPairs)
+    public async Task<IEnumerable<ExchangeRate>> Get(CurrencyPair[] currencyPairs, CancellationToken cancellationToken = default)
     {
         IQueryable<ExchangeRateEntity> query = dbContext.ExchangeRates;
 
@@ -25,12 +25,12 @@ internal class ExchangeRateRepository : IExchangeRateRepository
             query = query.Where(x => pairsAsStrings.Contains(x.CurrencyPair));
         }
 
-        List<ExchangeRateEntity> entities = await query.OrderBy(x => x.Date).ToListAsync();
+        List<ExchangeRateEntity> entities = await query.OrderBy(x => x.Date).ToListAsync(cancellationToken);
 
         return entities.Select(dbContext.ExchangeRateTracker.GetOrAttach);
     }
 
-    public async Task<ExchangeRate> GetForLatestDayAvailable(CurrencyPair currencyPair, DateOnly date, bool allowInverted = false)
+    public async Task<ExchangeRate> GetForLatestDayAvailable(CurrencyPair currencyPair, DateOnly date, bool allowInverted = false, CancellationToken cancellationToken = default)
     {
         string pairAsString = currencyPair.ToString();
 
@@ -41,30 +41,30 @@ internal class ExchangeRateRepository : IExchangeRateRepository
         ExchangeRateEntity entity = await dbContext.ExchangeRates
             .Where(x => pairsAsStrings.Contains(x.CurrencyPair) && x.Date <= date)
             .OrderByDescending(x => x.Date)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken);
 
         return entity == null ? null : dbContext.ExchangeRateTracker.GetOrAttach(entity);
     }
 
-    public async Task<IEnumerable<ExchangeRate>> GetForLatestDayAvailable(CurrencyPair[] currencyPairs, DateOnly date, bool allowInverted = false)
+    public async Task<IEnumerable<ExchangeRate>> GetForLatestDayAvailable(CurrencyPair[] currencyPairs, DateOnly date, bool allowInverted = false, CancellationToken cancellationToken = default)
     {
         string[] pairsAsStrings = currencyPairs.Select(cp => cp.ToString()).ToArray();
 
         DateOnly? maxDate = await dbContext.ExchangeRates
             .Where(x => pairsAsStrings.Contains(x.CurrencyPair) && x.Date <= date)
-            .MaxAsync(x => (DateOnly?)x.Date);
+            .MaxAsync(x => (DateOnly?)x.Date, cancellationToken);
 
         if (maxDate == null)
             return Enumerable.Empty<ExchangeRate>();
 
         List<ExchangeRateEntity> entities = await dbContext.ExchangeRates
             .Where(x => pairsAsStrings.Contains(x.CurrencyPair) && x.Date == maxDate)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return entities.Select(dbContext.ExchangeRateTracker.GetOrAttach);
     }
 
-    public async Task<IEnumerable<ExchangeRate>> GetByDateInterval(CurrencyPair[] currencyPairs, DateOnly? startDate, DateOnly? endDate)
+    public async Task<IEnumerable<ExchangeRate>> GetByDateInterval(CurrencyPair[] currencyPairs, DateOnly? startDate, DateOnly? endDate, CancellationToken cancellationToken = default)
     {
         IQueryable<ExchangeRateEntity> query = dbContext.ExchangeRates;
 
@@ -80,12 +80,12 @@ internal class ExchangeRateRepository : IExchangeRateRepository
         if (endDate != null)
             query = query.Where(x => x.Date <= endDate.Value);
 
-        List<ExchangeRateEntity> entities = await query.OrderBy(x => x.Date).ToListAsync();
+        List<ExchangeRateEntity> entities = await query.OrderBy(x => x.Date).ToListAsync(cancellationToken);
 
         return entities.Select(dbContext.ExchangeRateTracker.GetOrAttach);
     }
 
-    public async Task<IEnumerable<ExchangeRate>> GetByYear(CurrencyPair[] currencyPairs, uint year, uint? month)
+    public async Task<IEnumerable<ExchangeRate>> GetByYear(CurrencyPair[] currencyPairs, uint year, uint? month, CancellationToken cancellationToken = default)
     {
         IQueryable<ExchangeRateEntity> query = dbContext.ExchangeRates;
 
@@ -100,17 +100,17 @@ internal class ExchangeRateRepository : IExchangeRateRepository
         if (month != null)
             query = query.Where(x => x.Date.Month == (int)month.Value);
 
-        List<ExchangeRateEntity> entities = await query.OrderBy(x => x.Date).ToListAsync();
+        List<ExchangeRateEntity> entities = await query.OrderBy(x => x.Date).ToListAsync(cancellationToken);
 
         return entities.Select(dbContext.ExchangeRateTracker.GetOrAttach);
     }
 
-    public async Task<ExchangeRate> Get(CurrencyPair currencyPair, DateOnly date)
+    public async Task<ExchangeRate> Get(CurrencyPair currencyPair, DateOnly date, CancellationToken cancellationToken = default)
     {
         string pairAsString = currencyPair.ToString();
 
         ExchangeRateEntity entity = await dbContext.ExchangeRates
-            .FirstOrDefaultAsync(x => x.Date == date && x.CurrencyPair == pairAsString);
+            .FirstOrDefaultAsync(x => x.Date == date && x.CurrencyPair == pairAsString, cancellationToken);
 
         return entity == null ? null : dbContext.ExchangeRateTracker.GetOrAttach(entity);
     }

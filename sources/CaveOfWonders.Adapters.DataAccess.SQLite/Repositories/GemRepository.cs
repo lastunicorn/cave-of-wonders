@@ -47,7 +47,7 @@ internal class GemRepository : IGemRepository
         }
     }
 
-    public async Task<Gem> GetByExternalIdAsync(Guid potId, string gemExternalId, CancellationToken cancellationToken)
+    public async Task<Gem> GetByExternalIdAsync(Guid potId, string gemExternalId, CancellationToken cancellationToken = default)
     {
         GemEntity entity = await dbContext.Gems
             .Include(x => x.Parameters)

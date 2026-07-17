@@ -39,11 +39,11 @@ internal class PotRepository : IPotRepository
             : MapToDomain(entity);
     }
 
-    public async Task<IEnumerable<PotSnapshot>> GetSnapshotsAsync(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive)
+    public async Task<IEnumerable<PotSnapshot>> GetSnapshotsAsync(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive, CancellationToken cancellationToken = default)
     {
         List<PotEntity> entities = await dbContext.Pots
             .Include(x => x.Snapshots)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return entities
             .Select(MapToDomain)

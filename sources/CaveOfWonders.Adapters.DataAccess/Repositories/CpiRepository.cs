@@ -18,8 +18,10 @@ public class CpiRepository : ICpiRepository
 		return database.CpiRecords.ToAsyncEnumerable(cancellationToken);
 	}
 
-	public Task<Cpi> GetByYear(int year)
+	public Task<Cpi> GetByYear(int year, CancellationToken cancellationToken = default)
 	{
+		cancellationToken.ThrowIfCancellationRequested();
+
 		Cpi cpi = database.CpiRecords
 			.FirstOrDefault(x => x.Year == year);
 

@@ -29,7 +29,7 @@ public class ImportOperationTests
 		};
 
 		exchangeRateRepository
-			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>()))
+			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
 			.ReturnsAsync((ExchangeRate)null);
 
 		ExchangeRateImportReport report = await importOperation.Execute([newRate], CancellationToken.None);
@@ -61,7 +61,7 @@ public class ImportOperationTests
 		};
 
 		exchangeRateRepository
-			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>()))
+			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
 			.ReturnsAsync(existingRate);
 
 		ExchangeRateImportReport report = await importOperation.Execute([incomingRate], CancellationToken.None);
@@ -92,7 +92,7 @@ public class ImportOperationTests
 		};
 
 		exchangeRateRepository
-			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>()))
+			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
 			.ReturnsAsync(existingRate);
 
 		ExchangeRateImportReport report = await importOperation.Execute([incomingRate], CancellationToken.None);
@@ -129,7 +129,7 @@ public class ImportOperationTests
 		};
 
 		exchangeRateRepository
-			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>()))
+			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
 			.ReturnsAsync((ExchangeRate)null);
 
 		ExchangeRateImportReport report = await importOperation.Execute([rate1, rate2], CancellationToken.None);
@@ -160,7 +160,7 @@ public class ImportOperationTests
 		};
 
 		exchangeRateRepository
-			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>()))
+			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
 			.ReturnsAsync((ExchangeRate)null);
 
 		ExchangeRate addedRate = null;
@@ -212,15 +212,15 @@ public class ImportOperationTests
 		};
 
 		exchangeRateRepository
-			.Setup(x => x.Get((CurrencyPair)"EURUSD", new DateOnly(2023, 6, 10)))
+			.Setup(x => x.Get((CurrencyPair)"EURUSD", new DateOnly(2023, 6, 10), It.IsAny<CancellationToken>()))
 			.ReturnsAsync((ExchangeRate)null);
 
 		exchangeRateRepository
-			.Setup(x => x.Get((CurrencyPair)"EURUSD", new DateOnly(2023, 6, 11)))
+			.Setup(x => x.Get((CurrencyPair)"EURUSD", new DateOnly(2023, 6, 11), It.IsAny<CancellationToken>()))
 			.ReturnsAsync(new ExchangeRate { Date = new DateOnly(2023, 6, 11), CurrencyPair = "EURUSD", Value = 4.9700m });
 
 		exchangeRateRepository
-			.Setup(x => x.Get((CurrencyPair)"EURUSD", new DateOnly(2023, 6, 12)))
+			.Setup(x => x.Get((CurrencyPair)"EURUSD", new DateOnly(2023, 6, 12), It.IsAny<CancellationToken>()))
 			.ReturnsAsync(new ExchangeRate { Date = new DateOnly(2023, 6, 12), CurrencyPair = "EURUSD", Value = 4.6000m });
 
 		ExchangeRateImportReport report = await importOperation.Execute([newRate, existingIdenticalRate, existingUpdatedRate], CancellationToken.None);
@@ -251,7 +251,7 @@ public class ImportOperationTests
 		};
 
 		exchangeRateRepository
-			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>()))
+			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
 			.ReturnsAsync((ExchangeRate)null);
 
 		using CancellationTokenSource cancellationTokenSource = new();
@@ -275,7 +275,7 @@ public class ImportOperationTests
 		};
 
 		exchangeRateRepository
-			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>()))
+			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
 			.ReturnsAsync((ExchangeRate)null);
 
 		int enumerationCount = 0;

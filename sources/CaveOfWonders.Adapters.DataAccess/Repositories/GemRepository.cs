@@ -28,7 +28,7 @@ public class GemRepository : IGemRepository
         }
     }
 
-    public async Task<Gem> GetByExternalIdAsync(Guid potId, string gemExternalId, CancellationToken cancellationToken)
+    public async Task<Gem> GetByExternalIdAsync(Guid potId, string gemExternalId, CancellationToken cancellationToken = default)
     {
         await database.LoadGemsAsync(cancellationToken);
 

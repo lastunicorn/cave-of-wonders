@@ -13,8 +13,10 @@ public class AverageWageRepository : IAverageWageRepository
         this.database = database ?? throw new ArgumentNullException(nameof(database));
     }
 
-    public Task<AverageWage> GetAsync(int year, CancellationToken cancellationToken)
+    public Task<AverageWage> GetAsync(int year, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         AverageWage averageWage = database.AverageWages
             .FirstOrDefault(x => x.Year == year);
 
@@ -27,9 +29,7 @@ public class AverageWageRepository : IAverageWageRepository
 
         foreach (AverageWage averageWage in averageWages)
         {
-            if (cancellationToken.IsCancellationRequested)
-                yield break;
-
+            cancellationToken.ThrowIfCancellationRequested();
             yield return averageWage;
         }
     }

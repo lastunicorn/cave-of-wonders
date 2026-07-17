@@ -45,14 +45,14 @@ public class ConvertUseCase_DateProvidedTests
 		CurrencyPair expectedCurrencyPair = new("EURRON");
 		DateOnly expectedDate = new(2000, 06, 04);
 
-		exchangeRateRepository.Verify(x => x.GetForLatestDayAvailable(expectedCurrencyPair, expectedDate, true), Times.Once);
+		exchangeRateRepository.Verify(x => x.GetForLatestDayAvailable(expectedCurrencyPair, expectedDate, true, It.IsAny<CancellationToken>()), Times.Once);
 	}
 
 	[Fact]
 	public async Task HavingDateProvided_AndExchangeRateDoesNotExistInStorage_ThenThrows()
 	{
 		exchangeRateRepository
-			.Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>()))
+			.Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
 			.Returns(Task.FromResult(null as ExchangeRate));
 
 		ConvertCurrencyRequest convertCurrencyRequest = new()
@@ -71,7 +71,7 @@ public class ConvertUseCase_DateProvidedTests
 	public async Task HavingDateProvided_AndExchangeRateExistsInStorage_ThenReturnsConvertedValue()
 	{
 		exchangeRateRepository
-			.Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>()))
+			.Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
 			.Returns(Task.FromResult(new ExchangeRate()
 			{
 				Value = 2,
@@ -102,7 +102,7 @@ public class ConvertUseCase_DateProvidedTests
 	public async Task HavingDateProvided_AndExchangeRateExistsInStorageForAPreviousDate_ThenReturnsConvertedValue()
 	{
 		exchangeRateRepository
-			.Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>()))
+			.Setup(x => x.GetForLatestDayAvailable(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
 			.Returns(Task.FromResult(new ExchangeRate()
 			{
 				Value = 2,

@@ -31,8 +31,10 @@ public class ExchangeRateRepository : IExchangeRateRepository
         this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    public Task<IEnumerable<ExchangeRate>> Get(CurrencyPair[] currencyPairs)
+    public Task<IEnumerable<ExchangeRate>> Get(CurrencyPair[] currencyPairs, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         ILiteQueryable<ExchangeRateDbEntity> query = dbContext.ExchangeRates.Query();
 
         if (currencyPairs != null && currencyPairs.Length > 0)
@@ -52,8 +54,10 @@ public class ExchangeRateRepository : IExchangeRateRepository
         return Task.FromResult(exchangeRates);
     }
 
-    public Task<ExchangeRate> GetForLatestDayAvailable(CurrencyPair currencyPair, DateOnly date, bool allowInverted = false)
+    public Task<ExchangeRate> GetForLatestDayAvailable(CurrencyPair currencyPair, DateOnly date, bool allowInverted = false, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         string currencyPairAsString = currencyPair.ToString();
         string invertedCurrencyPairAsString = currencyPair.Invert().ToString();
 
@@ -70,8 +74,10 @@ public class ExchangeRateRepository : IExchangeRateRepository
         return Task.FromResult(exchangeRate);
     }
 
-    public Task<IEnumerable<ExchangeRate>> GetForLatestDayAvailable(CurrencyPair[] currencyPairs, DateOnly date, bool allowInverted = false)
+    public Task<IEnumerable<ExchangeRate>> GetForLatestDayAvailable(CurrencyPair[] currencyPairs, DateOnly date, bool allowInverted = false, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         string[] currencyPairsAsStrings = currencyPairs
             .Select(x => x.ToString())
             .ToArray();
@@ -87,8 +93,10 @@ public class ExchangeRateRepository : IExchangeRateRepository
         return Task.FromResult(exchangeRates);
     }
 
-    public Task<IEnumerable<ExchangeRate>> GetByDateInterval(CurrencyPair[] currencyPairs, DateOnly? startDate, DateOnly? endDate)
+    public Task<IEnumerable<ExchangeRate>> GetByDateInterval(CurrencyPair[] currencyPairs, DateOnly? startDate, DateOnly? endDate, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         ILiteQueryable<ExchangeRateDbEntity> query = dbContext.ExchangeRates.Query();
 
         if (currencyPairs != null && currencyPairs.Length > 0)
@@ -115,27 +123,10 @@ public class ExchangeRateRepository : IExchangeRateRepository
         return Task.FromResult(exchangeRates);
     }
 
-    public Task<IEnumerable<ExchangeRate>> GetByYear(CurrencyPair currencyPair, uint year, uint? month)
+    public Task<IEnumerable<ExchangeRate>> GetByYear(CurrencyPair[] currencyPairs, uint year, uint? month, CancellationToken cancellationToken = default)
     {
-        string currencyPairAsString = currencyPair.ToString();
+        cancellationToken.ThrowIfCancellationRequested();
 
-        ILiteQueryable<ExchangeRateDbEntity> query = dbContext.ExchangeRates.Query()
-            .Where(x => x.CurrencyPair == currencyPairAsString && x.Date.Year == year);
-
-        if (month != null)
-            query = query.Where(x => x.Date.Month == month.Value);
-
-        query = query.OrderBy(x => x.Date);
-
-        IEnumerable<ExchangeRate> exchangeRates = query
-            .ToEnumerable()
-            .Select(dbContext.ExchangeRateTracker.GetOrAttach);
-
-        return Task.FromResult(exchangeRates);
-    }
-
-    public Task<IEnumerable<ExchangeRate>> GetByYear(CurrencyPair[] currencyPairs, uint year, uint? month)
-    {
         ILiteQueryable<ExchangeRateDbEntity> query = dbContext.ExchangeRates.Query();
 
         if (currencyPairs != null && currencyPairs.Length > 0)
@@ -161,8 +152,10 @@ public class ExchangeRateRepository : IExchangeRateRepository
         return Task.FromResult(exchangeRates);
     }
 
-    public Task<ExchangeRate> Get(CurrencyPair currencyPair, DateOnly date)
+    public Task<ExchangeRate> Get(CurrencyPair currencyPair, DateOnly date, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         string currencyPairAsString = currencyPair.ToString();
 
         ExchangeRateDbEntity entity = dbContext.ExchangeRates

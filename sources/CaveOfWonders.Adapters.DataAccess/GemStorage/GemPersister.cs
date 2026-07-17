@@ -23,8 +23,7 @@ internal class GemPersister
 
         foreach (GemsFile gemsFile in gemsFiles)
         {
-            if (cancellationToken.IsCancellationRequested)
-                throw new TaskCanceledException();
+            cancellationToken.ThrowIfCancellationRequested();
 
             IEnumerable<Gem> gems = (await gemsFile.ReadAsync(cancellationToken))
                 .Select(x =>
