@@ -5,93 +5,124 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite;
 
 public class CaveOfWondersDbContext : DbContext
 {
-    internal DbSet<PotEntity> Pots { get; set; }
-    internal DbSet<PotSnapshotEntity> PotSnapshots { get; set; }
-    internal DbSet<PotLabelEntity> PotLabels { get; set; }
-    internal DbSet<ExchangeRateEntity> ExchangeRates { get; set; }
-    internal DbSet<CpiEntity> Cpis { get; set; }
-    internal DbSet<AverageWageEntity> AverageWages { get; set; }
-    internal DbSet<GemEntity> Gems { get; set; }
-    internal DbSet<GemParameterEntity> GemParameters { get; set; }
+	internal DbSet<PotEntity> Pots { get; set; }
 
-    internal ExchangeRateTracker ExchangeRateTracker { get; } = new();
+	internal DbSet<PotSnapshotEntity> PotSnapshots { get; set; }
 
-    public CaveOfWondersDbContext(DbContextOptions<CaveOfWondersDbContext> options)
-        : base(options)
-    {
-    }
+	internal DbSet<PotLabelEntity> PotLabels { get; set; }
 
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        ExchangeRateTracker.PrepareChanges(ExchangeRates);
-        int result = await base.SaveChangesAsync(cancellationToken);
-        ExchangeRateTracker.CompleteChanges();
+	internal DbSet<ExchangeRateEntity> ExchangeRates { get; set; }
 
-        return result;
-    }
+	internal DbSet<CpiEntity> Cpis { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<PotEntity>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.HasMany(e => e.Snapshots)
-                .WithOne(e => e.Pot)
-                .HasForeignKey(e => e.PotId)
-                .OnDelete(DeleteBehavior.Cascade);
-            entity.HasMany(e => e.Labels)
-                .WithOne(e => e.Pot)
-                .HasForeignKey(e => e.PotId)
-                .OnDelete(DeleteBehavior.Cascade);
-        });
+	internal DbSet<AverageWageEntity> AverageWages { get; set; }
 
-        modelBuilder.Entity<PotSnapshotEntity>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
-            entity.HasIndex(e => new { e.PotId, e.Date }).IsUnique();
-        });
+	internal DbSet<GemEntity> Gems { get; set; }
 
-        modelBuilder.Entity<PotLabelEntity>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
-        });
+	internal DbSet<GemParameterEntity> GemParameters { get; set; }
 
-        modelBuilder.Entity<ExchangeRateEntity>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
-            entity.HasIndex(e => new { e.Date, e.CurrencyPair }).IsUnique();
-        });
+	internal ExchangeRateTracker ExchangeRateTracker { get; } = new();
 
-        modelBuilder.Entity<CpiEntity>(entity =>
-        {
-            entity.HasKey(e => e.Year);
-        });
+	public CaveOfWondersDbContext(DbContextOptions<CaveOfWondersDbContext> options)
+		: base(options)
+	{
+	}
 
-        modelBuilder.Entity<AverageWageEntity>(entity =>
-        {
-            entity.HasKey(e => e.Year);
-        });
+	public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+	{
+		ExchangeRateTracker.PrepareChanges(ExchangeRates);
+		int result = await base.SaveChangesAsync(cancellationToken);
+		ExchangeRateTracker.CompleteChanges();
 
-        modelBuilder.Entity<GemEntity>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.HasOne(e => e.Pot)
-                .WithMany()
-                .HasForeignKey(e => e.PotId)
-                .OnDelete(DeleteBehavior.Restrict);
-            entity.HasMany(e => e.Parameters)
-                .WithOne(e => e.Gem)
-                .HasForeignKey(e => e.GemId)
-                .OnDelete(DeleteBehavior.Cascade);
-        });
+		return result;
+	}
 
-        modelBuilder.Entity<GemParameterEntity>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
-        });
-    }
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
+	{
+		modelBuilder.Entity<PotEntity>(entity =>
+		{
+			entity.HasKey(x => x.Id);
+			entity
+				.HasMany(x => x.Snapshots)
+				.WithOne(x => x.Pot)
+				.HasForeignKey(x => x.PotId)
+				.OnDelete(DeleteBehavior.Cascade);
+			entity
+				.HasMany(x => x.Labels)
+				.WithOne(x => x.Pot)
+				.HasForeignKey(x => x.PotId)
+				.OnDelete(DeleteBehavior.Cascade);
+		});
+
+		modelBuilder.Entity<PotSnapshotEntity>(entity =>
+		{
+			entity.HasKey(x => x.Id);
+			entity
+				.Property(x => x.Id)
+				.ValueGeneratedOnAdd();
+			entity
+				.HasIndex(x => new
+				{
+					x.PotId,
+					x.Date
+				})
+				.IsUnique();
+		});
+
+		modelBuilder.Entity<PotLabelEntity>(entity =>
+		{
+			entity.HasKey(x => x.Id);
+			entity
+				.Property(x => x.Id)
+				.ValueGeneratedOnAdd();
+		});
+
+		modelBuilder.Entity<ExchangeRateEntity>(entity =>
+		{
+			entity.HasKey(x => x.Id);
+			entity
+				.Property(x => x.Id)
+				.ValueGeneratedOnAdd();
+			entity
+				.HasIndex(x => new
+				{
+					x.Date,
+					x.CurrencyPair
+				})
+				.IsUnique();
+		});
+
+		modelBuilder.Entity<CpiEntity>(entity =>
+		{
+			entity.HasKey(x => x.Year);
+		});
+
+		modelBuilder.Entity<AverageWageEntity>(entity =>
+		{
+			entity.HasKey(x => x.Year);
+		});
+
+		modelBuilder.Entity<GemEntity>(entity =>
+		{
+			entity.HasKey(x => x.Id);
+			entity
+				.HasOne(x => x.Pot)
+				.WithMany()
+				.HasForeignKey(x => x.PotId)
+				.OnDelete(DeleteBehavior.Restrict);
+			entity
+				.HasMany(x => x.Parameters)
+				.WithOne(x => x.Gem)
+				.HasForeignKey(x => x.GemId)
+				.OnDelete(DeleteBehavior.Cascade);
+		});
+
+		modelBuilder.Entity<GemParameterEntity>(entity =>
+		{
+			entity.HasKey(x => x.Id);
+			entity
+				.Property(x => x.Id)
+				.ValueGeneratedOnAdd();
+		});
+	}
 }
