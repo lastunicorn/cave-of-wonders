@@ -6,4 +6,9 @@ internal sealed class RealSystemClockGateway : ISystemClockGateway
 	{
 		return DateTime.Now;
 	}
+
+	public DateOnly GetCurrentDate()
+	{
+		return DateOnly.FromDateTime(DateTime.Today);
+	}
 }
