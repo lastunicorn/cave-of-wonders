@@ -46,7 +46,7 @@ internal class ImportOperation
             }
             else
             {
-                ExchangeRate existing = await exchangeRateRepository.Get(exchangeRate.CurrencyPair, exchangeRate.Date);
+                ExchangeRate existing = await exchangeRateRepository.Get(exchangeRate.CurrencyPair, exchangeRate.Date, cancellationToken);
 
                 if (existing != null)
                     ProcessExisting(existing, exchangeRate, report, scheduledItems, key);

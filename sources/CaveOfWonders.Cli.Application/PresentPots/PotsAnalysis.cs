@@ -35,13 +35,13 @@ internal class PotsAnalysis
         this.currenciesConvertor = currenciesConvertor ?? throw new ArgumentNullException(nameof(currenciesConvertor));
     }
 
-    public async Task Calculate()
+    public async Task Calculate(CancellationToken cancellationToken = default)
     {
         TotalValue = PotInstanceInfos.Sum(x => x.NormalizedValue?.Value ?? 0);
-        currencyTotalOverviews = await CalculateCurrencyTotalOverviews();
+        currencyTotalOverviews = await CalculateCurrencyTotalOverviews(cancellationToken);
     }
 
-    private async Task<List<CurrencyTotalOverview>> CalculateCurrencyTotalOverviews()
+    private async Task<List<CurrencyTotalOverview>> CalculateCurrencyTotalOverviews(CancellationToken cancellationToken)
     {
         // Group pot instances by currency and calculate the sum for each currency
         IEnumerable<IGrouping<string, PotInstanceInfo>> currencyGroups = PotInstanceInfos
@@ -62,7 +62,7 @@ internal class PotsAnalysis
                 Date = TargetDate
             };
 
-            CurrencyValue normalizedValue = await CalculateNormalizedValue(currencyValue);
+            CurrencyValue normalizedValue = await CalculateNormalizedValue(currencyValue, cancellationToken);
 
             // Calculate percentage
             decimal percentage = TotalValue > 0
@@ -83,10 +83,10 @@ internal class PotsAnalysis
         return overviews;
     }
 
-    private async Task<CurrencyValue> CalculateNormalizedValue(CurrencyValue currencyValue)
+    private async Task<CurrencyValue> CalculateNormalizedValue(CurrencyValue currencyValue, CancellationToken cancellationToken)
     {
         return currencyValue.Currency == TargetCurrency
             ? currencyValue
-            : await currenciesConvertor.Convert(currencyValue, TargetCurrency, TargetDate);
+            : await currenciesConvertor.Convert(currencyValue, TargetCurrency, TargetDate, cancellationToken);
     }
 }

@@ -31,14 +31,14 @@ internal class CurrenciesConvertor
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
 
-    public async Task<CurrencyValue> Convert(CurrencyValue originalValue, Currency destinationCurrency, DateOnly destinationDate)
+    public async Task<CurrencyValue> Convert(CurrencyValue originalValue, Currency destinationCurrency, DateOnly destinationDate, CancellationToken cancellationToken = default)
     {
         if (originalValue == null)
             return null;
 
         if (originalValue.Currency != destinationCurrency)
         {
-            CurrencyConvertor currencyConverter = await GetConverter(originalValue.Currency, destinationCurrency, destinationDate);
+            CurrencyConvertor currencyConverter = await GetConverter(originalValue.Currency, destinationCurrency, destinationDate, cancellationToken);
 
             return new CurrencyValue
             {
@@ -61,7 +61,7 @@ internal class CurrenciesConvertor
         return originalValue;
     }
 
-    private async Task<CurrencyConvertor> GetConverter(Currency sourceCurrency, Currency destinationCurrency, DateOnly date)
+    private async Task<CurrencyConvertor> GetConverter(Currency sourceCurrency, Currency destinationCurrency, DateOnly date, CancellationToken cancellationToken)
     {
         CurrencyPair currencyPair = new()
         {
@@ -70,7 +70,7 @@ internal class CurrenciesConvertor
         };
 
         ExchangeRate exchangeRate = await unitOfWork.ExchangeRateRepository
-            .GetForLatestDayAvailable(currencyPair, date, true);
+            .GetForLatestDayAvailable(currencyPair, date, true, cancellationToken);
 
         if (exchangeRate == null)
             return new CurrencyConvertor(date);

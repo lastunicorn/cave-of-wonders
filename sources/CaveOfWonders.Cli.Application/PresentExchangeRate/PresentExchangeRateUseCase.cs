@@ -46,31 +46,31 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
         CurrencyPair[] currencyPairs = request.CurrencyPair?.ParseCurrencyPairs().ToArray() ?? [];
 
         if (request.Today)
-            await RetrieveForToday(currencyPairs);
+            await RetrieveForToday(currencyPairs, cancellationToken);
         else if (request.Date != null)
-            await RetrieveByDate(currencyPairs, request.Date.Value);
+            await RetrieveByDate(currencyPairs, request.Date.Value, cancellationToken);
         else if (request.Year != null)
-            await RetrieveByYear(currencyPairs, request.Year.Value, request.Month);
+            await RetrieveByYear(currencyPairs, request.Year.Value, request.Month, cancellationToken);
         else if (request.StartDate != null || request.EndDate != null)
-            await RetrieveByDateInterval(currencyPairs, request.StartDate, request.EndDate);
+            await RetrieveByDateInterval(currencyPairs, request.StartDate, request.EndDate, cancellationToken);
         else
-            await RetrieveAll(currencyPairs);
+            await RetrieveAll(currencyPairs, cancellationToken);
 
         return response;
     }
 
-    private Task RetrieveForToday(CurrencyPair[] currencyPairs)
+    private Task RetrieveForToday(CurrencyPair[] currencyPairs, CancellationToken cancellationToken)
     {
         // If currency pair provided        => 1 currency; multiple dates       => display by currency
         // If currency pair NOT provided    => multiple currencies; multiple dates       => display by currency
 
         DateOnly dateTime = systemClock.Today;
-        return RetrieveByDate(currencyPairs, dateTime);
+        return RetrieveByDate(currencyPairs, dateTime, cancellationToken);
     }
 
-    private async Task RetrieveByDate(CurrencyPair[] currencyPairs, DateOnly date)
+    private async Task RetrieveByDate(CurrencyPair[] currencyPairs, DateOnly date, CancellationToken cancellationToken)
     {
-        IEnumerable<ExchangeRate> exchangeRates = await unitOfWork.ExchangeRateRepository.GetForLatestDayAvailable(currencyPairs, date);
+        IEnumerable<ExchangeRate> exchangeRates = await unitOfWork.ExchangeRateRepository.GetForLatestDayAvailable(currencyPairs, date, cancellationToken: cancellationToken);
 
         if (exchangeRates == null)
             throw new ExchangeRateNotFoundException(currencyPairs, date);
@@ -102,9 +102,9 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
         }
     }
 
-    private async Task RetrieveByYear(CurrencyPair[] currencyPairs, uint year, uint? month)
+    private async Task RetrieveByYear(CurrencyPair[] currencyPairs, uint year, uint? month, CancellationToken cancellationToken)
     {
-        response.DailyExchangeRates = (await unitOfWork.ExchangeRateRepository.GetByYear(currencyPairs, year, month))
+        response.DailyExchangeRates = (await unitOfWork.ExchangeRateRepository.GetByYear(currencyPairs, year, month, cancellationToken))
             .GroupBy(x => x.Date)
             .Select(x => new DailyExchangeRates
             {
@@ -121,9 +121,9 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
             .ToList();
     }
 
-    private async Task RetrieveByDateInterval(CurrencyPair[] currencyPairs, DateOnly? startDate, DateOnly? endDate)
+    private async Task RetrieveByDateInterval(CurrencyPair[] currencyPairs, DateOnly? startDate, DateOnly? endDate, CancellationToken cancellationToken)
     {
-        response.DailyExchangeRates = (await unitOfWork.ExchangeRateRepository.GetByDateInterval(currencyPairs, startDate, endDate))
+        response.DailyExchangeRates = (await unitOfWork.ExchangeRateRepository.GetByDateInterval(currencyPairs, startDate, endDate, cancellationToken))
             .GroupBy(x => x.Date)
             .Select(x => new DailyExchangeRates
             {
@@ -140,9 +140,9 @@ internal class PresentExchangeRateUseCase : IRequestHandler<PresentExchangeRateR
             .ToList();
     }
 
-    private async Task RetrieveAll(CurrencyPair[] currencyPairs)
+    private async Task RetrieveAll(CurrencyPair[] currencyPairs, CancellationToken cancellationToken)
     {
-        response.DailyExchangeRates = (await unitOfWork.ExchangeRateRepository.Get(currencyPairs))
+        response.DailyExchangeRates = (await unitOfWork.ExchangeRateRepository.Get(currencyPairs, cancellationToken))
             .GroupBy(x => x.Date)
             .Select(x => new DailyExchangeRates
             {

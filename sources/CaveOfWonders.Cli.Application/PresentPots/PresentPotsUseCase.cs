@@ -41,8 +41,8 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
         DateOnly currentDate = request.Date ?? systemClock.Today;
         string defaultCurrency = request.Currency ?? "RON";
 
-        IEnumerable<PotSnapshot> potSnapshots = await RetrievePotSnapshotsFromStorage(currentDate, request.IncludeInactive);
-        List<PotInstanceInfo> potInstanceInfos = await ConvertToPotInstanceInfos(potSnapshots, currentDate, defaultCurrency);
+        IEnumerable<PotSnapshot> potSnapshots = await RetrievePotSnapshotsFromStorage(currentDate, request.IncludeInactive, cancellationToken);
+        List<PotInstanceInfo> potInstanceInfos = await ConvertToPotInstanceInfos(potSnapshots, currentDate, defaultCurrency, cancellationToken);
 
         PotsAnalysis potsAnalysis = new(currenciesConverter)
         {
@@ -51,7 +51,7 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
             TargetCurrency = defaultCurrency
         };
 
-        await potsAnalysis.Calculate();
+        await potsAnalysis.Calculate(cancellationToken);
 
         return new PresentPotsResponse
         {
@@ -69,26 +69,26 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
         };
     }
 
-    private async Task<IEnumerable<PotSnapshot>> RetrievePotSnapshotsFromStorage(DateOnly date, bool includeInactive)
+    private async Task<IEnumerable<PotSnapshot>> RetrievePotSnapshotsFromStorage(DateOnly date, bool includeInactive, CancellationToken cancellationToken)
     {
-        IEnumerable<PotSnapshot> potSnapshots = await unitOfWork.PotRepository.GetSnapshotsAsync(date, DateMatchingMode.LastAvailable, includeInactive);
+        IEnumerable<PotSnapshot> potSnapshots = await unitOfWork.PotRepository.GetSnapshotsAsync(date, DateMatchingMode.LastAvailable, includeInactive, cancellationToken);
         return potSnapshots.OrderBy(x => x.Pot.DisplayOrder);
     }
 
-    private async Task<List<PotInstanceInfo>> ConvertToPotInstanceInfos(IEnumerable<PotSnapshot> potInstances, DateOnly currentDate, string defaultCurrency)
+    private async Task<List<PotInstanceInfo>> ConvertToPotInstanceInfos(IEnumerable<PotSnapshot> potInstances, DateOnly currentDate, string defaultCurrency, CancellationToken cancellationToken)
     {
         List<PotInstanceInfo> potInstanceInfos = [];
 
         foreach (PotSnapshot potSnapshot in potInstances)
         {
-            PotInstanceInfo potInstanceInfo = await Convert(potSnapshot, currentDate, defaultCurrency);
+            PotInstanceInfo potInstanceInfo = await Convert(potSnapshot, currentDate, defaultCurrency, cancellationToken);
             potInstanceInfos.Add(potInstanceInfo);
         }
 
         return potInstanceInfos;
     }
 
-    private async Task<PotInstanceInfo> Convert(PotSnapshot potSnapshot, DateOnly currentDate, Currency defaultCurrency)
+    private async Task<PotInstanceInfo> Convert(PotSnapshot potSnapshot, DateOnly currentDate, Currency defaultCurrency, CancellationToken cancellationToken)
     {
         PotInstanceInfo potInstanceInfo = new()
         {
@@ -98,7 +98,7 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
             Value = ComputeOriginalValue(potSnapshot)
         };
 
-        potInstanceInfo.NormalizedValue = await currenciesConverter.Convert(potInstanceInfo.Value, defaultCurrency, currentDate);
+        potInstanceInfo.NormalizedValue = await currenciesConverter.Convert(potInstanceInfo.Value, defaultCurrency, currentDate, cancellationToken);
 
         return potInstanceInfo;
     }

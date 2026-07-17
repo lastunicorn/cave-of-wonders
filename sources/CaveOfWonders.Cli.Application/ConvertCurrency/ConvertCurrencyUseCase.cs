@@ -38,7 +38,7 @@ internal class ConvertCurrencyUseCase : IRequestHandler<ConvertCurrencyRequest, 
     public async Task<ConvertCurrencyResponse> Handle(ConvertCurrencyRequest request, CancellationToken cancellationToken)
     {
         DateOnly dateOfExchangeRate = request.Date ?? systemClock.Today;
-        ExchangeRate exchangeRate = await RetrieveExchangeRate(request.CurrencyPair, dateOfExchangeRate);
+        ExchangeRate exchangeRate = await RetrieveExchangeRate(request.CurrencyPair, dateOfExchangeRate, cancellationToken);
 
         return new ConvertCurrencyResponse
         {
@@ -49,9 +49,9 @@ internal class ConvertCurrencyUseCase : IRequestHandler<ConvertCurrencyRequest, 
         };
     }
 
-    private async Task<ExchangeRate> RetrieveExchangeRate(CurrencyPair currencyPair, DateOnly date)
+    private async Task<ExchangeRate> RetrieveExchangeRate(CurrencyPair currencyPair, DateOnly date, CancellationToken cancellationToken)
     {
-        ExchangeRate exchangeRate = await unitOfWork.ExchangeRateRepository.GetForLatestDayAvailable(currencyPair, date, true);
+        ExchangeRate exchangeRate = await unitOfWork.ExchangeRateRepository.GetForLatestDayAvailable(currencyPair, date, true, cancellationToken);
 
         if (exchangeRate == null)
             throw new ExchangeRateNotFoundException(currencyPair, date);

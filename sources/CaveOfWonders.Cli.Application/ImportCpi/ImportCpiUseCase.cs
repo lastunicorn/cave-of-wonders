@@ -69,8 +69,7 @@ internal class ImportCpiUseCase : IRequestHandler<ImportCpiRequest, ImportCpiRes
         {
             foreach (CpiRecordDto cpiRecordDto in cpiRecordDtos)
             {
-                if (cancellationToken.IsCancellationRequested)
-                    break;
+	            cancellationToken.ThrowIfCancellationRequested();
 
                 response.TotalCount++;
 
@@ -80,7 +79,7 @@ internal class ImportCpiUseCase : IRequestHandler<ImportCpiRequest, ImportCpiRes
                     Value = cpiRecordDto.Value
                 };
 
-                Cpi existingCpi = await unitOfWork.CpiRepository.GetByYear(cpi.Year);
+                Cpi existingCpi = await unitOfWork.CpiRepository.GetByYear(cpi.Year, cancellationToken);
 
                 if (existingCpi == null)
                 {
