@@ -11,5 +11,9 @@
   "IGemRepository": [
     { "label": "Json" },
     { "label": "SQLite" }
+  ],
+  "IAverageWageRepository": [
+    { "label": "Json" },
+    { "label": "SQLite" }
   ]
 }
