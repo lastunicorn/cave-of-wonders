@@ -176,29 +176,8 @@ public class ExchangeRateRepository : IExchangeRateRepository
         return Task.FromResult(exchangeRate);
     }
 
-    public Task AddOrUpdate(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken)
+    public void Add(ExchangeRate exchangeRate)
     {
-        foreach (ExchangeRate exchangeRate in exchangeRates)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            string currencyPairAsString = exchangeRate.CurrencyPair;
-
-            ExchangeRateDbEntity existingEntity = dbContext.ExchangeRates
-                .FindOne(x => x.Date == exchangeRate.Date && x.CurrencyPair == currencyPairAsString);
-
-            if (existingEntity != null)
-            {
-                existingEntity.Value = exchangeRate.Value;
-                dbContext.ExchangeRates.Update(existingEntity);
-            }
-            else
-            {
-                dbContext.ExchangeRates.Insert(new ExchangeRateDbEntity(exchangeRate));
-            }
-        }
-
-        return Task.CompletedTask;
+        dbContext.ExchangeRateTracker.TrackNew(exchangeRate);
     }
-
 }

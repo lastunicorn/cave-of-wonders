@@ -19,7 +19,7 @@ public class ImportOperationTests
 	}
 
 	[Fact]
-	public async Task HavingNewRate_WhenImported_ThenAddedCountIsIncrementedAndRateIsPassedToAddOrUpdate()
+	public async Task HavingNewRate_WhenImported_ThenAddedCountIsIncrementedAndRateIsPassedToAdd()
 	{
 		ExchangeRate newRate = new()
 		{
@@ -37,16 +37,14 @@ public class ImportOperationTests
 		report.AddedCount.Should().Be(1);
 		report.TotalCount.Should().Be(1);
 
-		exchangeRateRepository.Verify(x => x.AddOrUpdate(
-			It.Is<IEnumerable<ExchangeRate>>(rates => rates.Count() == 1 &&
-				rates.Single().CurrencyPair == (CurrencyPair)"EURUSD" &&
-				rates.Single().Date == new DateOnly(2023, 6, 10) &&
-				rates.Single().Value == 1.0800m),
-			It.IsAny<CancellationToken>()), Times.Once);
+		exchangeRateRepository.Verify(x => x.Add(
+			It.Is<ExchangeRate>(rate => rate.CurrencyPair == (CurrencyPair)"EURUSD" &&
+				rate.Date == new DateOnly(2023, 6, 10) &&
+				rate.Value == 1.0800m)), Times.Once);
 	}
 
 	[Fact]
-	public async Task HavingExistingIdenticalRate_WhenImported_ThenExistingIdenticalCountIsIncrementedAndAddOrUpdateIsNotCalled()
+	public async Task HavingExistingIdenticalRate_WhenImported_ThenExistingIdenticalCountIsIncrementedAndAddIsNotCalled()
 	{
 		ExchangeRate incomingRate = new()
 		{
@@ -72,7 +70,8 @@ public class ImportOperationTests
 		report.TotalCount.Should().Be(1);
 		report.Updates.Should().BeEmpty();
 
-		exchangeRateRepository.Verify(x => x.AddOrUpdate(It.IsAny<IEnumerable<ExchangeRate>>(), It.IsAny<CancellationToken>()), Times.Never);
+		existingRate.Value.Should().Be(1.0800m);
+		exchangeRateRepository.Verify(x => x.Add(It.IsAny<ExchangeRate>()), Times.Never);
 	}
 
 	[Fact]
@@ -106,13 +105,14 @@ public class ImportOperationTests
 			x.OldValue == 1.0800m &&
 			x.NewValue == 1.0900m);
 
-		exchangeRateRepository.Verify(x => x.AddOrUpdate(
-			It.Is<IEnumerable<ExchangeRate>>(rates => rates.Count() == 1 && rates.Single().Value == 1.0900m),
-			It.IsAny<CancellationToken>()), Times.Once);
+		// The existing rate returned by Get is mutated in place; the caller (the use case)
+		// persists it via IUnitOfWork.SaveChangesAsync, not through the repository.
+		existingRate.Value.Should().Be(1.0900m);
+		exchangeRateRepository.Verify(x => x.Add(It.IsAny<ExchangeRate>()), Times.Never);
 	}
 
 	[Fact]
-	public async Task HavingTwoIdenticalRatesInTheSameBatch_WhenImported_ThenNewDuplicateIdenticalCountIsIncrementedAndOnlyOneItemIsScheduled()
+	public async Task HavingTwoIdenticalRatesInTheSameBatch_WhenImported_ThenNewDuplicateIdenticalCountIsIncrementedAndOnlyOneItemIsAdded()
 	{
 		ExchangeRate rate1 = new()
 		{
@@ -139,13 +139,11 @@ public class ImportOperationTests
 		report.TotalCount.Should().Be(2);
 		report.Duplicates.Should().BeEmpty();
 
-		exchangeRateRepository.Verify(x => x.AddOrUpdate(
-			It.Is<IEnumerable<ExchangeRate>>(rates => rates.Count() == 1),
-			It.IsAny<CancellationToken>()), Times.Once);
+		exchangeRateRepository.Verify(x => x.Add(It.Is<ExchangeRate>(rate => rate.Value == 1.0800m)), Times.Once);
 	}
 
 	[Fact]
-	public async Task HavingTwoDifferentRatesForSamePairAndDateInTheSameBatch_WhenImported_ThenNewDuplicateDifferentCountIsIncrementedAndScheduledItemCarriesLastValue()
+	public async Task HavingTwoDifferentRatesForSamePairAndDateInTheSameBatch_WhenImported_ThenNewDuplicateDifferentCountIsIncrementedAndAddedItemCarriesLastValue()
 	{
 		ExchangeRate rate1 = new()
 		{
@@ -165,6 +163,11 @@ public class ImportOperationTests
 			.Setup(x => x.Get(It.IsAny<CurrencyPair>(), It.IsAny<DateOnly>()))
 			.ReturnsAsync((ExchangeRate)null);
 
+		ExchangeRate addedRate = null;
+		exchangeRateRepository
+			.Setup(x => x.Add(It.IsAny<ExchangeRate>()))
+			.Callback<ExchangeRate>(rate => addedRate = rate);
+
 		ExchangeRateImportReport report = await importOperation.Execute([rate1, rate2], CancellationToken.None);
 
 		report.AddedCount.Should().Be(1);
@@ -176,9 +179,12 @@ public class ImportOperationTests
 			x.Value1 == 1.0800m &&
 			x.Value2 == 1.0850m);
 
-		exchangeRateRepository.Verify(x => x.AddOrUpdate(
-			It.Is<IEnumerable<ExchangeRate>>(rates => rates.Count() == 1 && rates.Single().Value == 1.0850m),
-			It.IsAny<CancellationToken>()), Times.Once);
+		exchangeRateRepository.Verify(x => x.Add(It.IsAny<ExchangeRate>()), Times.Once);
+
+		// Add is called once with the first-seen value, then the same tracked instance is
+		// mutated when the duplicate is processed. The caller saves whatever the object holds
+		// at SaveChangesAsync time, so the final value must be the last one seen in the batch.
+		addedRate.Value.Should().Be(1.0850m);
 	}
 
 	[Fact]
@@ -228,7 +234,7 @@ public class ImportOperationTests
 	}
 
 	[Fact]
-	public async Task HavingCancellationRequested_WhenImported_ThenThrowsAndAddOrUpdateIsNotCalled()
+	public async Task HavingCancellationRequested_WhenImported_ThenThrowsAndAddIsNotCalled()
 	{
 		ExchangeRate rate1 = new()
 		{
@@ -255,7 +261,7 @@ public class ImportOperationTests
 
 		await action.Should().ThrowAsync<OperationCanceledException>();
 
-		exchangeRateRepository.Verify(x => x.AddOrUpdate(It.IsAny<IEnumerable<ExchangeRate>>(), It.IsAny<CancellationToken>()), Times.Never);
+		exchangeRateRepository.Verify(x => x.Add(It.IsAny<ExchangeRate>()), Times.Never);
 	}
 
 	[Fact]

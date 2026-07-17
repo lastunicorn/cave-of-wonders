@@ -115,30 +115,8 @@ internal class ExchangeRateRepository : IExchangeRateRepository
         return entity == null ? null : dbContext.ExchangeRateTracker.GetOrAttach(entity);
     }
 
-    public async Task AddOrUpdate(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken)
+    public void Add(ExchangeRate exchangeRate)
     {
-        foreach (ExchangeRate exchangeRate in exchangeRates)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            string pairAsString = exchangeRate.CurrencyPair;
-
-            ExchangeRateEntity existingEntity = await dbContext.ExchangeRates
-                .FirstOrDefaultAsync(x => x.Date == exchangeRate.Date && x.CurrencyPair == pairAsString, cancellationToken);
-
-            if (existingEntity != null)
-            {
-                existingEntity.Value = exchangeRate.Value;
-            }
-            else
-            {
-                dbContext.ExchangeRates.Add(new ExchangeRateEntity
-                {
-                    Date = exchangeRate.Date,
-                    CurrencyPair = pairAsString,
-                    Value = exchangeRate.Value
-                });
-            }
-        }
+        dbContext.ExchangeRateTracker.TrackNew(exchangeRate);
     }
 }

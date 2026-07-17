@@ -40,34 +40,40 @@ internal class ImportOperation
             string pairAsString = exchangeRate.CurrencyPair;
             (DateOnly, string) key = (exchangeRate.Date, pairAsString);
 
-            ExchangeRate existing = await exchangeRateRepository.Get(exchangeRate.CurrencyPair, exchangeRate.Date);
-
-            if (existing != null)
-            {
-                ProcessExisting(existing, exchangeRate, report, scheduledItems, key);
-            }
-            else if (scheduledItems.TryGetValue(key, out ExchangeRate scheduled))
+            if (scheduledItems.TryGetValue(key, out ExchangeRate scheduled))
             {
                 ProcessDuplicate(scheduled, exchangeRate, report);
             }
             else
             {
-                scheduledItems[key] = new ExchangeRate
-                {
-                    CurrencyPair = exchangeRate.CurrencyPair,
-                    Date = exchangeRate.Date,
-                    Value = exchangeRate.Value
-                };
-                report.AddedCount++;
+                ExchangeRate existing = await exchangeRateRepository.Get(exchangeRate.CurrencyPair, exchangeRate.Date);
+
+                if (existing != null)
+                    ProcessExisting(existing, exchangeRate, report, scheduledItems, key);
+                else
+                    ProcessNew(exchangeRate, report, scheduledItems, key);
             }
 
             report.TotalCount++;
         }
 
-        if (scheduledItems.Count > 0)
-            await exchangeRateRepository.AddOrUpdate(scheduledItems.Values, cancellationToken);
-
         return report;
+    }
+
+    private void ProcessNew(ExchangeRate exchangeRate, ExchangeRateImportReport report,
+        Dictionary<(DateOnly, string), ExchangeRate> scheduledItems, (DateOnly, string) key)
+    {
+        ExchangeRate newExchangeRate = new()
+        {
+            CurrencyPair = exchangeRate.CurrencyPair,
+            Date = exchangeRate.Date,
+            Value = exchangeRate.Value
+        };
+
+        exchangeRateRepository.Add(newExchangeRate);
+        scheduledItems[key] = newExchangeRate;
+
+        report.AddedCount++;
     }
 
     private static void ProcessExisting(ExchangeRate existing, ExchangeRate exchangeRate, ExchangeRateImportReport report,
@@ -87,15 +93,12 @@ internal class ImportOperation
                 NewValue = exchangeRate.Value
             });
 
-            scheduledItems[key] = new ExchangeRate
-            {
-                CurrencyPair = existing.CurrencyPair,
-                Date = existing.Date,
-                Value = exchangeRate.Value
-            };
+            existing.Value = exchangeRate.Value;
 
             report.ExistingUpdatedCount++;
         }
+
+        scheduledItems[key] = existing;
     }
 
     private static void ProcessDuplicate(ExchangeRate scheduled, ExchangeRate exchangeRate, ExchangeRateImportReport report)

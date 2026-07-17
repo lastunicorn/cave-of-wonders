@@ -33,6 +33,7 @@ internal sealed class LiteDbTempDatabase : IDisposable
 
 	public Task CloseAsync(CancellationToken cancellationToken = default)
 	{
+		dbContext.SaveChanges();
 		dbContext.Dispose();
 		dbContext = null;
 

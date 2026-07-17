@@ -25,18 +25,31 @@ internal sealed class ExchangeRateTracker
         return domain;
     }
 
-    public void TrackNew(ExchangeRate exchangeRate, ExchangeRateEntity entity)
+    public void TrackNew(ExchangeRate exchangeRate)
     {
+        ExchangeRateEntity entity = new()
+        {
+            Date = exchangeRate.Date,
+            CurrencyPair = exchangeRate.CurrencyPair,
+            Value = exchangeRate.Value
+        };
+
         pendingInserts.Add((exchangeRate, entity));
     }
 
     // Called before EF Core's own SaveChangesAsync: registers new entities with the
     // change tracker and copies the current domain values onto their backing entities
-    // so EF's snapshot-based change detection picks up the mutation.
+    // so EF's snapshot-based change detection picks up the mutation. Values are re-copied
+    // here (not just at TrackNew/GetOrAttach time) because the domain object may have been
+    // mutated after being tracked but before this save (e.g. a duplicate seen later in the
+    // same import batch).
     public void PrepareChanges(DbSet<ExchangeRateEntity> dbSet)
     {
-        foreach ((ExchangeRate _, ExchangeRateEntity entity) in pendingInserts)
+        foreach ((ExchangeRate domain, ExchangeRateEntity entity) in pendingInserts)
+        {
+            entity.Value = domain.Value;
             dbSet.Add(entity);
+        }
 
         foreach ((ExchangeRate domain, ExchangeRateEntity entity) in tracked.Values)
             entity.Value = domain.Value;

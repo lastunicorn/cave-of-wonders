@@ -17,5 +17,5 @@ public interface IExchangeRateRepository
 
     Task<ExchangeRate> Get(CurrencyPair currencyPair, DateOnly date);
 
-    Task AddOrUpdate(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken);
+    void Add(ExchangeRate exchangeRate);
 }
