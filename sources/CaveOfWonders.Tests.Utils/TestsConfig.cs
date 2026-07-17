@@ -12,13 +12,27 @@ public static class TestsConfig
 
 	public static IEnumerable<PortTestConfig> GetPortTestConfigs(string portName)
 	{
-		JsonElement section = Root.Value.GetProperty(portName);
+		return GetConfigs(Root.Value.GetProperty(portName));
+	}
 
+	/// <summary>
+	/// Same as <see cref="GetPortTestConfigs"/>, but reads from the nested "Environments" section, which declares
+	/// the <see cref="ITestEnvironment{TSut,TGateway}"/> types to test each port's adapters through, instead of the
+	/// plain <see cref="ISutFixture{T}"/> types.
+	/// </summary>
+	public static IEnumerable<PortTestConfig> GetEnvironmentTestConfigs(string portName)
+	{
+		JsonElement environmentsSection = Root.Value.GetProperty("Environments");
+		return GetConfigs(environmentsSection.GetProperty(portName));
+	}
+
+	private static IEnumerable<PortTestConfig> GetConfigs(JsonElement section)
+	{
 		foreach (JsonElement item in section.EnumerateArray())
 		{
 			string typeName = item.GetProperty("type").GetString();
-			Type fixtureType = Type.GetType(typeName, throwOnError: true);
-			yield return new PortTestConfig(fixtureType, item);
+			Type type = Type.GetType(typeName, throwOnError: true);
+			yield return new PortTestConfig(type, item);
 		}
 	}
 
