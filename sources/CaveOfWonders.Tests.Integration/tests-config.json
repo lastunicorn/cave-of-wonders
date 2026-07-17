@@ -22,5 +22,9 @@
   {
     "Port": "DustInTheWind.CaveOfWonders.Ports.LogAccess.ILog",
     "TestEnvironments": ["Real"]
+  },
+  {
+    "Port": "DustInTheWind.CaveOfWonders.Ports.ClockAccess.ISystemClock",
+    "TestEnvironments": ["Real"]
   }
 ]
