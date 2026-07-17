@@ -21,6 +21,7 @@ internal class GemRepositoryEnvironmentsAttribute : DataAttribute
 		{
 			ITestEnvironment<IGemRepository, IGemStorageGateway> environment =
 				(ITestEnvironment<IGemRepository, IGemStorageGateway>)Activator.CreateInstance(config.AdaptorType);
+			
 			yield return [environment];
 		}
 	}

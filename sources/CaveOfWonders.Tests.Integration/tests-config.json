@@ -1,30 +1,15 @@
 {
   "IPotRepository": [
-    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.JsonFixtures.JsonPotRepositoryFixture, DustInTheWind.CaveOfWonders.Tests.Integration" },
-    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.LiteDbPotRepositoryFixture, DustInTheWind.CaveOfWonders.Tests.Integration" },
-    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.SqliteFixtures.SqlitePotRepositoryFixture, DustInTheWind.CaveOfWonders.Tests.Integration" }
+    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.JsonFixtures.JsonPotRepositoryEnvironment, DustInTheWind.CaveOfWonders.Tests.Integration" },
+    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.LiteDbFixtures.LiteDbPotRepositoryEnvironment, DustInTheWind.CaveOfWonders.Tests.Integration" },
+    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.SqliteFixtures.SqlitePotRepositoryEnvironment, DustInTheWind.CaveOfWonders.Tests.Integration" }
   ],
   "ICpiRepository": [
-    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.JsonFixtures.JsonCpiRepositoryFixture, DustInTheWind.CaveOfWonders.Tests.Integration" },
-    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.SqliteFixtures.SqliteCpiRepositoryFixture, DustInTheWind.CaveOfWonders.Tests.Integration" }
+    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.JsonFixtures.JsonCpiRepositoryEnvironment, DustInTheWind.CaveOfWonders.Tests.Integration" },
+    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.SqliteFixtures.SqliteCpiRepositoryEnvironment, DustInTheWind.CaveOfWonders.Tests.Integration" }
   ],
   "IGemRepository": [
-    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.JsonFixtures.JsonGemRepositoryFixture, DustInTheWind.CaveOfWonders.Tests.Integration" },
-    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.SqliteFixtures.SqliteGemRepositoryFixture, DustInTheWind.CaveOfWonders.Tests.Integration" }
-  ],
-  "Environments": {
-    "IPotRepository": [
-      { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.JsonFixtures.JsonPotRepositoryEnvironment, DustInTheWind.CaveOfWonders.Tests.Integration" },
-      { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.LiteDbFixtures.LiteDbPotRepositoryEnvironment, DustInTheWind.CaveOfWonders.Tests.Integration" },
-      { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.SqliteFixtures.SqlitePotRepositoryEnvironment, DustInTheWind.CaveOfWonders.Tests.Integration" }
-    ],
-    "ICpiRepository": [
-      { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.JsonFixtures.JsonCpiRepositoryEnvironment, DustInTheWind.CaveOfWonders.Tests.Integration" },
-      { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.SqliteFixtures.SqliteCpiRepositoryEnvironment, DustInTheWind.CaveOfWonders.Tests.Integration" }
-    ],
-    "IGemRepository": [
-      { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.JsonFixtures.JsonGemRepositoryEnvironment, DustInTheWind.CaveOfWonders.Tests.Integration" },
-      { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.SqliteFixtures.SqliteGemRepositoryEnvironment, DustInTheWind.CaveOfWonders.Tests.Integration" }
-    ]
-  }
+    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.JsonFixtures.JsonGemRepositoryEnvironment, DustInTheWind.CaveOfWonders.Tests.Integration" },
+    { "type": "DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.SutFixtures.SqliteFixtures.SqliteGemRepositoryEnvironment, DustInTheWind.CaveOfWonders.Tests.Integration" }
+  ]
 }

@@ -4,26 +4,16 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 
 /// <summary>
 /// Loads <c>tests-config.json</c> from the test run's base directory. The file declares, per port
-/// interface, the fully-qualified SUT fixture types to run the interface's test suite against.
+/// interface, the fully-qualified <see cref="ITestEnvironment{TSut,TGateway}"/> types to run the
+/// interface's test suite against.
 /// </summary>
 public static class TestsConfig
 {
 	private static readonly Lazy<JsonElement> Root = new(LoadRoot);
 
-	public static IEnumerable<PortTestConfig> GetPortTestConfigs(string portName)
-	{
-		return GetConfigs(Root.Value.GetProperty(portName));
-	}
-
-	/// <summary>
-	/// Same as <see cref="GetPortTestConfigs"/>, but reads from the nested "Environments" section, which declares
-	/// the <see cref="ITestEnvironment{TSut,TGateway}"/> types to test each port's adapters through, instead of the
-	/// plain <see cref="ISutFixture{T}"/> types.
-	/// </summary>
 	public static IEnumerable<PortTestConfig> GetEnvironmentTestConfigs(string portName)
 	{
-		JsonElement environmentsSection = Root.Value.GetProperty("Environments");
-		return GetConfigs(environmentsSection.GetProperty(portName));
+		return GetConfigs(Root.Value.GetProperty(portName));
 	}
 
 	private static IEnumerable<PortTestConfig> GetConfigs(JsonElement section)
