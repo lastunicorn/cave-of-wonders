@@ -13,10 +13,10 @@ public class AverageWageRepository : IAverageWageRepository
         this.database = database ?? throw new ArgumentNullException(nameof(database));
     }
 
-    public Task<AverageWage> GetAsync(int averageWageYear, CancellationToken cancellationToken)
+    public Task<AverageWage> GetAsync(int year, CancellationToken cancellationToken)
     {
         AverageWage averageWage = database.AverageWages
-            .FirstOrDefault(x => x.Year == averageWageYear);
+            .FirstOrDefault(x => x.Year == year);
 
         return Task.FromResult(averageWage);
     }

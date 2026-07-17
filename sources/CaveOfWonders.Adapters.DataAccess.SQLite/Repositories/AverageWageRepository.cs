@@ -28,9 +28,9 @@ internal class AverageWageRepository : IAverageWageRepository
         }
     }
 
-    public async Task<AverageWage> GetAsync(int averageWageYear, CancellationToken cancellationToken)
+    public async Task<AverageWage> GetAsync(int year, CancellationToken cancellationToken)
     {
-        AverageWageEntity entity = await dbContext.AverageWages.FindAsync([averageWageYear], cancellationToken);
+        AverageWageEntity entity = await dbContext.AverageWages.FindAsync([year], cancellationToken);
 
         return entity == null
             ? null

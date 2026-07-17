@@ -6,7 +6,7 @@ public interface IAverageWageRepository
 {
     IAsyncEnumerable<AverageWage> GetAllAsync(CancellationToken cancellationToken = default);
 
-    Task<AverageWage> GetAsync(int averageWageYear, CancellationToken cancellationToken);
+    Task<AverageWage> GetAsync(int year, CancellationToken cancellationToken);
 
     void Add(AverageWage averageWage);
 
