@@ -11,8 +11,8 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// <para>
 /// Each phase is configured independently and executed only once <see cref="ExecuteAsync"/> is called. Every phase
 /// obtains and releases its own session via the injected <see cref="ITestEnvironment{TSut,TGateway}"/>: the gateway
-/// session (<see cref="ITestEnvironment{TSut,TGateway}.CreateGatewayAsync"/>/<see cref="ITestEnvironment{TSut,TGateway}.ReleaseGatewayAsync"/>)
-/// around Arrange and Assert, and the SUT session (<see cref="ITestEnvironment{TSut,TGateway}.CreateSutAsync"/>/<see cref="ITestEnvironment{TSut,TGateway}.ReleaseSutAsync"/>)
+/// session (<see cref="ITestEnvironment{TSut,TGateway}.CreateGatewayAsync"/>/<see cref="ITestEnvironment{TSut,TGateway}.CloseGatewayAsync"/>)
+/// around Arrange and Assert, and the SUT session (<see cref="ITestEnvironment{TSut,TGateway}.CreateSutAsync"/>/<see cref="ITestEnvironment{TSut,TGateway}.CloseSutAsync"/>)
 /// around Act. For a SUT backed by persistent storage, this forces data to be actually persisted to and reloaded
 /// between phases.
 /// </para>
@@ -124,14 +124,14 @@ public class GenericTest<TSut, TGateway>
 			{
 				await environment.CreateGatewayAsync(cancellationToken);
 				await arrangeAction1(environment.Gateway, context);
-				await environment.ReleaseGatewayAsync(cancellationToken);
+				await environment.CloseGatewayAsync(cancellationToken);
 			}
 
 			if (arrangeAction2 != null)
 			{
 				await environment.CreateGatewayAsync(cancellationToken);
 				arrangeAction2(environment.Gateway, context);
-				await environment.ReleaseGatewayAsync(cancellationToken);
+				await environment.CloseGatewayAsync(cancellationToken);
 			}
 
 			try
@@ -140,14 +140,14 @@ public class GenericTest<TSut, TGateway>
 				{
 					await environment.CreateSutAsync(cancellationToken);
 					await actAction1(environment.Sut, context);
-					await environment.ReleaseSutAsync(cancellationToken);
+					await environment.CloseSutAsync(cancellationToken);
 				}
 
 				if (actAction2 != null)
 				{
 					await environment.CreateSutAsync(cancellationToken);
 					actAction2(environment.Sut, context);
-					await environment.ReleaseSutAsync(cancellationToken);
+					await environment.CloseSutAsync(cancellationToken);
 				}
 			}
 			catch (Exception ex)
@@ -167,14 +167,14 @@ public class GenericTest<TSut, TGateway>
 			{
 				await environment.CreateGatewayAsync(cancellationToken);
 				await assertAction1(environment.Gateway, context);
-				await environment.ReleaseGatewayAsync(cancellationToken);
+				await environment.CloseGatewayAsync(cancellationToken);
 			}
 
 			if (assertAction2 != null)
 			{
 				await environment.CreateGatewayAsync(cancellationToken);
 				assertAction2(environment.Gateway, context);
-				await environment.ReleaseGatewayAsync(cancellationToken);
+				await environment.CloseGatewayAsync(cancellationToken);
 			}
 
 			if (errorHandler != null)

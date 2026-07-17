@@ -1,9 +1,9 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.Repositories;
 using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.JsonEnvironment;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotRepositoryTests.TestEnvironments;
 
-internal class JsonPotStorageGateway : JsonStorageGateway, IPotStorageGateway
+internal class JsonPotStorageGateway : JsonStorageGatewayBase, IPotStorageGateway
 {
 	public JsonPotStorageGateway(JsonTempDatabase jsonTempDatabase)
 		: base(jsonTempDatabase)

@@ -1,6 +1,6 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.JsonEnvironment;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess;
 
 /// <summary>
 /// Base class for the JSON storage gateways. Owns the gateway's back-door session: a <c>Database</c>
@@ -9,13 +9,13 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnv
 /// handed to the Act phase. One <see cref="OpenAsync"/>/<see cref="CloseAsync"/> cycle is expected per
 /// Arrange/Assert phase; <see cref="CloseAsync"/> saves the session, flushing seeded data to disk.
 /// </summary>
-internal abstract class JsonStorageGateway
+internal abstract class JsonStorageGatewayBase
 {
 	private readonly JsonTempDatabase jsonTempDatabase;
 
 	protected Database Database { get; private set; }
 
-	protected JsonStorageGateway(JsonTempDatabase jsonTempDatabase)
+	protected JsonStorageGatewayBase(JsonTempDatabase jsonTempDatabase)
 	{
 		this.jsonTempDatabase = jsonTempDatabase ?? throw new ArgumentNullException(nameof(jsonTempDatabase));
 	}

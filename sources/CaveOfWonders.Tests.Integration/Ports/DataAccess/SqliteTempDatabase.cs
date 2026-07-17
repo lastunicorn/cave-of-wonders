@@ -2,7 +2,7 @@ using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.SqliteEnvironment;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess;
 
 internal sealed class SqliteTempDatabase : IDisposable, IAsyncDisposable
 {

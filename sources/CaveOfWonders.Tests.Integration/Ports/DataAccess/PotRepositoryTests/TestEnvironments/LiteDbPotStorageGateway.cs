@@ -1,13 +1,13 @@
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Repositories;
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.SqliteEnvironment;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotRepositoryTests.TestEnvironments;
 
-internal class SqlitePotStorageGateway : SqliteStorageGateway, IPotStorageGateway
+internal class LiteDbPotStorageGateway : LiteDbStorageGatewayBase, IPotStorageGateway
 {
-	public SqlitePotStorageGateway(SqliteTempDatabase sqliteTempDatabase)
-		: base(sqliteTempDatabase)
+	public LiteDbPotStorageGateway(LiteDbTempDatabase liteDbTempDatabase)
+		: base(liteDbTempDatabase)
 	{
 	}
 

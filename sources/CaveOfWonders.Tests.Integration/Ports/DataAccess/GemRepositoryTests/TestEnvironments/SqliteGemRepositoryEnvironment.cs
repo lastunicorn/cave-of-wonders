@@ -2,7 +2,7 @@ using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Repositories;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.SqliteEnvironment;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.GemRepositoryTests.TestEnvironments;
 
 [TestEnvironment("SQLite")]
 internal class SqliteGemRepositoryEnvironment : ITestEnvironment<IGemRepository, IGemStorageGateway>
@@ -20,7 +20,7 @@ internal class SqliteGemRepositoryEnvironment : ITestEnvironment<IGemRepository,
 		Sut = new GemRepository(sqliteTempDatabase.DbContext);
 	}
 
-	public async Task ReleaseSutAsync(CancellationToken cancellationToken = default)
+	public async Task CloseSutAsync(CancellationToken cancellationToken = default)
 	{
 		await sqliteTempDatabase.CloseAsync(cancellationToken);
 		Sut = null;
@@ -32,7 +32,7 @@ internal class SqliteGemRepositoryEnvironment : ITestEnvironment<IGemRepository,
 		await gateway.OpenAsync(cancellationToken);
 	}
 
-	public async Task ReleaseGatewayAsync(CancellationToken cancellationToken = default)
+	public async Task CloseGatewayAsync(CancellationToken cancellationToken = default)
 	{
 		await gateway.CloseAsync(cancellationToken);
 		gateway = null;

@@ -1,6 +1,6 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.SqliteEnvironment;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess;
 
 /// <summary>
 /// Base class for the SQLite storage gateways. Owns the gateway's back-door session: a
@@ -9,13 +9,13 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnv
 /// go through the instance handed to the Act phase. One <see cref="OpenAsync"/>/<see cref="CloseAsync"/> cycle is
 /// expected per Arrange/Assert phase; <see cref="CloseAsync"/> saves the session, flushing seeded data to disk.
 /// </summary>
-internal abstract class SqliteStorageGateway
+internal abstract class SqliteStorageGatewayBase
 {
 	private readonly SqliteTempDatabase sqliteTempDatabase;
 
 	protected CaveOfWondersDbContext DbContext { get; private set; }
 
-	protected SqliteStorageGateway(SqliteTempDatabase sqliteTempDatabase)
+	protected SqliteStorageGatewayBase(SqliteTempDatabase sqliteTempDatabase)
 	{
 		this.sqliteTempDatabase = sqliteTempDatabase ?? throw new ArgumentNullException(nameof(sqliteTempDatabase));
 	}

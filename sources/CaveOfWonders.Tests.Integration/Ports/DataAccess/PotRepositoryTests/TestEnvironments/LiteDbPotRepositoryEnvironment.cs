@@ -2,7 +2,7 @@ using DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.LiteDbEnvironment;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotRepositoryTests.TestEnvironments;
 
 [TestEnvironment("LiteDb")]
 internal class LiteDbPotRepositoryEnvironment : ITestEnvironment<IPotRepository, IPotStorageGateway>
@@ -20,7 +20,7 @@ internal class LiteDbPotRepositoryEnvironment : ITestEnvironment<IPotRepository,
 		Sut = new PotRepository(liteDbTempDatabase.DbContext);
 	}
 
-	public async Task ReleaseSutAsync(CancellationToken cancellationToken = default)
+	public async Task CloseSutAsync(CancellationToken cancellationToken = default)
 	{
 		await liteDbTempDatabase.CloseAsync(cancellationToken);
 		Sut = null;
@@ -32,7 +32,7 @@ internal class LiteDbPotRepositoryEnvironment : ITestEnvironment<IPotRepository,
 		await gateway.OpenAsync(cancellationToken);
 	}
 
-	public async Task ReleaseGatewayAsync(CancellationToken cancellationToken = default)
+	public async Task CloseGatewayAsync(CancellationToken cancellationToken = default)
 	{
 		await gateway.CloseAsync(cancellationToken);
 		gateway = null;

@@ -1,9 +1,9 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.Repositories;
 using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.JsonEnvironment;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.GemRepositoryTests.TestEnvironments;
 
-internal class JsonGemStorageGateway : JsonStorageGateway, IGemStorageGateway
+internal class JsonGemStorageGateway : JsonStorageGatewayBase, IGemStorageGateway
 {
 	public JsonGemStorageGateway(JsonTempDatabase jsonTempDatabase)
 		: base(jsonTempDatabase)

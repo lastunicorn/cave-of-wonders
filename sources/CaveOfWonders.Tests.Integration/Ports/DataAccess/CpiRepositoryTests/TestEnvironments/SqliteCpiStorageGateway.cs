@@ -2,9 +2,9 @@ using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Repositories;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.SqliteEnvironment;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.CpiRepositoryTests.TestEnvironments;
 
-internal class SqliteCpiStorageGateway : SqliteStorageGateway, ICpiStorageGateway
+internal class SqliteCpiStorageGateway : SqliteStorageGatewayBase, ICpiStorageGateway
 {
 	public SqliteCpiStorageGateway(SqliteTempDatabase sqliteTempDatabase)
 		: base(sqliteTempDatabase)

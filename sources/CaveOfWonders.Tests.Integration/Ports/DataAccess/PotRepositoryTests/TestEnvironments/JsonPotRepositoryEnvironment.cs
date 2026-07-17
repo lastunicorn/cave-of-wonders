@@ -2,7 +2,7 @@ using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.Repositories;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.JsonEnvironment;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotRepositoryTests.TestEnvironments;
 
 [TestEnvironment("Json")]
 internal class JsonPotRepositoryEnvironment : ITestEnvironment<IPotRepository, IPotStorageGateway>
@@ -20,7 +20,7 @@ internal class JsonPotRepositoryEnvironment : ITestEnvironment<IPotRepository, I
 		Sut = new PotRepository(jsonTempDatabase.Database);
 	}
 
-	public async Task ReleaseSutAsync(CancellationToken cancellationToken = default)
+	public async Task CloseSutAsync(CancellationToken cancellationToken = default)
 	{
 		await jsonTempDatabase.CloseAsync(cancellationToken);
 		Sut = null;
@@ -32,7 +32,7 @@ internal class JsonPotRepositoryEnvironment : ITestEnvironment<IPotRepository, I
 		await gateway.OpenAsync(cancellationToken);
 	}
 
-	public async Task ReleaseGatewayAsync(CancellationToken cancellationToken = default)
+	public async Task CloseGatewayAsync(CancellationToken cancellationToken = default)
 	{
 		await gateway.CloseAsync(cancellationToken);
 		gateway = null;

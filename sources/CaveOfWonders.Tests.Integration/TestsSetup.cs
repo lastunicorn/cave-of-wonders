@@ -1,4 +1,4 @@
-using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.JsonEnvironment;
+using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotRepositoryTests.TestEnvironments;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 using System.Reflection;
 using System.Runtime.CompilerServices;

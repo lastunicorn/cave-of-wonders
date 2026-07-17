@@ -3,9 +3,9 @@ using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.SqliteEnvironment;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.GemRepositoryTests.TestEnvironments;
 
-internal class SqliteGemStorageGateway : SqliteStorageGateway, IGemStorageGateway
+internal class SqliteGemStorageGateway : SqliteStorageGatewayBase, IGemStorageGateway
 {
 	public SqliteGemStorageGateway(SqliteTempDatabase sqliteTempDatabase)
 		: base(sqliteTempDatabase)

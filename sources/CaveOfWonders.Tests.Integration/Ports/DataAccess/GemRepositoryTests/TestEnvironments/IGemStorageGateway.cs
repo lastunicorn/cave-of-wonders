@@ -1,6 +1,6 @@
 using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.GemRepositoryTests.TestEnvironments;
 
 /// <summary>
 /// Back-door access to the storage behind an <c>IGemRepository</c> under test. Used by Arrange to seed state and by

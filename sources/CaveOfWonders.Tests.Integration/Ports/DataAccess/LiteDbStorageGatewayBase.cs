@@ -1,6 +1,6 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnvironments.LiteDbEnvironment;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess;
 
 /// <summary>
 /// Base class for the LiteDb storage gateways. Owns the gateway's back-door session: a <see cref="DbContext"/>
@@ -10,13 +10,13 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.TestEnv
 /// Arrange/Assert phase. Unlike the JSON and SQLite adapters, LiteDb writes are not buffered in memory, so
 /// <see cref="CloseAsync"/> only needs to dispose the session.
 /// </summary>
-internal abstract class LiteDbStorageGateway
+internal abstract class LiteDbStorageGatewayBase
 {
 	private readonly LiteDbTempDatabase liteDbTempDatabase;
 
 	protected DbContext DbContext { get; private set; }
 
-	protected LiteDbStorageGateway(LiteDbTempDatabase liteDbTempDatabase)
+	protected LiteDbStorageGatewayBase(LiteDbTempDatabase liteDbTempDatabase)
 	{
 		this.liteDbTempDatabase = liteDbTempDatabase ?? throw new ArgumentNullException(nameof(liteDbTempDatabase));
 	}

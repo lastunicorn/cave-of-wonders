@@ -8,8 +8,8 @@ namespace DustInTheWind.CaveOfWonders.Tests.Utils;
 /// persisted state without going through the SUT's own read/write paths (Back Door Manipulation).
 /// </summary>
 /// <remarks>
-/// A single instance is reused across every phase of one test run: <see cref="CreateGatewayAsync"/>/<see cref="ReleaseGatewayAsync"/>
-/// are called around Arrange and Assert, and <see cref="CreateSutAsync"/>/<see cref="ReleaseSutAsync"/> around Act.
+/// A single instance is reused across every phase of one test run: <see cref="CreateGatewayAsync"/>/<see cref="CloseGatewayAsync"/>
+/// are called around Arrange and Assert, and <see cref="CreateSutAsync"/>/<see cref="CloseSutAsync"/> around Act.
 /// Each Create must open a fresh session over the same persisted state — never reuse the other access path's
 /// session — so data is actually persisted and reloaded between phases. <see cref="IDisposable.Dispose"/> and
 /// <see cref="ResetAsync"/> are both called exactly once, at the very end, regardless of outcome:
@@ -27,14 +27,14 @@ public interface ITestEnvironment<out TSut, out TGateway> : IDisposable
 	/// </summary>
 	Task CreateSutAsync(CancellationToken cancellationToken = default);
 
-	Task ReleaseSutAsync(CancellationToken cancellationToken = default);
+	Task CloseSutAsync(CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Opens a fresh back-door session (used once per Arrange/Assert phase).
 	/// </summary>
 	Task CreateGatewayAsync(CancellationToken cancellationToken = default);
 
-	Task ReleaseGatewayAsync(CancellationToken cancellationToken = default);
+	Task CloseGatewayAsync(CancellationToken cancellationToken = default);
 
 	Task ResetAsync(CancellationToken cancellationToken = default);
 }
