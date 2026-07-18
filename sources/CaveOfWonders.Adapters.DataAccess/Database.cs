@@ -1,4 +1,5 @@
-﻿using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.AverageWageStorage;
+﻿using System.Data.Common;
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.AverageWageStorage;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.CpiStorage;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.ExchangeRateStorage;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.GemStorage;
@@ -23,9 +24,18 @@ public class Database
 
     public List<AverageWage> AverageWages { get; } = [];
 
-    public Database(string location)
+    public Database(string connectionString)
     {
-        databaseDirectoryPath = location ?? throw new ArgumentNullException(nameof(location));
+        DbConnectionStringBuilder connectionStringBuilder = new()
+        {
+            ConnectionString = connectionString
+        };
+
+        string location = connectionStringBuilder.TryGetValue("Data Source", out object value)
+            ? value as string
+            : null;
+
+        databaseDirectoryPath = location ?? throw new ArgumentNullException(nameof(connectionString));
     }
 
     public async Task LoadAsync(CancellationToken cancellationToken)

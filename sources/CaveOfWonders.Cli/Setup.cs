@@ -1,7 +1,6 @@
-﻿using Autofac;
-using DustInTheWind.CaveOfWonders.Adapters.BnrAccess;
+﻿using DustInTheWind.CaveOfWonders.Adapters.BnrAccess;
 using DustInTheWind.CaveOfWonders.Adapters.ClockAccess;
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite;
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 using DustInTheWind.CaveOfWonders.Adapters.FileAccess;
 using DustInTheWind.CaveOfWonders.Adapters.FintownAccess;
 using DustInTheWind.CaveOfWonders.Adapters.InsAccess;
@@ -18,70 +17,55 @@ using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 using DustInTheWind.CaveOfWonders.Ports.LogAccess;
 using DustInTheWind.CaveOfWonders.Ports.MintosAccess;
 using DustInTheWind.CaveOfWonders.Ports.SpreadsheetAccess;
-using MediatR.Extensions.Autofac.DependencyInjection;
-using MediatR.Extensions.Autofac.DependencyInjection.Builder;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System.Data.Common;
 
 namespace DustInTheWind.CaveOfWonders.Cli;
 
 internal static class DependenciesSetup
 {
-    public static void Configure(ContainerBuilder containerBuilder)
+    public static void Configure(IServiceCollection serviceCollection)
     {
-        MediatRConfiguration mediatRConfiguration = MediatRConfigurationBuilder.Create("", typeof(PresentPotsRequest).Assembly)
-            .WithAllOpenGenericHandlerTypesRegistered()
+        // Register Configuration
+        IConfiguration configuration = new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
             .Build();
+        
+        serviceCollection.AddSingleton(configuration);
 
-        containerBuilder.RegisterMediatR(mediatRConfiguration);
+        // Register MediatR
+        serviceCollection.AddMediatR(config =>
+            config.RegisterServicesFromAssembly(typeof(PresentPotsRequest).Assembly));
 
-        containerBuilder
-            .Register(context =>
+        // Register JSON Database
+        serviceCollection.AddScoped(services =>
+        {
+	        IConfiguration configuration = services.GetRequiredService<IConfiguration>();
+            string connectionString = configuration.GetConnectionString("DefaultConnection");
+            return new Database(connectionString);
+        });
+
+        serviceCollection.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        serviceCollection.AddSingleton<ISystemClock, SystemClock>();
+        serviceCollection.AddScoped<IBnrService, BnrService>();
+        serviceCollection.AddScoped<IInsService, InsService>();
+        serviceCollection.AddScoped<IMintosService, MintosService>();
+        serviceCollection.AddScoped<IFintownService, FintownService>();
+        serviceCollection.AddScoped<ISheets, Sheets>();
+        serviceCollection.AddScoped<ILog, Log>();
+        serviceCollection.AddSingleton<IFileSystem, FileSystem>();
+
+        serviceCollection.AddSingleton<ICpiImportExportFactory, CpiImportExportFactory>();
+        serviceCollection.AddScoped<FileCpiImportExport>();
+        serviceCollection.AddScoped<WebCpiImportExport>();
+
+        serviceCollection
+            .AddSingleton(context =>
             {
-                IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
-                    .SetBasePath(AppContext.BaseDirectory)
-                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false);
-
-                IConfiguration configuration = configurationBuilder.Build();
-                string connectionString = configuration.GetConnectionString("DefaultConnection");
-
-                string dataSource = new SqliteConnectionStringBuilder(connectionString).DataSource;
-                string databaseDirectoryPath = Path.GetDirectoryName(Path.GetFullPath(dataSource, AppContext.BaseDirectory));
-
-                if (!string.IsNullOrEmpty(databaseDirectoryPath) && !Directory.Exists(databaseDirectoryPath))
-                    Directory.CreateDirectory(databaseDirectoryPath);
-
-                DbContextOptions<CaveOfWondersDbContext> options = new DbContextOptionsBuilder<CaveOfWondersDbContext>()
-                    .UseSqlite(connectionString)
-                    .Options;
-
-                CaveOfWondersDbContext dbContext = new(options);
-                dbContext.Database.EnsureCreated();
-
-                return dbContext;
-            })
-            .AsSelf();
-
-        containerBuilder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
-
-        containerBuilder.RegisterType<SystemClock>().As<ISystemClock>();
-        containerBuilder.RegisterType<BnrService>().As<IBnrService>();
-        containerBuilder.RegisterType<InsService>().As<IInsService>();
-        containerBuilder.RegisterType<MintosService>().As<IMintosService>();
-        containerBuilder.RegisterType<FintownService>().As<IFintownService>();
-        containerBuilder.RegisterType<Sheets>().As<ISheets>();
-        containerBuilder.RegisterType<Log>().As<ILog>().InstancePerLifetimeScope();
-        containerBuilder.RegisterType<FileSystem>().As<IFileSystem>().SingleInstance();
-
-        containerBuilder.RegisterType<CpiImportExportFactory>().As<ICpiImportExportFactory>().SingleInstance();
-        containerBuilder.RegisterType<FileCpiImportExport>().AsSelf();
-        containerBuilder.RegisterType<WebCpiImportExport>().AsSelf();
-
-        containerBuilder
-            .Register(context =>
-            {
-                ICpiImportExportFactory cpiImportExportFactory = context.Resolve<ICpiImportExportFactory>();
+                ICpiImportExportFactory cpiImportExportFactory = context.GetRequiredService<ICpiImportExportFactory>();
                 CpiImportExportPool cpiImportExportPool = new(cpiImportExportFactory);
                 
                 cpiImportExportPool.Add(new CpiImportExportDescriptor
@@ -97,8 +81,6 @@ internal static class DependenciesSetup
                 });
                 
                 return cpiImportExportPool;
-            })
-            .AsSelf()
-            .SingleInstance();
+            });
     }
 }

@@ -1,7 +1,7 @@
 ﻿using DustInTheWind.CaveOfWonders.Cli.Presentation;
 using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
-using DustInTheWind.ConsoleTools.Commando.Setup.Autofac;
+using DustInTheWind.ConsoleTools.Commando.Setup.Microsoft;
 
 namespace DustInTheWind.CaveOfWonders.Cli;
 

@@ -10,9 +10,8 @@
 
     <ItemGroup>
         <PackageReference Include="ConsoleTools.Commando" Version="2.1.0" />
-        <PackageReference Include="ConsoleTools.Commando.Setup.Autofac" Version="2.1.0" />
-        <PackageReference Include="MediatR" Version="13.1.0" />
-        <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" Version="13.0.0" />
+        <PackageReference Include="ConsoleTools.Commando.Setup.Microsoft" Version="2.1.0" />
+        <PackageReference Include="MediatR" Version="12.4.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -20,7 +19,7 @@
         <ProjectReference Include="..\CaveOfWonders.Adapters.MintosAccess\CaveOfWonders.Adapters.MintosAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Ports.FintownAccess\CaveOfWonders.Ports.FintownAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Ports.MintosAccess\CaveOfWonders.Ports.MintosAccess.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess.SQLite\CaveOfWonders.Adapters.DataAccess.SQLite.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess\CaveOfWonders.Adapters.DataAccess.Json.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Adapters.FileAccess\CaveOfWonders.Adapters.FileAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Adapters.ClockAccess\CaveOfWonders.Adapters.ClockAccess.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\CaveOfWonders.Cli.Application\CaveOfWonders.Cli.Application.csproj" PrivateAssets="All" />
