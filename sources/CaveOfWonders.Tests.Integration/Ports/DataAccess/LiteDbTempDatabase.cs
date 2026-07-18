@@ -5,8 +5,14 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess;
 internal sealed class LiteDbTempDatabase : IDisposable
 {
 	private readonly string dbFilePath = Path.Combine(Path.GetTempPath(), $"test-database-{Guid.NewGuid()}");
+	private readonly string connectionString;
 
 	private DbContext dbContext;
+
+	public LiteDbTempDatabase()
+	{
+		connectionString = $"Data Source={dbFilePath}";
+	}
 
 	public DbContext DbContext => dbContext;
 
@@ -28,7 +34,7 @@ internal sealed class LiteDbTempDatabase : IDisposable
 
 	private DbContext CreateSession()
 	{
-		return new DbContext(dbFilePath);
+		return new DbContext(connectionString);
 	}
 
 	public Task CloseAsync(CancellationToken cancellationToken = default)

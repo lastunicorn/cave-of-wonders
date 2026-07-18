@@ -5,10 +5,16 @@ namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess;
 internal sealed class JsonTempDatabase : IDisposable
 {
 	private readonly string dbDirectoryPath = Path.Combine(Path.GetTempPath(), $"test-database-{Guid.NewGuid()}");
+	private readonly string connectionString;
 
 	private Database database;
 
 	public Database Database => database;
+
+	public JsonTempDatabase()
+	{
+		connectionString = $"Data Source={dbDirectoryPath}";
+	}
 
 	public async Task OpenAsync(CancellationToken cancellationToken = default)
 	{
@@ -22,7 +28,7 @@ internal sealed class JsonTempDatabase : IDisposable
 	/// </summary>
 	public async Task<Database> CreateSessionAsync(CancellationToken cancellationToken = default)
 	{
-		Database session = new(dbDirectoryPath);
+		Database session = new(connectionString);
 		await session.LoadAsync(cancellationToken);
 		return session;
 	}
