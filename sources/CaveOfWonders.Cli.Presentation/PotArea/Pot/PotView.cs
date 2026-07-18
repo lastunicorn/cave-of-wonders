@@ -59,8 +59,8 @@ internal class PotView : ViewBase<PotCommandViewModel>
 
         dataGrid.Rows.Add("Id", potDetailsViewModel.Id);
         dataGrid.Rows.Add("Description", potDetailsViewModel.Description);
-        dataGrid.Rows.Add("StartDate", potDetailsViewModel.StartDate.ToString("d"));
-        dataGrid.Rows.Add("EndDate", potDetailsViewModel.EndDate?.ToString("d") ?? string.Empty);
+        dataGrid.Rows.Add("Start Date", potDetailsViewModel.StartDate.ToString("d"));
+        dataGrid.Rows.Add("End Date", potDetailsViewModel.EndDate?.ToString("d") ?? string.Empty);
         dataGrid.Rows.Add("Currency", potDetailsViewModel.Currency);
         dataGrid.Rows.Add("Labels", string.Join(", ", potDetailsViewModel.Labels));
         dataGrid.Rows.Add("Snapshot Count", potDetailsViewModel.SnapshotCount);

@@ -16,9 +16,14 @@ public class Pot
 
     public string Currency { get; set; }
 
-    public List<PotSnapshot> Snapshots { get; } = [];
+    public PotSnapshotCollection Snapshots { get; }
     
     public List<string> Labels { get; } = [];
+
+    public Pot()
+    {
+	    Snapshots = new PotSnapshotCollection(this);
+    }
 
     public bool IsActive(DateOnly date)
     {
