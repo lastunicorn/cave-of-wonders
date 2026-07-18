@@ -11,7 +11,7 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.CompiledModels
     public partial class CaveOfWondersDbContextModel
     {
         private CaveOfWondersDbContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("33ad81a1-22e3-4675-92a2-56bc898e21ca"), entityTypeCount: 8)
+            : base(skipDetectChanges: false, modelId: new Guid("fbccf24e-9df5-4ee9-8087-7b77c456be9b"), entityTypeCount: 8)
         {
         }
 

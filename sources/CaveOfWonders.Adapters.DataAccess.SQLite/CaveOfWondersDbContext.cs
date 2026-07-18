@@ -1,3 +1,4 @@
+using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Configurations;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,6 +40,13 @@ public class CaveOfWondersDbContext : DbContext
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
-		modelBuilder.ApplyConfigurationsFromAssembly(typeof(CaveOfWondersDbContext).Assembly);
+		modelBuilder.ApplyConfiguration(new AverageWageEntityConfiguration());
+		modelBuilder.ApplyConfiguration(new CpiEntityConfiguration());
+		modelBuilder.ApplyConfiguration(new ExchangeRateEntityConfiguration());
+		modelBuilder.ApplyConfiguration(new GemEntityConfiguration());
+		modelBuilder.ApplyConfiguration(new GemParameterEntityConfiguration());
+		modelBuilder.ApplyConfiguration(new PotEntityConfiguration());
+		modelBuilder.ApplyConfiguration(new PotLabelEntityConfiguration());
+		modelBuilder.ApplyConfiguration(new PotSnapshotEntityConfiguration());
 	}
 }
