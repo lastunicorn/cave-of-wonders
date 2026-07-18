@@ -4,7 +4,7 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.ExchangeRateStora
 
 internal class ExchangeRatesDirectory
 {
-    private const string DirectoryName = "Exchange Rates";
+    private const string DirectoryName = "exchange-rates";
     private readonly string directoryPath;
 
     public ExchangeRatesDirectory(string rootDirectoryPath)

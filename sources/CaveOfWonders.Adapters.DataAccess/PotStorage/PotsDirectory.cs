@@ -2,7 +2,7 @@
 
 internal class PotsDirectory
 {
-    private const string DirectoryName = "Pots";
+    private const string DirectoryName = "pots";
     private readonly string directoryPath;
 
     public PotsDirectory(string rootDirectoryPath)
