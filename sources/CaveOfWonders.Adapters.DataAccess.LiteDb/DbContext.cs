@@ -16,6 +16,7 @@
 
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.Entities;
 using LiteDB;
+using System.Data.Common;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb;
 
@@ -55,8 +56,23 @@ public sealed class DbContext : IDisposable
         }
     }
 
-    public DbContext(string filePath)
+    public DbContext(string connectionString)
     {
+	    DbConnectionStringBuilder connectionStringBuilder = new()
+	    {
+		    ConnectionString = connectionString
+	    };
+
+	    string filePath = connectionStringBuilder.TryGetValue("Data Source", out object value)
+		    ? value as string
+		    : null;
+
+	    string databaseDirectoryPath = Path.GetDirectoryName(Path.GetFullPath(filePath, AppContext.BaseDirectory));
+	    
+	    if (!Directory.Exists(databaseDirectoryPath))
+		    Directory.CreateDirectory(databaseDirectoryPath);
+
+
         // Each DbContext gets its own BsonMapper instead of relying on the default
         // LiteDatabase behavior of falling back to the shared, static BsonMapper.Global.
         // That shared mapper's type-metadata cache isn't safe under concurrent first-time

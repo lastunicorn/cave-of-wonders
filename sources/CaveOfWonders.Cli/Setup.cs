@@ -111,7 +111,7 @@ internal static class DependenciesSetup
 		serviceCollection.AddDbContext<CaveOfWondersDbContext>((services, options) =>
 		{
 			IConfiguration configuration = services.GetRequiredService<IConfiguration>();
-			string connectionString = configuration.GetConnectionString("SQlite");
+			string connectionString = new CaveOfWondersConnectionString(configuration.GetConnectionString("SQlite"));
 
 			string dataSource = new SqliteConnectionStringBuilder(connectionString).DataSource;
 			string databaseDirectoryPath = Path.GetDirectoryName(Path.GetFullPath(dataSource, AppContext.BaseDirectory));
@@ -144,8 +144,8 @@ internal static class DependenciesSetup
 			return Measure.Action("Creating UnitOfWork", () =>
 			{
 				IConfiguration configuration = services.GetRequiredService<IConfiguration>();
-				string connectionString = configuration.GetConnectionString("LiteDb");
-				
+				string connectionString = new CaveOfWondersConnectionString(configuration.GetConnectionString("LiteDb"));
+
 				return new DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.DbContext(connectionString);
 			});
 		});
@@ -161,8 +161,8 @@ internal static class DependenciesSetup
 			return Measure.Action("Creating UnitOfWork", () =>
 			{
 				IConfiguration configuration = services.GetRequiredService<IConfiguration>();
-				string connectionString = configuration.GetConnectionString("Json");
-				
+				string connectionString = new CaveOfWondersConnectionString(configuration.GetConnectionString("Json"));
+
 				return new Database(connectionString);
 			});
 		});
