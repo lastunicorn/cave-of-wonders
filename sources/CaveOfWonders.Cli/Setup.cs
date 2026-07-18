@@ -64,13 +64,10 @@ internal static class DependenciesSetup
 				break;
 
 			default:
-				throw new InvalidOperationException("Invalid database type specified in configuration.");
+				throw new InvalidOperationException("Invalid database type specified in settings.");
 		}
 		
-		//RegisterSqLiteDatabase(serviceCollection);
-		//RegisterJsonDatabase(serviceCollection);
-
-		serviceCollection.AddSingleton<ISystemClock, SystemClock>();
+		serviceCollection.AddScoped<ISystemClock, SystemClock>();
 		serviceCollection.AddScoped<IBnrService, BnrService>();
 		serviceCollection.AddScoped<IInsService, InsService>();
 		serviceCollection.AddScoped<IMintosService, MintosService>();
@@ -79,12 +76,12 @@ internal static class DependenciesSetup
 		serviceCollection.AddScoped<ILog, Log>();
 		serviceCollection.AddSingleton<IFileSystem, FileSystem>();
 
-		serviceCollection.AddSingleton<ICpiImportExportFactory, CpiImportExportFactory>();
+		serviceCollection.AddScoped<ICpiImportExportFactory, CpiImportExportFactory>();
 		serviceCollection.AddScoped<FileCpiImportExport>();
 		serviceCollection.AddScoped<WebCpiImportExport>();
 
 		serviceCollection
-			.AddSingleton(context =>
+			.AddScoped(context =>
 			{
 				ICpiImportExportFactory cpiImportExportFactory = context.GetRequiredService<ICpiImportExportFactory>();
 				CpiImportExportPool cpiImportExportPool = new(cpiImportExportFactory);
@@ -107,7 +104,6 @@ internal static class DependenciesSetup
 
 	private static void RegisterSqLiteDatabase(IServiceCollection serviceCollection)
 	{
-		// Register SQLite Database
 		serviceCollection.AddDbContext<CaveOfWondersDbContext>((services, options) =>
 		{
 			IConfiguration configuration = services.GetRequiredService<IConfiguration>();
@@ -138,7 +134,6 @@ internal static class DependenciesSetup
 
 	private static void RegisterLiteDbDatabase(IServiceCollection serviceCollection)
 	{
-		// Register LiteDB Database
 		serviceCollection.AddScoped(services =>
 		{
 			return Measure.Action("Creating UnitOfWork", () =>
@@ -155,7 +150,6 @@ internal static class DependenciesSetup
 
 	private static void RegisterJsonDatabase(IServiceCollection serviceCollection)
 	{
-		// Register JSON Database
 		serviceCollection.AddScoped(services =>
 		{
 			return Measure.Action("Creating UnitOfWork", () =>

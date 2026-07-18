@@ -6,7 +6,7 @@ public class PotSnapshot : IEquatable<PotSnapshot>
 
     public decimal Value { get; set; }
     
-    public Pot Pot { get; init; }
+    public Pot Pot { get; set; }
 
     public bool Equals(PotSnapshot other)
     {

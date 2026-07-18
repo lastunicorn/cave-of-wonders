@@ -2,7 +2,7 @@
   "profiles": {
     "CaveOfWonders.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "cpi"
+      "commandLineArgs": "pot"
     }
   }
 }
