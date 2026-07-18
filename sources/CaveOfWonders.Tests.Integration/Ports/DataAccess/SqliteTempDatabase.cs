@@ -38,7 +38,7 @@ internal sealed class SqliteTempDatabase : IDisposable, IAsyncDisposable
 			.Options;
 
 		CaveOfWondersDbContext session = new(options);
-		await session.Database.EnsureCreatedAsync(cancellationToken);
+		await session.Database.MigrateAsync(cancellationToken);
 		return session;
 	}
 

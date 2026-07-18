@@ -129,7 +129,7 @@ internal static class DependenciesSetup
 			return Measure.Action("Creating UnitOfWork", () =>
 			{
 				CaveOfWondersDbContext dbContext = Measure.Action("  Resolving DbContext", () => services.GetRequiredService<CaveOfWondersDbContext>());
-				Measure.Action("  EnsureCreated", () => dbContext.Database.EnsureCreated());
+				Measure.Action("  Migrate", () => dbContext.Database.Migrate());
 				
 				return new SQLiteUnitOfWork(dbContext);
 			});
