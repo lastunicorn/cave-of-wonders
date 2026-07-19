@@ -1,38 +1,22 @@
-// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
-// 
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 using DustInTheWind.CaveOfWonders.Domain;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 
 public class PotSummary
 {
-    public PotSummary(Pot pot)
-    {
-        Id = pot.Id;
-        Name = pot.Name;
-        Currency = pot.Currency;
-        IsActive = pot.EndDate == null || pot.EndDate >= DateOnly.FromDateTime(DateTime.Today);
-    }
+	public PotSummary(Pot pot)
+	{
+		Id = pot.Id;
+		Name = pot.Name;
+		Currency = pot.Currency;
+		IsActive = pot.EndDate == null || pot.EndDate >= DateOnly.FromDateTime(DateTime.Today);
+	}
 
-    public Guid Id { get; }
+	public Guid Id { get; }
 
-    public string Name { get; }
+	public string Name { get; }
 
-    public string Currency { get; }
-    
-    public bool IsActive { get; }
+	public string Currency { get; }
+
+	public bool IsActive { get; }
 }

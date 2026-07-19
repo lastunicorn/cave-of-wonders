@@ -24,70 +24,66 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 
 internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPotResponse>
 {
-    private readonly IUnitOfWork unitOfWork;
-    private readonly ISystemClock systemClock;
+	private readonly IUnitOfWork unitOfWork;
+	private readonly ISystemClock systemClock;
 
-    public PresentPotUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
-    {
-        this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
-    }
+	public PresentPotUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
+	{
+		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+		this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+	}
 
-    public async Task<PresentPotResponse> Handle(PresentPotRequest request, CancellationToken cancellationToken)
-    {
-        IEnumerable<Pot> pots = await RetrievePots(request, cancellationToken);
+	public async Task<PresentPotResponse> Handle(PresentPotRequest request, CancellationToken cancellationToken)
+	{
+		IEnumerable<Pot> pots = await RetrievePots(request, cancellationToken);
 
-        PresentPotResponse response = new();
+		PresentPotResponse response = new();
 
-        bool showDetails = request.ShowDetails is true || (!request.ShowDetails.HasValue && request.PotFlexId?.HasValue == true);
-        if (showDetails)
-        {
-            response.PotDetails = pots
-                .Select(x => new PotDetails(x))
-                .ToList();
-        }
-        else
-        {
-            response.PotSummaries = pots
-                .Select(x => new PotSummary(x))
-                .ToList();
-        }
+		bool showDetails = request.ShowDetails is true || (!request.ShowDetails.HasValue && request.PotFlexId?.HasValue == true);
+		if (showDetails)
+		{
+			response.PotDetails = pots
+				.Select(x => new PotDetails(x))
+				.ToList();
+		}
+		else
+		{
+			response.PotSummaries = pots
+				.Select(x => new PotSummary(x))
+				.ToList();
+		}
 
-        return response;
-    }
+		return response;
+	}
 
-    private async Task<IEnumerable<Pot>> RetrievePots(PresentPotRequest request, CancellationToken cancellationToken)
-    {
-        try
-        {
-            IEnumerable<Pot> pots = await RetrievePotsByIdOrName(request.PotFlexId, cancellationToken)
-                .ToListAsync(cancellationToken);
+	private async Task<IEnumerable<Pot>> RetrievePots(PresentPotRequest request, CancellationToken cancellationToken)
+	{
+		try
+		{
+			IAsyncEnumerable<Pot> pots = RetrievePots(request.PotFlexId, cancellationToken);
 
-            if (!request.IncludeInactivePots)
-            {
-                DateOnly today = systemClock.Today;
-                pots = pots.Where(x => x.IsActive(today));
-            }
+			if (!request.IncludeInactivePots)
+			{
+				DateOnly today = systemClock.Today;
+				pots = pots.Where(x => x.IsActive(today));
+			}
 
-            pots = pots.OrderBy(x => x.DisplayOrder);
+			pots = pots.OrderBy(x => x.DisplayOrder);
 
-            return pots;
-        }
-        catch (Exception ex)
-        {
-            throw new StorageInaccessibleException(ex);
-        }
-    }
+			return await pots.ToListAsync(cancellationToken);
+		}
+		catch (Exception ex)
+		{
+			throw new StorageInaccessibleException(ex);
+		}
+	}
 
-    private IAsyncEnumerable<Pot> RetrievePotsByIdOrName(PotFlexId potFlexId, CancellationToken cancellationToken)
-    {
-        bool isIdentifierSpecified = potFlexId is
-        {
-            HasValue: true
-        };
+	private IAsyncEnumerable<Pot> RetrievePots(PotFlexId potFlexId, CancellationToken cancellationToken)
+	{
+		bool isIdentifierSpecified = potFlexId?.HasValue == true;
 
-        return isIdentifierSpecified
-            ? unitOfWork.PotRepository.GetAsync(potFlexId, cancellationToken)
-            : unitOfWork.PotRepository.GetAllAsync(cancellationToken);
-    }
+		return isIdentifierSpecified
+			? unitOfWork.PotRepository.GetAsync(potFlexId, cancellationToken)
+			: unitOfWork.PotRepository.GetAllAsync(cancellationToken);
+	}
 }

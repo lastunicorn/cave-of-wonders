@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using MediatR;
@@ -47,7 +48,7 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
         };
     }
 
-    private async Task<Pot> RetrievePot(string potId, CancellationToken cancellationToken)
+    private async Task<Pot> RetrievePot(PotFlexId potId, CancellationToken cancellationToken)
     {
 	    IAsyncEnumerable<Pot> pots = unitOfWork.PotRepository.GetAsync(potId, cancellationToken);
 
