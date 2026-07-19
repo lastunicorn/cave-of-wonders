@@ -119,6 +119,6 @@ public class GemRepository : IGemRepository
 		if (gem == null)
 			throw new ArgumentNullException(nameof(gem));
 
-		database.Gems.RemoveAll(x => x.Id == gem.Id);
+		database.RemoveGem(gem.Id);
 	}
 }
