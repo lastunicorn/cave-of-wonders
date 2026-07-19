@@ -1,4 +1,5 @@
 using DustInTheWind.CaveOfWonders.DbMigration;
+using DustInTheWind.CaveOfWonders.DbMigration.DatabaseEndpoints;
 using Microsoft.Extensions.Configuration;
 
 MigrationOptions options;
@@ -56,11 +57,11 @@ if (options.CleanDestination && !options.SkipConfirmation)
 
 try
 {
-    using DatabaseEndpoint source = DatabaseEndpoint.Create(sourceConfig, cleanBeforeUse: false);
-    using DatabaseEndpoint destination = DatabaseEndpoint.Create(destinationConfig, cleanBeforeUse: options.CleanDestination);
+    using IDatabaseEndpoint source = CreateDatabaseEndpoint(sourceConfig, cleanBeforeUse: false);
+    using IDatabaseEndpoint destination = CreateDatabaseEndpoint(destinationConfig, cleanBeforeUse: options.CleanDestination);
 
-    Migrator migrator = new(source.UnitOfWork, destination.UnitOfWork);
-    await migrator.RunAsync();
+    Migration migration = new(source.UnitOfWork, destination.UnitOfWork);
+    await migration.RunAsync();
 
     Console.WriteLine();
     Console.WriteLine("Migration completed successfully.");
@@ -72,4 +73,15 @@ catch (Exception ex)
     Console.WriteLine();
     Console.Error.WriteLine($"Migration failed: {ex.Message}");
     return 1;
+}
+
+static IDatabaseEndpoint CreateDatabaseEndpoint(DatabaseConfig config, bool cleanBeforeUse)
+{
+    return config.DatabaseType.ToLowerInvariant() switch
+    {
+        "json" => new JsonDatabaseEndpoint(config.ConnectionString, cleanBeforeUse),
+        "sqlite" => new SqliteDatabaseEndpoint(config.ConnectionString, cleanBeforeUse),
+        "litedb" => new LiteDbDatabaseEndpoint(config.ConnectionString, cleanBeforeUse),
+        _ => throw new InvalidOperationException($"Unknown database type '{config.DatabaseType}'.")
+    };
 }

@@ -9,12 +9,12 @@ namespace DustInTheWind.CaveOfWonders.DbMigration;
 /// some adapters enforce that id as a foreign key. Entity kinds not supported by either
 /// side (e.g. gems/CPI/average wage on the LiteDb adapter) are skipped rather than failing.
 /// </summary>
-internal sealed class Migrator
+internal sealed class Migration
 {
     private readonly IUnitOfWork source;
     private readonly IUnitOfWork destination;
 
-    public Migrator(IUnitOfWork source, IUnitOfWork destination)
+    public Migration(IUnitOfWork source, IUnitOfWork destination)
     {
         this.source = source ?? throw new ArgumentNullException(nameof(source));
         this.destination = destination ?? throw new ArgumentNullException(nameof(destination));
