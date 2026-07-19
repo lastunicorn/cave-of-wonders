@@ -18,4 +18,9 @@
 		<ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess.LiteDb\CaveOfWonders.Adapters.DataAccess.LiteDb.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.10" />
+	  <PackageReference Include="System.CommandLine" Version="2.0.10" />
+	</ItemGroup>
+
 </Project>
