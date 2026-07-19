@@ -1,6 +1,6 @@
 ﻿using DustInTheWind.CaveOfWonders.Domain;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
+namespace DustInTheWind.CaveOfWonders.Cli.Application;
 
 public class ExchangeRateInfo
 {

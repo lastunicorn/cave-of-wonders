@@ -6,5 +6,7 @@ public class GainItem
     
     public string Currency { get; init; }
     
-    public decimal TotalGain { get; init; }
+    public decimal Gain { get; init; }
+    
+    public decimal NormalizedGain { get; init; }
 }

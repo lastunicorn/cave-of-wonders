@@ -25,10 +25,6 @@ internal class GainCommand : IConsoleCommand<GainViewModel>
 		};
 		GainResponse response = await mediator.Send(request);
 
-		return new GainViewModel
-		{
-			Items = response.Items,
-			TotalGain = response.TotalGain
-		};
+		return new GainViewModel(response);
 	}
 }

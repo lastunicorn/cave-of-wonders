@@ -9,7 +9,7 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.CalculateGain;
 
 internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 {
-	private const string TotalGainCurrency = "EUR";
+	private const string NormalizedCurrency = "EUR";
 
 	private readonly IUnitOfWork unitOfWork;
 	private readonly ISystemClock systemClock;
@@ -40,45 +40,54 @@ internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 			}, cancellationToken)
 			.ToListAsync(cancellationToken);
 
-		List<GainItem> items = gains
-			.Where(x => x.Pot != null)
-			.GroupBy(x => x.Pot.Id)
-			.Select(x => new GainItem
-			{
-				PotName = x.First().Pot.Name,
-				Currency = x.First().Pot.Currency,
-				TotalGain = x.Sum(z => z.Category == GemCategory.Gain ? z.Amount : -z.Amount)
-			})
-			.ToList();
+		DateOnly conversionDate = systemClock.Today;
 
-		decimal totalGain = await CalculateTotalGainInEur(items, month, cancellationToken);
+		List<GainItem> items = await BuildGainItems(gains, conversionDate, cancellationToken);
+		decimal totalGain = items.Sum(x => x.NormalizedGain);
 
 		return new GainResponse
 		{
+			Date = conversionDate,
 			Items = items,
+			ConversionRates = currenciesConvertor.UsedExchangeRates
+				.Select(x => new ExchangeRateInfo(x))
+				.ToList(),
 			TotalGain = totalGain
 		};
 	}
 
-	private async Task<decimal> CalculateTotalGainInEur(List<GainItem> items, MonthDate month, CancellationToken cancellationToken)
+	private async Task<List<GainItem>> BuildGainItems(List<Gem> gains, DateOnly conversionDate, CancellationToken cancellationToken)
 	{
-		DateOnly conversionDate = LastDayOf(month);
-		decimal totalGain = 0;
+		List<GainItem> items = [];
 
-		foreach (GainItem item in items)
+		IEnumerable<IGrouping<Guid, Gem>> gainsByPot = gains
+			.Where(x => x.Pot != null)
+			.GroupBy(x => x.Pot.Id);
+
+		foreach (IGrouping<Guid, Gem> gainsForPot in gainsByPot)
 		{
+			string potCurrency = gainsForPot.First().Pot.Currency;
+			decimal amount = gainsForPot.Sum(z => z.Category == GemCategory.Gain ? z.Amount : -z.Amount);
+
 			CurrencyValue itemValue = new()
 			{
-				Currency = item.Currency,
-				Value = item.TotalGain,
+				Currency = potCurrency,
+				Value = amount,
 				Date = conversionDate
 			};
 
-			CurrencyValue normalizedValue = await currenciesConvertor.Convert(itemValue, TotalGainCurrency, conversionDate, cancellationToken);
-			totalGain += normalizedValue.Value;
+			CurrencyValue normalizedValue = await currenciesConvertor.Convert(itemValue, NormalizedCurrency, conversionDate, cancellationToken);
+
+			items.Add(new GainItem
+			{
+				PotName = gainsForPot.First().Pot.Name,
+				Currency = potCurrency,
+				Gain = amount,
+				NormalizedGain = normalizedValue.Value
+			});
 		}
 
-		return totalGain;
+		return items;
 	}
 
 	private MonthDate DecideMonth(GainRequest request)
@@ -86,11 +95,5 @@ internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 		return request.Month.HasValue
 			? request.Month
 			: new MonthDate(systemClock.Today);
-	}
-
-	private static DateOnly LastDayOf(MonthDate month)
-	{
-		int daysInMonth = DateTime.DaysInMonth(month.Year, month.Month);
-		return new DateOnly(month.Year, month.Month, daysInMonth);
 	}
 }

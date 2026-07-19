@@ -10,5 +10,5 @@ public class PresentPotsResponse
 
 	public CurrencyValue Total { get; set; }
 
-	public List<CurrencyTotalOverview> CurrencyTotalOverviews { get; set; } = new List<CurrencyTotalOverview>();
+	public List<CurrencyTotalOverview> CurrencyTotalOverviews { get; set; } = [];
 }
