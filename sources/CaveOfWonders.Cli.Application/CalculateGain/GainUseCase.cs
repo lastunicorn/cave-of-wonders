@@ -48,7 +48,8 @@ internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 
 		return new GainResponse
 		{
-			Items = items
+			Items = items,
+			TotalGain = items.Sum(x => x.TotalGain)
 		};
 	}
 
