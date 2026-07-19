@@ -5,32 +5,37 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.GemStorage;
 
 internal class GemsFile
 {
-    private readonly string filePath;
+	private readonly string filePath;
 
-    public Guid PotId { get; }
+	public Guid PotId { get; }
 
-    public GemsFile(string filePath)
-    {
-        this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
+	public GemsFile(string filePath)
+	{
+		this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
 
-        string idAsString = Path.GetFileNameWithoutExtension(filePath);
-        PotId = Guid.Parse(idAsString);
-    }
+		string idAsString = Path.GetFileNameWithoutExtension(filePath);
+		PotId = Guid.Parse(idAsString);
+	}
 
-    public async Task<List<JGem>> ReadAsync(CancellationToken cancellationToken)
-    {
-        string json = await File.ReadAllTextAsync(filePath, cancellationToken);
-        return JsonConvert.DeserializeObject<List<JGem>>(json);
-    }
+	public async Task<List<JGem>> ReadAsync(CancellationToken cancellationToken)
+	{
+		string json = await File.ReadAllTextAsync(filePath, cancellationToken);
+		return JsonConvert.DeserializeObject<List<JGem>>(json);
+	}
 
-    public Task SaveAsync(IEnumerable<JGem> jGems, CancellationToken cancellationToken)
-    {
-        IsoDateTimeConverter dateTimeConverter = new()
-        {
-            DateTimeFormat = "yyyy-MM-dd HH:mm:ss"
-        };
-        string json = JsonConvert.SerializeObject(jGems, Formatting.Indented, dateTimeConverter);
+	public Task SaveAsync(IEnumerable<JGem> jGems, CancellationToken cancellationToken)
+	{
+		IsoDateTimeConverter dateTimeConverter = new()
+		{
+			DateTimeFormat = "yyyy-MM-dd HH:mm:ss"
+		};
+		string json = JsonConvert.SerializeObject(jGems, Formatting.Indented, dateTimeConverter);
 
-        return File.WriteAllTextAsync(filePath, json, cancellationToken);
-    }
+		return File.WriteAllTextAsync(filePath, json, cancellationToken);
+	}
+
+	public void Delete()
+	{
+		File.Delete(filePath);
+	}
 }

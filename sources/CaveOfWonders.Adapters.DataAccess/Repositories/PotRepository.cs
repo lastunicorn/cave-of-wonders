@@ -24,58 +24,66 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.Repositories;
 
 public class PotRepository : IPotRepository
 {
-    private readonly Database database;
+	private readonly Database database;
 
-    public PotRepository(Database database)
-    {
-        this.database = database ?? throw new ArgumentNullException(nameof(database));
-    }
+	public PotRepository(Database database)
+	{
+		this.database = database ?? throw new ArgumentNullException(nameof(database));
+	}
 
-    public IAsyncEnumerable<Pot> GetAllAsync(CancellationToken cancellationToken = default)
-    {
-        IEnumerable<Pot> result = database.Pots;
-        return result.ToAsyncEnumerable(cancellationToken);
-    }
+	public IAsyncEnumerable<Pot> GetAllAsync(CancellationToken cancellationToken = default)
+	{
+		IEnumerable<Pot> result = database.Pots;
+		return result.ToAsyncEnumerable(cancellationToken);
+	}
 
-    public Task<Pot> GetAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        Pot pot = database.Pots
-            .FirstOrDefault(x => x.Id == id);
+	public Task<Pot> GetAsync(Guid id, CancellationToken cancellationToken = default)
+	{
+		Pot pot = database.Pots
+			.FirstOrDefault(x => x.Id == id);
 
-        return Task.FromResult(pot);
-    }
+		return Task.FromResult(pot);
+	}
 
-    public Task<IEnumerable<PotSnapshot>> GetSnapshotsAsync(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive, CancellationToken cancellationToken = default)
-    {
-        cancellationToken.ThrowIfCancellationRequested();
+	public Task<IEnumerable<PotSnapshot>> GetSnapshotsAsync(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
 
-        IEnumerable<PotSnapshot> potInstances = database.Pots
-            .Where(x => includeInactive || x.IsActive(date))
-            .Select(x => x.GetSnapshot(date, dateMatchingMode))
-            .Where(x => x != null);
+		IEnumerable<PotSnapshot> potInstances = database.Pots
+			.Where(x => includeInactive || x.IsActive(date))
+			.Select(x => x.GetSnapshot(date, dateMatchingMode))
+			.Where(x => x != null);
 
-        return Task.FromResult(potInstances);
-    }
+		return Task.FromResult(potInstances);
+	}
 
-    public async IAsyncEnumerable<Pot> GetAsync(PotFlexId potFlexId, [EnumeratorCancellation] CancellationToken cancellationToken = default)
-    {
-        IEnumerable<Pot> pots = database.Pots
-            .Where(x => potFlexId.IsMatch(x.Id) || potFlexId.IsMatch(x.Name));
+	public async IAsyncEnumerable<Pot> GetAsync(PotFlexId potFlexId, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+	{
+		IEnumerable<Pot> pots = database.Pots
+			.Where(x => potFlexId.IsMatch(x.Id) || potFlexId.IsMatch(x.Name));
 
-        foreach (Pot pot in pots)
-            yield return pot;
-    }
+		foreach (Pot pot in pots)
+			yield return pot;
+	}
 
-    public void Add(Pot pot)
-    {
-        if (pot == null)
-            throw new ArgumentNullException(nameof(pot));
+	public void Add(Pot pot)
+	{
+		if (pot == null)
+			throw new ArgumentNullException(nameof(pot));
 
-        bool alreadyExists = database.Pots.Any(x => x.Id == pot.Id);
+		bool alreadyExists = database.Pots.Any(x => x.Id == pot.Id);
 
-        if (alreadyExists)
-            throw new ArgumentException($"A pot with id '{pot.Id}' already exists.", nameof(pot));
+		if (alreadyExists)
+			throw new ArgumentException($"A pot with id '{pot.Id}' already exists.", nameof(pot));
 
-        database.Pots.Add(pot);
-    }
+		database.Pots.Add(pot);
+	}
+
+	public void Remove(Pot pot)
+	{
+		if (pot == null)
+			throw new ArgumentNullException(nameof(pot));
+
+		database.Pots.RemoveAll(x => x.Id == pot.Id);
+	}
 }

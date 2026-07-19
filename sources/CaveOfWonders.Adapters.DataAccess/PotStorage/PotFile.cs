@@ -5,32 +5,37 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.PotStorage;
 
 internal class PotFile
 {
-    private readonly string filePath;
+	private readonly string filePath;
 
-    public Guid PotId { get; }
+	public Guid PotId { get; }
 
-    public PotFile(string filePath)
-    {
-        this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
+	public PotFile(string filePath)
+	{
+		this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
 
-        string idAsString = Path.GetFileNameWithoutExtension(filePath);
-        PotId = Guid.Parse(idAsString);
-    }
+		string idAsString = Path.GetFileNameWithoutExtension(filePath);
+		PotId = Guid.Parse(idAsString);
+	}
 
-    public async Task<JPot> ReadAsync(CancellationToken cancellationToken)
-    {
-        string json = await File.ReadAllTextAsync(filePath, cancellationToken);
-        return JsonConvert.DeserializeObject<JPot>(json);
-    }
+	public async Task<JPot> ReadAsync(CancellationToken cancellationToken)
+	{
+		string json = await File.ReadAllTextAsync(filePath, cancellationToken);
+		return JsonConvert.DeserializeObject<JPot>(json);
+	}
 
-    public Task SaveAsync(JPot jPot, CancellationToken cancellationToken)
-    {
-        IsoDateTimeConverter dateTimeConverter = new()
-        {
-            DateTimeFormat = "yyyy-MM-dd"
-        };
-        string json = JsonConvert.SerializeObject(jPot, Formatting.Indented, dateTimeConverter);
+	public Task SaveAsync(JPot jPot, CancellationToken cancellationToken)
+	{
+		IsoDateTimeConverter dateTimeConverter = new()
+		{
+			DateTimeFormat = "yyyy-MM-dd"
+		};
+		string json = JsonConvert.SerializeObject(jPot, Formatting.Indented, dateTimeConverter);
 
-        return File.WriteAllTextAsync(filePath, json, cancellationToken);
-    }
+		return File.WriteAllTextAsync(filePath, json, cancellationToken);
+	}
+
+	public void Delete()
+	{
+		File.Delete(filePath);
+	}
 }

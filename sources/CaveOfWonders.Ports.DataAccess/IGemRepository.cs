@@ -16,4 +16,6 @@ public interface IGemRepository
     IAsyncEnumerable<Gem> FindByMonthAsync(Guid potId, MonthDate month, CancellationToken cancellationToken = default);
 
     void Add(Gem gem);
+
+    void Remove(Gem gem);
 }

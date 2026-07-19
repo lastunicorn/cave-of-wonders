@@ -9,134 +9,146 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Repositories;
 
 internal class PotRepository : IPotRepository
 {
-    private readonly CaveOfWondersDbContext dbContext;
+	private readonly CaveOfWondersDbContext dbContext;
 
-    public PotRepository(CaveOfWondersDbContext dbContext)
-    {
-        this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-    }
+	public PotRepository(CaveOfWondersDbContext dbContext)
+	{
+		this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+	}
 
-    public IAsyncEnumerable<Pot> GetAllAsync(CancellationToken cancellationToken = default)
-    {
-        IEnumerable<Pot> pots = dbContext.Pots
-            .Include(x => x.Snapshots)
-            .Include(x => x.Labels)
-            .AsEnumerable()
-            .Select(MapToDomain);
+	public IAsyncEnumerable<Pot> GetAllAsync(CancellationToken cancellationToken = default)
+	{
+		IEnumerable<Pot> pots = dbContext.Pots
+			.Include(x => x.Snapshots)
+			.Include(x => x.Labels)
+			.AsEnumerable()
+			.Select(MapToDomain);
 
-        return pots.ToAsyncEnumerable(cancellationToken);
-    }
+		return pots.ToAsyncEnumerable(cancellationToken);
+	}
 
-    public async Task<Pot> GetAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        PotEntity entity = await dbContext.Pots
-            .Include(x => x.Snapshots)
-            .Include(x => x.Labels)
-            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+	public async Task<Pot> GetAsync(Guid id, CancellationToken cancellationToken = default)
+	{
+		PotEntity entity = await dbContext.Pots
+			.Include(x => x.Snapshots)
+			.Include(x => x.Labels)
+			.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
-        return entity == null
-            ? null
-            : MapToDomain(entity);
-    }
+		return entity == null
+			? null
+			: MapToDomain(entity);
+	}
 
-    public async Task<IEnumerable<PotSnapshot>> GetSnapshotsAsync(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive, CancellationToken cancellationToken = default)
-    {
-        List<PotEntity> entities = await dbContext.Pots
-            .Include(x => x.Snapshots)
-            .ToListAsync(cancellationToken);
+	public async Task<IEnumerable<PotSnapshot>> GetSnapshotsAsync(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive, CancellationToken cancellationToken = default)
+	{
+		List<PotEntity> entities = await dbContext.Pots
+			.Include(x => x.Snapshots)
+			.ToListAsync(cancellationToken);
 
-        return entities
-            .Select(MapToDomain)
-            .Where(x => includeInactive || x.IsActive(date))
-            .Select(x => GetSnapshot(x, date, dateMatchingMode))
-            .Where(x => x != null);
-    }
+		return entities
+			.Select(MapToDomain)
+			.Where(x => includeInactive || x.IsActive(date))
+			.Select(x => GetSnapshot(x, date, dateMatchingMode))
+			.Where(x => x != null);
+	}
 
-    public IAsyncEnumerable<Pot> GetAsync(PotFlexId potFlexId, CancellationToken cancellationToken = default)
-    {
-        IEnumerable<Pot> pots = dbContext.Pots
-            .Include(x => x.Snapshots)
-            .Include(x => x.Labels)
-            .AsEnumerable()
-            .Where(x => potFlexId.IsMatch(x.Id) || potFlexId.IsMatch(x.Name))
-            .Select(MapToDomain);
+	public IAsyncEnumerable<Pot> GetAsync(PotFlexId potFlexId, CancellationToken cancellationToken = default)
+	{
+		IEnumerable<Pot> pots = dbContext.Pots
+			.Include(x => x.Snapshots)
+			.Include(x => x.Labels)
+			.AsEnumerable()
+			.Where(x => potFlexId.IsMatch(x.Id) || potFlexId.IsMatch(x.Name))
+			.Select(MapToDomain);
 
-        return pots.ToAsyncEnumerable(cancellationToken);
-    }
+		return pots.ToAsyncEnumerable(cancellationToken);
+	}
 
-    public void Add(Pot pot)
-    {
-        ArgumentNullException.ThrowIfNull(pot);
+	public void Add(Pot pot)
+	{
+		ArgumentNullException.ThrowIfNull(pot);
 
-        PotEntity entity = new()
-        {
-            Id = pot.Id,
-            Name = pot.Name,
-            Description = pot.Description,
-            DisplayOrder = pot.DisplayOrder,
-            StartDate = pot.StartDate,
-            EndDate = pot.EndDate,
-            Currency = pot.Currency,
-            Snapshots = pot.Snapshots
-                .Select(x => new PotSnapshotEntity
-                {
-                    Date = x.Date,
-                    Value = x.Value
-                })
-                .ToList(),
-            Labels = pot.Labels
-                .Select(x => new PotLabelEntity
-                {
-                    Label = x
-                })
-                .ToList()
-        };
+		PotEntity entity = new()
+		{
+			Id = pot.Id,
+			Name = pot.Name,
+			Description = pot.Description,
+			DisplayOrder = pot.DisplayOrder,
+			StartDate = pot.StartDate,
+			EndDate = pot.EndDate,
+			Currency = pot.Currency,
+			Snapshots = pot.Snapshots
+				.Select(x => new PotSnapshotEntity
+				{
+					Date = x.Date,
+					Value = x.Value
+				})
+				.ToList(),
+			Labels = pot.Labels
+				.Select(x => new PotLabelEntity
+				{
+					Label = x
+				})
+				.ToList()
+		};
 
-        dbContext.Pots.Add(entity);
-    }
+		dbContext.Pots.Add(entity);
+	}
 
-    private static Pot MapToDomain(PotEntity entity)
-    {
-        Pot pot = new()
-        {
-            Id = entity.Id,
-            Name = entity.Name,
-            Description = entity.Description,
-            DisplayOrder = entity.DisplayOrder,
-            StartDate = entity.StartDate,
-            EndDate = entity.EndDate,
-            Currency = entity.Currency
-        };
+	public void Remove(Pot pot)
+	{
+		ArgumentNullException.ThrowIfNull(pot);
 
-        if (entity.Labels != null)
-            pot.Labels.AddRange(entity.Labels.Select(x => x.Label));
+		PotEntity entity = new()
+		{
+			Id = pot.Id
+		};
+		dbContext.Pots.Attach(entity);
+		dbContext.Pots.Remove(entity);
+	}
 
-        if (entity.Snapshots != null)
-        {
-            IEnumerable<PotSnapshot> potSnapshots = entity.Snapshots
-                .Select(x => new PotSnapshot
-                {
-                    Date = x.Date,
-                    Value = x.Value,
-                    Pot = pot
-                });
+	private static Pot MapToDomain(PotEntity entity)
+	{
+		Pot pot = new()
+		{
+			Id = entity.Id,
+			Name = entity.Name,
+			Description = entity.Description,
+			DisplayOrder = entity.DisplayOrder,
+			StartDate = entity.StartDate,
+			EndDate = entity.EndDate,
+			Currency = entity.Currency
+		};
 
-            pot.Snapshots.AddRange(potSnapshots);
-        }
+		if (entity.Labels != null)
+			pot.Labels.AddRange(entity.Labels.Select(x => x.Label));
 
-        return pot;
-    }
+		if (entity.Snapshots != null)
+		{
+			IEnumerable<PotSnapshot> potSnapshots = entity.Snapshots
+				.Select(x => new PotSnapshot
+				{
+					Date = x.Date,
+					Value = x.Value,
+					Pot = pot
+				});
 
-    private static PotSnapshot GetSnapshot(Pot pot, DateOnly date, DateMatchingMode dateMatchingMode)
-    {
-        return dateMatchingMode switch
-        {
-            DateMatchingMode.Exact => pot.Snapshots
-                .FirstOrDefault(x => x.Date == date),
-            DateMatchingMode.LastAvailable => pot.Snapshots
-                .Where(x => x.Date <= date)
-                .MaxBy(x => x.Date),
-            _ => throw new ArgumentOutOfRangeException(nameof(dateMatchingMode))
-        };
-    }
+			pot.Snapshots.AddRange(potSnapshots);
+		}
+
+		return pot;
+	}
+
+	private static PotSnapshot GetSnapshot(Pot pot, DateOnly date, DateMatchingMode dateMatchingMode)
+	{
+		return dateMatchingMode switch
+		{
+			DateMatchingMode.Exact => pot.Snapshots
+				.FirstOrDefault(x => x.Date == date),
+			DateMatchingMode.LastAvailable => pot.Snapshots
+				.Where(x => x.Date <= date)
+				.MaxBy(x => x.Date),
+			_ => throw new ArgumentOutOfRangeException(nameof(dateMatchingMode))
+		};
+	}
 }

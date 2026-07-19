@@ -14,4 +14,6 @@ public interface IPotRepository
     Task<IEnumerable<PotSnapshot>> GetSnapshotsAsync(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive, CancellationToken cancellationToken = default);
 
     void Add(Pot pot);
+
+    void Remove(Pot pot);
 }

@@ -36,17 +36,34 @@ internal class PotPersister
 	{
 		if (pots == null) throw new ArgumentNullException(nameof(pots));
 
+		List<Pot> potList = pots.ToList();
+
 		PotsDirectory potsDirectory = new(databaseDirectoryPath);
 
 		if (!potsDirectory.Exists)
 			potsDirectory.Create();
+		else
+			DeleteRemovedPotFiles(potsDirectory, potList);
 
-		foreach (Pot pot in pots)
+		foreach (Pot pot in potList)
 		{
 			JPot jPot = pot.ToJPot();
 
 			PotFile potFile = potsDirectory.GetPotFile(pot.Id);
 			await potFile.SaveAsync(jPot, cancellationToken);
+		}
+	}
+
+	private static void DeleteRemovedPotFiles(PotsDirectory potsDirectory, List<Pot> pots)
+	{
+		HashSet<Guid> potIds = pots
+			.Select(x => x.Id)
+			.ToHashSet();
+
+		foreach (PotFile potFile in potsDirectory.EnumeratePotFiles())
+		{
+			if (!potIds.Contains(potFile.PotId))
+				potFile.Delete();
 		}
 	}
 }
