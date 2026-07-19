@@ -9,7 +9,7 @@
   },
   {
     "Port": "DustInTheWind.CaveOfWonders.Ports.DataAccess.IGemRepository",
-    "TestEnvironments": ["Json", "SQLite"]
+    "TestEnvironments": ["Json", "LiteDb", "SQLite"]
   },
   {
     "Port": "DustInTheWind.CaveOfWonders.Ports.DataAccess.IAverageWageRepository",
