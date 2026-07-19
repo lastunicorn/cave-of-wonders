@@ -1,5 +1,6 @@
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Ports.BcrAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.FintownAccess;
 using DustInTheWind.CaveOfWonders.Ports.MintosAccess;
@@ -7,99 +8,107 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;
 
-/// <summary>
-/// For now, this use case is hard-coded to import only Mintos gems (transactions).
-/// </summary>
 internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGemsResponse>
 {
-    private readonly IUnitOfWork unitOfWork;
-    private readonly IMintosService mintosService;
-    private readonly IFintownService fintownService;
+	private readonly IUnitOfWork unitOfWork;
+	private readonly IMintosService mintosService;
+	private readonly IFintownService fintownService;
+	private readonly IBcrService bcrService;
 
-    public ImportGemsUseCase(IUnitOfWork unitOfWork, IMintosService mintosService, IFintownService fintownService)
-    {
-        this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        this.mintosService = mintosService ?? throw new ArgumentNullException(nameof(mintosService));
-        this.fintownService = fintownService ?? throw new ArgumentNullException(nameof(fintownService));
-    }
+	public ImportGemsUseCase(IUnitOfWork unitOfWork, IMintosService mintosService, IFintownService fintownService, IBcrService bcrService)
+	{
+		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+		this.mintosService = mintosService ?? throw new ArgumentNullException(nameof(mintosService));
+		this.fintownService = fintownService ?? throw new ArgumentNullException(nameof(fintownService));
+		this.bcrService = bcrService ?? throw new ArgumentNullException(nameof(bcrService));
+	}
 
-    public async Task<ImportGemsResponse> Handle(ImportGemsRequest request, CancellationToken cancellationToken)
-    {
-        Pot pot = await FindPot(request.PotFlexId, cancellationToken);
-        
-        IAsyncEnumerable<Gem> gemEnumeration = request.FileType switch
-        {
-            FileType.Mintos => mintosService.GetGemsAsync(request.FilePath, cancellationToken),
-            FileType.Fintown => fintownService.GetGemsAsync(request.FilePath, cancellationToken),
-            FileType.Unknown => throw new NotImplementedException($"Unknown file type '{request.FileType}'."),
-            _ => throw new NotImplementedException($"Unknown file type '{request.FileType}'.")
-        };
-        
-        ImportGemsResponse response = await ImportGems(gemEnumeration, pot, cancellationToken);
+	public async Task<ImportGemsResponse> Handle(ImportGemsRequest request, CancellationToken cancellationToken)
+	{
+		Pot pot = await FindPot(request.PotFlexId, cancellationToken);
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+		IAsyncEnumerable<Gem> gemEnumeration = request.FileType switch
+		{
+			FileType.Mintos => mintosService.GetGemsAsync(request.FilePath, cancellationToken),
+			FileType.Fintown => fintownService.GetGemsAsync(request.FilePath, cancellationToken),
+			FileType.Bcr => bcrService.GetGemsAsync(request.FilePath, cancellationToken),
+			FileType.Unknown => throw new UnknownFileTypeException(request.FileType),
+			_ => throw new UnknownFileTypeException(request.FileType)
+		};
 
-        return response;
-    }
+		ImportGemsResponse response = await ImportGems(gemEnumeration, pot, cancellationToken);
 
-    private async Task<Pot> FindPot(PotFlexId potFlexId, CancellationToken cancellationToken)
-    {
-        try
-        {
-            return await unitOfWork.PotRepository.GetAsync(potFlexId, cancellationToken)
-                .SingleAsync(cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            throw new CaveOfWandersException($"The specified pot identifier must match a single pot: '{potFlexId}'", ex);
-        }
-    }
+		await unitOfWork.SaveChangesAsync(cancellationToken);
 
-    private async Task<ImportGemsResponse> ImportGems(IAsyncEnumerable<Gem> gemEnumeration, Pot pot, CancellationToken cancellationToken)
-    {
-        ImportGemsResponse response = new();
+		return response;
+	}
 
-        await foreach (Gem gem in gemEnumeration.WithCancellation(cancellationToken))
-        {
-            response.TotalGemCount++;
+	private async Task<Pot> FindPot(PotFlexId potFlexId, CancellationToken cancellationToken)
+	{
+		IAsyncEnumerable<Pot> pots = unitOfWork.PotRepository.GetAsync(potFlexId, cancellationToken)
+			.Where(x => x != null);
 
-            gem.Pot = pot;
-            Gem existingGem = await FindExistingGem(gem, cancellationToken);
+		Pot foundPot = null;
 
-            if (existingGem != null)
-            {
-                if (gem != existingGem)
-                {
-                    response.UpdatedGemCount++;
+		await foreach (Pot pot in pots)
+		{
+			if (foundPot != null)
+				throw new MultiplePotsException(potFlexId);
+			
+			foundPot = pot;
+		}
 
-                    existingGem.Category = gem.Category;
-                    existingGem.Amount = gem.Amount;
-                    existingGem.Description = gem.Description;
-                    existingGem.Pot = gem.Pot;
-                    existingGem.Parameters.Clear();
-                    existingGem.Parameters.AddRange(gem.Parameters);
-                }
-                else
-                {
-                    response.SkippedGemCount++;
-                }
-            }
-            else
-            {
-                response.AddedGemCount++;
-                unitOfWork.GemRepository.Add(gem);
-            }
-        }
-        
-        return response;
-    }
+		if (foundPot == null)
+			throw new PotNotFoundException(potFlexId);
 
-    private async Task<Gem> FindExistingGem(Gem gem, CancellationToken cancellationToken)
-    {
-        if (gem.Pot == null)
-            return null;
-        
-        return await unitOfWork.GemRepository.GetByExternalIdAsync(gem.Pot.Id, gem.ExternalId, cancellationToken)
-            .ConfigureAwait(false);
-    }
+		return foundPot;
+	}
+
+	private async Task<ImportGemsResponse> ImportGems(IAsyncEnumerable<Gem> gemEnumeration, Pot pot, CancellationToken cancellationToken)
+	{
+		ImportGemsResponse response = new();
+
+		await foreach (Gem gem in gemEnumeration.WithCancellation(cancellationToken))
+		{
+			response.TotalGemCount++;
+
+			gem.Pot = pot;
+			Gem existingGem = await FindExistingGem(gem, cancellationToken);
+
+			if (existingGem != null)
+			{
+				if (gem != existingGem)
+				{
+					response.UpdatedGemCount++;
+
+					existingGem.Category = gem.Category;
+					existingGem.Amount = gem.Amount;
+					existingGem.Description = gem.Description;
+					existingGem.Pot = gem.Pot;
+					existingGem.Parameters.Clear();
+					existingGem.Parameters.AddRange(gem.Parameters);
+				}
+				else
+				{
+					response.SkippedGemCount++;
+				}
+			}
+			else
+			{
+				response.AddedGemCount++;
+				unitOfWork.GemRepository.Add(gem);
+			}
+		}
+
+		return response;
+	}
+
+	private async Task<Gem> FindExistingGem(Gem gem, CancellationToken cancellationToken)
+	{
+		if (gem.Pot == null)
+			return null;
+
+		return await unitOfWork.GemRepository.GetByExternalIdAsync(gem.Pot.Id, gem.ExternalId, cancellationToken)
+			.ConfigureAwait(false);
+	}
 }

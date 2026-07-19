@@ -1,40 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
 
-        <IsPackable>false</IsPackable>
-        <IsTestProject>true</IsTestProject>
-    </PropertyGroup>
+		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="coverlet.collector" Version="10.0.1">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="FluentAssertions" Version="8.4.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-        <PackageReference Include="Moq" Version="4.20.72" />
-        <PackageReference Include="xunit" Version="2.9.3" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="3.1.1">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="coverlet.collector" Version="10.0.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="FluentAssertions" Version="8.4.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+		<PackageReference Include="Moq" Version="4.20.72" />
+		<PackageReference Include="xunit" Version="2.9.3" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="3.1.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\CaveOfWonders.Cli.Application\CaveOfWonders.Cli.Application.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CaveOfWonders.DataTypes\CaveOfWonders.DataTypes.csproj" />
-        <ProjectReference Include="..\CaveOfWonders.Domain\CaveOfWonders.Domain.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CaveOfWonders.Infrastructure\CaveOfWonders.Infrastructure.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj" PrivateAssets="All" />
-        <ProjectReference Include="..\CaveOfWonders.Ports.InsAccess\CaveOfWonders.Ports.InsAccess.csproj" />
-        <ProjectReference Include="..\CaveOfWonders.Ports.ClockAccess\CaveOfWonders.Ports.ClockAccess.csproj" PrivateAssets="All" />
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\CaveOfWonders.Adapters.BcrAccess\CaveOfWonders.Adapters.BcrAccess.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Cli.Application\CaveOfWonders.Cli.Application.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.DataTypes\CaveOfWonders.DataTypes.csproj" />
+		<ProjectReference Include="..\CaveOfWonders.Domain\CaveOfWonders.Domain.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Infrastructure\CaveOfWonders.Infrastructure.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Ports.InsAccess\CaveOfWonders.Ports.InsAccess.csproj" />
+		<ProjectReference Include="..\CaveOfWonders.Ports.ClockAccess\CaveOfWonders.Ports.ClockAccess.csproj" PrivateAssets="All" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <Using Include="Xunit" />
-    </ItemGroup>
+	<ItemGroup>
+		<Using Include="Xunit" />
+	</ItemGroup>
 
 </Project>

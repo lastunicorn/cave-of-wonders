@@ -12,6 +12,10 @@
 		<Project Path="sources/CaveOfWonders.WebApi/CaveOfWonders.WebApi.csproj" />
 	</Folder>
 	<Folder Name="/Ports/" />
+	<Folder Name="/Ports/BcrAccess/">
+		<Project Path="sources/CaveOfWonders.Adapters.BcrAccess/CaveOfWonders.Adapters.BcrAccess.csproj" />
+		<Project Path="sources/CaveOfWonders.Ports.BcrAccess/CaveOfWonders.Ports.BcrAccess.csproj" />
+	</Folder>
 	<Folder Name="/Ports/BnrAccess/">
 		<Project Path="sources/CaveOfWonders.Adapters.BnrAccess/CaveOfWonders.Adapters.BnrAccess.csproj" />
 		<Project Path="sources/CaveOfWonders.Ports.BnrAccess/CaveOfWonders.Ports.BnrAccess.csproj" />

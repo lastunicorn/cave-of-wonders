@@ -1,4 +1,5 @@
-﻿using DustInTheWind.CaveOfWonders.Adapters.BnrAccess;
+﻿using DustInTheWind.CaveOfWonders.Adapters.BcrAccess;
+using DustInTheWind.CaveOfWonders.Adapters.BnrAccess;
 using DustInTheWind.CaveOfWonders.Adapters.ClockAccess;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite;
@@ -11,6 +12,7 @@ using DustInTheWind.CaveOfWonders.Adapters.MintosAccess;
 using DustInTheWind.CaveOfWonders.Adapters.SpreadsheetAccess;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using DustInTheWind.CaveOfWonders.Cli.Utils;
+using DustInTheWind.CaveOfWonders.Ports.BcrAccess;
 using DustInTheWind.CaveOfWonders.Ports.BnrAccess;
 using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
@@ -48,13 +50,13 @@ internal static class DependenciesSetup
 
 		// Configure Database
 		string databaseType = configuration.GetSection("DatabaseType").Value?.ToLowerInvariant();
-		
+
 		switch (databaseType)
 		{
 			case "sqlite":
 				RegisterSqLiteDatabase(serviceCollection);
 				break;
-			
+
 			case "litedb":
 				RegisterLiteDbDatabase(serviceCollection);
 				break;
@@ -66,12 +68,13 @@ internal static class DependenciesSetup
 			default:
 				throw new InvalidOperationException("Invalid database type specified in settings.");
 		}
-		
+
 		serviceCollection.AddScoped<ISystemClock, SystemClock>();
 		serviceCollection.AddScoped<IBnrService, BnrService>();
 		serviceCollection.AddScoped<IInsService, InsService>();
 		serviceCollection.AddScoped<IMintosService, MintosService>();
 		serviceCollection.AddScoped<IFintownService, FintownService>();
+		serviceCollection.AddScoped<IBcrService, BcrService>();
 		serviceCollection.AddScoped<ISheets, Sheets>();
 		serviceCollection.AddScoped<ILog, Log>();
 		serviceCollection.AddSingleton<IFileSystem, FileSystem>();
@@ -126,7 +129,7 @@ internal static class DependenciesSetup
 			{
 				CaveOfWondersDbContext dbContext = Measure.Action("  Resolving DbContext", () => services.GetRequiredService<CaveOfWondersDbContext>());
 				Measure.Action("  Migrate", () => dbContext.Database.Migrate());
-				
+
 				return new SQLiteUnitOfWork(dbContext);
 			});
 		});

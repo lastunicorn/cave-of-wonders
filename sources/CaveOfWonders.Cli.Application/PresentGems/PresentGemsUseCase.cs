@@ -64,7 +64,7 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
 	    }
 	    
 	    if (matchedPot == null)
-		    throw new NoPotException(potId);
+		    throw new PotNotFoundException(potId);
 
 	    return matchedPot;
     }
