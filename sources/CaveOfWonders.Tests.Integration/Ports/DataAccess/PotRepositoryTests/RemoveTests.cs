@@ -1,3 +1,4 @@
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotRepositoryTests.TestEnvironments;
@@ -38,6 +39,47 @@ public class RemoveTests
 				{
 					Id = potId
 				});
+			})
+			.Assert(async (backDoor, context) =>
+			{
+				List<Pot> pots = await backDoor.GetAllPotsAsync();
+
+				pots.Should().BeEmpty();
+			})
+			.ExecuteAsync();
+	}
+
+	[Theory]
+	[TestEnvironments<IPotRepository, ITestBackDoor>]
+	public async Task Remove_WithPotInstanceRetrievedFromRepository_ShouldDeletePot(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
+	{
+		await GenericTest.Create(environment)
+			.Arrange(async (backDoor, context) =>
+			{
+				Guid potId = Guid.NewGuid();
+
+				await backDoor.SeedPotsAsync([
+					new Pot
+					{
+						Id = potId,
+						Name = "Test Pot",
+						DisplayOrder = 1,
+						StartDate = new DateOnly(2023, 1, 1),
+						Currency = "USD"
+					}
+				]);
+
+				context.PotId = potId;
+			})
+			.Act(async (repository, context) =>
+			{
+				Guid potId = context.PotId;
+
+				List<Pot> matchingPots = await repository.GetAsync(new PotFlexId(potId))
+					.ToListAsync();
+				Pot pot = matchingPots.Single();
+
+				repository.Remove(pot);
 			})
 			.Assert(async (backDoor, context) =>
 			{

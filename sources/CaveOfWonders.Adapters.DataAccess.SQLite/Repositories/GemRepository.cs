@@ -128,12 +128,14 @@ internal class GemRepository : IGemRepository
 	{
 		ArgumentNullException.ThrowIfNull(gem);
 
-		GemEntity entity = new()
+		GemEntity entity = dbContext.Gems.Local.FirstOrDefault(x => x.Id == gem.Id);
+
+		if (entity == null)
 		{
-			Id = gem.Id
-		};
-		
-		dbContext.Gems.Attach(entity);
+			entity = new GemEntity { Id = gem.Id };
+			dbContext.Gems.Attach(entity);
+		}
+
 		dbContext.Gems.Remove(entity);
 	}
 

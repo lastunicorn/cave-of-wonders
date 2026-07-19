@@ -99,11 +99,14 @@ internal class PotRepository : IPotRepository
 	{
 		ArgumentNullException.ThrowIfNull(pot);
 
-		PotEntity entity = new()
+		PotEntity entity = dbContext.Pots.Local.FirstOrDefault(x => x.Id == pot.Id);
+
+		if (entity == null)
 		{
-			Id = pot.Id
-		};
-		dbContext.Pots.Attach(entity);
+			entity = new PotEntity { Id = pot.Id };
+			dbContext.Pots.Attach(entity);
+		}
+
 		dbContext.Pots.Remove(entity);
 	}
 

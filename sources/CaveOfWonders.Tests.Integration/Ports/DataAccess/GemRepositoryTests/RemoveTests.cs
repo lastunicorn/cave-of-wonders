@@ -64,6 +64,57 @@ public class RemoveTests
 
 	[Theory]
 	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task Remove_WithGemInstanceRetrievedFromRepository_ShouldDeleteGem(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
+	{
+		await GenericTest.Create(environment)
+			.Arrange(async (backDoor, context) =>
+			{
+				Guid potId = Guid.NewGuid();
+				Guid gemId = Guid.NewGuid();
+
+				await backDoor.SeedPotAsync(new Pot
+				{
+					Id = potId,
+					Name = "Test Pot",
+					DisplayOrder = 1,
+					StartDate = new DateOnly(2023, 1, 1),
+					Currency = "USD"
+				});
+
+				await backDoor.SeedGemsAsync([
+					new Gem
+					{
+						Id = gemId,
+						Date = new DateTime(2023, 5, 10),
+						Category = GemCategory.Deposit,
+						Amount = 150.75m,
+						Pot = new Pot { Id = potId }
+					}
+				]);
+
+				context.PotId = potId;
+			})
+			.Act(async (repository, context) =>
+			{
+				Guid potId = context.PotId;
+
+				List<Gem> gems = await repository.GetByPotIdAsync(potId)
+					.ToListAsync();
+				Gem gem = gems.Single();
+
+				repository.Remove(gem);
+			})
+			.Assert(async (backDoor, context) =>
+			{
+				List<Gem> gems = await backDoor.GetAllGemsAsync();
+
+				gems.Should().BeEmpty();
+			})
+			.ExecuteAsync();
+	}
+
+	[Theory]
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
 	public async Task Remove_WithNullGem_ShouldThrowArgumentNullException(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
