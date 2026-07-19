@@ -31,10 +31,8 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
 
     public async Task<PresentGemsResponse> Handle(PresentGemsRequest request, CancellationToken cancellationToken)
     {
-        Pot pot = await unitOfWork.PotRepository.GetAsync(request.PotId, cancellationToken)
-            .SingleAsync(cancellationToken);
-
-        IAsyncEnumerable<Gem> gems = RetrieveGems(request, cancellationToken, pot);
+        Pot pot = await RetrievePot(request.PotId, cancellationToken);
+        IAsyncEnumerable<Gem> gems = RetrieveGems(pot.Id, request, cancellationToken);
 
         return new PresentGemsResponse
         {
@@ -49,14 +47,35 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
         };
     }
 
-    private IAsyncEnumerable<Gem> RetrieveGems(PresentGemsRequest request, CancellationToken cancellationToken, Pot pot)
+    private async Task<Pot> RetrievePot(string potId, CancellationToken cancellationToken)
+    {
+	    IAsyncEnumerable<Pot> pots = unitOfWork.PotRepository.GetAsync(potId, cancellationToken);
+
+	    Pot matchedPot = null;
+	    
+	    await foreach(Pot pot in pots)
+	    {
+		    if(matchedPot != null)
+			    throw new MultiplePotsException(potId);
+		    
+		    if (pot != null)
+			    matchedPot = pot;
+	    }
+	    
+	    if (matchedPot == null)
+		    throw new NoPotException(potId);
+
+	    return matchedPot;
+    }
+
+    private IAsyncEnumerable<Gem> RetrieveGems(Guid potId, PresentGemsRequest request, CancellationToken cancellationToken)
     {
         if (request.Date.HasValue)
-            return unitOfWork.GemRepository.FindByDateAsync(pot.Id, request.Date.Value, cancellationToken);
+            return unitOfWork.GemRepository.FindByDateAsync(potId, request.Date.Value, cancellationToken);
 
         if (request.Month.HasValue)
-            return unitOfWork.GemRepository.FindByMonthAsync(pot.Id, request.Month, cancellationToken);
+            return unitOfWork.GemRepository.FindByMonthAsync(potId, request.Month, cancellationToken);
 
-        return unitOfWork.GemRepository.GetByPotIdAsync(pot.Id, cancellationToken);
+        return unitOfWork.GemRepository.GetByPotIdAsync(potId, cancellationToken);
     }
 }
