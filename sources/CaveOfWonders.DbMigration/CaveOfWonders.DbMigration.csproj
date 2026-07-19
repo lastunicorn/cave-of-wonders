@@ -2,17 +2,11 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AssemblyName>DustInTheWind.$(MSBuildProjectName)</AssemblyName>
 		<RootNamespace>DustInTheWind.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.0" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\CaveOfWonders.DataTypes\CaveOfWonders.DataTypes.csproj" />
@@ -22,12 +16,6 @@
 		<ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess\CaveOfWonders.Adapters.DataAccess.Json.csproj" />
 		<ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess.SQLite\CaveOfWonders.Adapters.DataAccess.SQLite.csproj" />
 		<ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess.LiteDb\CaveOfWonders.Adapters.DataAccess.LiteDb.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Update="appsettings.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
 	</ItemGroup>
 
 </Project>

@@ -1,6 +1,5 @@
 using DustInTheWind.CaveOfWonders.DbMigration;
 using DustInTheWind.CaveOfWonders.DbMigration.DatabaseEndpoints;
-using Microsoft.Extensions.Configuration;
 
 MigrationOptions options;
 
@@ -21,13 +20,8 @@ if (options.ShowHelp)
     return 0;
 }
 
-IConfiguration configuration = new ConfigurationBuilder()
-    .SetBasePath(AppContext.BaseDirectory)
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-    .Build();
-
-DatabaseConfig sourceConfig = DatabaseConfig.Read(configuration.GetSection("Source"));
-DatabaseConfig destinationConfig = DatabaseConfig.Read(configuration.GetSection("Destination"));
+DatabaseConfig sourceConfig = DatabaseConfig.FromArguments(options.SourceType, options.Source);
+DatabaseConfig destinationConfig = DatabaseConfig.FromArguments(options.DestinationType, options.Destination);
 
 bool sameDatabase = string.Equals(sourceConfig.DatabaseType, destinationConfig.DatabaseType, StringComparison.OrdinalIgnoreCase)
     && string.Equals(sourceConfig.ConnectionString, destinationConfig.ConnectionString, StringComparison.OrdinalIgnoreCase);

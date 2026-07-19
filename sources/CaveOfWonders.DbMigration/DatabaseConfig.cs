@@ -1,19 +1,11 @@
-using Microsoft.Extensions.Configuration;
-
 namespace DustInTheWind.CaveOfWonders.DbMigration;
 
 internal readonly record struct DatabaseConfig(string DatabaseType, string ConnectionString)
 {
-    public static DatabaseConfig Read(IConfigurationSection section)
+    public static DatabaseConfig FromArguments(string databaseType, string connectionString)
     {
-        string databaseType = section.GetValue<string>("DatabaseType")
-            ?? throw new InvalidOperationException($"Missing 'DatabaseType' in configuration section '{section.Path}'.");
+        string resolvedConnectionString = new CaveOfWondersConnectionString(connectionString);
 
-        string rawConnectionString = section.GetSection("ConnectionStrings").GetValue<string>(databaseType)
-            ?? throw new InvalidOperationException($"Missing connection string for database type '{databaseType}' in configuration section '{section.Path}:ConnectionStrings'.");
-
-        string connectionString = new CaveOfWondersConnectionString(rawConnectionString);
-
-        return new DatabaseConfig(databaseType, connectionString);
+        return new DatabaseConfig(databaseType, resolvedConnectionString);
     }
 }

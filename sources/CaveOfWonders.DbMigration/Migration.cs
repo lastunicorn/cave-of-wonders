@@ -40,7 +40,7 @@ internal sealed class Migration
         }
 
         await destination.SaveChangesAsync(cancellationToken);
-        Console.WriteLine($"Migrated {count} pot(s).");
+        Console.WriteLine($"Migrated {count} pot{(count == 1 ? "" : "s")}.");
     }
 
     private async Task MigrateExchangeRatesAsync(CancellationToken cancellationToken)
@@ -56,7 +56,7 @@ internal sealed class Migration
         }
 
         await destination.SaveChangesAsync(cancellationToken);
-        Console.WriteLine($"Migrated {count} exchange rate(s).");
+        Console.WriteLine($"Migrated {count} exchange rate{(count == 1 ? "" : "s")}.");
     }
 
     private async Task MigrateCpiRecordsAsync(CancellationToken cancellationToken)
@@ -76,7 +76,7 @@ internal sealed class Migration
         }
 
         await destination.SaveChangesAsync(cancellationToken);
-        Console.WriteLine($"Migrated {count} CPI record(s).");
+        Console.WriteLine($"Migrated {count} CPI record{(count == 1 ? "" : "s")}.");
     }
 
     private async Task MigrateAverageWagesAsync(CancellationToken cancellationToken)
@@ -96,7 +96,7 @@ internal sealed class Migration
         }
 
         await destination.SaveChangesAsync(cancellationToken);
-        Console.WriteLine($"Migrated {count} average wage record(s).");
+        Console.WriteLine($"Migrated {count} average wage record{(count == 1 ? "" : "s")}.");
     }
 
     private async Task MigrateGemsAsync(CancellationToken cancellationToken)
@@ -116,6 +116,6 @@ internal sealed class Migration
         }
 
         await destination.SaveChangesAsync(cancellationToken);
-        Console.WriteLine($"Migrated {count} gem(s).");
+        Console.WriteLine($"Migrated {count} gem{(count == 1 ? "" : "s")}.");
     }
 }
