@@ -4,6 +4,9 @@
 		<Project Path="sources/CaveOfWonders.Cli.Presentation/CaveOfWonders.Cli.Presentation.csproj" />
 		<Project Path="sources/CaveOfWonders.Cli/CaveOfWonders.Cli.csproj" />
 	</Folder>
+	<Folder Name="/App.DbMigration/">
+		<Project Path="sources/CaveOfWonders.DbMigration/CaveOfWonders.DbMigration.csproj" />
+	</Folder>
 	<Folder Name="/App.WebApi/">
 		<Project Path="sources/CaveOfWonders.WebApi.Presentation/CaveOfWonders.WebApi.Presentation.csproj" />
 		<Project Path="sources/CaveOfWonders.WebApi/CaveOfWonders.WebApi.csproj" />
