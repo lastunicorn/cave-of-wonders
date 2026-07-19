@@ -1,6 +1,6 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.CalculateGain;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WealthArea.Gain;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Gain;
 
 internal class GainViewModel
 {

@@ -2,7 +2,7 @@
 using DustInTheWind.ConsoleTools.Controls;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WealthArea.Wealth;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Wealth;
 
 internal class PotsDataGrid
 {

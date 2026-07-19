@@ -2,7 +2,7 @@
 using DustInTheWind.ConsoleTools.Commando;
 using System.Globalization;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WealthArea.Wealth;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Wealth;
 
 internal class WealthView : IView<WealthViewModel>
 {

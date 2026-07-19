@@ -1,6 +1,6 @@
 ﻿using DustInTheWind.CaveOfWonders.Cli.Application;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WealthArea.Wealth;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Wealth;
 
 internal class PotSnapshotViewModel
 {

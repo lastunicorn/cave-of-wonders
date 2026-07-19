@@ -3,7 +3,7 @@ using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.ConsoleTools.Controls;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WealthArea.Gain;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Gain;
 
 internal class GainView : IView<GainViewModel>
 {
@@ -11,7 +11,7 @@ internal class GainView : IView<GainViewModel>
 	{
 		DataGrid dataGrid = new()
 		{
-			Footer = $"Gain: {viewModel.TotalGain}"
+			Footer = $"Gain: {viewModel.TotalGain} EUR"
 		};
 
 		dataGrid.Columns.Add("Pot");

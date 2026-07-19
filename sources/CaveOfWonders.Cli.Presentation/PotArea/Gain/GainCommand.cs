@@ -2,7 +2,7 @@ using DustInTheWind.CaveOfWonders.Cli.Application.CalculateGain;
 using DustInTheWind.ConsoleTools.Commando;
 using MediatR;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WealthArea.Gain;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Gain;
 
 [NamedCommand("gain", Description = "Display the gain obtained in a given period.")]
 internal class GainCommand : IConsoleCommand<GainViewModel>

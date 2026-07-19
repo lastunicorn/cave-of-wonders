@@ -3,7 +3,7 @@ using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
 using System.Globalization;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WealthArea.Wealth;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Wealth;
 
 internal class WealthViewModel
 {

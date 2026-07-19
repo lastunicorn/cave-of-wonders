@@ -7,20 +7,20 @@ namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Gem;
 
 internal class GemCommandView : IView<GemCommandViewModel>
 {
-    public void Display(GemCommandViewModel viewModel)
-    {
-        DataGrid dataGrid = new();
+	public void Display(GemCommandViewModel viewModel)
+	{
+		DataGrid dataGrid = new();
 
-        dataGrid.Columns.Add("Date");
-        dataGrid.Columns.Add("Category");
-        dataGrid.Columns.Add("Amount", HorizontalAlignment.Right);
+		dataGrid.Columns.Add("Date");
+		dataGrid.Columns.Add("Category");
+		dataGrid.Columns.Add("Amount", HorizontalAlignment.Right);
 
-        foreach (GemDto gemDto in viewModel.Gems)
-            dataGrid.Rows.Add(gemDto.Date, gemDto.Category, gemDto.Amount);
+		foreach (GemDto gemDto in viewModel.Gems)
+			dataGrid.Rows.Add(gemDto.Date, gemDto.Category, gemDto.Amount);
 
-        decimal totalAmount = viewModel.CalculateTotal();
-        dataGrid.Footer = $"Total amount: {totalAmount}";
+		decimal totalAmount = viewModel.CalculateTotal();
+		dataGrid.Footer = $"Total amount: {totalAmount}";
 
-        dataGrid.Display();
-    }
+		dataGrid.Display();
+	}
 }

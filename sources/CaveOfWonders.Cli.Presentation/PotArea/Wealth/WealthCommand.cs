@@ -3,7 +3,7 @@ using DustInTheWind.ConsoleTools.Commando;
 using MediatR;
 using System.Globalization;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation.WealthArea.Wealth;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Wealth;
 
 [NamedCommand("wealth", Description = "Display an overview of the entire cave (the wealth).")]
 internal class WealthCommand : IConsoleCommand<WealthViewModel>

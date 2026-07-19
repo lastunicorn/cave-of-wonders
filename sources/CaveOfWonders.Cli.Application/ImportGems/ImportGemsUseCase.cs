@@ -54,7 +54,7 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 		{
 			if (foundPot != null)
 				throw new MultiplePotsException(potFlexId);
-			
+
 			foundPot = pot;
 		}
 
