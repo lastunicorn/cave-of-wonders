@@ -1,3 +1,4 @@
+using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 
@@ -17,8 +18,9 @@ internal class GemImportView : IView<GemImportViewModel>
 		dataGrid.Rows.Add("Skipped", viewModel.SkippedGemCount);
 		dataGrid.Rows.Add("Total", viewModel.TotalGemCount);
 
-		dataGrid.Footer = $"Duration: {viewModel.Duration.TotalSeconds:0.00} s";
-
 		dataGrid.Display();
+		
+		CustomConsole.WriteLine();
+		CustomConsole.WriteLine(ConsoleColor.Gray, $"Duration: {viewModel.Duration.TotalSeconds:0.00} s");
 	}
 }

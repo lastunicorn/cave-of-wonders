@@ -30,9 +30,9 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 	public async Task<ImportGemsResponse> Handle(ImportGemsRequest request, CancellationToken cancellationToken)
 	{
 		Stopwatch stopwatch = Stopwatch.StartNew();
-
+		
 		Pot pot = await FindPot(request.PotFlexId, cancellationToken);
-
+		
 		IAsyncEnumerable<Gem> gemEnumeration = request.FileType switch
 		{
 			FileType.Mintos => mintosService.GetGemsAsync(request.FilePath, cancellationToken),
@@ -42,14 +42,14 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 			FileType.Unknown => throw new UnknownFileTypeException(request.FileType),
 			_ => throw new UnknownFileTypeException(request.FileType)
 		};
-
+		
 		ImportGemsResponse response = await ImportGems(gemEnumeration, pot, cancellationToken);
-
+		
 		await unitOfWork.SaveChangesAsync(cancellationToken);
-
+		
 		stopwatch.Stop();
 		response.Duration = stopwatch.Elapsed;
-
+		
 		return response;
 	}
 

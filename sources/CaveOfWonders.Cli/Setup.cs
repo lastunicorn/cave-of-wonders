@@ -13,6 +13,7 @@ using DustInTheWind.CaveOfWonders.Adapters.PeerBerryAccess;
 using DustInTheWind.CaveOfWonders.Adapters.SpreadsheetAccess;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using DustInTheWind.CaveOfWonders.Cli.Utils;
+using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.BcrAccess;
 using DustInTheWind.CaveOfWonders.Ports.BnrAccess;
 using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
@@ -128,13 +129,25 @@ internal static class DependenciesSetup
 
 		serviceCollection.AddScoped<IUnitOfWork>(services =>
 		{
-			return Measure.Action("Creating UnitOfWork", () =>
-			{
-				CaveOfWondersDbContext dbContext = Measure.Action("  Resolving DbContext", () => services.GetRequiredService<CaveOfWondersDbContext>());
-				Measure.Action("  Migrate", () => dbContext.Database.Migrate());
+			return Measure
+				.Action("Creating UnitOfWork", () =>
+				{
+					CaveOfWondersDbContext dbContext = Measure
+						.Action("  Resolving DbContext", () =>
+						{
+							return services.GetRequiredService<CaveOfWondersDbContext>();
+						})
+						.DisplayToConsole()
+						.Response();
+					
+					Measure
+						.Action("  Migrate", () => dbContext.Database.Migrate())
+						.DisplayToConsole();
 
-				return new SQLiteUnitOfWork(dbContext);
-			});
+					return new SQLiteUnitOfWork(dbContext);
+				})
+				.DisplayToConsole()
+				.Response();
 		});
 	}
 
@@ -142,13 +155,16 @@ internal static class DependenciesSetup
 	{
 		serviceCollection.AddScoped(services =>
 		{
-			return Measure.Action("Creating UnitOfWork", () =>
-			{
-				IConfiguration configuration = services.GetRequiredService<IConfiguration>();
-				string connectionString = new CaveOfWondersConnectionString(configuration.GetConnectionString("LiteDb"));
+			return Measure
+				.Action("Creating UnitOfWork", () =>
+				{
+					IConfiguration configuration = services.GetRequiredService<IConfiguration>();
+					string connectionString = new CaveOfWondersConnectionString(configuration.GetConnectionString("LiteDb"));
 
-				return new DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.DbContext(connectionString);
-			});
+					return new DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.DbContext(connectionString);
+				})
+				.DisplayToConsole()
+				.Response();
 		});
 
 		serviceCollection.AddScoped<IUnitOfWork, LiteDbUnitOfWork>();
@@ -158,13 +174,16 @@ internal static class DependenciesSetup
 	{
 		serviceCollection.AddScoped(services =>
 		{
-			return Measure.Action("Creating UnitOfWork", () =>
-			{
-				IConfiguration configuration = services.GetRequiredService<IConfiguration>();
-				string connectionString = new CaveOfWondersConnectionString(configuration.GetConnectionString("Json"));
+			return Measure
+				.Action("Creating UnitOfWork", () =>
+				{
+					IConfiguration configuration = services.GetRequiredService<IConfiguration>();
+					string connectionString = new CaveOfWondersConnectionString(configuration.GetConnectionString("Json"));
 
-				return new Database(connectionString);
-			});
+					return new Database(connectionString);
+				})
+				.DisplayToConsole()
+				.Response();
 		});
 
 		serviceCollection.AddScoped<IUnitOfWork, JsonUnitOfWork>();
