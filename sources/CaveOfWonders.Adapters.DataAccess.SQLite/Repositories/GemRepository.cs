@@ -64,6 +64,9 @@ internal class GemRepository : IGemRepository
 		if (filter.IncludeCategories?.Count > 0)
 			query = query.Where(x => filter.IncludeCategories.Contains(x.Category));
 
+		if (filter.ExcludeCategories?.Count > 0)
+			query = query.Where(x => !filter.ExcludeCategories.Contains(x.Category));
+
 		if (filter.ExternalId != null)
 			query = query.Where(x => x.ExternalId == filter.ExternalId);
 

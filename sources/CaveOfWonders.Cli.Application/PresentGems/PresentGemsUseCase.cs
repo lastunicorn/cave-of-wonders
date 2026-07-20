@@ -92,19 +92,7 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
 			filter.Month = request.Month;
 
 		if (request.ExcludeInternal)
-		{
-			filter.IncludeCategories =
-			[
-				GemCategory.Unknown,
-				GemCategory.Deposit,
-				GemCategory.Withdrawal,
-				GemCategory.Gain,
-				GemCategory.Fee,
-				GemCategory.Tax,
-				GemCategory.Bonus
-			];
-		}
-		;
+			filter.ExcludeCategories = [GemCategory.Internal];
 
 		return unitOfWork.GemRepository.FindAsync(filter, cancellationToken);
 	}

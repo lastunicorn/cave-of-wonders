@@ -12,8 +12,8 @@ public class GemFilter
 	public MonthDate? Month { get; set; }
 
 	public List<GemCategory> IncludeCategories { get; set; }
-	
-	//public List<GemCategory> ExcludeCategories { get; set; }
+
+	public List<GemCategory> ExcludeCategories { get; set; }
 
 	public string ExternalId { get; set; }
 }

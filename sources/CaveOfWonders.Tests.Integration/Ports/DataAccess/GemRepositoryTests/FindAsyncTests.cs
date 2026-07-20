@@ -400,6 +400,155 @@ public class FindAsyncTests
 
 	[Theory]
 	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task FindAsync_WithExcludeCategoriesFilter_ShouldReturnOnlyGemsNotMatchingExcludedCategories(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
+	{
+		await GenericTest.Create(environment)
+			.Arrange(async (backDoor, context) =>
+			{
+				Guid potId = Guid.NewGuid();
+
+				await backDoor.SeedPotAsync(new Pot
+				{
+					Id = potId,
+					Name = "Test Pot",
+					DisplayOrder = 1,
+					StartDate = new DateOnly(2023, 1, 1),
+					Currency = "USD"
+				});
+
+				await backDoor.SeedGemsAsync(
+				[
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 10),
+						Category = GemCategory.Deposit,
+						Amount = 100m,
+						Pot = new Pot
+						{
+							Id = potId
+						}
+					},
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 11),
+						Category = GemCategory.Withdrawal,
+						Amount = 50m,
+						Pot = new Pot
+						{
+							Id = potId
+						}
+					},
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 12),
+						Category = GemCategory.Bonus,
+						Amount = 25m,
+						Pot = new Pot
+						{
+							Id = potId
+						}
+					}
+				]);
+			})
+			.Act(async (repository, context) =>
+			{
+				GemFilter filter = new()
+				{
+					ExcludeCategories = [GemCategory.Withdrawal]
+				};
+				context.Gems = await repository.FindAsync(filter)
+					.ToListAsync();
+			})
+			.Assert((backDoor, context) =>
+			{
+				List<Gem> gems = context.Gems as List<Gem>;
+
+				gems.Should().HaveCount(2);
+				gems.Should().OnlyContain(x => x.Category == GemCategory.Deposit || x.Category == GemCategory.Bonus);
+			})
+			.ExecuteAsync();
+	}
+
+	[Theory]
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task FindAsync_WithCombinedIncludeAndExcludeCategoriesFilters_ShouldReturnGemsMatchingIncludeAndNotExcluded(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
+	{
+		await GenericTest.Create(environment)
+			.Arrange(async (backDoor, context) =>
+			{
+				Guid potId = Guid.NewGuid();
+
+				await backDoor.SeedPotAsync(new Pot
+				{
+					Id = potId,
+					Name = "Test Pot",
+					DisplayOrder = 1,
+					StartDate = new DateOnly(2023, 1, 1),
+					Currency = "USD"
+				});
+
+				await backDoor.SeedGemsAsync(
+				[
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 10),
+						Category = GemCategory.Deposit,
+						Amount = 100m,
+						Pot = new Pot
+						{
+							Id = potId
+						}
+					},
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 11),
+						Category = GemCategory.Withdrawal,
+						Amount = 50m,
+						Pot = new Pot
+						{
+							Id = potId
+						}
+					},
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 12),
+						Category = GemCategory.Bonus,
+						Amount = 25m,
+						Pot = new Pot
+						{
+							Id = potId
+						}
+					}
+				]);
+			})
+			.Act(async (repository, context) =>
+			{
+				GemFilter filter = new()
+				{
+					IncludeCategories = [GemCategory.Deposit, GemCategory.Withdrawal, GemCategory.Bonus],
+					ExcludeCategories = [GemCategory.Withdrawal]
+				};
+				context.Gems = await repository.FindAsync(filter)
+					.ToListAsync();
+			})
+			.Assert((backDoor, context) =>
+			{
+				List<Gem> gems = context.Gems as List<Gem>;
+
+				gems.Should().HaveCount(2);
+				gems.Should().OnlyContain(x => x.Category == GemCategory.Deposit || x.Category == GemCategory.Bonus);
+			})
+			.ExecuteAsync();
+	}
+
+	[Theory]
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
 	public async Task FindAsync_WithExternalIdFilter_ShouldReturnOnlyGemWithMatchingExternalId(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
