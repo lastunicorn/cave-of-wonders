@@ -30,20 +30,30 @@ public class PeerBerryService : IPeerBerryService
 			Category = CalculateCategory(transactionRecord.Type),
 			Parameters =
 			{
+				new GemParameter
 				{
-					nameof(transactionRecord.Type), transactionRecord.Type?.ToString()
+					Key = nameof(transactionRecord.Type),
+					Value = transactionRecord.Type?.ToString()
 				},
+				new GemParameter
 				{
-					nameof(transactionRecord.Currency), transactionRecord.Currency?.ToString()
+					Key = nameof(transactionRecord.Currency),
+					Value = transactionRecord.Currency?.ToString()
 				},
+				new GemParameter
 				{
-					nameof(transactionRecord.LoanId), transactionRecord.LoanId
+					Key = nameof(transactionRecord.LoanId),
+					Value = transactionRecord.LoanId
 				},
+				new GemParameter
 				{
-					nameof(transactionRecord.Country), transactionRecord.Country
+					Key = nameof(transactionRecord.Country),
+					Value = transactionRecord.Country
 				},
+				new GemParameter
 				{
-					nameof(transactionRecord.LoanStatus), transactionRecord.LoanStatus?.ToString()
+					Key = nameof(transactionRecord.LoanStatus),
+					Value = transactionRecord.LoanStatus?.ToString()
 				}
 			}
 		};

@@ -321,8 +321,16 @@ public class AddTests
 						Id = potId
 					}
 				};
-				gem.Parameters["source"] = "mintos";
-				gem.Parameters["note"] = "monthly transfer";
+				gem.Parameters.Add(new GemParameter
+				{
+					Key = "source",
+					Value = "mintos"
+				});
+				gem.Parameters.Add(new GemParameter
+				{
+					Key = "note",
+					Value = "monthly transfer"
+				});
 
 				repository.Add(gem);
 			})
@@ -333,8 +341,8 @@ public class AddTests
 				gems.Should().HaveCount(1);
 				Gem gem = gems.First();
 				gem.Parameters.Should().HaveCount(2);
-				gem.Parameters.Should().Contain("source", "mintos");
-				gem.Parameters.Should().Contain("note", "monthly transfer");
+				gem.Parameters.Should().Contain(x => x.Key == "source" && x.Value == "mintos");
+				gem.Parameters.Should().Contain(x => x.Key == "note" && x.Value == "monthly transfer");
 			})
 			.ExecuteAsync();
 	}

@@ -34,17 +34,25 @@ public class MintosService : IMintosService
 			Category = CalculateCategory(transactionRecord.PaymentType),
 			Parameters =
 			{
+				new GemParameter
 				{
-					nameof(transactionRecord.Details), transactionRecord.Details
+					Key = nameof(transactionRecord.Details),
+					Value = transactionRecord.Details
 				},
+				new GemParameter
 				{
-					nameof(transactionRecord.Balance), transactionRecord.Balance.ToString(CultureInfo.InvariantCulture)
+					Key = nameof(transactionRecord.Balance),
+					Value = transactionRecord.Balance.ToString(CultureInfo.InvariantCulture)
 				},
+				new GemParameter
 				{
-					nameof(transactionRecord.Currency), transactionRecord.Currency?.ToString()
+					Key = nameof(transactionRecord.Currency),
+					Value = transactionRecord.Currency?.ToString()
 				},
+				new GemParameter
 				{
-					nameof(transactionRecord.PaymentType), transactionRecord.PaymentType.ToString()
+					Key = nameof(transactionRecord.PaymentType),
+					Value = transactionRecord.PaymentType.ToString()
 				}
 			}
 		};

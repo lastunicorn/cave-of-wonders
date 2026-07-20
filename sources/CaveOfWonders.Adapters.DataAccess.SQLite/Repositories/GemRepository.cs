@@ -168,7 +168,13 @@ internal class GemRepository : IGemRepository
 		if (entity.Parameters != null)
 		{
 			foreach (GemParameterEntity param in entity.Parameters)
-				gem.Parameters[param.Key] = param.Value;
+				gem.Parameters.Add(new GemParameter
+				{
+					Id = param.Id,
+					GemId = param.GemId,
+					Key = param.Key,
+					Value = param.Value
+				});
 		}
 
 		return gem;

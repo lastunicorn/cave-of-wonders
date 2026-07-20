@@ -16,7 +16,7 @@ internal static class GemExtensions
             Category = gem.Category.ToString()
         };
 
-        foreach (KeyValuePair<string, string> gemParameter in gem.Parameters)
+        foreach (GemParameter gemParameter in gem.Parameters)
             jGem.Parameters.Add(gemParameter.Key, gemParameter.Value);
 
         return jGem;

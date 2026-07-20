@@ -33,29 +33,37 @@ public class BcrService : IBcrService
 			Category = CalculateCategory(bankTransaction),
 			Parameters =
 			{
+				new GemParameter
 				{
-					nameof(bankTransaction.Details), bankTransaction.Details
+					Key = nameof(bankTransaction.Details), Value = bankTransaction.Details
 				},
+				new GemParameter
 				{
-					nameof(bankTransaction.OpeningBalance), bankTransaction.OpeningBalance.ToString(CultureInfo.InvariantCulture)
+					Key = nameof(bankTransaction.OpeningBalance), Value = bankTransaction.OpeningBalance.ToString(CultureInfo.InvariantCulture)
 				},
+				new GemParameter
 				{
-					nameof(bankTransaction.DebitTotal), bankTransaction.DebitTotal.ToString(CultureInfo.InvariantCulture)
+					Key = nameof(bankTransaction.DebitTotal), Value = bankTransaction.DebitTotal.ToString(CultureInfo.InvariantCulture)
 				},
+				new GemParameter
 				{
-					nameof(bankTransaction.CreditTotal), bankTransaction.CreditTotal.ToString(CultureInfo.InvariantCulture)
+					Key = nameof(bankTransaction.CreditTotal), Value = bankTransaction.CreditTotal.ToString(CultureInfo.InvariantCulture)
 				},
+				new GemParameter
 				{
-					nameof(bankTransaction.FinalBalance), bankTransaction.FinalBalance.ToString(CultureInfo.InvariantCulture)
+					Key = nameof(bankTransaction.FinalBalance), Value = bankTransaction.FinalBalance.ToString(CultureInfo.InvariantCulture)
 				},
+				new GemParameter
 				{
-					nameof(bankTransaction.BlockedAmounts), bankTransaction.BlockedAmounts.ToString(CultureInfo.InvariantCulture)
+					Key = nameof(bankTransaction.BlockedAmounts), Value = bankTransaction.BlockedAmounts.ToString(CultureInfo.InvariantCulture)
 				},
+				new GemParameter
 				{
-					nameof(bankTransaction.AvailableBalance), bankTransaction.AvailableBalance.ToString(CultureInfo.InvariantCulture)
+					Key = nameof(bankTransaction.AvailableBalance), Value = bankTransaction.AvailableBalance.ToString(CultureInfo.InvariantCulture)
 				},
+				new GemParameter
 				{
-					nameof(bankTransaction.CreditAvailableLimit), bankTransaction.CreditAvailableLimit.ToString(CultureInfo.InvariantCulture)
+					Key = nameof(bankTransaction.CreditAvailableLimit), Value = bankTransaction.CreditAvailableLimit.ToString(CultureInfo.InvariantCulture)
 				}
 			}
 		};

@@ -88,7 +88,10 @@ public class RemoveTests
 						Date = new DateTime(2023, 5, 10),
 						Category = GemCategory.Deposit,
 						Amount = 150.75m,
-						Pot = new Pot { Id = potId }
+						Pot = new Pot
+						{
+							Id = potId
+						}
 					}
 				]);
 
@@ -402,7 +405,11 @@ public class RemoveTests
 						Id = potId
 					}
 				};
-				gemToKeep.Parameters["source"] = "mintos";
+				gemToKeep.Parameters.Add(new GemParameter
+				{
+					Key = "source",
+					Value = "mintos"
+				});
 
 				await backDoor.SeedGemsAsync([
 					new Gem
@@ -441,7 +448,7 @@ public class RemoveTests
 				Gem remainingGem = gems.Single();
 				remainingGem.Id.Should().Be(gemId2);
 				remainingGem.Parameters.Should().ContainSingle();
-				remainingGem.Parameters.Should().Contain("source", "mintos");
+				remainingGem.Parameters.Should().Contain(x => x.Key == "source" && x.Value == "mintos");
 			})
 			.ExecuteAsync();
 	}

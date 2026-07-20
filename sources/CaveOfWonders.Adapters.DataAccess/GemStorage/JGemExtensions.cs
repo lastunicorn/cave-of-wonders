@@ -20,7 +20,11 @@ internal static class JGemExtensions
             gem.Category = category;
 
         foreach (KeyValuePair<string, string> jGemParameter in jGem.Parameters)
-            gem.Parameters.Add(jGemParameter.Key, jGemParameter.Value);
+            gem.Parameters.Add(new GemParameter
+            {
+                Key = jGemParameter.Key,
+                Value = jGemParameter.Value
+            });
                 
         return gem;
     }

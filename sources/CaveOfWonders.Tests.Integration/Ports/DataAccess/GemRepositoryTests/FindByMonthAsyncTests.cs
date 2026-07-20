@@ -54,7 +54,10 @@ public class FindByMonthAsyncTests
 					Category = GemCategory.Deposit,
 					Amount = 150.75m,
 					Description = "Initial deposit",
-					Pot = new Pot { Id = potId }
+					Pot = new Pot
+					{
+						Id = potId
+					}
 				};
 				await backDoor.SeedGemsAsync([gem]);
 
@@ -111,7 +114,10 @@ public class FindByMonthAsyncTests
 						Date = new DateTime(2023, 1, 5),
 						Category = GemCategory.Deposit,
 						Amount = 100m,
-						Pot = new Pot { Id = potId }
+						Pot = new Pot
+						{
+							Id = potId
+						}
 					},
 					new Gem
 					{
@@ -119,7 +125,10 @@ public class FindByMonthAsyncTests
 						Date = new DateTime(2023, 1, 15),
 						Category = GemCategory.Withdrawal,
 						Amount = 50m,
-						Pot = new Pot { Id = potId }
+						Pot = new Pot
+						{
+							Id = potId
+						}
 					},
 					new Gem
 					{
@@ -127,7 +136,10 @@ public class FindByMonthAsyncTests
 						Date = new DateTime(2023, 1, 25),
 						Category = GemCategory.Gain,
 						Amount = 25m,
-						Pot = new Pot { Id = potId }
+						Pot = new Pot
+						{
+							Id = potId
+						}
 					}
 				]);
 
@@ -177,7 +189,10 @@ public class FindByMonthAsyncTests
 						Date = new DateTime(2022, 12, 31),
 						Category = GemCategory.Deposit,
 						Amount = 100m,
-						Pot = new Pot { Id = potId }
+						Pot = new Pot
+						{
+							Id = potId
+						}
 					},
 					new Gem
 					{
@@ -185,7 +200,10 @@ public class FindByMonthAsyncTests
 						Date = new DateTime(2023, 1, 15),
 						Category = GemCategory.Deposit,
 						Amount = 200m,
-						Pot = new Pot { Id = potId }
+						Pot = new Pot
+						{
+							Id = potId
+						}
 					},
 					new Gem
 					{
@@ -193,7 +211,10 @@ public class FindByMonthAsyncTests
 						Date = new DateTime(2023, 2, 1),
 						Category = GemCategory.Withdrawal,
 						Amount = 30m,
-						Pot = new Pot { Id = potId }
+						Pot = new Pot
+						{
+							Id = potId
+						}
 					}
 				]);
 
@@ -241,7 +262,10 @@ public class FindByMonthAsyncTests
 						Date = new DateTime(2022, 3, 10),
 						Category = GemCategory.Deposit,
 						Amount = 100m,
-						Pot = new Pot { Id = potId }
+						Pot = new Pot
+						{
+							Id = potId
+						}
 					},
 					new Gem
 					{
@@ -249,7 +273,10 @@ public class FindByMonthAsyncTests
 						Date = new DateTime(2023, 3, 10),
 						Category = GemCategory.Deposit,
 						Amount = 200m,
-						Pot = new Pot { Id = potId }
+						Pot = new Pot
+						{
+							Id = potId
+						}
 					}
 				]);
 
@@ -307,7 +334,10 @@ public class FindByMonthAsyncTests
 						Date = new DateTime(2023, 1, 10),
 						Category = GemCategory.Deposit,
 						Amount = 100m,
-						Pot = new Pot { Id = potId1 }
+						Pot = new Pot
+						{
+							Id = potId1
+						}
 					},
 					new Gem
 					{
@@ -315,7 +345,10 @@ public class FindByMonthAsyncTests
 						Date = new DateTime(2023, 1, 20),
 						Category = GemCategory.Withdrawal,
 						Amount = 30m,
-						Pot = new Pot { Id = potId2 }
+						Pot = new Pot
+						{
+							Id = potId2
+						}
 					}
 				]);
 
@@ -363,7 +396,10 @@ public class FindByMonthAsyncTests
 						Date = new DateTime(2023, 1, 10),
 						Category = GemCategory.Deposit,
 						Amount = 100m,
-						Pot = new Pot { Id = potId }
+						Pot = new Pot
+						{
+							Id = potId
+						}
 					}
 				]);
 			})
@@ -406,7 +442,10 @@ public class FindByMonthAsyncTests
 						Date = new DateTime(2023, 1, 10),
 						Category = GemCategory.Deposit,
 						Amount = 100m,
-						Pot = new Pot { Id = potId }
+						Pot = new Pot
+						{
+							Id = potId
+						}
 					}
 				]);
 
@@ -452,7 +491,10 @@ public class FindByMonthAsyncTests
 						Date = new DateTime(2023, 1, 10),
 						Category = GemCategory.Deposit,
 						Amount = 100m,
-						Pot = new Pot { Id = potId }
+						Pot = new Pot
+						{
+							Id = potId
+						}
 					}
 				]);
 
@@ -502,10 +544,21 @@ public class FindByMonthAsyncTests
 					Date = new DateTime(2023, 1, 10),
 					Category = GemCategory.Deposit,
 					Amount = 100m,
-					Pot = new Pot { Id = potId }
+					Pot = new Pot
+					{
+						Id = potId
+					}
 				};
-				gem.Parameters["source"] = "mintos";
-				gem.Parameters["note"] = "monthly transfer";
+				gem.Parameters.Add(new GemParameter
+				{
+					Key = "source",
+					Value = "mintos"
+				});
+				gem.Parameters.Add(new GemParameter
+				{
+					Key = "note",
+					Value = "monthly transfer"
+				});
 
 				await backDoor.SeedGemsAsync([gem]);
 
@@ -524,8 +577,8 @@ public class FindByMonthAsyncTests
 				gems.Should().HaveCount(1);
 				Gem gem = gems.First();
 				gem.Parameters.Should().HaveCount(2);
-				gem.Parameters.Should().Contain("source", "mintos");
-				gem.Parameters.Should().Contain("note", "monthly transfer");
+				gem.Parameters.Should().Contain(x => x.Key == "source" && x.Value == "mintos");
+				gem.Parameters.Should().Contain(x => x.Key == "note" && x.Value == "monthly transfer");
 			})
 			.ExecuteAsync();
 	}
@@ -556,7 +609,10 @@ public class FindByMonthAsyncTests
 						Date = new DateTime(2023, 1, 10),
 						Category = GemCategory.Deposit,
 						Amount = 123.456789m,
-						Pot = new Pot { Id = potId }
+						Pot = new Pot
+						{
+							Id = potId
+						}
 					}
 				]);
 

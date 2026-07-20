@@ -54,7 +54,10 @@ public class GetByPotIdAsyncTests
 					Category = GemCategory.Deposit,
 					Amount = 150.75m,
 					Description = "Initial deposit",
-					Pot = new Pot { Id = potId }
+					Pot = new Pot
+					{
+						Id = potId
+					}
 				};
 				await backDoor.SeedGemsAsync([gem]);
 
@@ -110,7 +113,10 @@ public class GetByPotIdAsyncTests
 					Date = new DateTime(2023, 1, 10),
 					Category = GemCategory.Deposit,
 					Amount = 100m,
-					Pot = new Pot { Id = potId }
+					Pot = new Pot
+					{
+						Id = potId
+					}
 				};
 
 				Gem gem2 = new()
@@ -119,7 +125,10 @@ public class GetByPotIdAsyncTests
 					Date = new DateTime(2023, 2, 10),
 					Category = GemCategory.Withdrawal,
 					Amount = 50m,
-					Pot = new Pot { Id = potId }
+					Pot = new Pot
+					{
+						Id = potId
+					}
 				};
 
 				Gem gem3 = new()
@@ -128,7 +137,10 @@ public class GetByPotIdAsyncTests
 					Date = new DateTime(2023, 3, 10),
 					Category = GemCategory.Gain,
 					Amount = 25m,
-					Pot = new Pot { Id = potId }
+					Pot = new Pot
+					{
+						Id = potId
+					}
 				};
 
 				await backDoor.SeedGemsAsync([gem1, gem2, gem3]);
@@ -189,7 +201,10 @@ public class GetByPotIdAsyncTests
 						Date = new DateTime(2023, 1, 10),
 						Category = GemCategory.Deposit,
 						Amount = 100m,
-						Pot = new Pot { Id = potId1 }
+						Pot = new Pot
+						{
+							Id = potId1
+						}
 					},
 					new Gem
 					{
@@ -197,7 +212,10 @@ public class GetByPotIdAsyncTests
 						Date = new DateTime(2023, 2, 10),
 						Category = GemCategory.Deposit,
 						Amount = 200m,
-						Pot = new Pot { Id = potId1 }
+						Pot = new Pot
+						{
+							Id = potId1
+						}
 					},
 					new Gem
 					{
@@ -205,7 +223,10 @@ public class GetByPotIdAsyncTests
 						Date = new DateTime(2023, 3, 10),
 						Category = GemCategory.Withdrawal,
 						Amount = 30m,
-						Pot = new Pot { Id = potId2 }
+						Pot = new Pot
+						{
+							Id = potId2
+						}
 					}
 				]);
 
@@ -253,7 +274,10 @@ public class GetByPotIdAsyncTests
 						Date = new DateTime(2023, 1, 10),
 						Category = GemCategory.Deposit,
 						Amount = 100m,
-						Pot = new Pot { Id = potId }
+						Pot = new Pot
+						{
+							Id = potId
+						}
 					}
 				]);
 			})
@@ -296,7 +320,10 @@ public class GetByPotIdAsyncTests
 						Date = new DateTime(2023, 1, 10),
 						Category = GemCategory.Deposit,
 						Amount = 100m,
-						Pot = new Pot { Id = potId }
+						Pot = new Pot
+						{
+							Id = potId
+						}
 					}
 				]);
 
@@ -346,10 +373,21 @@ public class GetByPotIdAsyncTests
 					Date = new DateTime(2023, 1, 10),
 					Category = GemCategory.Deposit,
 					Amount = 100m,
-					Pot = new Pot { Id = potId }
+					Pot = new Pot
+					{
+						Id = potId
+					}
 				};
-				gem.Parameters["source"] = "mintos";
-				gem.Parameters["note"] = "monthly transfer";
+				gem.Parameters.Add(new GemParameter
+				{
+					Key = "source",
+					Value = "mintos"
+				});
+				gem.Parameters.Add(new GemParameter
+				{
+					Key = "note",
+					Value = "monthly transfer"
+				});
 
 				await backDoor.SeedGemsAsync([gem]);
 
@@ -368,8 +406,8 @@ public class GetByPotIdAsyncTests
 				gems.Should().HaveCount(1);
 				Gem gem = gems.First();
 				gem.Parameters.Should().HaveCount(2);
-				gem.Parameters.Should().Contain("source", "mintos");
-				gem.Parameters.Should().Contain("note", "monthly transfer");
+				gem.Parameters.Should().Contain(x => x.Key == "source" && x.Value == "mintos");
+				gem.Parameters.Should().Contain(x => x.Key == "note" && x.Value == "monthly transfer");
 			})
 			.ExecuteAsync();
 	}
@@ -400,7 +438,10 @@ public class GetByPotIdAsyncTests
 						Date = new DateTime(2023, 1, 10),
 						Category = GemCategory.Deposit,
 						Amount = 123.456789m,
-						Pot = new Pot { Id = potId }
+						Pot = new Pot
+						{
+							Id = potId
+						}
 					}
 				]);
 
@@ -459,7 +500,10 @@ public class GetByPotIdAsyncTests
 						Date = new DateTime(2023, 1, day++),
 						Category = category,
 						Amount = 10m,
-						Pot = new Pot { Id = potId }
+						Pot = new Pot
+						{
+							Id = potId
+						}
 					})
 					.ToList();
 
@@ -519,7 +563,10 @@ public class GetByPotIdAsyncTests
 						Date = new DateTime(2023, 1, 10),
 						Category = GemCategory.Deposit,
 						Amount = 100m,
-						Pot = new Pot { Id = potId }
+						Pot = new Pot
+						{
+							Id = potId
+						}
 					}
 				]);
 

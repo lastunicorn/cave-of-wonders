@@ -4,44 +4,49 @@ namespace DustInTheWind.CaveOfWonders.Domain;
 
 public record class Gem
 {
-    public Guid Id { get; set; }
+	public Guid Id { get; set; }
 
-    public string ExternalId { get; set; }
-    
-    public DateTime Date { get; set; }
+	public string ExternalId { get; set; }
 
-    public GemCategory Category { get; set; }
+	public DateTime Date { get; set; }
 
-    public decimal Amount { get; set; }
+	public GemCategory Category { get; set; }
 
-    public string Description { get; set; }
+	public decimal Amount { get; set; }
 
-    public Dictionary<string, string> Parameters { get; } = [];
+	public string Description { get; set; }
 
-    public Pot Pot { get; set; }
+	public GemParameterCollection Parameters { get; }
 
-    public string GetParameterValue(string parameterName)
-    {
-        return Parameters.GetValueOrDefault(parameterName);
-    }
-    
-    public bool HasParameter(string key, string value)
-    {
-        if (Parameters.TryGetValue(key, out string parameterValue))
-            return parameterValue == value;
+	public Pot Pot { get; set; }
 
-        return false;
-    }
+	public Gem()
+	{
+		Parameters = new GemParameterCollection(this);
+	}
 
-    public virtual bool Equals(Gem other)
-    {
-        if (other == null) return false;
+	public string GetParameterValue(string parameterName)
+	{
+		return Parameters
+			.FirstOrDefault(x => x.Key == parameterName)?
+			.Value;
+	}
 
-        return Date == other.Date
-            && Category == other.Category
-            && Amount == other.Amount
-            && Description == other.Description
-            && Parameters.SequenceEqual(other.Parameters)
-            && Pot?.Id == other.Pot?.Id;
-    }
+	public bool HasParameter(string key, string value)
+	{
+		return Parameters
+			.Any(x => x.Key == key && x.Value == value);
+	}
+
+	public virtual bool Equals(Gem other)
+	{
+		if (other == null) return false;
+
+		return Date == other.Date
+			&& Category == other.Category
+			&& Amount == other.Amount
+			&& Description == other.Description
+			&& Parameters.SequenceEqual(other.Parameters)
+			&& Pot?.Id == other.Pot?.Id;
+	}
 }

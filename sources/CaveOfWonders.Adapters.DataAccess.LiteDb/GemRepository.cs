@@ -93,7 +93,7 @@ public class GemRepository : IGemRepository
 			Amount = gem.Amount,
 			Description = gem.Description,
 			PotId = gem.Pot.Id,
-			Parameters = new Dictionary<string, string>(gem.Parameters)
+			Parameters = gem.Parameters.ToDictionary(x => x.Key, x => x.Value)
 		};
 
 		dbContext.Gems.Insert(entity);
@@ -137,7 +137,12 @@ public class GemRepository : IGemRepository
 		if (entity.Parameters != null)
 		{
 			foreach (KeyValuePair<string, string> param in entity.Parameters)
-				gem.Parameters[param.Key] = param.Value;
+				gem.Parameters.Add(new GemParameter
+				{
+					GemId = entity.Id,
+					Key = param.Key,
+					Value = param.Value
+				});
 		}
 
 		return gem;
