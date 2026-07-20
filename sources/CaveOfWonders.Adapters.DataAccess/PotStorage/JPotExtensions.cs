@@ -33,7 +33,11 @@ internal static class JPotExtensions
 		}
 
 		if (jPot.Labels != null)
-			pot.Labels.AddRange(jPot.Labels);
+			pot.Labels.AddRange(jPot.Labels
+				.Select(x => new PotLabel
+				{
+					Label = x
+				}));
 
 		return pot;
 	}

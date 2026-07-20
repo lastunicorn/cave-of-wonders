@@ -238,9 +238,9 @@ public class GetAllTests
 				};
 
 				potInDb.Labels.AddRange([
-					"Savings",
-					"Long-term",
-					"Important"
+					new PotLabel { Label = "Savings" },
+					new PotLabel { Label = "Long-term" },
+					new PotLabel { Label = "Important" }
 				]);
 
 				await backDoor.SeedPotsAsync([potInDb]);
@@ -257,9 +257,9 @@ public class GetAllTests
 				pots.Should().HaveCount(1);
 				Pot pot = pots.First();
 				pot.Labels.Should().HaveCount(3);
-				pot.Labels.Should().Contain("Savings");
-				pot.Labels.Should().Contain("Long-term");
-				pot.Labels.Should().Contain("Important");
+				pot.Labels.Should().Contain(x => x.Label == "Savings");
+				pot.Labels.Should().Contain(x => x.Label == "Long-term");
+				pot.Labels.Should().Contain(x => x.Label == "Important");
 			})
 			.ExecuteAsync();
 	}

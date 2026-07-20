@@ -2,31 +2,31 @@
 
 public class Pot
 {
-    public Guid Id { get; set; }
+	public Guid Id { get; set; }
 
-    public string Name { get; set; }
+	public string Name { get; set; }
 
-    public string Description { get; set; }
+	public string Description { get; set; }
 
-    public uint DisplayOrder { get; set; }
+	public uint DisplayOrder { get; set; }
 
-    public DateOnly StartDate { get; set; }
+	public DateOnly StartDate { get; set; }
 
-    public DateOnly? EndDate { get; set; }
+	public DateOnly? EndDate { get; set; }
 
-    public string Currency { get; set; }
+	public string Currency { get; set; }
 
-    public PotSnapshotCollection Snapshots { get; }
-    
-    public List<string> Labels { get; } = [];
+	public PotSnapshotCollection Snapshots { get; }
 
-    public Pot()
-    {
-	    Snapshots = new PotSnapshotCollection(this);
-    }
+	public List<PotLabel> Labels { get; } = [];
 
-    public bool IsActive(DateOnly date)
-    {
-        return date >= StartDate && (EndDate == null || date <= EndDate);
-    }
+	public Pot()
+	{
+		Snapshots = new PotSnapshotCollection(this);
+	}
+
+	public bool IsActive(DateOnly date)
+	{
+		return date >= StartDate && (EndDate == null || date <= EndDate);
+	}
 }

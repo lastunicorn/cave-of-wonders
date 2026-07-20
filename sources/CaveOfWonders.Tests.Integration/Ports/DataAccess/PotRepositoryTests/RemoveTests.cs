@@ -205,7 +205,10 @@ public class RemoveTests
 					}
 				]);
 
-				pot.Labels.AddRange(["Savings", "Long-term"]);
+				pot.Labels.AddRange([
+					new PotLabel { Label = "Savings" },
+					new PotLabel { Label = "Long-term" }
+				]);
 
 				await backDoor.SeedPotsAsync([pot]);
 
@@ -252,7 +255,7 @@ public class RemoveTests
 					Date = new DateOnly(2023, 1, 15),
 					Value = 50m
 				});
-				pot1.Labels.Add("Temporary");
+				pot1.Labels.Add(new PotLabel { Label = "Temporary" });
 
 				Pot pot2 = new()
 				{
@@ -267,7 +270,10 @@ public class RemoveTests
 					Date = new DateOnly(2023, 2, 20),
 					Value = 200m
 				});
-				pot2.Labels.AddRange(["Savings", "Important"]);
+				pot2.Labels.AddRange([
+					new PotLabel { Label = "Savings" },
+					new PotLabel { Label = "Important" }
+				]);
 
 				await backDoor.SeedPotsAsync([pot1, pot2]);
 
@@ -295,8 +301,8 @@ public class RemoveTests
 				remainingPot.Name.Should().Be("Pot To Keep");
 				remainingPot.Snapshots.Should().ContainSingle(x => x.Date == new DateOnly(2023, 2, 20) && x.Value == 200m);
 				remainingPot.Labels.Should().HaveCount(2);
-				remainingPot.Labels.Should().Contain("Savings");
-				remainingPot.Labels.Should().Contain("Important");
+				remainingPot.Labels.Should().Contain(x => x.Label == "Savings");
+				remainingPot.Labels.Should().Contain(x => x.Label == "Important");
 			})
 			.ExecuteAsync();
 	}

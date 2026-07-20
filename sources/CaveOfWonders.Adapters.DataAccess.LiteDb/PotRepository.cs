@@ -73,7 +73,9 @@ public class PotRepository : IPotRepository
 					Value = x.Value
 				})
 				.ToList(),
-			Labels = pot.Labels?.ToList() ?? []
+			Labels = pot.Labels?
+				.Select(x => x.Label)
+				.ToList() ?? []
 		};
 
 		dbContext.Pots.Insert(potDbEntity);

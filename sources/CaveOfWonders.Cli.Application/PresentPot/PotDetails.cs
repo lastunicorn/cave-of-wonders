@@ -35,7 +35,9 @@ public class PotDetails
 		EndDate = pot.EndDate;
 		Currency = pot.Currency;
 		SnapshotCount = pot.Snapshots.Count;
-		Labels = pot.Labels?.ToList() ?? [];
+		Labels = pot.Labels?
+			.Select(x => x.Label)
+			.ToList() ?? [];
 
 		PotSnapshot lastPotSnapshot = pot.Snapshots?.Count > 0
 			? pot.Snapshots[^1]

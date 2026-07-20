@@ -87,7 +87,7 @@ internal class PotRepository : IPotRepository
 			Labels = pot.Labels
 				.Select(x => new PotLabelEntity
 				{
-					Label = x
+					Label = x.Label
 				})
 				.ToList()
 		};
@@ -124,7 +124,7 @@ internal class PotRepository : IPotRepository
 		};
 
 		if (entity.Labels != null)
-			pot.Labels.AddRange(entity.Labels.Select(x => x.Label));
+			pot.Labels.AddRange(entity.Labels.Select(x => new PotLabel { Label = x.Label }));
 
 		if (entity.Snapshots != null)
 		{

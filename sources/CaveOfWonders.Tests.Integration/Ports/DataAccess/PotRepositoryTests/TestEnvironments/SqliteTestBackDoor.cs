@@ -34,7 +34,7 @@ internal class SqliteTestBackDoor : SqliteStorageBackDoorBase, ITestBackDoor
 				Labels = x.Labels
 					.Select(z => new PotLabelEntity
 					{
-						Label = z
+						Label = z.Label
 					})
 					.ToList()
 			}), cancellationToken);
