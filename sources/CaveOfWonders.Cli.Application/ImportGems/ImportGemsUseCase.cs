@@ -77,7 +77,8 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 			response.TotalGemCount++;
 
 			gem.Pot = pot;
-			Gem existingGem = await FindExistingGem(gem, cancellationToken);
+			Gem existingGem = await unitOfWork.GemRepository.GetByExternalIdAsync(pot.Id, gem.ExternalId, cancellationToken)
+				.ConfigureAwait(false);
 
 			if (existingGem != null)
 			{
@@ -105,14 +106,5 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 		}
 
 		return response;
-	}
-
-	private async Task<Gem> FindExistingGem(Gem gem, CancellationToken cancellationToken)
-	{
-		if (gem.Pot == null)
-			return null;
-
-		return await unitOfWork.GemRepository.GetByExternalIdAsync(gem.Pot.Id, gem.ExternalId, cancellationToken)
-			.ConfigureAwait(false);
 	}
 }

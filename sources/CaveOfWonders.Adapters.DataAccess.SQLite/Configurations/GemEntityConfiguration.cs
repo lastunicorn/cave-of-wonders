@@ -8,6 +8,8 @@ internal class GemEntityConfiguration : IEntityTypeConfiguration<GemEntity>
 {
 	public void Configure(EntityTypeBuilder<GemEntity> entity)
 	{
+		entity.HasIndex(x => new { x.PotId, x.ExternalId });
+
 		entity.HasKey(x => x.Id);
 
 		entity

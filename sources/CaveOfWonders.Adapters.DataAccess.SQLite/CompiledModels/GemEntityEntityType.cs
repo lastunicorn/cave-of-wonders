@@ -82,7 +82,7 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.CompiledModels
             runtimeEntityType.SetPrimaryKey(key);
 
             var index = runtimeEntityType.AddIndex(
-                new[] { potId });
+                new[] { potId, externalId });
 
             return runtimeEntityType;
         }
