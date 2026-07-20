@@ -1,7 +1,9 @@
+using DustInTheWind.CaveOfWonders.Cli.Application;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentGems;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.ConsoleTools.Controls;
 using DustInTheWind.ConsoleTools.Controls.Tables;
+using System.Globalization;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Gem;
 
@@ -16,10 +18,19 @@ internal class GemCommandView : IView<GemCommandViewModel>
 		dataGrid.Columns.Add("Amount", HorizontalAlignment.Right);
 
 		foreach (GemDto gemDto in viewModel.Gems)
-			dataGrid.Rows.Add(gemDto.Date, gemDto.Category, gemDto.Amount);
+		{
+			string date = gemDto.Date.ToString(CultureInfo.CurrentUICulture);
+			string category = gemDto.Category.ToString();
+			string amount = gemDto.Amount.ToDisplayString();
 
-		decimal totalAmount = viewModel.CalculateTotal();
-		dataGrid.Footer = $"Total amount: {totalAmount}";
+			ContentRow contentRow = dataGrid.Rows.Add(date, category, amount);
+
+			if (gemDto.Amount.Value < 0)
+				contentRow[2].ForegroundColor = ConsoleColor.DarkRed;
+		}
+
+		Amount totalAmount = viewModel.TotalAmount;
+		dataGrid.Footer = $"Total amount: {totalAmount.ToDisplayString()}";
 
 		dataGrid.Display();
 	}

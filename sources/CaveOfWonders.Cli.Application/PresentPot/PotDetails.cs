@@ -20,7 +20,7 @@ public class PotDetails
 
 	public DateOnly? LastSnapshotDate { get; }
 
-	public CurrencyValue Value { get; }
+	public DatedAmount Value { get; }
 
 	public List<string> Labels { get; }
 
@@ -46,7 +46,7 @@ public class PotDetails
 		if (lastPotSnapshot != null)
 		{
 			LastSnapshotDate = lastPotSnapshot.Date;
-			Value = new CurrencyValue
+			Value = new DatedAmount
 			{
 				Currency = pot.Currency,
 				Value = lastPotSnapshot.Value

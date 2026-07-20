@@ -8,5 +8,5 @@ public class GainResponse
 
 	public List<ExchangeRateInfo> ConversionRates { get; set; }
 
-	public CurrencyValue TotalGain { get; set; }
+	public DatedAmount TotalGain { get; set; }
 }

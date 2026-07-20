@@ -15,7 +15,7 @@ internal class WealthViewModel
 
     public List<ExchangeRateViewModel> ConversionRates { get; }
 
-    public CurrencyValue Total { get; }
+    public DatedAmount Total { get; }
 
     public List<CurrencyTotalOverview> CurrencyTotalOverviews { get; }
 

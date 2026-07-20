@@ -44,7 +44,7 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
 			ConversionRates = currenciesConverter.UsedExchangeRates
 				.Select(x => new ExchangeRateInfo(x))
 				.ToList(),
-			Total = new CurrencyValue
+			Total = new DatedAmount
 			{
 				Value = potsAnalysis.TotalValue,
 				Currency = defaultCurrency
@@ -87,11 +87,11 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
 		return potInstanceInfo;
 	}
 
-	private static CurrencyValue ComputeOriginalValue(PotSnapshot potSnapshot)
+	private static DatedAmount ComputeOriginalValue(PotSnapshot potSnapshot)
 	{
 		if (potSnapshot != null)
 		{
-			return new CurrencyValue
+			return new DatedAmount
 			{
 				Currency = potSnapshot.Pot.Currency,
 				Value = potSnapshot.Value,

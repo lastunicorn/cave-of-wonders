@@ -10,7 +10,7 @@ internal class PotsDataGrid
 
 	public List<PotSnapshotViewModel> Values { get; set; }
 
-	public CurrencyValue Total { get; set; }
+	public DatedAmount Total { get; set; }
 
 	public void Display()
 	{

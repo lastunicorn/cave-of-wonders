@@ -8,7 +8,7 @@ internal class PotSnapshotViewModel
 
 	public string Name { get; set; }
 
-	public CurrencyValue OriginalValue { get; set; }
+	public DatedAmount OriginalValue { get; set; }
 
 	public bool IsValueActual { get; set; }
 
@@ -16,7 +16,7 @@ internal class PotSnapshotViewModel
 
 	public DateOnly? Date { get; set; }
 
-	public CurrencyValue NormalizedValue { get; set; }
+	public DatedAmount NormalizedValue { get; set; }
 
 	public bool IsNormalizedCurrent { get; set; }
 

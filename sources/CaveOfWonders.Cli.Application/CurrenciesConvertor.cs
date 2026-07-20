@@ -15,7 +15,7 @@ internal class CurrenciesConvertor
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 	}
 
-	public async Task<CurrencyValue> Convert(CurrencyValue originalValue, Currency destinationCurrency, DateOnly destinationDate, CancellationToken cancellationToken = default)
+	public async Task<DatedAmount> Convert(DatedAmount originalValue, Currency destinationCurrency, DateOnly destinationDate, CancellationToken cancellationToken = default)
 	{
 		if (originalValue == null)
 			return null;
@@ -24,7 +24,7 @@ internal class CurrenciesConvertor
 		{
 			CurrencyConvertor currencyConverter = await GetConverter(originalValue.Currency, destinationCurrency, destinationDate, cancellationToken);
 
-			return new CurrencyValue
+			return new DatedAmount
 			{
 				Currency = destinationCurrency,
 				Value = currencyConverter.Convert(originalValue.Value),
@@ -34,7 +34,7 @@ internal class CurrenciesConvertor
 
 		if (originalValue.Value == 0)
 		{
-			return new CurrencyValue
+			return new DatedAmount
 			{
 				Currency = destinationCurrency,
 				Value = 0,

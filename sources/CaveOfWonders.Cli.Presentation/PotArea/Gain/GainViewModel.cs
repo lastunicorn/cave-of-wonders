@@ -10,7 +10,7 @@ internal class GainViewModel
 
 	public List<ExchangeRateViewModel> ConversionRates { get; }
 
-	public CurrencyValue TotalGain { get; }
+	public DatedAmount TotalGain { get; }
 
 	internal GainViewModel(GainResponse response)
 	{

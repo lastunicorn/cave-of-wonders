@@ -6,9 +6,9 @@ public class PotInstanceInfo
 
 	public string Name { get; set; }
 
-	public CurrencyValue Value { get; set; }
+	public DatedAmount Value { get; set; }
 
-	public CurrencyValue NormalizedValue { get; set; }
+	public DatedAmount NormalizedValue { get; set; }
 
 	public bool IsActive { get; set; }
 }

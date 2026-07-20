@@ -24,6 +24,9 @@ internal class GemCommand : IConsoleCommand<GemCommandViewModel>
 	[NamedParameter("month", IsMandatory = false, Description = "The month for which to display the gems.")]
 	public string Month { get; set; }
 
+	[NamedParameter("exclude-internal", IsMandatory = false, Description = "Exclude internal gems.")]
+	public bool ExcludeInternal { get; set; }
+
 	public GemCommand(IMediator mediator)
 	{
 		this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -35,14 +38,16 @@ internal class GemCommand : IConsoleCommand<GemCommandViewModel>
 		{
 			PotId = PotId,
 			Date = Date,
-			Month = Month
+			Month = Month,
+			ExcludeInternal = ExcludeInternal
 		};
 
 		PresentGemsResponse response = await mediator.Send(request);
 
 		return new GemCommandViewModel
 		{
-			Gems = response.Gems
+			Gems = response.Gems,
+			TotalAmount = response.TotalAmount
 		};
 	}
 }

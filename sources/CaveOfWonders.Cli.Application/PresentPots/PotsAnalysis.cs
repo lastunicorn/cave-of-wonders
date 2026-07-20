@@ -39,14 +39,14 @@ internal class PotsAnalysis
 			string currency = group.Key;
 			decimal value = group.Sum(x => x.Value?.Value ?? 0);
 
-			CurrencyValue currencyValue = new()
+			DatedAmount datedAmount = new()
 			{
 				Currency = currency,
 				Value = value,
 				Date = TargetDate
 			};
 
-			CurrencyValue normalizedValue = await CalculateNormalizedValue(currencyValue, cancellationToken);
+			DatedAmount normalizedValue = await CalculateNormalizedValue(datedAmount, cancellationToken);
 
 			// Calculate percentage
 			decimal percentage = TotalValue > 0
@@ -56,7 +56,7 @@ internal class PotsAnalysis
 			// Create and add the overview
 			CurrencyTotalOverview overview = new()
 			{
-				Value = currencyValue,
+				Value = datedAmount,
 				NormalizedValue = normalizedValue,
 				Percentage = percentage
 			};
@@ -67,10 +67,10 @@ internal class PotsAnalysis
 		return overviews;
 	}
 
-	private async Task<CurrencyValue> CalculateNormalizedValue(CurrencyValue currencyValue, CancellationToken cancellationToken)
+	private async Task<DatedAmount> CalculateNormalizedValue(DatedAmount datedAmount, CancellationToken cancellationToken)
 	{
-		return currencyValue.Currency == TargetCurrency
-			? currencyValue
-			: await currenciesConvertor.Convert(currencyValue, TargetCurrency, TargetDate, cancellationToken);
+		return datedAmount.Currency == TargetCurrency
+			? datedAmount
+			: await currenciesConvertor.Convert(datedAmount, TargetCurrency, TargetDate, cancellationToken);
 	}
 }

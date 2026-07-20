@@ -19,10 +19,18 @@ internal class GemConfiguration : IEntityTypeConfiguration<Gem>
 			.IsRequired()
 			.OnDelete(DeleteBehavior.Restrict);
 
-		entity
-			.HasMany(x => x.Parameters)
-			.WithOne(x => x.Gem)
-			.HasForeignKey(x => x.GemId)
-			.OnDelete(DeleteBehavior.Cascade);
+		entity.OwnsMany(
+			x => x.Parameters,
+			parameter =>
+			{
+				parameter.ToTable("GemParameters");
+				parameter.WithOwner().HasForeignKey("GemId");
+
+				// Same reasoning as PotLabel: a generated shadow "Id" doesn't work in a composite
+				// key on SQLite. Keying on (GemId, Key) needs no generated value and assumes a gem
+				// doesn't carry two parameters with the same key, which already held before this
+				// was a database constraint.
+				parameter.HasKey("GemId", nameof(GemParameter.Key));
+			});
 	}
 }

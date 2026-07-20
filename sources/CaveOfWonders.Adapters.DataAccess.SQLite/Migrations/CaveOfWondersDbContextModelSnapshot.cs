@@ -103,28 +103,6 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Migrations
                     b.ToTable("Gems");
                 });
 
-            modelBuilder.Entity("DustInTheWind.CaveOfWonders.Domain.GemParameter", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<Guid>("GemId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Key")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GemId");
-
-                    b.ToTable("GemParameters");
-                });
-
             modelBuilder.Entity("DustInTheWind.CaveOfWonders.Domain.Pot", b =>
                 {
                     b.Property<Guid>("Id")
@@ -185,18 +163,28 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.OwnsMany("DustInTheWind.CaveOfWonders.Domain.GemParameter", "Parameters", b1 =>
+                        {
+                            b1.Property<Guid>("GemId")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("Key")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("Value")
+                                .HasColumnType("TEXT");
+
+                            b1.HasKey("GemId", "Key");
+
+                            b1.ToTable("GemParameters", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("GemId");
+                        });
+
+                    b.Navigation("Parameters");
+
                     b.Navigation("Pot");
-                });
-
-            modelBuilder.Entity("DustInTheWind.CaveOfWonders.Domain.GemParameter", b =>
-                {
-                    b.HasOne("DustInTheWind.CaveOfWonders.Domain.Gem", "Gem")
-                        .WithMany("Parameters")
-                        .HasForeignKey("GemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Gem");
                 });
 
             modelBuilder.Entity("DustInTheWind.CaveOfWonders.Domain.Pot", b =>
@@ -229,11 +217,6 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Migrations
                         .IsRequired();
 
                     b.Navigation("Pot");
-                });
-
-            modelBuilder.Entity("DustInTheWind.CaveOfWonders.Domain.Gem", b =>
-                {
-                    b.Navigation("Parameters");
                 });
 
             modelBuilder.Entity("DustInTheWind.CaveOfWonders.Domain.Pot", b =>

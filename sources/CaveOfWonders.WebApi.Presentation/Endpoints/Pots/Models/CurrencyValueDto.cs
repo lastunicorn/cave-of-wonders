@@ -38,16 +38,16 @@ public class CurrencyValueDto
     /// </summary>
     public DateOnly Date { get; set; }
 
-    internal static CurrencyValueDto From(CurrencyValue currencyValue)
+    internal static CurrencyValueDto From(DatedAmount datedAmount)
     {
-        if (currencyValue == null)
+        if (datedAmount == null)
             return null;
 
         return new CurrencyValueDto
         {
-            Value = currencyValue.Value,
-            Currency = currencyValue.Currency,
-            Date = currencyValue.Date
+            Value = datedAmount.Value,
+            Currency = datedAmount.Currency,
+            Date = datedAmount.Date
         };
     }
 }

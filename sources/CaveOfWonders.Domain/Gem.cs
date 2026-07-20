@@ -16,14 +16,9 @@ public record class Gem
 
 	public string Description { get; set; }
 
-	public GemParameterCollection Parameters { get; }
+	public List<GemParameter> Parameters { get; } = [];
 
 	public Pot Pot { get; set; }
-
-	public Gem()
-	{
-		Parameters = new GemParameterCollection(this);
-	}
 
 	public string GetParameterValue(string parameterName)
 	{

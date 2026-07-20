@@ -102,7 +102,6 @@ internal class LiteDbTestBackDoor : LiteDbStorageBackDoorBase, ITestBackDoor
 			foreach (KeyValuePair<string, string> param in entity.Parameters)
 				gem.Parameters.Add(new GemParameter
 				{
-					GemId = entity.Id,
 					Key = param.Key,
 					Value = param.Value
 				});

@@ -49,8 +49,8 @@ public class GemRepository : IGemRepository
 		if (filter.Month != null)
 			entities = entities.Where(x => x.Date.Year == filter.Month.Value.Year && x.Date.Month == filter.Month.Value.Month);
 
-		if (filter.Categories?.Count > 0)
-			entities = entities.Where(x => filter.Categories.Contains((GemCategory)x.Category));
+		if (filter.IncludeCategories?.Count > 0)
+			entities = entities.Where(x => filter.IncludeCategories.Contains((GemCategory)x.Category));
 
 		if (filter.ExternalId != null)
 			entities = entities.Where(x => x.ExternalId == filter.ExternalId);
@@ -139,7 +139,6 @@ public class GemRepository : IGemRepository
 			foreach (KeyValuePair<string, string> param in entity.Parameters)
 				gem.Parameters.Add(new GemParameter
 				{
-					GemId = entity.Id,
 					Key = param.Key,
 					Value = param.Value
 				});

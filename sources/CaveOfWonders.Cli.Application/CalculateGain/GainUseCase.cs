@@ -31,7 +31,7 @@ internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 			.FindAsync(new GemFilter
 			{
 				Month = month,
-				Categories =
+				IncludeCategories =
 				[
 					GemCategory.Gain,
 					GemCategory.Fee,
@@ -52,7 +52,7 @@ internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 			ConversionRates = currenciesConvertor.UsedExchangeRates
 				.Select(x => new ExchangeRateInfo(x))
 				.ToList(),
-			TotalGain = new CurrencyValue
+			TotalGain = new DatedAmount
 			{
 				Value = totalGain,
 				Currency = NormalizedCurrency,
@@ -74,14 +74,14 @@ internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 			string potCurrency = gainsForPot.First().Pot.Currency;
 			decimal amount = gainsForPot.Sum(z => z.Category == GemCategory.Gain ? z.Amount : -z.Amount);
 
-			CurrencyValue itemValue = new()
+			DatedAmount itemValue = new()
 			{
 				Currency = potCurrency,
 				Value = amount,
 				Date = conversionDate
 			};
 
-			CurrencyValue normalizedValue = await currenciesConvertor.Convert(itemValue, NormalizedCurrency, conversionDate, cancellationToken);
+			DatedAmount normalizedValue = await currenciesConvertor.Convert(itemValue, NormalizedCurrency, conversionDate, cancellationToken);
 
 			items.Add(new GainItem
 			{

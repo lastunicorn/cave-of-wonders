@@ -1,19 +1,3 @@
-// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
-// 
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
@@ -23,60 +7,121 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentGems;
 
 internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentGemsResponse>
 {
-    private readonly IUnitOfWork unitOfWork;
+	private readonly IUnitOfWork unitOfWork;
 
-    public PresentGemsUseCase(IUnitOfWork unitOfWork)
-    {
-        this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-    }
+	public PresentGemsUseCase(IUnitOfWork unitOfWork)
+	{
+		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+	}
 
-    public async Task<PresentGemsResponse> Handle(PresentGemsRequest request, CancellationToken cancellationToken)
-    {
-        Pot pot = await RetrievePot(request.PotId, cancellationToken);
-        IAsyncEnumerable<Gem> gems = RetrieveGems(pot.Id, request, cancellationToken);
+	public async Task<PresentGemsResponse> Handle(PresentGemsRequest request, CancellationToken cancellationToken)
+	{
+		Pot pot = await RetrievePot(request.PotId, cancellationToken);
+		IAsyncEnumerable<Gem> gems = RetrieveGems(pot.Id, request, cancellationToken);
 
-        return new PresentGemsResponse
-        {
-            Gems = await gems
-                .Select(x => new GemDto
-                {
-                    Date = x.Date,
-                    Category = x.Category,
-                    Amount = x.Amount
-                })
-                .ToListAsync(cancellationToken)
-        };
-    }
+		SortedList<DateTime, GemDto> gemsByDate = new(new DuplicateKeyComparer<DateTime>());
+		decimal totalAmount = 0;
 
-    private async Task<Pot> RetrievePot(PotFlexId potId, CancellationToken cancellationToken)
-    {
-	    IAsyncEnumerable<Pot> pots = unitOfWork.PotRepository.GetAsync(potId, cancellationToken);
+		await foreach (Gem gem in gems)
+		{
+			GemDto gemDto = ConvertToDto(gem);
 
-	    Pot matchedPot = null;
-	    
-	    await foreach(Pot pot in pots)
-	    {
-		    if(matchedPot != null)
-			    throw new MultiplePotsException(potId);
-		    
-		    if (pot != null)
-			    matchedPot = pot;
-	    }
-	    
-	    if (matchedPot == null)
-		    throw new PotNotFoundException(potId);
+			gemsByDate.Add(gem.Date, gemDto);
 
-	    return matchedPot;
-    }
+			if (gem.Category is not (GemCategory.Unknown or GemCategory.Internal))
+				totalAmount += gemDto.Amount.Value;
+		}
 
-    private IAsyncEnumerable<Gem> RetrieveGems(Guid potId, PresentGemsRequest request, CancellationToken cancellationToken)
-    {
-        if (request.Date.HasValue)
-            return unitOfWork.GemRepository.FindByDateAsync(potId, request.Date.Value, cancellationToken);
+		return new PresentGemsResponse
+		{
+			Gems = gemsByDate.Values.AsReadOnly(),
+			TotalAmount = new Amount
+			{
+				Currency = pot.Currency,
+				Value = totalAmount
+			}
+		};
+	}
 
-        if (request.Month.HasValue)
-            return unitOfWork.GemRepository.FindByMonthAsync(potId, request.Month, cancellationToken);
+	private static GemDto ConvertToDto(Gem gem)
+	{
+		return new GemDto
+		{
+			Date = gem.Date,
+			Category = gem.Category,
+			Amount = new Amount
+			{
+				Currency = gem.Pot?.Currency,
+				Value = CalculateAmount(gem)
+			}
+		};
+	}
 
-        return unitOfWork.GemRepository.GetByPotIdAsync(potId, cancellationToken);
-    }
+	private async Task<Pot> RetrievePot(PotFlexId potId, CancellationToken cancellationToken)
+	{
+		IAsyncEnumerable<Pot> pots = unitOfWork.PotRepository.GetAsync(potId, cancellationToken);
+
+		Pot matchedPot = null;
+
+		await foreach (Pot pot in pots)
+		{
+			if (matchedPot != null)
+				throw new MultiplePotsException(potId);
+
+			if (pot != null)
+				matchedPot = pot;
+		}
+
+		if (matchedPot == null)
+			throw new PotNotFoundException(potId);
+
+		return matchedPot;
+	}
+
+	private IAsyncEnumerable<Gem> RetrieveGems(Guid potId, PresentGemsRequest request, CancellationToken cancellationToken)
+	{
+		GemFilter filter = new()
+		{
+			PotId = potId,
+		};
+
+		if (request.Date.HasValue)
+			filter.Date = request.Date.Value;
+
+		if (request.Month.HasValue)
+			filter.Month = request.Month;
+
+		if (request.ExcludeInternal)
+		{
+			filter.IncludeCategories =
+			[
+				GemCategory.Unknown,
+				GemCategory.Deposit,
+				GemCategory.Withdrawal,
+				GemCategory.Gain,
+				GemCategory.Fee,
+				GemCategory.Tax,
+				GemCategory.Bonus
+			];
+		}
+		;
+
+		return unitOfWork.GemRepository.FindAsync(filter, cancellationToken);
+	}
+
+	private static decimal CalculateAmount(Gem gem)
+	{
+		return gem.Category switch
+		{
+			GemCategory.Unknown => gem.Amount,
+			GemCategory.Deposit => gem.Amount,
+			GemCategory.Withdrawal => -gem.Amount,
+			GemCategory.Internal => gem.Amount,
+			GemCategory.Gain => gem.Amount,
+			GemCategory.Fee => -gem.Amount,
+			GemCategory.Tax => -gem.Amount,
+			GemCategory.Bonus => gem.Amount,
+			_ => 0
+		};
+	}
 }

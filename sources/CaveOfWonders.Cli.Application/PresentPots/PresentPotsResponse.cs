@@ -8,7 +8,7 @@ public class PresentPotsResponse
 
 	public List<ExchangeRateInfo> ConversionRates { get; set; }
 
-	public CurrencyValue Total { get; set; }
+	public DatedAmount Total { get; set; }
 
 	public List<CurrencyTotalOverview> CurrencyTotalOverviews { get; set; } = [];
 }

@@ -6,9 +6,9 @@ public class GainItem
     
     public string Currency { get; init; }
     
-    public CurrencyValue Gain { get; init; }
+    public DatedAmount Gain { get; init; }
     
-    public CurrencyValue NormalizedGain { get; init; }
+    public DatedAmount NormalizedGain { get; init; }
 
     public bool IsActual { get; set; }
 }

@@ -18,8 +18,6 @@ public class CaveOfWondersDbContext : DbContext
 
 	public DbSet<Gem> Gems { get; set; }
 
-	public DbSet<GemParameter> GemParameters { get; set; }
-
 	public CaveOfWondersDbContext(DbContextOptions<CaveOfWondersDbContext> options)
 		: base(options)
 	{
@@ -31,7 +29,6 @@ public class CaveOfWondersDbContext : DbContext
 		modelBuilder.ApplyConfiguration(new CpiConfiguration());
 		modelBuilder.ApplyConfiguration(new ExchangeRateConfiguration());
 		modelBuilder.ApplyConfiguration(new GemConfiguration());
-		modelBuilder.ApplyConfiguration(new GemParameterConfiguration());
 		modelBuilder.ApplyConfiguration(new PotConfiguration());
 		modelBuilder.ApplyConfiguration(new PotSnapshotConfiguration());
 	}

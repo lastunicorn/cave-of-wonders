@@ -383,7 +383,7 @@ public class FindAsyncTests
 			{
 				GemFilter filter = new()
 				{
-					Categories = [GemCategory.Deposit, GemCategory.Bonus]
+					IncludeCategories = [GemCategory.Deposit, GemCategory.Bonus]
 				};
 				context.Gems = await repository.FindAsync(filter)
 					.ToListAsync();
@@ -537,7 +537,7 @@ public class FindAsyncTests
 				GemFilter filter = new()
 				{
 					PotId = potId1,
-					Categories = [GemCategory.Deposit]
+					IncludeCategories = [GemCategory.Deposit]
 				};
 				context.Gems = await repository.FindAsync(filter)
 					.ToListAsync();
@@ -589,7 +589,7 @@ public class FindAsyncTests
 			{
 				GemFilter filter = new()
 				{
-					Categories = [GemCategory.Withdrawal]
+					IncludeCategories = [GemCategory.Withdrawal]
 				};
 				context.Gems = await repository.FindAsync(filter)
 					.ToListAsync();

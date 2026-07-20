@@ -6,9 +6,11 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentGems;
 
 public class PresentGemsRequest : IRequest<PresentGemsResponse>
 {
-    public PotFlexId PotId { get; set; }
+	public PotFlexId PotId { get; set; }
 
-    public DateOnly? Date { get; set; }
+	public DateOnly? Date { get; set; }
 
-    public MonthDate Month { get; set; }
+	public MonthDate Month { get; set; }
+
+	public bool ExcludeInternal { get; set; }
 }

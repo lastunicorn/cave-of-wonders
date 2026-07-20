@@ -21,7 +21,7 @@ internal class PotDetailsViewModel
 
     public DateOnly? LastSnapshotDate { get; }
 
-    public CurrencyValue Value { get; }
+    public DatedAmount Value { get; }
     
     public List<string> Labels { get; }
 

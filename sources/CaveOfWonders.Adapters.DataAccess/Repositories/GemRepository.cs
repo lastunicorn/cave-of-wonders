@@ -65,8 +65,8 @@ public class GemRepository : IGemRepository
 			});
 		}
 
-		if (filter.Categories?.Count > 0)
-			gems = gems.Where(x => filter.Categories.Contains(x.Category));
+		if (filter.IncludeCategories?.Count > 0)
+			gems = gems.Where(x => filter.IncludeCategories.Contains(x.Category));
 
 		if (filter.ExternalId != null)
 			gems = gems.Where(x => x.ExternalId == filter.ExternalId);

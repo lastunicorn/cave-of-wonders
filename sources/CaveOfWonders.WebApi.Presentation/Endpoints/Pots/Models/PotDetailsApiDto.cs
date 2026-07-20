@@ -37,7 +37,7 @@ public class PotDetailsApiDto
 
     public DateOnly? LastSnapshotDate { get; set; }
 
-    public CurrencyValue Value { get; set; }
+    public DatedAmount Value { get; set; }
 
     public List<string> Labels { get; set; }
 

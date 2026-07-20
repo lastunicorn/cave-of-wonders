@@ -18,7 +18,6 @@ internal class GemRepository : IGemRepository
 	public IAsyncEnumerable<Gem> FindByDateAsync(Guid potId, DateOnly date, CancellationToken cancellationToken = default)
 	{
 		return dbContext.Gems
-			.Include(x => x.Parameters)
 			.Include(x => x.Pot)
 			.Where(x => x.Pot.Id == potId && DateOnly.FromDateTime(x.Date) == date)
 			.AsAsyncEnumerable();
@@ -27,7 +26,6 @@ internal class GemRepository : IGemRepository
 	public IAsyncEnumerable<Gem> GetByPotIdAsync(Guid potId, CancellationToken cancellationToken = default)
 	{
 		return dbContext.Gems
-			.Include(x => x.Parameters)
 			.Include(x => x.Pot)
 			.Where(x => x.Pot.Id == potId)
 			.AsAsyncEnumerable();
@@ -36,7 +34,6 @@ internal class GemRepository : IGemRepository
 	public async Task<Gem> GetByExternalIdAsync(Guid potId, string gemExternalId, CancellationToken cancellationToken = default)
 	{
 		return await dbContext.Gems
-			.Include(x => x.Parameters)
 			.Include(x => x.Pot)
 			.FirstOrDefaultAsync(g => g.Pot.Id == potId && g.ExternalId == gemExternalId, cancellationToken);
 	}
@@ -44,7 +41,6 @@ internal class GemRepository : IGemRepository
 	public IAsyncEnumerable<Gem> FindByMonthAsync(Guid potId, MonthDate month, CancellationToken cancellationToken)
 	{
 		return dbContext.Gems
-			.Include(x => x.Parameters)
 			.Include(x => x.Pot)
 			.Where(x => x.Pot.Id == potId && x.Date.Year == month.Year && x.Date.Month == month.Month)
 			.AsAsyncEnumerable();
@@ -53,7 +49,6 @@ internal class GemRepository : IGemRepository
 	public IAsyncEnumerable<Gem> FindAsync(GemFilter filter, CancellationToken cancellationToken = default)
 	{
 		IQueryable<Gem> query = dbContext.Gems
-			.Include(x => x.Parameters)
 			.Include(x => x.Pot)
 			.AsQueryable();
 
@@ -66,8 +61,8 @@ internal class GemRepository : IGemRepository
 		if (filter.Month != null)
 			query = query.Where(x => x.Date.Year == filter.Month.Value.Year && x.Date.Month == filter.Month.Value.Month);
 
-		if (filter.Categories?.Count > 0)
-			query = query.Where(x => filter.Categories.Contains(x.Category));
+		if (filter.IncludeCategories?.Count > 0)
+			query = query.Where(x => filter.IncludeCategories.Contains(x.Category));
 
 		if (filter.ExternalId != null)
 			query = query.Where(x => x.ExternalId == filter.ExternalId);

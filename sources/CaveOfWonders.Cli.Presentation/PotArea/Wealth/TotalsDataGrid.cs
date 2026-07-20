@@ -11,7 +11,7 @@ internal class TotalsDataGrid
 
     public List<CurrencyTotalOverview> Values { get; set; }
 
-    public CurrencyValue Total { get; set; }
+    public DatedAmount Total { get; set; }
 
     public void Display()
     {
