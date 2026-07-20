@@ -372,6 +372,75 @@ public class GetByExternalIdAsyncTests
 			.ExecuteAsync();
 	}
 
+	// Mirrors the get -> mutate -> save flow ImportGemsUseCase relies on when re-importing an
+	// already-known gem (Parameters.Clear() + Parameters.AddRange(...) on a fetched Gem, then
+	// the session is saved implicitly when it closes after Act). Before GemParameter became a
+	// real EF navigation, this mutation was silently lost against SQLite (docs/DataAccess-Review.md
+	// §4.2) — GetByExternalIdAsync handed back a detached Gem with a freshly-mapped collection
+	// that nothing tracked.
+	//
+	// Known failing case: LiteDb. Unlike ExchangeRate, gems have no change-tracking mechanism in
+	// the LiteDb adapter (no GemTracker analogous to ExchangeRateTracker), so this mutation is
+	// still silently lost there. That gap predates this test and is out of scope here — LiteDb
+	// was never part of the SQLite remap this test was added to verify. Left red intentionally
+	// rather than papering over it; see docs/SQLite-DomainEntities-Plan.md.
+	[Theory]
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task GetByExternalIdAsync_WithClearedAndReAddedParameters_ShouldPersistReplacementWithoutOrphans(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
+	{
+		await GenericTest.Create(environment)
+			.Arrange(async (backDoor, context) =>
+			{
+				Guid potId = Guid.NewGuid();
+
+				await backDoor.SeedPotAsync(new Pot
+				{
+					Id = potId,
+					Name = "Test Pot",
+					DisplayOrder = 1,
+					StartDate = new DateOnly(2023, 1, 1),
+					Currency = "USD"
+				});
+
+				Gem gem = new()
+				{
+					Id = Guid.NewGuid(),
+					ExternalId = "ext-1",
+					Date = new DateTime(2023, 1, 10),
+					Category = GemCategory.Deposit,
+					Amount = 100m,
+					Pot = new Pot
+					{
+						Id = potId
+					}
+				};
+				gem.Parameters.Add(new GemParameter { Key = "source", Value = "mintos" });
+				gem.Parameters.Add(new GemParameter { Key = "note", Value = "old note" });
+
+				await backDoor.SeedGemsAsync([gem]);
+
+				context.PotId = potId;
+			})
+			.Act(async (repository, context) =>
+			{
+				Guid potId = context.PotId;
+				Gem existing = await repository.GetByExternalIdAsync(potId, "ext-1", CancellationToken.None);
+
+				existing.Parameters.Clear();
+				existing.Parameters.AddRange([new GemParameter { Key = "source", Value = "fintown" }]);
+			})
+			.Assert(async (backDoor, context) =>
+			{
+				List<Gem> gems = await backDoor.GetAllGemsAsync();
+
+				gems.Should().HaveCount(1);
+				Gem gem = gems.First();
+				gem.Parameters.Should().ContainSingle();
+				gem.Parameters.Should().Contain(x => x.Key == "source" && x.Value == "fintown");
+			})
+			.ExecuteAsync();
+	}
+
 	[Theory]
 	[TestEnvironments<IGemRepository, ITestBackDoor>]
 	public async Task GetByExternalIdAsync_WithDecimalAmount_ShouldPreserveDecimalPrecision(ITestEnvironment<IGemRepository, ITestBackDoor> environment)

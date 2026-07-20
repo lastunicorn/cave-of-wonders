@@ -1,4 +1,3 @@
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Entities;
 using DustInTheWind.CaveOfWonders.Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,22 +12,11 @@ internal class SqliteTestBackDoor : SqliteStorageBackDoorBase, ITestBackDoor
 
 	public async Task SeedCpisAsync(IEnumerable<Cpi> cpis, CancellationToken cancellationToken = default)
 	{
-		await DbContext.Cpis.AddRangeAsync(cpis
-			.Select(x => new CpiEntity
-			{
-				Year = x.Year,
-				Value = x.Value
-			}), cancellationToken);
+		await DbContext.Cpis.AddRangeAsync(cpis, cancellationToken);
 	}
 
 	public async Task<List<Cpi>> GetAllCpisAsync(CancellationToken cancellationToken = default)
 	{
-		return await DbContext.Cpis
-			.Select(x => new Cpi
-			{
-				Year = x.Year,
-				Value = x.Value
-			})
-			.ToListAsync(cancellationToken);
+		return await DbContext.Cpis.ToListAsync(cancellationToken);
 	}
 }

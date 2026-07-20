@@ -1,4 +1,3 @@
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Entities;
 using DustInTheWind.CaveOfWonders.Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,24 +12,11 @@ internal class SqliteTestBackDoor : SqliteStorageBackDoorBase, ITestBackDoor
 
 	public async Task SeedAverageWagesAsync(IEnumerable<AverageWage> averageWages, CancellationToken cancellationToken = default)
 	{
-		await DbContext.AverageWages.AddRangeAsync(averageWages
-			.Select(x => new AverageWageEntity
-			{
-				Year = x.Year,
-				GrossValue = x.GrossValue,
-				NetValue = x.NetValue
-			}), cancellationToken);
+		await DbContext.AverageWages.AddRangeAsync(averageWages, cancellationToken);
 	}
 
 	public async Task<List<AverageWage>> GetAllAverageWagesAsync(CancellationToken cancellationToken = default)
 	{
-		return await DbContext.AverageWages
-			.Select(x => new AverageWage
-			{
-				Year = x.Year,
-				GrossValue = x.GrossValue,
-				NetValue = x.NetValue
-			})
-			.ToListAsync(cancellationToken);
+		return await DbContext.AverageWages.ToListAsync(cancellationToken);
 	}
 }

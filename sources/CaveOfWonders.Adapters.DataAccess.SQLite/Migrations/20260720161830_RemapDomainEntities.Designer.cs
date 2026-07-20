@@ -3,6 +3,7 @@ using System;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Migrations
 {
     [DbContext(typeof(CaveOfWondersDbContext))]
-    partial class CaveOfWondersDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260720161830_RemapDomainEntities")]
+    partial class RemapDomainEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.18");

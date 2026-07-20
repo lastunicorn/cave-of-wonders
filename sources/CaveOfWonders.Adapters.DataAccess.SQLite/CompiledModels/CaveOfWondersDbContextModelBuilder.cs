@@ -11,34 +11,34 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.CompiledModels
     public partial class CaveOfWondersDbContextModel
     {
         private CaveOfWondersDbContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("e56fd93d-7bfd-4e3f-913f-57c6dbe82337"), entityTypeCount: 8)
+            : base(skipDetectChanges: false, modelId: new Guid("694a921f-2105-4e6f-b166-305285baa681"), entityTypeCount: 8)
         {
         }
 
         partial void Initialize()
         {
-            var averageWageEntity = AverageWageEntityEntityType.Create(this);
-            var cpiEntity = CpiEntityEntityType.Create(this);
-            var exchangeRateEntity = ExchangeRateEntityEntityType.Create(this);
-            var gemEntity = GemEntityEntityType.Create(this);
-            var gemParameterEntity = GemParameterEntityEntityType.Create(this);
-            var potEntity = PotEntityEntityType.Create(this);
-            var potLabelEntity = PotLabelEntityEntityType.Create(this);
-            var potSnapshotEntity = PotSnapshotEntityEntityType.Create(this);
+            var averageWage = AverageWageEntityType.Create(this);
+            var cpi = CpiEntityType.Create(this);
+            var exchangeRate = ExchangeRateEntityType.Create(this);
+            var gem = GemEntityType.Create(this);
+            var gemParameter = GemParameterEntityType.Create(this);
+            var pot = PotEntityType.Create(this);
+            var potLabel = PotLabelEntityType.Create(this);
+            var potSnapshot = PotSnapshotEntityType.Create(this);
 
-            GemEntityEntityType.CreateForeignKey1(gemEntity, potEntity);
-            GemParameterEntityEntityType.CreateForeignKey1(gemParameterEntity, gemEntity);
-            PotLabelEntityEntityType.CreateForeignKey1(potLabelEntity, potEntity);
-            PotSnapshotEntityEntityType.CreateForeignKey1(potSnapshotEntity, potEntity);
+            GemEntityType.CreateForeignKey1(gem, pot);
+            GemParameterEntityType.CreateForeignKey1(gemParameter, gem);
+            PotLabelEntityType.CreateForeignKey1(potLabel, pot);
+            PotSnapshotEntityType.CreateForeignKey1(potSnapshot, pot);
 
-            AverageWageEntityEntityType.CreateAnnotations(averageWageEntity);
-            CpiEntityEntityType.CreateAnnotations(cpiEntity);
-            ExchangeRateEntityEntityType.CreateAnnotations(exchangeRateEntity);
-            GemEntityEntityType.CreateAnnotations(gemEntity);
-            GemParameterEntityEntityType.CreateAnnotations(gemParameterEntity);
-            PotEntityEntityType.CreateAnnotations(potEntity);
-            PotLabelEntityEntityType.CreateAnnotations(potLabelEntity);
-            PotSnapshotEntityEntityType.CreateAnnotations(potSnapshotEntity);
+            AverageWageEntityType.CreateAnnotations(averageWage);
+            CpiEntityType.CreateAnnotations(cpi);
+            ExchangeRateEntityType.CreateAnnotations(exchangeRate);
+            GemEntityType.CreateAnnotations(gem);
+            GemParameterEntityType.CreateAnnotations(gemParameter);
+            PotEntityType.CreateAnnotations(pot);
+            PotLabelEntityType.CreateAnnotations(potLabel);
+            PotSnapshotEntityType.CreateAnnotations(potSnapshot);
 
             AddAnnotation("ProductVersion", "9.0.18");
         }

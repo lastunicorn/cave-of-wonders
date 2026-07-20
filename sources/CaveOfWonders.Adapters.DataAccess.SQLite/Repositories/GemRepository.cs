@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Entities;
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Infrastructure;
@@ -17,70 +15,50 @@ internal class GemRepository : IGemRepository
 		this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 	}
 
-	public async IAsyncEnumerable<Gem> FindByDateAsync(Guid potId, DateOnly date, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+	public IAsyncEnumerable<Gem> FindByDateAsync(Guid potId, DateOnly date, CancellationToken cancellationToken = default)
 	{
-		List<GemEntity> entities = await dbContext.Gems
+		return dbContext.Gems
 			.Include(x => x.Parameters)
 			.Include(x => x.Pot)
-			.Where(x => x.PotId == potId && DateOnly.FromDateTime(x.Date) == date)
-			.ToListAsync(cancellationToken);
-
-		foreach (GemEntity entity in entities)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-			yield return MapToDomain(entity);
-		}
+			.Where(x => x.Pot.Id == potId && DateOnly.FromDateTime(x.Date) == date)
+			.AsAsyncEnumerable();
 	}
 
-	public async IAsyncEnumerable<Gem> GetByPotIdAsync(Guid potId, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+	public IAsyncEnumerable<Gem> GetByPotIdAsync(Guid potId, CancellationToken cancellationToken = default)
 	{
-		List<GemEntity> entities = await dbContext.Gems
+		return dbContext.Gems
 			.Include(x => x.Parameters)
 			.Include(x => x.Pot)
-			.Where(x => x.PotId == potId)
-			.ToListAsync(cancellationToken);
-
-		foreach (GemEntity entity in entities)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-			yield return MapToDomain(entity);
-		}
+			.Where(x => x.Pot.Id == potId)
+			.AsAsyncEnumerable();
 	}
 
 	public async Task<Gem> GetByExternalIdAsync(Guid potId, string gemExternalId, CancellationToken cancellationToken = default)
 	{
-		GemEntity entity = await dbContext.Gems
+		return await dbContext.Gems
 			.Include(x => x.Parameters)
 			.Include(x => x.Pot)
-			.FirstOrDefaultAsync(g => g.PotId == potId && g.ExternalId == gemExternalId, cancellationToken);
-
-		return entity == null ? null : MapToDomain(entity);
+			.FirstOrDefaultAsync(g => g.Pot.Id == potId && g.ExternalId == gemExternalId, cancellationToken);
 	}
 
-	public async IAsyncEnumerable<Gem> FindByMonthAsync(Guid potId, MonthDate month, [EnumeratorCancellation] CancellationToken cancellationToken)
+	public IAsyncEnumerable<Gem> FindByMonthAsync(Guid potId, MonthDate month, CancellationToken cancellationToken)
 	{
-		List<GemEntity> entities = await dbContext.Gems
+		return dbContext.Gems
 			.Include(x => x.Parameters)
 			.Include(x => x.Pot)
-			.Where(x => x.PotId == potId && x.Date.Year == month.Year && x.Date.Month == month.Month)
-			.ToListAsync(cancellationToken);
-
-		foreach (GemEntity entity in entities)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-			yield return MapToDomain(entity);
-		}
+			.Where(x => x.Pot.Id == potId && x.Date.Year == month.Year && x.Date.Month == month.Month)
+			.AsAsyncEnumerable();
 	}
 
 	public IAsyncEnumerable<Gem> FindAsync(GemFilter filter, CancellationToken cancellationToken = default)
 	{
-		IQueryable<GemEntity> query = dbContext.Gems
+		IQueryable<Gem> query = dbContext.Gems
 			.Include(x => x.Parameters)
 			.Include(x => x.Pot)
 			.AsQueryable();
 
 		if (filter.PotId != null)
-			query = query.Where(x => x.PotId == filter.PotId);
+			query = query.Where(x => x.Pot.Id == filter.PotId);
 
 		if (filter.Date != null)
 			query = query.Where(x => x.Date.Year == filter.Date.Value.Year && x.Date.Month == filter.Date.Value.Month && x.Date.Day == filter.Date.Value.Day);
@@ -89,94 +67,48 @@ internal class GemRepository : IGemRepository
 			query = query.Where(x => x.Date.Year == filter.Month.Value.Year && x.Date.Month == filter.Month.Value.Month);
 
 		if (filter.Categories?.Count > 0)
-			query = query.Where(x => filter.Categories.Contains((GemCategory)x.Category));
+			query = query.Where(x => filter.Categories.Contains(x.Category));
 
 		if (filter.ExternalId != null)
 			query = query.Where(x => x.ExternalId == filter.ExternalId);
 
-		return query
-			.AsAsyncEnumerable()
-			.Select(MapToDomain);
+		return query.AsAsyncEnumerable();
 	}
 
 	public void Add(Gem gem)
 	{
 		ArgumentNullException.ThrowIfNull(gem);
 
-		GemEntity entity = new()
-		{
-			Id = gem.Id,
-			ExternalId = gem.ExternalId,
-			Date = gem.Date,
-			Category = (int)gem.Category,
-			Amount = gem.Amount,
-			Description = gem.Description,
-			PotId = gem.Pot.Id,
-			Parameters = gem.Parameters
-				.Select(x => new GemParameterEntity
-				{
-					Key = x.Key,
-					Value = x.Value
-				})
-				.ToList()
-		};
+		// gem.Pot is expected to already exist in the database (gems are always added
+		// against a pot that was fetched or created beforehand). It typically arrives as a
+		// detached stub, so attach it as Unchanged rather than letting EF's graph-walk treat
+		// it as a new insert. Reuse an already-tracked instance with the same key instead of
+		// attaching a second one, since multiple gems in the same batch can each carry their
+		// own separate stub for the same pot.
+		Pot trackedPot = dbContext.ChangeTracker.Entries<Pot>()
+			.Select(x => x.Entity)
+			.FirstOrDefault(x => x.Id == gem.Pot.Id);
 
-		dbContext.Gems.Add(entity);
+		if (trackedPot != null)
+			gem.Pot = trackedPot;
+		else
+			dbContext.Attach(gem.Pot);
+
+		dbContext.Gems.Add(gem);
 	}
 
 	public void Remove(Gem gem)
 	{
 		ArgumentNullException.ThrowIfNull(gem);
 
-		GemEntity entity = dbContext.Gems.Local.FirstOrDefault(x => x.Id == gem.Id);
+		Gem entity = dbContext.Gems.Local.FirstOrDefault(x => x.Id == gem.Id);
 
 		if (entity == null)
 		{
-			entity = new GemEntity { Id = gem.Id };
+			entity = new Gem { Id = gem.Id };
 			dbContext.Gems.Attach(entity);
 		}
 
 		dbContext.Gems.Remove(entity);
-	}
-
-	private static Gem MapToDomain(GemEntity entity)
-	{
-		Pot pot = entity.Pot == null
-			? null
-			: new Pot
-			{
-				Id = entity.Pot.Id,
-				Name = entity.Pot.Name,
-				Description = entity.Pot.Description,
-				DisplayOrder = entity.Pot.DisplayOrder,
-				StartDate = entity.Pot.StartDate,
-				EndDate = entity.Pot.EndDate,
-				Currency = entity.Pot.Currency
-			};
-
-		Gem gem = new()
-		{
-			Id = entity.Id,
-			ExternalId = entity.ExternalId,
-			Date = entity.Date,
-			Category = (GemCategory)entity.Category,
-			Amount = entity.Amount,
-			Description = entity.Description,
-			Pot = pot
-		};
-
-		if (entity.Parameters != null)
-		{
-			foreach (GemParameterEntity param in entity.Parameters)
-				gem.Parameters.Add(new GemParameter
-				{
-					Id = param.Id,
-					GemId = param.GemId,
-					Key = param.Key,
-					Value = param.Value
-				});
-		}
-
-		return gem;
 	}
 }

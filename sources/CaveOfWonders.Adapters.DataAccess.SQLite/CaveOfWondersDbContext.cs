@@ -1,52 +1,38 @@
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Configurations;
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Entities;
+using DustInTheWind.CaveOfWonders.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite;
 
 public class CaveOfWondersDbContext : DbContext
 {
-	internal DbSet<PotEntity> Pots { get; set; }
+	public DbSet<Pot> Pots { get; set; }
 
-	internal DbSet<PotSnapshotEntity> PotSnapshots { get; set; }
+	public DbSet<PotSnapshot> PotSnapshots { get; set; }
 
-	internal DbSet<PotLabelEntity> PotLabels { get; set; }
+	public DbSet<ExchangeRate> ExchangeRates { get; set; }
 
-	internal DbSet<ExchangeRateEntity> ExchangeRates { get; set; }
+	public DbSet<Cpi> Cpis { get; set; }
 
-	internal DbSet<CpiEntity> Cpis { get; set; }
+	public DbSet<AverageWage> AverageWages { get; set; }
 
-	internal DbSet<AverageWageEntity> AverageWages { get; set; }
+	public DbSet<Gem> Gems { get; set; }
 
-	internal DbSet<GemEntity> Gems { get; set; }
-
-	internal DbSet<GemParameterEntity> GemParameters { get; set; }
-
-	internal ExchangeRateTracker ExchangeRateTracker { get; } = new();
+	public DbSet<GemParameter> GemParameters { get; set; }
 
 	public CaveOfWondersDbContext(DbContextOptions<CaveOfWondersDbContext> options)
 		: base(options)
 	{
 	}
 
-	public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-	{
-		ExchangeRateTracker.PrepareChanges(ExchangeRates);
-		int result = await base.SaveChangesAsync(cancellationToken);
-		ExchangeRateTracker.CompleteChanges();
-
-		return result;
-	}
-
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
-		modelBuilder.ApplyConfiguration(new AverageWageEntityConfiguration());
-		modelBuilder.ApplyConfiguration(new CpiEntityConfiguration());
-		modelBuilder.ApplyConfiguration(new ExchangeRateEntityConfiguration());
-		modelBuilder.ApplyConfiguration(new GemEntityConfiguration());
-		modelBuilder.ApplyConfiguration(new GemParameterEntityConfiguration());
-		modelBuilder.ApplyConfiguration(new PotEntityConfiguration());
-		modelBuilder.ApplyConfiguration(new PotLabelEntityConfiguration());
-		modelBuilder.ApplyConfiguration(new PotSnapshotEntityConfiguration());
+		modelBuilder.ApplyConfiguration(new AverageWageConfiguration());
+		modelBuilder.ApplyConfiguration(new CpiConfiguration());
+		modelBuilder.ApplyConfiguration(new ExchangeRateConfiguration());
+		modelBuilder.ApplyConfiguration(new GemConfiguration());
+		modelBuilder.ApplyConfiguration(new GemParameterConfiguration());
+		modelBuilder.ApplyConfiguration(new PotConfiguration());
+		modelBuilder.ApplyConfiguration(new PotSnapshotConfiguration());
 	}
 }

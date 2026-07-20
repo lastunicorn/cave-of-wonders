@@ -1,4 +1,3 @@
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Entities;
 using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Repositories;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
@@ -14,30 +13,7 @@ internal class SqliteTestBackDoor : SqliteStorageBackDoorBase, ITestBackDoor
 
 	public async Task SeedPotsAsync(IEnumerable<Pot> pots, CancellationToken cancellationToken = default)
 	{
-		await DbContext.Pots.AddRangeAsync(pots
-			.Select(x => new PotEntity
-			{
-				Id = x.Id,
-				Name = x.Name,
-				Description = x.Description,
-				DisplayOrder = x.DisplayOrder,
-				StartDate = x.StartDate,
-				EndDate = x.EndDate,
-				Currency = x.Currency,
-				Snapshots = x.Snapshots
-					.Select(z => new PotSnapshotEntity
-					{
-						Date = z.Date,
-						Value = z.Value
-					})
-					.ToList(),
-				Labels = x.Labels
-					.Select(z => new PotLabelEntity
-					{
-						Label = z.Label
-					})
-					.ToList()
-			}), cancellationToken);
+		await DbContext.Pots.AddRangeAsync(pots, cancellationToken);
 	}
 
 	public Task<List<Pot>> GetAllPotsAsync(CancellationToken cancellationToken = default)

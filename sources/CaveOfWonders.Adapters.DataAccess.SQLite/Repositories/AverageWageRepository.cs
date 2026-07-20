@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Entities;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using Microsoft.EntityFrameworkCore;
@@ -15,57 +13,32 @@ internal class AverageWageRepository : IAverageWageRepository
         this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    public async IAsyncEnumerable<AverageWage> GetAllAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public IAsyncEnumerable<AverageWage> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        List<AverageWageEntity> entities = await dbContext.AverageWages
+        return dbContext.AverageWages
             .OrderBy(x => x.Year)
-            .ToListAsync(cancellationToken);
-
-        foreach (AverageWageEntity entity in entities)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            yield return MapToDomain(entity);
-        }
+            .AsAsyncEnumerable();
     }
 
     public async Task<AverageWage> GetAsync(int year, CancellationToken cancellationToken = default)
     {
-        AverageWageEntity entity = await dbContext.AverageWages.FindAsync([year], cancellationToken);
-
-        return entity == null
-            ? null
-            : MapToDomain(entity);
+        return await dbContext.AverageWages.FindAsync([year], cancellationToken);
     }
 
     public void Add(AverageWage averageWage)
     {
         ArgumentNullException.ThrowIfNull(averageWage);
 
-        dbContext.AverageWages.Add(new AverageWageEntity
-        {
-            Year = averageWage.Year,
-            GrossValue = averageWage.GrossValue,
-            NetValue = averageWage.NetValue
-        });
+        dbContext.AverageWages.Add(averageWage);
     }
 
     public void Delete(AverageWage averageWage)
     {
         ArgumentNullException.ThrowIfNull(averageWage);
 
-        AverageWageEntity entity = dbContext.AverageWages.Find(averageWage.Year);
+        AverageWage entity = dbContext.AverageWages.Find(averageWage.Year);
 
         if (entity != null)
             dbContext.AverageWages.Remove(entity);
-    }
-
-    private static AverageWage MapToDomain(AverageWageEntity entity)
-    {
-        return new AverageWage
-        {
-            Year = entity.Year,
-            GrossValue = entity.GrossValue,
-            NetValue = entity.NetValue
-        };
     }
 }

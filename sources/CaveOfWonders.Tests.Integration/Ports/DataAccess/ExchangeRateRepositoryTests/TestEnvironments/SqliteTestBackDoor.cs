@@ -1,4 +1,3 @@
-using DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.Entities;
 using DustInTheWind.CaveOfWonders.Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,26 +12,11 @@ internal class SqliteTestBackDoor : SqliteStorageBackDoorBase, ITestBackDoor
 
 	public async Task SeedExchangeRatesAsync(IEnumerable<ExchangeRate> exchangeRates, CancellationToken cancellationToken = default)
 	{
-		await DbContext.ExchangeRates.AddRangeAsync(exchangeRates
-			.Select(x => new ExchangeRateEntity
-			{
-				Date = x.Date,
-				CurrencyPair = x.CurrencyPair,
-				Value = x.Value
-			}), cancellationToken);
+		await DbContext.ExchangeRates.AddRangeAsync(exchangeRates, cancellationToken);
 	}
 
 	public async Task<List<ExchangeRate>> GetAllExchangeRatesAsync(CancellationToken cancellationToken = default)
 	{
-		List<ExchangeRateEntity> entities = await DbContext.ExchangeRates.ToListAsync(cancellationToken);
-
-		return entities
-			.Select(x => new ExchangeRate
-			{
-				Date = x.Date,
-				CurrencyPair = x.CurrencyPair,
-				Value = x.Value
-			})
-			.ToList();
+		return await DbContext.ExchangeRates.ToListAsync(cancellationToken);
 	}
 }
