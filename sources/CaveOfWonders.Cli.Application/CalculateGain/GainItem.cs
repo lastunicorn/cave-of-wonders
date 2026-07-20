@@ -6,7 +6,9 @@ public class GainItem
     
     public string Currency { get; init; }
     
-    public decimal Gain { get; init; }
+    public CurrencyValue Gain { get; init; }
     
-    public decimal NormalizedGain { get; init; }
+    public CurrencyValue NormalizedGain { get; init; }
+
+    public bool IsActual { get; set; }
 }

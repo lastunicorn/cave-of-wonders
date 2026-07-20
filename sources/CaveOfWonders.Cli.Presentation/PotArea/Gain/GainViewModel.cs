@@ -1,3 +1,4 @@
+using DustInTheWind.CaveOfWonders.Cli.Application;
 using DustInTheWind.CaveOfWonders.Cli.Application.CalculateGain;
 using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
 
@@ -9,7 +10,7 @@ internal class GainViewModel
 
 	public List<ExchangeRateViewModel> ConversionRates { get; }
 
-	public decimal TotalGain { get; }
+	public CurrencyValue TotalGain { get; }
 
 	internal GainViewModel(GainResponse response)
 	{

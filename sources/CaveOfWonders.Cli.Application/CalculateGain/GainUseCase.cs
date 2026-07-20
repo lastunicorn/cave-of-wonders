@@ -43,7 +43,7 @@ internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 		DateOnly conversionDate = systemClock.Today;
 
 		List<GainItem> items = await BuildGainItems(gains, conversionDate, cancellationToken);
-		decimal totalGain = items.Sum(x => x.NormalizedGain);
+		decimal totalGain = items.Sum(x => x.NormalizedGain.Value);
 
 		return new GainResponse
 		{
@@ -52,7 +52,12 @@ internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 			ConversionRates = currenciesConvertor.UsedExchangeRates
 				.Select(x => new ExchangeRateInfo(x))
 				.ToList(),
-			TotalGain = totalGain
+			TotalGain = new CurrencyValue
+			{
+				Value = totalGain,
+				Currency = NormalizedCurrency,
+				Date = conversionDate
+			}
 		};
 	}
 
@@ -82,8 +87,9 @@ internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 			{
 				PotName = gainsForPot.First().Pot.Name,
 				Currency = potCurrency,
-				Gain = amount,
-				NormalizedGain = normalizedValue.Value
+				Gain = itemValue,
+				NormalizedGain = normalizedValue,
+				IsActual = string.Equals(potCurrency, NormalizedCurrency, StringComparison.OrdinalIgnoreCase)
 			});
 		}
 
