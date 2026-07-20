@@ -37,6 +37,8 @@ internal class GemCommand : IConsoleCommand<GemCommandViewModel>
 		PresentGemsRequest request = new()
 		{
 			PotId = PotId,
+			StartDate = StartDate,
+			EndDate = EndDate,
 			Date = Date,
 			Month = Month,
 			ExcludeInternal = ExcludeInternal

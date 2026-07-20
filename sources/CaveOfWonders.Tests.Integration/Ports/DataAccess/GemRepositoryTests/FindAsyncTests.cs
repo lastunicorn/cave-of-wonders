@@ -252,6 +252,240 @@ public class FindAsyncTests
 
 	[Theory]
 	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task FindAsync_WithStartDateFilter_ShouldReturnOnlyGemsOnOrAfterThatDate(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
+	{
+		await GenericTest.Create(environment)
+			.Arrange(async (backDoor, context) =>
+			{
+				Guid potId = Guid.NewGuid();
+
+				await backDoor.SeedPotAsync(new Pot
+				{
+					Id = potId,
+					Name = "Test Pot",
+					DisplayOrder = 1,
+					StartDate = new DateOnly(2023, 1, 1),
+					Currency = "USD"
+				});
+
+				await backDoor.SeedGemsAsync(
+				[
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 9),
+						Category = GemCategory.Deposit,
+						Amount = 100m,
+						Pot = new Pot
+						{
+							Id = potId
+						}
+					},
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 10),
+						Category = GemCategory.Deposit,
+						Amount = 200m,
+						Pot = new Pot
+						{
+							Id = potId
+						}
+					},
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 11),
+						Category = GemCategory.Deposit,
+						Amount = 300m,
+						Pot = new Pot
+						{
+							Id = potId
+						}
+					}
+				]);
+			})
+			.Act(async (repository, context) =>
+			{
+				GemFilter filter = new()
+				{
+					StartDate = new DateOnly(2023, 1, 10)
+				};
+				context.Gems = await repository.FindAsync(filter)
+					.ToListAsync();
+			})
+			.Assert((backDoor, context) =>
+			{
+				List<Gem> gems = context.Gems as List<Gem>;
+
+				gems.Should().HaveCount(2);
+				gems.Should().OnlyContain(x => x.Amount == 200m || x.Amount == 300m);
+			})
+			.ExecuteAsync();
+	}
+
+	[Theory]
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task FindAsync_WithEndDateFilter_ShouldReturnOnlyGemsOnOrBeforeThatDate(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
+	{
+		await GenericTest.Create(environment)
+			.Arrange(async (backDoor, context) =>
+			{
+				Guid potId = Guid.NewGuid();
+
+				await backDoor.SeedPotAsync(new Pot
+				{
+					Id = potId,
+					Name = "Test Pot",
+					DisplayOrder = 1,
+					StartDate = new DateOnly(2023, 1, 1),
+					Currency = "USD"
+				});
+
+				await backDoor.SeedGemsAsync(
+				[
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 9),
+						Category = GemCategory.Deposit,
+						Amount = 100m,
+						Pot = new Pot
+						{
+							Id = potId
+						}
+					},
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 10),
+						Category = GemCategory.Deposit,
+						Amount = 200m,
+						Pot = new Pot
+						{
+							Id = potId
+						}
+					},
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 11),
+						Category = GemCategory.Deposit,
+						Amount = 300m,
+						Pot = new Pot
+						{
+							Id = potId
+						}
+					}
+				]);
+			})
+			.Act(async (repository, context) =>
+			{
+				GemFilter filter = new()
+				{
+					EndDate = new DateOnly(2023, 1, 10)
+				};
+				context.Gems = await repository.FindAsync(filter)
+					.ToListAsync();
+			})
+			.Assert((backDoor, context) =>
+			{
+				List<Gem> gems = context.Gems as List<Gem>;
+
+				gems.Should().HaveCount(2);
+				gems.Should().OnlyContain(x => x.Amount == 100m || x.Amount == 200m);
+			})
+			.ExecuteAsync();
+	}
+
+	[Theory]
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
+	public async Task FindAsync_WithStartDateAndEndDateFilter_ShouldReturnOnlyGemsWithinThatRange(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
+	{
+		await GenericTest.Create(environment)
+			.Arrange(async (backDoor, context) =>
+			{
+				Guid potId = Guid.NewGuid();
+
+				await backDoor.SeedPotAsync(new Pot
+				{
+					Id = potId,
+					Name = "Test Pot",
+					DisplayOrder = 1,
+					StartDate = new DateOnly(2023, 1, 1),
+					Currency = "USD"
+				});
+
+				await backDoor.SeedGemsAsync(
+				[
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 9),
+						Category = GemCategory.Deposit,
+						Amount = 100m,
+						Pot = new Pot
+						{
+							Id = potId
+						}
+					},
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 10),
+						Category = GemCategory.Deposit,
+						Amount = 200m,
+						Pot = new Pot
+						{
+							Id = potId
+						}
+					},
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 11),
+						Category = GemCategory.Deposit,
+						Amount = 300m,
+						Pot = new Pot
+						{
+							Id = potId
+						}
+					},
+					new Gem
+					{
+						Id = Guid.NewGuid(),
+						Date = new DateTime(2023, 1, 12),
+						Category = GemCategory.Deposit,
+						Amount = 400m,
+						Pot = new Pot
+						{
+							Id = potId
+						}
+					}
+				]);
+			})
+			.Act(async (repository, context) =>
+			{
+				GemFilter filter = new()
+				{
+					StartDate = new DateOnly(2023, 1, 10),
+					EndDate = new DateOnly(2023, 1, 11)
+				};
+				context.Gems = await repository.FindAsync(filter)
+					.ToListAsync();
+			})
+			.Assert((backDoor, context) =>
+			{
+				List<Gem> gems = context.Gems as List<Gem>;
+
+				gems.Should().HaveCount(2);
+				gems.Should().OnlyContain(x => x.Amount == 200m || x.Amount == 300m);
+			})
+			.ExecuteAsync();
+	}
+
+	[Theory]
+	[TestEnvironments<IGemRepository, ITestBackDoor>]
 	public async Task FindAsync_WithMonthFilter_ShouldReturnOnlyGemsInThatMonth(ITestEnvironment<IGemRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)

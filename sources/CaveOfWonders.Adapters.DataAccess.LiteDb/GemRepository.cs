@@ -43,6 +43,12 @@ public class GemRepository : IGemRepository
 		if (filter.PotId != null)
 			entities = entities.Where(x => x.PotId == filter.PotId.Value);
 
+		if (filter.StartDate != null)
+			entities = entities.Where(x => DateOnly.FromDateTime(x.Date) >= filter.StartDate.Value);
+
+		if (filter.EndDate != null)
+			entities = entities.Where(x => DateOnly.FromDateTime(x.Date) <= filter.EndDate.Value);
+
 		if (filter.Date != null)
 			entities = entities.Where(x => DateOnly.FromDateTime(x.Date) == filter.Date.Value);
 

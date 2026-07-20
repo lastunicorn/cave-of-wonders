@@ -8,6 +8,10 @@ public class PresentGemsRequest : IRequest<PresentGemsResponse>
 {
 	public PotFlexId PotId { get; set; }
 
+	public DateOnly? StartDate { get; set; }
+
+	public DateOnly? EndDate { get; set; }
+
 	public DateOnly? Date { get; set; }
 
 	public MonthDate Month { get; set; }

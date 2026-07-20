@@ -55,6 +55,12 @@ internal class GemRepository : IGemRepository
 		if (filter.PotId != null)
 			query = query.Where(x => x.Pot.Id == filter.PotId);
 
+		if (filter.StartDate != null)
+			query = query.Where(x => x.Date >= filter.StartDate.Value.ToDateTime(TimeOnly.MinValue));
+
+		if (filter.EndDate != null)
+			query = query.Where(x => x.Date <= filter.EndDate.Value.ToDateTime(TimeOnly.MaxValue));
+
 		if (filter.Date != null)
 			query = query.Where(x => x.Date.Year == filter.Date.Value.Year && x.Date.Month == filter.Date.Value.Month && x.Date.Day == filter.Date.Value.Day);
 

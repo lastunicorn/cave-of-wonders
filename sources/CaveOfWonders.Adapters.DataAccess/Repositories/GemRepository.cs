@@ -47,6 +47,12 @@ public class GemRepository : IGemRepository
 		if (filter.PotId != null)
 			gems = gems.Where(x => x.Pot?.Id == filter.PotId.Value);
 
+		if (filter.StartDate != null)
+			gems = gems.Where(x => DateOnly.FromDateTime(x.Date) >= filter.StartDate.Value);
+
+		if (filter.EndDate != null)
+			gems = gems.Where(x => DateOnly.FromDateTime(x.Date) <= filter.EndDate.Value);
+
 		if (filter.Date != null)
 		{
 			gems = gems.Where(x =>

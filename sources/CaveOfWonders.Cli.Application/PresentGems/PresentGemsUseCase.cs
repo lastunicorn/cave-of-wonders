@@ -1,5 +1,7 @@
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Infrastructure;
+using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using MediatR;
 
@@ -8,10 +10,12 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentGems;
 internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentGemsResponse>
 {
 	private readonly IUnitOfWork unitOfWork;
+	private readonly ISystemClock systemClock;
 
-	public PresentGemsUseCase(IUnitOfWork unitOfWork)
+	public PresentGemsUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
 	{
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+		this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
 	}
 
 	public async Task<PresentGemsResponse> Handle(PresentGemsRequest request, CancellationToken cancellationToken)
@@ -85,11 +89,20 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
 			PotId = potId,
 		};
 
+		if (request.StartDate.HasValue)
+			filter.StartDate = request.StartDate.Value;
+
+		if (request.EndDate.HasValue)
+			filter.EndDate = request.EndDate.Value;
+
 		if (request.Date.HasValue)
 			filter.Date = request.Date.Value;
 
 		if (request.Month.HasValue)
 			filter.Month = request.Month;
+
+		if (!request.StartDate.HasValue && !request.EndDate.HasValue && !request.Date.HasValue && !request.Month.HasValue)
+			filter.Month = new MonthDate(systemClock.Today);
 
 		if (request.ExcludeInternal)
 			filter.ExcludeCategories = [GemCategory.Internal];
@@ -101,15 +114,10 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
 	{
 		return gem.Category switch
 		{
-			GemCategory.Unknown => gem.Amount,
-			GemCategory.Deposit => gem.Amount,
 			GemCategory.Withdrawal => -gem.Amount,
-			GemCategory.Internal => gem.Amount,
-			GemCategory.Gain => gem.Amount,
 			GemCategory.Fee => -gem.Amount,
 			GemCategory.Tax => -gem.Amount,
-			GemCategory.Bonus => gem.Amount,
-			_ => 0
+			_ => gem.Amount
 		};
 	}
 }
