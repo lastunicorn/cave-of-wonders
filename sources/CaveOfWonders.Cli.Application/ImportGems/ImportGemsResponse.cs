@@ -9,4 +9,6 @@ public class ImportGemsResponse
 	public int SkippedGemCount { get; set; }
 
 	public int TotalGemCount { get; internal set; }
+
+	public TimeSpan Duration { get; internal set; }
 }

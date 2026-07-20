@@ -39,7 +39,8 @@ internal class GemImportCommand : IConsoleCommand<GemImportViewModel>
 			UpdatedGemCount = response.UpdatedGemCount,
 			AddedGemCount = response.AddedGemCount,
 			SkippedGemCount = response.SkippedGemCount,
-			TotalGemCount = response.TotalGemCount
+			TotalGemCount = response.TotalGemCount,
+			Duration = response.Duration
 		};
 	}
 }

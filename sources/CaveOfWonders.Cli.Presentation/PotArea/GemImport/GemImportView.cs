@@ -1,19 +1,3 @@
-// Cave of Wonders
-// Copyright (C) 2023-2024 Dust in the Wind
-// 
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 
@@ -21,18 +5,20 @@ namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.GemImport;
 
 internal class GemImportView : IView<GemImportViewModel>
 {
-    public void Display(GemImportViewModel viewModel)
-    {
-        DataGrid dataGrid = new();
+	public void Display(GemImportViewModel viewModel)
+	{
+		DataGrid dataGrid = new();
 
-        dataGrid.Columns.Add("Name");
-        dataGrid.Columns.Add("Value");
+		dataGrid.Columns.Add("Name");
+		dataGrid.Columns.Add("Value");
 
-        dataGrid.Rows.Add("Added", viewModel.AddedGemCount);
-        dataGrid.Rows.Add("Updated", viewModel.UpdatedGemCount);
-        dataGrid.Rows.Add("Skipped", viewModel.SkippedGemCount);
-        dataGrid.Rows.Add("Total", viewModel.TotalGemCount);
+		dataGrid.Rows.Add("Added", viewModel.AddedGemCount);
+		dataGrid.Rows.Add("Updated", viewModel.UpdatedGemCount);
+		dataGrid.Rows.Add("Skipped", viewModel.SkippedGemCount);
+		dataGrid.Rows.Add("Total", viewModel.TotalGemCount);
 
-        dataGrid.Display();
-    }
+		dataGrid.Footer = $"Duration: {viewModel.Duration.TotalSeconds:0.00} s";
+
+		dataGrid.Display();
+	}
 }

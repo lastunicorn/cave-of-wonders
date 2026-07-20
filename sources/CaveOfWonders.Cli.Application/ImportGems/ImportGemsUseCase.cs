@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.BcrAccess;
@@ -28,6 +29,8 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 
 	public async Task<ImportGemsResponse> Handle(ImportGemsRequest request, CancellationToken cancellationToken)
 	{
+		Stopwatch stopwatch = Stopwatch.StartNew();
+
 		Pot pot = await FindPot(request.PotFlexId, cancellationToken);
 
 		IAsyncEnumerable<Gem> gemEnumeration = request.FileType switch
@@ -43,6 +46,9 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 		ImportGemsResponse response = await ImportGems(gemEnumeration, pot, cancellationToken);
 
 		await unitOfWork.SaveChangesAsync(cancellationToken);
+
+		stopwatch.Stop();
+		response.Duration = stopwatch.Elapsed;
 
 		return response;
 	}
