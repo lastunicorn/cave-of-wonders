@@ -8,13 +8,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ExcelDataReader" Version="3.7.0" />
-		<PackageReference Include="ExcelDataReader.DataSet" Version="3.7.0" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="ConsoleTools.Controls" Version="1.2.1" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\CaveOfWonders.Ports.SpreadsheetAccess\CaveOfWonders.Ports.SpreadsheetAccess.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Ports.UserAccess\CaveOfWonders.Ports.UserAccess.csproj" />
 	</ItemGroup>
 
 </Project>

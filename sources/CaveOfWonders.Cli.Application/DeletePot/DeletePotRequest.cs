@@ -5,5 +5,7 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.DeletePot;
 
 public class DeletePotRequest : IRequest<DeletePotResponse>
 {
-    public PotFlexId PotId { get; set; }
+	public PotFlexId PotId { get; set; }
+
+	public bool Confirmed { get; set; }
 }

@@ -11,6 +11,7 @@ using DustInTheWind.CaveOfWonders.Adapters.LogAccess;
 using DustInTheWind.CaveOfWonders.Adapters.MintosAccess;
 using DustInTheWind.CaveOfWonders.Adapters.PeerBerryAccess;
 using DustInTheWind.CaveOfWonders.Adapters.SpreadsheetAccess;
+using DustInTheWind.CaveOfWonders.Adapters.UserAccess;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using DustInTheWind.CaveOfWonders.Cli.Utils;
 using DustInTheWind.CaveOfWonders.Infrastructure;
@@ -25,6 +26,7 @@ using DustInTheWind.CaveOfWonders.Ports.LogAccess;
 using DustInTheWind.CaveOfWonders.Ports.MintosAccess;
 using DustInTheWind.CaveOfWonders.Ports.PeerBerryAccess;
 using DustInTheWind.CaveOfWonders.Ports.SpreadsheetAccess;
+using DustInTheWind.CaveOfWonders.Ports.UserAccess;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -82,6 +84,7 @@ internal static class DependenciesSetup
 		serviceCollection.AddScoped<ISheets, Sheets>();
 		serviceCollection.AddScoped<ILog, Log>();
 		serviceCollection.AddSingleton<IFileSystem, FileSystem>();
+		serviceCollection.AddSingleton<IUserInterface, UserInterface>();
 
 		serviceCollection.AddScoped<ICpiImportExportFactory, CpiImportExportFactory>();
 		serviceCollection.AddScoped<FileCpiImportExport>();
@@ -139,7 +142,7 @@ internal static class DependenciesSetup
 						})
 						.DisplayToConsole()
 						.Response();
-					
+
 					Measure
 						.Action("  Migrate", () => dbContext.Database.Migrate())
 						.DisplayToConsole();
