@@ -50,6 +50,10 @@
 		<Project Path="sources\CaveOfWonders.Adapters.MintosAccess\CaveOfWonders.Adapters.MintosAccess.csproj" />
 		<Project Path="sources\CaveOfWonders.Ports.MintosAccess\CaveOfWonders.Ports.MintosAccess.csproj" />
 	</Folder>
+	<Folder Name="/Ports/PeerBerryAccess/">
+		<Project Path="sources/CaveOfWonders.Adapters.PeerBerryAccess/CaveOfWonders.Adapters.PeerBerryAccess.csproj" />
+		<Project Path="sources/CaveOfWonders.Ports.PeerBerryAccess/CaveOfWonders.Ports.PeerBerryAccess.csproj" />
+	</Folder>
 	<Folder Name="/Ports/SpreadsheetAccess/">
 		<Project Path="sources/CaveOfWonders.Adapters.SpreadsheetAccess\CaveOfWonders.Adapters.SpreadsheetAccess.csproj" />
 		<Project Path="sources/CaveOfWonders.Ports.SpreadsheetAccess\CaveOfWonders.Ports.SpreadsheetAccess.csproj" />

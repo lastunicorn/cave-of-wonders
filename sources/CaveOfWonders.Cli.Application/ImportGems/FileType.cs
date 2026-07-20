@@ -5,5 +5,6 @@ public enum FileType
 	Unknown = 0,
 	Mintos,
 	Fintown,
-	Bcr
+	Bcr,
+	PeerBerry
 }

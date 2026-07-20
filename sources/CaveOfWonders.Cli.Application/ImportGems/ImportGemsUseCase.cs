@@ -4,6 +4,7 @@ using DustInTheWind.CaveOfWonders.Ports.BcrAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.FintownAccess;
 using DustInTheWind.CaveOfWonders.Ports.MintosAccess;
+using DustInTheWind.CaveOfWonders.Ports.PeerBerryAccess;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;
@@ -14,13 +15,15 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 	private readonly IMintosService mintosService;
 	private readonly IFintownService fintownService;
 	private readonly IBcrService bcrService;
+	private readonly IPeerBerryService peerBerryService;
 
-	public ImportGemsUseCase(IUnitOfWork unitOfWork, IMintosService mintosService, IFintownService fintownService, IBcrService bcrService)
+	public ImportGemsUseCase(IUnitOfWork unitOfWork, IMintosService mintosService, IFintownService fintownService, IBcrService bcrService, IPeerBerryService peerBerryService)
 	{
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 		this.mintosService = mintosService ?? throw new ArgumentNullException(nameof(mintosService));
 		this.fintownService = fintownService ?? throw new ArgumentNullException(nameof(fintownService));
 		this.bcrService = bcrService ?? throw new ArgumentNullException(nameof(bcrService));
+		this.peerBerryService = peerBerryService ?? throw new ArgumentNullException(nameof(peerBerryService));
 	}
 
 	public async Task<ImportGemsResponse> Handle(ImportGemsRequest request, CancellationToken cancellationToken)
@@ -32,6 +35,7 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 			FileType.Mintos => mintosService.GetGemsAsync(request.FilePath, cancellationToken),
 			FileType.Fintown => fintownService.GetGemsAsync(request.FilePath, cancellationToken),
 			FileType.Bcr => bcrService.GetGemsAsync(request.FilePath, cancellationToken),
+			FileType.PeerBerry => peerBerryService.GetGemsAsync(request.FilePath, cancellationToken),
 			FileType.Unknown => throw new UnknownFileTypeException(request.FileType),
 			_ => throw new UnknownFileTypeException(request.FileType)
 		};
