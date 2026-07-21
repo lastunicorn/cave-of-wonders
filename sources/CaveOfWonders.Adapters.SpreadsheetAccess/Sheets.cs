@@ -5,17 +5,17 @@ namespace DustInTheWind.CaveOfWonders.Adapters.SpreadsheetAccess;
 
 public class Sheets : ISheets
 {
-    public IExcelSpreadsheet GetExcelSpreadsheet(string filePath)
-    {
-        return new ExcelSpreadsheet(filePath);
-    }
+	public IExcelSpreadsheet GetExcelSpreadsheet(string filePath)
+	{
+		return new ExcelSpreadsheet(filePath);
+	}
 
-    public IEnumerable<SheetMapping> GetMappings(string location)
-    {
-        string json = File.ReadAllText(location);
-        List<JSheetMapping> jSheetDescriptors = JsonConvert.DeserializeObject<List<JSheetMapping>>(json);
+	public IEnumerable<SheetMapping> GetMappings(string location)
+	{
+		string json = File.ReadAllText(location);
+		List<JSheetMapping> jSheetDescriptors = JsonConvert.DeserializeObject<List<JSheetMapping>>(json);
 
-        return jSheetDescriptors
-            .Select(x => x.ToSheetDescriptor());
-    }
+		return jSheetDescriptors
+			.Select(x => x.ToSheetDescriptor());
+	}
 }

@@ -2,7 +2,7 @@
 
 public class Cpi
 {
-    public int Year { get; set; }
+	public int Year { get; set; }
 
-    public decimal Value { get; set; }
+	public decimal Value { get; set; }
 }

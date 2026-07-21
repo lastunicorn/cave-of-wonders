@@ -2,99 +2,99 @@ namespace DustInTheWind.CaveOfWonders.DataTypes;
 
 public record class PotFlexId
 {
-    private readonly string partialValue;
-    private readonly Guid? guid;
+	private readonly string partialValue;
+	private readonly Guid? guid;
 
-    public bool IsEmpty => !guid.HasValue && partialValue == null;
+	public bool IsEmpty => !guid.HasValue && partialValue == null;
 
-    public bool HasValue => guid.HasValue || partialValue != null;
+	public bool HasValue => guid.HasValue || partialValue != null;
 
-    public bool IsFullGuid => guid.HasValue;
+	public bool IsFullGuid => guid.HasValue;
 
-    public static PotFlexId Empty { get; } = new();
+	public static PotFlexId Empty { get; } = new();
 
-    private PotFlexId()
-    {
-    }
+	private PotFlexId()
+	{
+	}
 
-    public PotFlexId(string value)
-    {
-        if (value is null)
-            return;
+	public PotFlexId(string value)
+	{
+		if (value is null)
+			return;
 
-        if (Guid.TryParse(value, out Guid g))
-            guid = g;
-        else
-            partialValue = value;
-    }
+		if (Guid.TryParse(value, out Guid g))
+			guid = g;
+		else
+			partialValue = value;
+	}
 
-    public PotFlexId(Guid guid)
-    {
-        this.guid = guid;
-    }
+	public PotFlexId(Guid guid)
+	{
+		this.guid = guid;
+	}
 
-    public bool IsMatch(string text)
-    {
-        if (text == null) return false;
+	public bool IsMatch(string text)
+	{
+		if (text == null) return false;
 
-        if (guid.HasValue)
-        {
-            if (Guid.TryParse(text, out Guid textGuid))
-                return guid.Value == textGuid;
+		if (guid.HasValue)
+		{
+			if (Guid.TryParse(text, out Guid textGuid))
+				return guid.Value == textGuid;
 
-            return false;
-        }
+			return false;
+		}
 
-        if (partialValue is not null)
-            return text.Contains(partialValue, StringComparison.OrdinalIgnoreCase);
+		if (partialValue is not null)
+			return text.Contains(partialValue, StringComparison.OrdinalIgnoreCase);
 
-        return false;
-    }
+		return false;
+	}
 
-    public bool IsMatch(Guid value)
-    {
-        if (guid.HasValue)
-            return guid == value;
+	public bool IsMatch(Guid value)
+	{
+		if (guid.HasValue)
+			return guid == value;
 
-        if (partialValue is not null)
-        {
-            string partialValueWithoutDashes = partialValue
-                .Trim()
-                .Replace("-", string.Empty);
+		if (partialValue is not null)
+		{
+			string partialValueWithoutDashes = partialValue
+				.Trim()
+				.Replace("-", string.Empty);
 
-            return value.ToString("N").Contains(partialValueWithoutDashes, StringComparison.InvariantCultureIgnoreCase);
-        }
+			return value.ToString("N").Contains(partialValueWithoutDashes, StringComparison.InvariantCultureIgnoreCase);
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    public override string ToString()
-    {
-        return guid.HasValue
-            ? guid.Value.ToString("D")
-            : partialValue;
-    }
+	public override string ToString()
+	{
+		return guid.HasValue
+			? guid.Value.ToString("D")
+			: partialValue;
+	}
 
-    public static implicit operator PotFlexId(string value)
-    {
-        return new PotFlexId(value);
-    }
+	public static implicit operator PotFlexId(string value)
+	{
+		return new PotFlexId(value);
+	}
 
-    public static implicit operator PotFlexId(Guid guid)
-    {
-        return new PotFlexId(guid);
-    }
+	public static implicit operator PotFlexId(Guid guid)
+	{
+		return new PotFlexId(guid);
+	}
 
-    public static implicit operator string(PotFlexId potFlexId)
-    {
-        return potFlexId.ToString();
-    }
+	public static implicit operator string(PotFlexId potFlexId)
+	{
+		return potFlexId.ToString();
+	}
 
-    public static implicit operator Guid(PotFlexId potFlexId)
-    {
-        if (potFlexId.guid.HasValue)
-            return potFlexId.guid.Value;
+	public static implicit operator Guid(PotFlexId potFlexId)
+	{
+		if (potFlexId.guid.HasValue)
+			return potFlexId.guid.Value;
 
-        throw new InvalidCastException("PotIdentifier does not contain a valid Guid.");
-    }
+		throw new InvalidCastException("PotIdentifier does not contain a valid Guid.");
+	}
 }

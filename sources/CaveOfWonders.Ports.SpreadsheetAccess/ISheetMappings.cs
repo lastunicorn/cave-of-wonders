@@ -2,7 +2,7 @@
 
 public interface ISheetMappings
 {
-    string Name { get; }
+	string Name { get; }
 
-    ColumnMappings[] ColumnDescriptors { get; }
+	ColumnMappings[] ColumnDescriptors { get; }
 }

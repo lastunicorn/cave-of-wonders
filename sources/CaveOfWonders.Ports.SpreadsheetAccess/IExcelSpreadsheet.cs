@@ -2,5 +2,5 @@
 
 public interface IExcelSpreadsheet : IDisposable
 {
-    IEnumerable<SheetValue> Read(IEnumerable<SheetMapping> sheetDescriptors);
+	IEnumerable<SheetValue> Read(IEnumerable<SheetMapping> sheetDescriptors);
 }

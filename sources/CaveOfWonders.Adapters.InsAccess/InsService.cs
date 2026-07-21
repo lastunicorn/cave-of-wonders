@@ -29,24 +29,24 @@ public class InsService : IInsService
 		YearlyCpiWebPage yearlyCpiWebPage = new(url);
 		IEnumerable<YearlyCpiRecord> yearlyCpiRecords = await yearlyCpiWebPage.EnumerateRecords();
 
-        return yearlyCpiRecords
-            .Select(x => new CpiRecordDto
-            {
-                Year = x.Year,
-                Value = x.Value
-            });
-    }
+		return yearlyCpiRecords
+			.Select(x => new CpiRecordDto
+			{
+				Year = x.Year,
+				Value = x.Value
+			});
+	}
 
-    public async Task<IEnumerable<AverageWage>> GetAverageWagesAsync()
-    {
-        YearlyAverageWageWebPage webPage = new();
-        
-        return (await webPage.EnumerateRecords())
-            .Select(x => new AverageWage
-            {
-                Year = x.Year,
-                GrossValue = x.AverageGrossWage,
-                NetValue = x.AverageNetWage
-            });
-    }
+	public async Task<IEnumerable<AverageWage>> GetAverageWagesAsync()
+	{
+		YearlyAverageWageWebPage webPage = new();
+
+		return (await webPage.EnumerateRecords())
+			.Select(x => new AverageWage
+			{
+				Year = x.Year,
+				GrossValue = x.AverageGrossWage,
+				NetValue = x.AverageNetWage
+			});
+	}
 }

@@ -4,5 +4,5 @@ namespace DustInTheWind.CaveOfWonders.Ports.MintosAccess;
 
 public interface IMintosService
 {
-    IAsyncEnumerable<Gem> GetGemsAsync(string filePath, CancellationToken cancellationToken);
+	IAsyncEnumerable<Gem> GetGemsAsync(string filePath, CancellationToken cancellationToken);
 }

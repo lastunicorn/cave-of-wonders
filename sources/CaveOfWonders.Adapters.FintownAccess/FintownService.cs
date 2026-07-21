@@ -8,36 +8,36 @@ namespace DustInTheWind.CaveOfWonders.Adapters.FintownAccess;
 
 public class FintownService : IFintownService
 {
-    public async IAsyncEnumerable<Gem> GetGemsAsync(string filePath, [EnumeratorCancellation] CancellationToken cancellationToken)
-    {
-        TransactionsDocument transactionsDocument = await TransactionsDocument.LoadFromFileAsync(filePath);
+	public async IAsyncEnumerable<Gem> GetGemsAsync(string filePath, [EnumeratorCancellation] CancellationToken cancellationToken)
+	{
+		TransactionsDocument transactionsDocument = await TransactionsDocument.LoadFromFileAsync(filePath);
 
-        IEnumerable<Gem> gems = transactionsDocument
-            .Select(CreateGem);
-        
-        foreach (Gem gem in gems)
-            yield return gem;
-    }
+		IEnumerable<Gem> gems = transactionsDocument
+			.Select(CreateGem);
 
-    private static Gem CreateGem(TransactionRecord transactionRecord)
-    {
-        Gem gem = new()
-        {
-            Id = Guid.NewGuid(),
-            ExternalId = transactionRecord.Date.Ticks.ToString(),
-            Date = transactionRecord.Date,
-            Amount = transactionRecord.Amount.Value
-        };
+		foreach (Gem gem in gems)
+			yield return gem;
+	}
 
-        if (transactionRecord.Description == "Investing funds")
-            gem.Category = GemCategory.Internal;
-        else if (transactionRecord.Description == "Deposit funds")
-            gem.Category = GemCategory.Deposit;
-        else if (transactionRecord.Description == "Interest Pay-Out")
-            gem.Category = GemCategory.Gain;
-        else
-            gem.Category = GemCategory.Unknown;
+	private static Gem CreateGem(TransactionRecord transactionRecord)
+	{
+		Gem gem = new()
+		{
+			Id = Guid.NewGuid(),
+			ExternalId = transactionRecord.Date.Ticks.ToString(),
+			Date = transactionRecord.Date,
+			Amount = transactionRecord.Amount.Value
+		};
 
-        return gem;
-    }
+		if (transactionRecord.Description == "Investing funds")
+			gem.Category = GemCategory.Internal;
+		else if (transactionRecord.Description == "Deposit funds")
+			gem.Category = GemCategory.Deposit;
+		else if (transactionRecord.Description == "Interest Pay-Out")
+			gem.Category = GemCategory.Gain;
+		else
+			gem.Category = GemCategory.Unknown;
+
+		return gem;
+	}
 }

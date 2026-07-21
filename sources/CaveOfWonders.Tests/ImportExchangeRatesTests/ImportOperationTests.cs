@@ -217,11 +217,21 @@ public class ImportOperationTests
 
 		exchangeRateRepository
 			.Setup(x => x.Get((CurrencyPair)"EURUSD", new DateOnly(2023, 6, 11), It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new ExchangeRate { Date = new DateOnly(2023, 6, 11), CurrencyPair = "EURUSD", Value = 4.9700m });
+			.ReturnsAsync(new ExchangeRate
+			{
+				Date = new DateOnly(2023, 6, 11),
+				CurrencyPair = "EURUSD",
+				Value = 4.9700m
+			});
 
 		exchangeRateRepository
 			.Setup(x => x.Get((CurrencyPair)"EURUSD", new DateOnly(2023, 6, 12), It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new ExchangeRate { Date = new DateOnly(2023, 6, 12), CurrencyPair = "EURUSD", Value = 4.6000m });
+			.ReturnsAsync(new ExchangeRate
+			{
+				Date = new DateOnly(2023, 6, 12),
+				CurrencyPair = "EURUSD",
+				Value = 4.6000m
+			});
 
 		ExchangeRateImportReport report = await importOperation.Execute([newRate, existingIdenticalRate, existingUpdatedRate], CancellationToken.None);
 

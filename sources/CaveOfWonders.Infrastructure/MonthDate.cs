@@ -6,7 +6,7 @@ public readonly record struct MonthDate
 
 	public int Month { get; private init; }
 
-    public bool HasValue => Year > 0 && Month > 0;
+	public bool HasValue => Year > 0 && Month > 0;
 
 	public MonthDate(int year, int month)
 	{
@@ -20,15 +20,15 @@ public readonly record struct MonthDate
 		Month = month;
 	}
 
-    public MonthDate(DateOnly date)
-        : this(date.Year, date.Month)
-    {
-    }
+	public MonthDate(DateOnly date)
+		: this(date.Year, date.Month)
+	{
+	}
 
-    public bool Contains(DateTime date)
-    {
-        return date.Year == Year && date.Month == Month;
-    }
+	public bool Contains(DateTime date)
+	{
+		return date.Year == Year && date.Month == Month;
+	}
 
 	public override string ToString()
 	{
@@ -38,7 +38,7 @@ public readonly record struct MonthDate
 	public static MonthDate Parse(string text)
 	{
 		if (text == null)
-            return default;
+			return default;
 
 		string[] parts = text.Split('/');
 

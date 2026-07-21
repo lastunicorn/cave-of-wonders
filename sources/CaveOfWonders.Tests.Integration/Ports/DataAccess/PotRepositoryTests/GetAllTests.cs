@@ -238,9 +238,18 @@ public class GetAllTests
 				};
 
 				potInDb.Labels.AddRange([
-					new PotLabel { Label = "Savings" },
-					new PotLabel { Label = "Long-term" },
-					new PotLabel { Label = "Important" }
+					new PotLabel
+					{
+						Label = "Savings"
+					},
+					new PotLabel
+					{
+						Label = "Long-term"
+					},
+					new PotLabel
+					{
+						Label = "Important"
+					}
 				]);
 
 				await backDoor.SeedPotsAsync([potInDb]);

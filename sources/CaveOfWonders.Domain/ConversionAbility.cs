@@ -2,7 +2,7 @@
 
 public enum ConversionAbility
 {
-    None = 0,
-    ConvertDirect,
-    ConvertReverse
+	None = 0,
+	ConvertDirect,
+	ConvertReverse
 }

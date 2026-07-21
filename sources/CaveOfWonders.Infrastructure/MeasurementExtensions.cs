@@ -11,7 +11,7 @@ public static class MeasurementExtensions
 
 		return measurement;
 	}
-	
+
 	public static Measurement<TResponse> DisplayToConsole<TResponse>(this Measurement<TResponse> measurement)
 	{
 		if (measurement.Title != null)

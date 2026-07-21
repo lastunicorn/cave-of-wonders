@@ -2,9 +2,9 @@
 
 public class BnrExchangeRate
 {
-    public DateOnly Date { get; set; }
+	public DateOnly Date { get; set; }
 
-    public string CurrencyPair { get; set; }
+	public string CurrencyPair { get; set; }
 
-    public decimal Value { get; set; }
+	public decimal Value { get; set; }
 }

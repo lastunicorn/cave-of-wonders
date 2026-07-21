@@ -2,7 +2,7 @@
 
 internal class JSheetMapping
 {
-    public string Name { get; set; }
+	public string Name { get; set; }
 
-    public List<JColumnMapping> Columns { get; set; }
+	public List<JColumnMapping> Columns { get; set; }
 }

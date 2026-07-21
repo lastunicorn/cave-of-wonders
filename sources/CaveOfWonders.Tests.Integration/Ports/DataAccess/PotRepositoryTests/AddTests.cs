@@ -183,9 +183,18 @@ public class AddTests
 				};
 
 				pot.Labels.AddRange([
-					new PotLabel { Label = "Savings" },
-					new PotLabel { Label = "Long-term" },
-					new PotLabel { Label = "Important" }
+					new PotLabel
+					{
+						Label = "Savings"
+					},
+					new PotLabel
+					{
+						Label = "Long-term"
+					},
+					new PotLabel
+					{
+						Label = "Important"
+					}
 				]);
 
 				repository.Add(pot);

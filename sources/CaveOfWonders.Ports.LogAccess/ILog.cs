@@ -2,7 +2,7 @@
 
 public interface ILog
 {
-    void WriteInfo(string text);
+	void WriteInfo(string text);
 
-    Task<T> ExecuteInfo<T>(string title, Func<Task<T>> action);
+	Task<T> ExecuteInfo<T>(string title, Func<Task<T>> action);
 }

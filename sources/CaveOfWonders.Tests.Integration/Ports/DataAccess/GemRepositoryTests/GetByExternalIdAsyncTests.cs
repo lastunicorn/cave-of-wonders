@@ -414,8 +414,16 @@ public class GetByExternalIdAsyncTests
 						Id = potId
 					}
 				};
-				gem.Parameters.Add(new GemParameter { Key = "source", Value = "mintos" });
-				gem.Parameters.Add(new GemParameter { Key = "note", Value = "old note" });
+				gem.Parameters.Add(new GemParameter
+				{
+					Key = "source",
+					Value = "mintos"
+				});
+				gem.Parameters.Add(new GemParameter
+				{
+					Key = "note",
+					Value = "old note"
+				});
 
 				await backDoor.SeedGemsAsync([gem]);
 
@@ -427,7 +435,13 @@ public class GetByExternalIdAsyncTests
 				Gem existing = await repository.GetByExternalIdAsync(potId, "ext-1", CancellationToken.None);
 
 				existing.Parameters.Clear();
-				existing.Parameters.AddRange([new GemParameter { Key = "source", Value = "fintown" }]);
+				existing.Parameters.AddRange([
+					new GemParameter
+					{
+						Key = "source",
+						Value = "fintown"
+					}
+				]);
 			})
 			.Assert(async (backDoor, context) =>
 			{

@@ -2,7 +2,7 @@
 
 public enum ValueFormat
 {
-    Lei,
-    Euro,
-    Grams
+	Lei,
+	Euro,
+	Grams
 }

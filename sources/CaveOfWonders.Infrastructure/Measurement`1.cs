@@ -1,4 +1,3 @@
-
 namespace DustInTheWind.CaveOfWonders.Infrastructure;
 
 public record class Measurement<TResponse>

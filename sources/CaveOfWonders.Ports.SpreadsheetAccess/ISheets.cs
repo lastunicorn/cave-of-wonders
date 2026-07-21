@@ -2,7 +2,7 @@
 
 public interface ISheets
 {
-    IExcelSpreadsheet GetExcelSpreadsheet(string filePath);
+	IExcelSpreadsheet GetExcelSpreadsheet(string filePath);
 
-    IEnumerable<SheetMapping> GetMappings(string location);
+	IEnumerable<SheetMapping> GetMappings(string location);
 }

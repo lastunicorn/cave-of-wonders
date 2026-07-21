@@ -4,5 +4,5 @@ namespace DustInTheWind.CaveOfWonders.Ports.FintownAccess;
 
 public interface IFintownService
 {
-    IAsyncEnumerable<Gem> GetGemsAsync(string filePath, CancellationToken cancellationToken);
+	IAsyncEnumerable<Gem> GetGemsAsync(string filePath, CancellationToken cancellationToken);
 }

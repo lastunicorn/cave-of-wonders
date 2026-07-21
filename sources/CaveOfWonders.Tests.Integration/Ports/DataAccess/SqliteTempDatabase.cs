@@ -8,7 +8,7 @@ internal sealed class SqliteTempDatabase : IDisposable, IAsyncDisposable
 {
 	private readonly string dbDirectoryPath = Path.Combine(Path.GetTempPath(), $"test-database-{Guid.NewGuid()}");
 	private readonly string connectionString;
-	
+
 	private CaveOfWondersDbContext dbContext;
 
 	public CaveOfWondersDbContext DbContext => dbContext;
@@ -49,7 +49,7 @@ internal sealed class SqliteTempDatabase : IDisposable, IAsyncDisposable
 		await dbContext.DisposeAsync();
 		dbContext = null;
 	}
-	
+
 	public void Dispose()
 	{
 		dbContext?.Dispose();
@@ -76,7 +76,7 @@ internal sealed class SqliteTempDatabase : IDisposable, IAsyncDisposable
 			await dbContext.DisposeAsync();
 			dbContext = null;
 		}
-		
+
 		DeleteDatabaseDirectory();
 	}
 }

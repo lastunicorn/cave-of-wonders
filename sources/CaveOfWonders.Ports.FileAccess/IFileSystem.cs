@@ -2,5 +2,5 @@
 
 public interface IFileSystem
 {
-    Stream CreateFile(string path);
+	Stream CreateFile(string path);
 }
