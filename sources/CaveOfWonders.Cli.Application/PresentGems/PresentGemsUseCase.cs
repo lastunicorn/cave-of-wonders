@@ -103,7 +103,15 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
 		if (month.HasValue)
 			filter.Month = month;
 
-		if (!request.StartDate.HasValue && !request.EndDate.HasValue && !request.Date.HasValue && !month.HasValue)
+		int? year = await DecideYear(potId, request, cancellationToken);
+
+		if (year.HasValue && !request.StartDate.HasValue && !request.EndDate.HasValue)
+		{
+			filter.StartDate = new DateOnly(year.Value, 1, 1);
+			filter.EndDate = new DateOnly(year.Value, 12, 31);
+		}
+
+		if (!request.StartDate.HasValue && !request.EndDate.HasValue && !request.Date.HasValue && !month.HasValue && !year.HasValue)
 			filter.Month = new MonthAndYear(systemClock.Today);
 
 		if (request.ExcludeInternal)
@@ -133,6 +141,27 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
 		return latestGem == null
 			? default
 			: new MonthAndYear(DateOnly.FromDateTime(latestGem.Date));
+	}
+
+	private async Task<int?> DecideYear(Guid potId, PresentGemsRequest request, CancellationToken cancellationToken)
+	{
+		if (request.CurrentYear)
+			return systemClock.Today.Year;
+
+		if (request.LastYear)
+			return systemClock.Today.Year - 1;
+
+		if (request.LatestYear)
+			return await RetrieveLatestYearWithGems(potId, cancellationToken);
+
+		return null;
+	}
+
+	private async Task<int?> RetrieveLatestYearWithGems(Guid potId, CancellationToken cancellationToken)
+	{
+		Gem latestGem = await unitOfWork.GemRepository.GetLatestAsync(potId, cancellationToken);
+
+		return latestGem?.Date.Year;
 	}
 
 	private static decimal CalculateAmount(Gem gem)

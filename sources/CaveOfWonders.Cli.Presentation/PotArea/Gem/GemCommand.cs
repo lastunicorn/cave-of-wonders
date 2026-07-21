@@ -33,6 +33,15 @@ internal class GemCommand : IConsoleCommand<GemCommandViewModel>
 	[NamedParameter("latest-month", IsMandatory = false, Description = "Display the gems for the latest month that has gems.")]
 	public bool LatestMonth { get; set; }
 
+	[NamedParameter("current-year", IsMandatory = false, Description = "Display the gems for the current year.")]
+	public bool CurrentYear { get; set; }
+
+	[NamedParameter("last-year", IsMandatory = false, Description = "Display the gems for the last year.")]
+	public bool LastYear { get; set; }
+
+	[NamedParameter("latest-year", IsMandatory = false, Description = "Display the gems for the latest year that has gems.")]
+	public bool LatestYear { get; set; }
+
 	[NamedParameter("exclude-internal", IsMandatory = false, Description = "Exclude internal gems.")]
 	public bool ExcludeInternal { get; set; }
 
@@ -53,6 +62,9 @@ internal class GemCommand : IConsoleCommand<GemCommandViewModel>
 			CurrentMonth = CurrentMonth,
 			LastMonth = LastMonth,
 			LatestMonth = LatestMonth,
+			CurrentYear = CurrentYear,
+			LastYear = LastYear,
+			LatestYear = LatestYear,
 			ExcludeInternal = ExcludeInternal
 		};
 
