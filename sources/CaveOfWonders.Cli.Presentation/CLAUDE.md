@@ -11,8 +11,8 @@ Shared display infrastructure (reusable `DataGrid` helpers, `Controls/`) lives a
 ## Directory layout
 
 ```
-<Area>/                  e.g. PotArea/, FxArea/, CpiArea/, WageArea/, WealthArea/
-    <CommandFolder>/     e.g. Pot/, GemImport/, FxImport/, Gain/
+<Area>/                  e.g. PotArea/, FxArea/, CpiArea/, WageArea/
+    <CommandFolder>/     e.g. Pot/, GemImport/, FxImport/, Gain/, Wealth/
         *Command.cs
         *View.cs
         *ViewModel.cs
@@ -20,7 +20,7 @@ Shared display infrastructure (reusable `DataGrid` helpers, `Controls/`) lives a
 Controls/                reusable ConsoleTools controls
 ```
 
-Area names: use the domain noun with the `Area` suffix (`PotArea`, `FxArea`, `CpiArea`, `WageArea`, `WealthArea`).
+Area names: use the domain noun with the `Area` suffix (`PotArea`, `FxArea`, `CpiArea`, `WageArea`). There is no separate `WealthArea` — `Gain` and `Wealth` (the former "wealth" commands) live under `PotArea`.
 
 Command folder names: PascalCase noun phrase describing what the command does — not derived from the CLI verb name. Query commands use a noun alone (`Pot`, `Gain`); action commands use verb + noun (`GemImport`, `FxImport`, `PotCreate`).
 
@@ -277,7 +277,7 @@ DustInTheWind.CaveOfWonders.Cli.Presentation.<Area>.<Folder>
 ```
 
 Examples:
-- `DustInTheWind.CaveOfWonders.Cli.Presentation.WealthArea.Gain`
+- `DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Gain`
 - `DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.GemImport`
 - `DustInTheWind.CaveOfWonders.Cli.Presentation` (shared utilities at root)
 
