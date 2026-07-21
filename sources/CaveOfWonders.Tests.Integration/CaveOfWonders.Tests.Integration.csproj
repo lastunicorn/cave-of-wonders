@@ -1,49 +1,49 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <AssemblyName>DustInTheWind.$(MSBuildProjectName)</AssemblyName>
-        <RootNamespace>DustInTheWind.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<AssemblyName>DustInTheWind.$(MSBuildProjectName)</AssemblyName>
+		<RootNamespace>DustInTheWind.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
 
-        <IsPackable>false</IsPackable>
-        <IsTestProject>true</IsTestProject>
-    </PropertyGroup>
+		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="coverlet.collector" Version="10.0.1">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="FluentAssertions" Version="8.4.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-        <PackageReference Include="xunit" Version="2.5.3" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="coverlet.collector" Version="10.0.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="FluentAssertions" Version="8.4.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+		<PackageReference Include="xunit" Version="2.5.3" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <Using Include="Xunit" />
-    </ItemGroup>
+	<ItemGroup>
+		<Using Include="Xunit" />
+	</ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\CaveOfWonders.Adapters.ClockAccess\CaveOfWonders.Adapters.ClockAccess.csproj" PrivateAssets="All" />
-      <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess.LiteDb\CaveOfWonders.Adapters.DataAccess.LiteDb.csproj" PrivateAssets="All" />
-      <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess.SQLite\CaveOfWonders.Adapters.DataAccess.SQLite.csproj" PrivateAssets="All" />
-      <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess\CaveOfWonders.Adapters.DataAccess.Json.csproj" PrivateAssets="All" />
-      <ProjectReference Include="..\CaveOfWonders.Adapters.FileAccess\CaveOfWonders.Adapters.FileAccess.csproj" PrivateAssets="All" />
-      <ProjectReference Include="..\CaveOfWonders.Adapters.LogAccess\CaveOfWonders.Adapters.LogAccess.csproj" PrivateAssets="All" />
-      <ProjectReference Include="..\CaveOfWonders.DataTypes\CaveOfWonders.DataTypes.csproj" PrivateAssets="All" />
-      <ProjectReference Include="..\CaveOfWonders.Domain\CaveOfWonders.Domain.csproj" PrivateAssets="All" />
-      <ProjectReference Include="..\CaveOfWonders.Infrastructure\CaveOfWonders.Infrastructure.csproj" PrivateAssets="All" />
-      <ProjectReference Include="..\CaveOfWonders.Ports.ClockAccess\CaveOfWonders.Ports.ClockAccess.csproj" PrivateAssets="All" />
-      <ProjectReference Include="..\CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj" PrivateAssets="All" />
-      <ProjectReference Include="..\CaveOfWonders.Ports.FileAccess\CaveOfWonders.Ports.FileAccess.csproj" PrivateAssets="All" />
-      <ProjectReference Include="..\CaveOfWonders.Ports.LogAccess\CaveOfWonders.Ports.LogAccess.csproj" PrivateAssets="All" />
-      <ProjectReference Include="..\CaveOfWonders.Tests.Utils\CaveOfWonders.Tests.Utils.csproj" PrivateAssets="All" />
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\CaveOfWonders.Adapters.ClockAccess\CaveOfWonders.Adapters.ClockAccess.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess.LiteDb\CaveOfWonders.Adapters.DataAccess.LiteDb.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess.SQLite\CaveOfWonders.Adapters.DataAccess.SQLite.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess\CaveOfWonders.Adapters.DataAccess.Json.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Adapters.FileAccess\CaveOfWonders.Adapters.FileAccess.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Adapters.LogAccess\CaveOfWonders.Adapters.LogAccess.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.DataTypes\CaveOfWonders.DataTypes.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Domain\CaveOfWonders.Domain.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Infrastructure\CaveOfWonders.Infrastructure.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Ports.ClockAccess\CaveOfWonders.Ports.ClockAccess.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Ports.DataAccess\CaveOfWonders.Ports.DataAccess.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Ports.FileAccess\CaveOfWonders.Ports.FileAccess.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Ports.LogAccess\CaveOfWonders.Ports.LogAccess.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Tests.Utils\CaveOfWonders.Tests.Utils.csproj" PrivateAssets="All" />
+	</ItemGroup>
 
-    <ItemGroup>
-      <None Include="tests-config.json" CopyToOutputDirectory="PreserveNewest" />
-    </ItemGroup>
+	<ItemGroup>
+		<None Include="tests-config.json" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
 
 </Project>

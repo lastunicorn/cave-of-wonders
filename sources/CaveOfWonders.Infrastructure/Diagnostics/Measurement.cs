@@ -1,4 +1,4 @@
-namespace DustInTheWind.CaveOfWonders.Infrastructure;
+namespace DustInTheWind.CaveOfWonders.Infrastructure.Diagnostics;
 
 public record class Measurement
 {

@@ -15,6 +15,7 @@ using DustInTheWind.CaveOfWonders.Adapters.UserAccess;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using DustInTheWind.CaveOfWonders.Cli.Utils;
 using DustInTheWind.CaveOfWonders.Infrastructure;
+using DustInTheWind.CaveOfWonders.Infrastructure.Diagnostics;
 using DustInTheWind.CaveOfWonders.Ports.BcrAccess;
 using DustInTheWind.CaveOfWonders.Ports.BnrAccess;
 using DustInTheWind.CaveOfWonders.Ports.ClockAccess;

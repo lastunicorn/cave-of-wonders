@@ -1,4 +1,4 @@
-namespace DustInTheWind.CaveOfWonders.Infrastructure;
+namespace DustInTheWind.CaveOfWonders.Infrastructure.Diagnostics;
 
 public static class MeasurementExtensions
 {
@@ -53,6 +53,20 @@ public static class MeasurementExtensions
 
 	public static TResponse Response<TResponse>(this Measurement<TResponse> measurement)
 	{
+		return measurement.Result;
+	}
+
+	public static async Task<Measurement<TResponse>> OnFinished<TResponse>(this Task<Measurement<TResponse>> task, Action<Measurement<TResponse>, TResponse> action)
+	{
+		Measurement<TResponse> measurement = await task;
+		action?.Invoke(measurement, measurement.Result);
+		
+		return measurement;
+	}
+
+	public static async Task<TResponse> Response<TResponse>(this Task<Measurement<TResponse>> task)
+	{
+		Measurement<TResponse> measurement = await task;
 		return measurement.Result;
 	}
 }

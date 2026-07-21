@@ -1,6 +1,6 @@
-using System.Diagnostics;
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Infrastructure.Diagnostics;
 using DustInTheWind.CaveOfWonders.Ports.BcrAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.FintownAccess;
@@ -27,30 +27,23 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 		this.peerBerryService = peerBerryService ?? throw new ArgumentNullException(nameof(peerBerryService));
 	}
 
-	public async Task<ImportGemsResponse> Handle(ImportGemsRequest request, CancellationToken cancellationToken)
+	public Task<ImportGemsResponse> Handle(ImportGemsRequest request, CancellationToken cancellationToken)
 	{
-		Stopwatch stopwatch = Stopwatch.StartNew();
-		
-		Pot pot = await FindPot(request.PotFlexId, cancellationToken);
-		
-		IAsyncEnumerable<Gem> gemEnumeration = request.FileType switch
-		{
-			FileType.Mintos => mintosService.GetGemsAsync(request.FilePath, cancellationToken),
-			FileType.Fintown => fintownService.GetGemsAsync(request.FilePath, cancellationToken),
-			FileType.Bcr => bcrService.GetGemsAsync(request.FilePath, cancellationToken),
-			FileType.PeerBerry => peerBerryService.GetGemsAsync(request.FilePath, cancellationToken),
-			FileType.Unknown => throw new UnknownFileTypeException(request.FileType),
-			_ => throw new UnknownFileTypeException(request.FileType)
-		};
-		
-		ImportGemsResponse response = await ImportGems(gemEnumeration, pot, cancellationToken);
-		
-		await unitOfWork.SaveChangesAsync(cancellationToken);
-		
-		stopwatch.Stop();
-		response.Duration = stopwatch.Elapsed;
-		
-		return response;
+		return Measure
+			.Action(async () =>
+			{
+				Pot pot = await FindPot(request.PotFlexId, cancellationToken);
+				IAsyncEnumerable<Gem> gemEnumeration = GetGemsFromSource(request, cancellationToken);
+				ImportGemsResponse response = await ImportGems(gemEnumeration, pot, cancellationToken);
+
+				await unitOfWork.SaveChangesAsync(cancellationToken);
+				return response;
+			})
+			.OnFinished((measurement, response) =>
+			{
+				response.Duration = measurement.Time;
+			})
+			.Response();
 	}
 
 	private async Task<Pot> FindPot(PotFlexId potFlexId, CancellationToken cancellationToken)
@@ -72,6 +65,20 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 			throw new PotNotFoundException(potFlexId);
 
 		return foundPot;
+	}
+
+	private IAsyncEnumerable<Gem> GetGemsFromSource(ImportGemsRequest request, CancellationToken cancellationToken)
+	{
+		IAsyncEnumerable<Gem> gemEnumeration = request.FileType switch
+		{
+			FileType.Mintos => mintosService.GetGemsAsync(request.FilePath, cancellationToken),
+			FileType.Fintown => fintownService.GetGemsAsync(request.FilePath, cancellationToken),
+			FileType.Bcr => bcrService.GetGemsAsync(request.FilePath, cancellationToken),
+			FileType.PeerBerry => peerBerryService.GetGemsAsync(request.FilePath, cancellationToken),
+			FileType.Unknown => throw new UnknownFileTypeException(request.FileType),
+			_ => throw new UnknownFileTypeException(request.FileType)
+		};
+		return gemEnumeration;
 	}
 
 	private async Task<ImportGemsResponse> ImportGems(IAsyncEnumerable<Gem> gemEnumeration, Pot pot, CancellationToken cancellationToken)
