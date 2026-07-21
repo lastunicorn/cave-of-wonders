@@ -64,13 +64,25 @@ public class QuanloopService : IQuanloopService
 	internal static GemCategory CalculateCategory(TransactionRecord transactionRecord)
 	{
 		string description = transactionRecord.Description?.Trim() ?? string.Empty;
+		string counterpart = transactionRecord.Counterpart?.Trim() ?? string.Empty;
 
 		if (description.StartsWith("Interest revenue", StringComparison.OrdinalIgnoreCase)) return GemCategory.Gain;
 		if (description.StartsWith("Cashback", StringComparison.OrdinalIgnoreCase)) return GemCategory.Bonus;
 		if (description.StartsWith("Sign-up bonus", StringComparison.OrdinalIgnoreCase)) return GemCategory.Bonus;
 
-		if (transactionRecord.Amount < 0) return GemCategory.Withdrawal;
-		if (transactionRecord.Amount > 0) return GemCategory.Deposit;
+		bool isWithdrawal = !counterpart.Equals("Quanloop", StringComparison.OrdinalIgnoreCase)
+			&& description.Contains("Withdrawal", StringComparison.OrdinalIgnoreCase)
+			&& !string.IsNullOrWhiteSpace(transactionRecord.Account)
+			&& transactionRecord.Amount < 0;
+
+		if (isWithdrawal) return GemCategory.Withdrawal;
+
+		bool isDeposit = !counterpart.Equals("Quanloop", StringComparison.OrdinalIgnoreCase)
+			&& description.Contains("QNL", StringComparison.OrdinalIgnoreCase)
+			&& !string.IsNullOrWhiteSpace(transactionRecord.Account)
+			&& transactionRecord.Amount > 0;
+
+		if (isDeposit) return GemCategory.Deposit;
 
 		return GemCategory.Unknown;
 	}
