@@ -41,7 +41,7 @@ public record class Gem
 			&& Category == other.Category
 			&& Amount == other.Amount
 			&& Description == other.Description
-			&& Parameters.SequenceEqual(other.Parameters)
+			&& Parameters.OrderBy(x => x.Key).SequenceEqual(other.Parameters.OrderBy(x => x.Key))
 			&& Pot?.Id == other.Pot?.Id;
 	}
 }

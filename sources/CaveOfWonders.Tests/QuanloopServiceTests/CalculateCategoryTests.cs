@@ -54,6 +54,8 @@ public class CalculateCategoryTests
 	{
 		TransactionRecord transactionRecord = new()
 		{
+			Counterpart = "Alexandru Nicolae Iuga",
+			Account = "LT933250084840074515",
 			Description = "QNL16176936",
 			Amount = 500.00m
 		};
@@ -68,6 +70,8 @@ public class CalculateCategoryTests
 	{
 		TransactionRecord transactionRecord = new()
 		{
+			Counterpart = "Alexandru Nicolae Iuga",
+			Account = "LT933250084840074515",
 			Description = "QS000LLLVN QNL16176936 Withdrawal",
 			Amount = -900.00m
 		};
