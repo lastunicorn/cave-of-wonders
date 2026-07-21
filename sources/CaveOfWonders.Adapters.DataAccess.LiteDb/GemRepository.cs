@@ -36,6 +36,19 @@ public class GemRepository : IGemRepository
 		return Task.FromResult(gem);
 	}
 
+	public Task<Gem> GetLatestAsync(Guid potId, CancellationToken cancellationToken = default)
+	{
+		GemDbEntity entity = dbContext.Gems
+			.FindAll()
+			.Where(x => x.PotId == potId)
+			.OrderByDescending(x => x.Date)
+			.FirstOrDefault();
+
+		Gem gem = entity == null ? null : MapToDomain(entity);
+
+		return Task.FromResult(gem);
+	}
+
 	public IAsyncEnumerable<Gem> FindAsync(GemFilter filter, CancellationToken cancellationToken = default)
 	{
 		IEnumerable<GemDbEntity> entities = dbContext.Gems.FindAll();

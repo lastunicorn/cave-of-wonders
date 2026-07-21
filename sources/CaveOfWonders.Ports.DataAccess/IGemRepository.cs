@@ -9,6 +9,8 @@ public interface IGemRepository
 
     Task<Gem> GetByExternalIdAsync(Guid potId, string gemExternalId, CancellationToken cancellationToken = default);
 
+    Task<Gem> GetLatestAsync(Guid potId, CancellationToken cancellationToken = default);
+
     IAsyncEnumerable<Gem> FindAsync(GemFilter filter, CancellationToken cancellationToken = default);
 
     IAsyncEnumerable<Gem> FindByDateAsync(Guid potId, DateOnly date, CancellationToken cancellationToken = default);

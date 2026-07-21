@@ -38,6 +38,15 @@ internal class GemRepository : IGemRepository
 			.FirstOrDefaultAsync(g => g.Pot.Id == potId && g.ExternalId == gemExternalId, cancellationToken);
 	}
 
+	public async Task<Gem> GetLatestAsync(Guid potId, CancellationToken cancellationToken = default)
+	{
+		return await dbContext.Gems
+			.Include(x => x.Pot)
+			.Where(x => x.Pot.Id == potId)
+			.OrderByDescending(x => x.Date)
+			.FirstOrDefaultAsync(cancellationToken);
+	}
+
 	public IAsyncEnumerable<Gem> FindByMonthAsync(Guid potId, MonthAndYear month, CancellationToken cancellationToken)
 	{
 		return dbContext.Gems

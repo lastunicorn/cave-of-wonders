@@ -21,7 +21,7 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
 	public async Task<PresentGemsResponse> Handle(PresentGemsRequest request, CancellationToken cancellationToken)
 	{
 		Pot pot = await RetrievePot(request.PotId, cancellationToken);
-		IAsyncEnumerable<Gem> gems = RetrieveGems(pot.Id, request, cancellationToken);
+		IAsyncEnumerable<Gem> gems = await RetrieveGems(pot.Id, request, cancellationToken);
 
 		SortedList<DateTime, GemDto> gemsByDate = new(new DuplicateKeyComparer<DateTime>());
 		decimal totalAmount = 0;
@@ -82,7 +82,7 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
 		return matchedPot;
 	}
 
-	private IAsyncEnumerable<Gem> RetrieveGems(Guid potId, PresentGemsRequest request, CancellationToken cancellationToken)
+	private async Task<IAsyncEnumerable<Gem>> RetrieveGems(Guid potId, PresentGemsRequest request, CancellationToken cancellationToken)
 	{
 		GemFilter filter = new()
 		{
@@ -98,7 +98,7 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
 		if (request.Date.HasValue)
 			filter.Date = request.Date.Value;
 
-		MonthAndYear month = DecideMonth(request);
+		MonthAndYear month = await DecideMonth(potId, request, cancellationToken);
 
 		if (month.HasValue)
 			filter.Month = month;
@@ -112,7 +112,7 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
 		return unitOfWork.GemRepository.FindAsync(filter, cancellationToken);
 	}
 
-	private MonthAndYear DecideMonth(PresentGemsRequest request)
+	private async Task<MonthAndYear> DecideMonth(Guid potId, PresentGemsRequest request, CancellationToken cancellationToken)
 	{
 		if (request.CurrentMonth)
 			return new MonthAndYear(systemClock.Today);
@@ -120,7 +120,19 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
 		if (request.LastMonth)
 			return new MonthAndYear(systemClock.Today.AddMonths(-1));
 
+		if (request.LatestMonth)
+			return await RetrieveLatestMonthWithGems(potId, cancellationToken);
+
 		return request.Month;
+	}
+
+	private async Task<MonthAndYear> RetrieveLatestMonthWithGems(Guid potId, CancellationToken cancellationToken)
+	{
+		Gem latestGem = await unitOfWork.GemRepository.GetLatestAsync(potId, cancellationToken);
+
+		return latestGem == null
+			? default
+			: new MonthAndYear(DateOnly.FromDateTime(latestGem.Date));
 	}
 
 	private static decimal CalculateAmount(Gem gem)

@@ -38,6 +38,18 @@ public class GemRepository : IGemRepository
 		return gem;
 	}
 
+	public async Task<Gem> GetLatestAsync(Guid potId, CancellationToken cancellationToken = default)
+	{
+		await database.LoadGemsAsync(cancellationToken);
+
+		Gem gem = database.Gems
+			.Where(x => x.Pot?.Id == potId)
+			.OrderByDescending(x => x.Date)
+			.FirstOrDefault();
+
+		return gem;
+	}
+
 	public async IAsyncEnumerable<Gem> FindAsync(GemFilter filter, [EnumeratorCancellation] CancellationToken cancellationToken = default)
 	{
 		await database.LoadGemsAsync(cancellationToken);

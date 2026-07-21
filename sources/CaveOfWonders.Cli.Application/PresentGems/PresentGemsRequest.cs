@@ -20,5 +20,7 @@ public class PresentGemsRequest : IRequest<PresentGemsResponse>
 
 	public bool LastMonth { get; set; }
 
+	public bool LatestMonth { get; set; }
+
 	public bool ExcludeInternal { get; set; }
 }
