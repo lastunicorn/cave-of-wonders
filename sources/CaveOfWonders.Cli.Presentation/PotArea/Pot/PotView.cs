@@ -7,104 +7,104 @@ namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pot;
 
 internal class PotView : ViewBase<PotCommandViewModel>
 {
-    public override void Display(PotCommandViewModel viewModel)
-    {
-        bool potExists = viewModel.PotDetails?.Count > 0 || viewModel.PotSummaries?.Count > 0;
+	public override void Display(PotCommandViewModel viewModel)
+	{
+		bool potExists = viewModel.PotDetails?.Count > 0 || viewModel.PotSummaries?.Count > 0;
 
-        if (!potExists)
-        {
-            CustomConsole.WriteLineWarning("There is no pot with the specified name or id.");
-        }
-        else if (viewModel.PotDetails?.Count > 0)
-        {
-            bool isFirst = true;
+		if (!potExists)
+		{
+			CustomConsole.WriteLineWarning("There is no pot with the specified name or id.");
+		}
+		else if (viewModel.PotDetails?.Count > 0)
+		{
+			bool isFirst = true;
 
-            foreach (PotDetailsViewModel potDetailsViewModel in viewModel.PotDetails)
-            {
-                if (isFirst)
-                    isFirst = false;
-                else
-                    Console.WriteLine();
+			foreach (PotDetailsViewModel potDetailsViewModel in viewModel.PotDetails)
+			{
+				if (isFirst)
+					isFirst = false;
+				else
+					Console.WriteLine();
 
-                DisplayPotDetails(potDetailsViewModel);
-            }
-        }
-        else if (viewModel.PotSummaries?.Count > 0)
-        {
-            DisplayPotSummary(viewModel);
-        }
-    }
+				DisplayPotDetails(potDetailsViewModel);
+			}
+		}
+		else if (viewModel.PotSummaries?.Count > 0)
+		{
+			DisplayPotSummary(viewModel);
+		}
+	}
 
-    private static void DisplayPotDetails(PotDetailsViewModel potDetailsViewModel)
-    {
-        DataGrid dataGrid = DataGridTemplate.CreateNew();
-        dataGrid.Title = potDetailsViewModel.Name;
+	private static void DisplayPotDetails(PotDetailsViewModel potDetailsViewModel)
+	{
+		DataGrid dataGrid = DataGridTemplate.CreateNew();
+		dataGrid.Title = potDetailsViewModel.Name;
 
-        if (!potDetailsViewModel.IsActive)
-        {
-            dataGrid.Disable();
-        }
-        else
-        {
-            dataGrid.Columns.Add(new Column
-            {
-                ForegroundColor = ConsoleColor.White
-            });
-            
-            dataGrid.Columns.Add(new Column
-            {
-                ForegroundColor = ConsoleColor.Gray
-            });
-        }
+		if (!potDetailsViewModel.IsActive)
+		{
+			dataGrid.Disable();
+		}
+		else
+		{
+			dataGrid.Columns.Add(new Column
+			{
+				ForegroundColor = ConsoleColor.White
+			});
 
-        dataGrid.Rows.Add("Id", potDetailsViewModel.Id);
-        dataGrid.Rows.Add("Description", potDetailsViewModel.Description);
-        dataGrid.Rows.Add("Start Date", potDetailsViewModel.StartDate.ToString("d"));
-        dataGrid.Rows.Add("End Date", potDetailsViewModel.EndDate?.ToString("d") ?? string.Empty);
-        dataGrid.Rows.Add("Currency", potDetailsViewModel.Currency);
-        dataGrid.Rows.Add("Labels", string.Join(", ", potDetailsViewModel.Labels));
-        dataGrid.Rows.Add("Snapshot Count", potDetailsViewModel.SnapshotCount);
+			dataGrid.Columns.Add(new Column
+			{
+				ForegroundColor = ConsoleColor.Gray
+			});
+		}
 
-        string lastSnapshot = potDetailsViewModel.LastSnapshotDate != null
-            ? $"{potDetailsViewModel.LastSnapshotDate:d} ({potDetailsViewModel.Value.ToDisplayString()})"
-            : string.Empty;
+		dataGrid.Rows.Add("Id", potDetailsViewModel.Id);
+		dataGrid.Rows.Add("Description", potDetailsViewModel.Description);
+		dataGrid.Rows.Add("Start Date", potDetailsViewModel.StartDate.ToString("d"));
+		dataGrid.Rows.Add("End Date", potDetailsViewModel.EndDate?.ToString("d") ?? string.Empty);
+		dataGrid.Rows.Add("Currency", potDetailsViewModel.Currency);
+		dataGrid.Rows.Add("Labels", string.Join(", ", potDetailsViewModel.Labels));
+		dataGrid.Rows.Add("Snapshot Count", potDetailsViewModel.SnapshotCount);
 
-        dataGrid.Rows.Add("Last Snapshot", lastSnapshot);
+		string lastSnapshot = potDetailsViewModel.LastSnapshotDate != null
+			? $"{potDetailsViewModel.LastSnapshotDate:d} ({potDetailsViewModel.Value.ToDisplayString()})"
+			: string.Empty;
 
-        dataGrid.Display();
-    }
+		dataGrid.Rows.Add("Last Snapshot", lastSnapshot);
 
-    private static void DisplayPotSummary(PotCommandViewModel viewModel)
-    {
-        DataGrid dataGrid = DataGridTemplate.CreateNew();
-        dataGrid.Title = "Pots";
+		dataGrid.Display();
+	}
 
-        dataGrid.Columns.Add(new Column("Id")
-        {
-            ForegroundColor = ConsoleColor.DarkGray,
-            CellContentOverflow = CellContentOverflow.PreserveOverflow
-        });
+	private static void DisplayPotSummary(PotCommandViewModel viewModel)
+	{
+		DataGrid dataGrid = DataGridTemplate.CreateNew();
+		dataGrid.Title = "Pots";
 
-        dataGrid.Columns.Add("Name");
-        dataGrid.Columns.Add("Currency");
+		dataGrid.Columns.Add(new Column("Id")
+		{
+			ForegroundColor = ConsoleColor.DarkGray,
+			CellContentOverflow = CellContentOverflow.PreserveOverflow
+		});
 
-        foreach (PotSummaryViewModel potSummaryViewModel in viewModel.PotSummaries)
-        {
-            ShortPotId id = potSummaryViewModel.Id;
-            string name = potSummaryViewModel.Name;
-            string currency = potSummaryViewModel.Currency;
+		dataGrid.Columns.Add("Name");
+		dataGrid.Columns.Add("Currency");
 
-            ContentRow row = new(id, name, currency);
+		foreach (PotSummaryViewModel potSummaryViewModel in viewModel.PotSummaries)
+		{
+			ShortPotId id = potSummaryViewModel.Id;
+			string name = potSummaryViewModel.Name;
+			string currency = potSummaryViewModel.Currency;
 
-            if (!potSummaryViewModel.IsActive)
-            {
-                row[1].ForegroundColor = ConsoleColor.DarkGray;
-                row[2].ForegroundColor = ConsoleColor.DarkGray;
-            }
+			ContentRow row = new(id, name, currency);
 
-            dataGrid.Rows.Add(row);
-        }
+			if (!potSummaryViewModel.IsActive)
+			{
+				row[1].ForegroundColor = ConsoleColor.DarkGray;
+				row[2].ForegroundColor = ConsoleColor.DarkGray;
+			}
 
-        dataGrid.Display();
-    }
+			dataGrid.Rows.Add(row);
+		}
+
+		dataGrid.Display();
+	}
 }

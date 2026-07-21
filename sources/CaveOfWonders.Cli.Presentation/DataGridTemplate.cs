@@ -4,15 +4,15 @@ namespace DustInTheWind.CaveOfWonders.Cli.Presentation;
 
 internal static class DataGridTemplate
 {
-    public static DataGrid CreateNew()
-    {
-        return new DataGrid
-        {
-            TitleRow =
-            {
-                BackgroundColor = ConsoleColor.Gray,
-                ForegroundColor = ConsoleColor.Black
-            }
-        };
-    }
+	public static DataGrid CreateNew()
+	{
+		return new DataGrid
+		{
+			TitleRow =
+			{
+				BackgroundColor = ConsoleColor.Gray,
+				ForegroundColor = ConsoleColor.Black
+			}
+		};
+	}
 }

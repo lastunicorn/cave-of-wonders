@@ -3,4 +3,6 @@
 public interface IFileSystem
 {
 	Stream CreateFile(string path);
+
+	IEnumerable<string> EnumerateFiles(string pathPattern);
 }

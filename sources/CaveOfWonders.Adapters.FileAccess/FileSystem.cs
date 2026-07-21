@@ -11,4 +11,19 @@ public class FileSystem : IFileSystem
 
 		return File.Create(path);
 	}
+
+	public IEnumerable<string> EnumerateFiles(string pathPattern)
+	{
+		if (string.IsNullOrWhiteSpace(pathPattern))
+			throw new ArgumentException("Path pattern cannot be null or empty.", nameof(pathPattern));
+
+		string directoryPath = Path.GetDirectoryName(pathPattern);
+		string searchPattern = Path.GetFileName(pathPattern);
+
+		if (string.IsNullOrEmpty(directoryPath))
+			directoryPath = ".";
+
+		return Directory.EnumerateFiles(directoryPath, searchPattern, SearchOption.AllDirectories)
+			.Order();
+	}
 }

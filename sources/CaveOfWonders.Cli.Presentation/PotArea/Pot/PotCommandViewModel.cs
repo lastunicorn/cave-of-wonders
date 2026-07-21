@@ -2,7 +2,7 @@
 
 internal class PotCommandViewModel
 {
-    public List<PotDetailsViewModel> PotDetails { get; init; }
+	public List<PotDetailsViewModel> PotDetails { get; init; }
 
-    public List<PotSummaryViewModel> PotSummaries { get; init; }
+	public List<PotSummaryViewModel> PotSummaries { get; init; }
 }

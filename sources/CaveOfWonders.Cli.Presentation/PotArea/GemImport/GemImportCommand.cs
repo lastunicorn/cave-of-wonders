@@ -9,7 +9,7 @@ internal class GemImportCommand : IConsoleCommand<GemImportViewModel>
 {
 	private readonly IMediator mediator;
 
-	[NamedParameter("file", IsMandatory = true, Description = "The path to the file from which to import the gems.")]
+	[NamedParameter("file", IsMandatory = true, Description = "The path to the file from which to import the gems. May contain wildcards (e.g. 'path/statement *.csv') to import from multiple files, including subdirectories.")]
 	public string FilePath { get; set; }
 
 	[NamedParameter("file-type", IsMandatory = true, Description = "The type of the file to import. Supported values: 'mintos', 'fintown', 'bcr', 'peerberry'.")]
@@ -36,6 +36,7 @@ internal class GemImportCommand : IConsoleCommand<GemImportViewModel>
 
 		return new GemImportViewModel
 		{
+			FileImportResults = response.FileImportResults,
 			UpdatedGemCount = response.UpdatedGemCount,
 			AddedGemCount = response.AddedGemCount,
 			SkippedGemCount = response.SkippedGemCount,

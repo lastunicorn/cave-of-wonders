@@ -3,6 +3,7 @@ using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Infrastructure.Diagnostics;
 using DustInTheWind.CaveOfWonders.Ports.BcrAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Ports.FileAccess;
 using DustInTheWind.CaveOfWonders.Ports.FintownAccess;
 using DustInTheWind.CaveOfWonders.Ports.MintosAccess;
 using DustInTheWind.CaveOfWonders.Ports.PeerBerryAccess;
@@ -17,14 +18,16 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 	private readonly IFintownService fintownService;
 	private readonly IBcrService bcrService;
 	private readonly IPeerBerryService peerBerryService;
+	private readonly IFileSystem fileSystem;
 
-	public ImportGemsUseCase(IUnitOfWork unitOfWork, IMintosService mintosService, IFintownService fintownService, IBcrService bcrService, IPeerBerryService peerBerryService)
+	public ImportGemsUseCase(IUnitOfWork unitOfWork, IMintosService mintosService, IFintownService fintownService, IBcrService bcrService, IPeerBerryService peerBerryService, IFileSystem fileSystem)
 	{
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 		this.mintosService = mintosService ?? throw new ArgumentNullException(nameof(mintosService));
 		this.fintownService = fintownService ?? throw new ArgumentNullException(nameof(fintownService));
 		this.bcrService = bcrService ?? throw new ArgumentNullException(nameof(bcrService));
 		this.peerBerryService = peerBerryService ?? throw new ArgumentNullException(nameof(peerBerryService));
+		this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
 	}
 
 	public Task<ImportGemsResponse> Handle(ImportGemsRequest request, CancellationToken cancellationToken)
@@ -33,8 +36,31 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 			.Action(async () =>
 			{
 				Pot pot = await FindPot(request.PotFlexId, cancellationToken);
-				IAsyncEnumerable<Gem> gemEnumeration = GetGemsFromSource(request, cancellationToken);
-				ImportGemsResponse response = await ImportGems(gemEnumeration, pot, cancellationToken);
+				List<string> filePaths = fileSystem.EnumerateFiles(request.FilePath).ToList();
+
+				if (filePaths.Count == 0)
+					throw new NoMatchingFilesFoundException(request.FilePath);
+
+				ImportGemsResponse response = new();
+
+				foreach (string filePath in filePaths)
+				{
+					IAsyncEnumerable<Gem> gemEnumeration = GetGemsFromSource(filePath, request.FileType, cancellationToken);
+					FileImportResult fileImportResult = await ImportGems(gemEnumeration, pot, cancellationToken);
+
+					response.FileImportResults.Add(new FileImportResult
+					{
+						FilePath = filePath,
+						AddedGemCount = fileImportResult.AddedGemCount,
+						UpdatedGemCount = fileImportResult.UpdatedGemCount,
+						SkippedGemCount = fileImportResult.SkippedGemCount
+					});
+
+					response.UpdatedGemCount += fileImportResult.UpdatedGemCount;
+					response.AddedGemCount += fileImportResult.AddedGemCount;
+					response.SkippedGemCount += fileImportResult.SkippedGemCount;
+					response.TotalGemCount += fileImportResult.AddedGemCount + fileImportResult.UpdatedGemCount + fileImportResult.SkippedGemCount;
+				}
 
 				await unitOfWork.SaveChangesAsync(cancellationToken);
 				return response;
@@ -67,57 +93,67 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 		return foundPot;
 	}
 
-	private IAsyncEnumerable<Gem> GetGemsFromSource(ImportGemsRequest request, CancellationToken cancellationToken)
+	private IAsyncEnumerable<Gem> GetGemsFromSource(string filePath, FileType fileType, CancellationToken cancellationToken)
 	{
-		IAsyncEnumerable<Gem> gemEnumeration = request.FileType switch
+		IAsyncEnumerable<Gem> gemEnumeration = fileType switch
 		{
-			FileType.Mintos => mintosService.GetGemsAsync(request.FilePath, cancellationToken),
-			FileType.Fintown => fintownService.GetGemsAsync(request.FilePath, cancellationToken),
-			FileType.Bcr => bcrService.GetGemsAsync(request.FilePath, cancellationToken),
-			FileType.PeerBerry => peerBerryService.GetGemsAsync(request.FilePath, cancellationToken),
-			FileType.Unknown => throw new UnknownFileTypeException(request.FileType),
-			_ => throw new UnknownFileTypeException(request.FileType)
+			FileType.Mintos => mintosService.GetGemsAsync(filePath, cancellationToken),
+			FileType.Fintown => fintownService.GetGemsAsync(filePath, cancellationToken),
+			FileType.Bcr => bcrService.GetGemsAsync(filePath, cancellationToken),
+			FileType.PeerBerry => peerBerryService.GetGemsAsync(filePath, cancellationToken),
+			FileType.Unknown => throw new UnknownFileTypeException(fileType),
+			_ => throw new UnknownFileTypeException(fileType)
 		};
 		return gemEnumeration;
 	}
 
-	private async Task<ImportGemsResponse> ImportGems(IAsyncEnumerable<Gem> gemEnumeration, Pot pot, CancellationToken cancellationToken)
+	private async Task<FileImportResult> ImportGems(IAsyncEnumerable<Gem> gemEnumeration, Pot pot, CancellationToken cancellationToken)
 	{
-		ImportGemsResponse response = new();
+		FileImportResult fileImportResult = new();
 
 		await foreach (Gem gem in gemEnumeration.WithCancellation(cancellationToken))
 		{
-			response.TotalGemCount++;
-
 			gem.Pot = pot;
 			Gem existingGem = await unitOfWork.GemRepository.GetByExternalIdAsync(pot.Id, gem.ExternalId, cancellationToken)
 				.ConfigureAwait(false);
 
 			if (existingGem != null)
 			{
-				if (gem != existingGem)
-				{
-					response.UpdatedGemCount++;
-
-					existingGem.Category = gem.Category;
-					existingGem.Amount = gem.Amount;
-					existingGem.Description = gem.Description;
-					existingGem.Pot = gem.Pot;
-					existingGem.Parameters.Clear();
-					existingGem.Parameters.AddRange(gem.Parameters);
-				}
+				if (gem == existingGem)
+					SkipGem(fileImportResult);
 				else
-				{
-					response.SkippedGemCount++;
-				}
+					UpdateGem(fileImportResult, existingGem, gem);
 			}
 			else
 			{
-				response.AddedGemCount++;
-				unitOfWork.GemRepository.Add(gem);
+				AddGem(fileImportResult, gem);
 			}
 		}
 
-		return response;
+		return fileImportResult;
+	}
+
+	private static void SkipGem(FileImportResult fileImportResult)
+	{
+		fileImportResult.SkippedGemCount++;
+	}
+
+	private static void UpdateGem(FileImportResult fileImportResult, Gem existingGem, Gem gem)
+	{
+		fileImportResult.UpdatedGemCount++;
+
+		existingGem.Category = gem.Category;
+		existingGem.Amount = gem.Amount;
+		existingGem.Description = gem.Description;
+		existingGem.Pot = gem.Pot;
+		existingGem.Parameters.Clear();
+		existingGem.Parameters.AddRange(gem.Parameters);
+	}
+
+	private void AddGem(FileImportResult fileImportResult, Gem gem)
+	{
+		fileImportResult.AddedGemCount++;
+
+		unitOfWork.GemRepository.Add(gem);
 	}
 }
