@@ -7,6 +7,7 @@ using DustInTheWind.CaveOfWonders.Ports.FileAccess;
 using DustInTheWind.CaveOfWonders.Ports.FintownAccess;
 using DustInTheWind.CaveOfWonders.Ports.MintosAccess;
 using DustInTheWind.CaveOfWonders.Ports.PeerBerryAccess;
+using DustInTheWind.CaveOfWonders.Ports.QuanloopAccess;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;
@@ -18,15 +19,17 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 	private readonly IFintownService fintownService;
 	private readonly IBcrService bcrService;
 	private readonly IPeerBerryService peerBerryService;
+	private readonly IQuanloopService quanloopService;
 	private readonly IFileSystem fileSystem;
 
-	public ImportGemsUseCase(IUnitOfWork unitOfWork, IMintosService mintosService, IFintownService fintownService, IBcrService bcrService, IPeerBerryService peerBerryService, IFileSystem fileSystem)
+	public ImportGemsUseCase(IUnitOfWork unitOfWork, IMintosService mintosService, IFintownService fintownService, IBcrService bcrService, IPeerBerryService peerBerryService, IQuanloopService quanloopService, IFileSystem fileSystem)
 	{
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 		this.mintosService = mintosService ?? throw new ArgumentNullException(nameof(mintosService));
 		this.fintownService = fintownService ?? throw new ArgumentNullException(nameof(fintownService));
 		this.bcrService = bcrService ?? throw new ArgumentNullException(nameof(bcrService));
 		this.peerBerryService = peerBerryService ?? throw new ArgumentNullException(nameof(peerBerryService));
+		this.quanloopService = quanloopService ?? throw new ArgumentNullException(nameof(quanloopService));
 		this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
 	}
 
@@ -101,6 +104,7 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 			FileType.Fintown => fintownService.GetGemsAsync(filePath, cancellationToken),
 			FileType.Bcr => bcrService.GetGemsAsync(filePath, cancellationToken),
 			FileType.PeerBerry => peerBerryService.GetGemsAsync(filePath, cancellationToken),
+			FileType.Quanloop => quanloopService.GetGemsAsync(filePath, cancellationToken),
 			FileType.Unknown => throw new UnknownFileTypeException(fileType),
 			_ => throw new UnknownFileTypeException(fileType)
 		};

@@ -46,7 +46,7 @@ WebApi.Presentation         — ASP.NET Core controllers and DTOs
 
 **Key conventions:**
 - Every use case lives in its own folder under `Cli.Application/` with `*Request`, `*Response`, and `*UseCase` files. The use case class is a MediatR `IRequestHandler`.
-- Port interfaces are pure `I*` contracts in `Ports.*` projects; adapters implement them in `Adapters.*` projects. `Ports.MintosAccess`/`Adapters.MintosAccess` and `Ports.FintownAccess`/`Adapters.FintownAccess` wrap the Mintos P2P-lending and Fintown investment platforms, used as gem-import sources.
+- Port interfaces are pure `I*` contracts in `Ports.*` projects; adapters implement them in `Adapters.*` projects. `Ports.MintosAccess`/`Adapters.MintosAccess`, `Ports.FintownAccess`/`Adapters.FintownAccess`, and `Ports.QuanloopAccess`/`Adapters.QuanloopAccess` wrap the Mintos P2P-lending, Fintown investment, and Quanloop investment platforms, used as gem-import sources.
 - There are three data-access adapters, but **only the JSON adapter is wired into production** (CLI `Setup.cs` and WebApi `Program.cs` both register `Database`/`UnitOfWork` from `DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json`). The other two are exercised only by the integration test suite:
   - **`Adapters.DataAccess.Json`** (project folder is `sources/CaveOfWonders.Adapters.DataAccess/`, but the `.csproj`/assembly/namespace are still `...DataAccess.Json` — don't be misled by the folder name) — stores data as JSON files in a directory configured via `ConnectionStrings:DefaultConnection` in `appsettings.json`. Full support for all repositories, including gems.
   - **`Adapters.DataAccess.SQLite`** — EF Core-backed, also full support including gems (`CaveOfWondersDbContext`, `*Entity` classes).

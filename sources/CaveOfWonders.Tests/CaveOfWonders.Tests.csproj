@@ -26,6 +26,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\CaveOfWonders.Adapters.BcrAccess\CaveOfWonders.Adapters.BcrAccess.csproj" PrivateAssets="All" />
 		<ProjectReference Include="..\CaveOfWonders.Adapters.PeerBerryAccess\CaveOfWonders.Adapters.PeerBerryAccess.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Adapters.QuanloopAccess\CaveOfWonders.Adapters.QuanloopAccess.csproj" PrivateAssets="All" />
 		<ProjectReference Include="..\CaveOfWonders.Cli.Application\CaveOfWonders.Cli.Application.csproj" PrivateAssets="All" />
 		<ProjectReference Include="..\CaveOfWonders.DataTypes\CaveOfWonders.DataTypes.csproj" />
 		<ProjectReference Include="..\CaveOfWonders.Domain\CaveOfWonders.Domain.csproj" PrivateAssets="All" />

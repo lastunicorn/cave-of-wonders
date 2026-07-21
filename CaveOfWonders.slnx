@@ -56,6 +56,10 @@
 		<Project Path="sources/CaveOfWonders.Adapters.PeerBerryAccess/CaveOfWonders.Adapters.PeerBerryAccess.csproj" />
 		<Project Path="sources/CaveOfWonders.Ports.PeerBerryAccess/CaveOfWonders.Ports.PeerBerryAccess.csproj" />
 	</Folder>
+	<Folder Name="/Ports/QuanloopAccess/">
+		<Project Path="sources/CaveOfWonders.Adapters.QuanloopAccess/CaveOfWonders.Adapters.QuanloopAccess.csproj" />
+		<Project Path="sources/CaveOfWonders.Ports.QuanloopAccess/CaveOfWonders.Ports.QuanloopAccess.csproj" />
+	</Folder>
 	<Folder Name="/Ports/SpreadsheetAccess/">
 		<Project Path="sources/CaveOfWonders.Adapters.SpreadsheetAccess\CaveOfWonders.Adapters.SpreadsheetAccess.csproj" />
 		<Project Path="sources/CaveOfWonders.Ports.SpreadsheetAccess\CaveOfWonders.Ports.SpreadsheetAccess.csproj" />

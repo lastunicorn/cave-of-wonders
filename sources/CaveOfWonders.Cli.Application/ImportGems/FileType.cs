@@ -6,5 +6,6 @@ public enum FileType
 	Mintos,
 	Fintown,
 	Bcr,
-	PeerBerry
+	PeerBerry,
+	Quanloop
 }

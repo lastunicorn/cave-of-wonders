@@ -10,11 +10,11 @@ using DustInTheWind.CaveOfWonders.Adapters.InsAccess;
 using DustInTheWind.CaveOfWonders.Adapters.LogAccess;
 using DustInTheWind.CaveOfWonders.Adapters.MintosAccess;
 using DustInTheWind.CaveOfWonders.Adapters.PeerBerryAccess;
+using DustInTheWind.CaveOfWonders.Adapters.QuanloopAccess;
 using DustInTheWind.CaveOfWonders.Adapters.SpreadsheetAccess;
 using DustInTheWind.CaveOfWonders.Adapters.UserAccess;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
 using DustInTheWind.CaveOfWonders.Cli.Utils;
-using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Infrastructure.Diagnostics;
 using DustInTheWind.CaveOfWonders.Ports.BcrAccess;
 using DustInTheWind.CaveOfWonders.Ports.BnrAccess;
@@ -26,12 +26,14 @@ using DustInTheWind.CaveOfWonders.Ports.InsAccess;
 using DustInTheWind.CaveOfWonders.Ports.LogAccess;
 using DustInTheWind.CaveOfWonders.Ports.MintosAccess;
 using DustInTheWind.CaveOfWonders.Ports.PeerBerryAccess;
+using DustInTheWind.CaveOfWonders.Ports.QuanloopAccess;
 using DustInTheWind.CaveOfWonders.Ports.SpreadsheetAccess;
 using DustInTheWind.CaveOfWonders.Ports.UserAccess;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using LiteDbContext = DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.DbContext;
 using SQLiteUnitOfWork = DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.UnitOfWork;
 using JsonUnitOfWork = DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.UnitOfWork;
 using LiteDbUnitOfWork = DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.UnitOfWork;
@@ -82,6 +84,7 @@ internal static class DependenciesSetup
 		serviceCollection.AddScoped<IFintownService, FintownService>();
 		serviceCollection.AddScoped<IBcrService, BcrService>();
 		serviceCollection.AddScoped<IPeerBerryService, PeerBerryService>();
+		serviceCollection.AddScoped<IQuanloopService, QuanloopService>();
 		serviceCollection.AddScoped<ISheets, Sheets>();
 		serviceCollection.AddScoped<ILog, Log>();
 		serviceCollection.AddSingleton<IFileSystem, FileSystem>();
@@ -165,7 +168,7 @@ internal static class DependenciesSetup
 					IConfiguration configuration = services.GetRequiredService<IConfiguration>();
 					string connectionString = new CaveOfWondersConnectionString(configuration.GetConnectionString("LiteDb"));
 
-					return new DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.DbContext(connectionString);
+					return new LiteDbContext(connectionString);
 				})
 				.DisplayToConsole()
 				.Response();

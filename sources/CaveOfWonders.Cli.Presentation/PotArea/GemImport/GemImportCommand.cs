@@ -12,7 +12,7 @@ internal class GemImportCommand : IConsoleCommand<GemImportViewModel>
 	[NamedParameter("file", IsMandatory = true, Description = "The path to the file from which to import the gems. May contain wildcards (e.g. 'path/statement *.csv') to import from multiple files, including subdirectories.")]
 	public string FilePath { get; set; }
 
-	[NamedParameter("file-type", IsMandatory = true, Description = "The type of the file to import. Supported values: 'mintos', 'fintown', 'bcr', 'peerberry'.")]
+	[NamedParameter("file-type", IsMandatory = true, Description = "The type of the file to import. Supported values: 'mintos', 'fintown', 'bcr', 'peerberry', 'quanloop'.")]
 	public FileType FileType { get; set; }
 
 	[NamedParameter("pot", IsMandatory = false, Description = "The pot id for which to import the gems.")]
