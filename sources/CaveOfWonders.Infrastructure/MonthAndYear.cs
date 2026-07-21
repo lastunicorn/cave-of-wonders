@@ -1,6 +1,6 @@
 ﻿namespace DustInTheWind.CaveOfWonders.Infrastructure;
 
-public readonly record struct MonthDate
+public readonly record struct MonthAndYear
 {
 	public int Year { get; private init; }
 
@@ -8,7 +8,7 @@ public readonly record struct MonthDate
 
 	public bool HasValue => Year > 0 && Month > 0;
 
-	public MonthDate(int year, int month)
+	public MonthAndYear(int year, int month)
 	{
 		if (year <= 0)
 			throw new ArgumentOutOfRangeException("Invalid year.");
@@ -20,7 +20,7 @@ public readonly record struct MonthDate
 		Month = month;
 	}
 
-	public MonthDate(DateOnly date)
+	public MonthAndYear(DateOnly date)
 		: this(date.Year, date.Month)
 	{
 	}
@@ -35,7 +35,7 @@ public readonly record struct MonthDate
 		return $"{Month:00}/{Year}";
 	}
 
-	public static MonthDate Parse(string text)
+	public static MonthAndYear Parse(string text)
 	{
 		if (text == null)
 			return default;
@@ -45,16 +45,16 @@ public readonly record struct MonthDate
 		if (parts.Length != 2)
 			throw new FormatException("Invalid month date format.");
 
-		return new MonthDate
+		return new MonthAndYear
 		{
 			Month = int.Parse(parts[0]),
 			Year = int.Parse(parts[1])
 		};
 	}
 
-	public static bool TryParse(string text, out MonthDate monthDate)
+	public static bool TryParse(string text, out MonthAndYear monthAndYear)
 	{
-		monthDate = default;
+		monthAndYear = default;
 
 		if (text == null)
 			return false;
@@ -70,7 +70,7 @@ public readonly record struct MonthDate
 		if (!int.TryParse(parts[1], out int year))
 			return false;
 
-		monthDate = new MonthDate
+		monthAndYear = new MonthAndYear
 		{
 			Month = month,
 			Year = year
@@ -79,12 +79,12 @@ public readonly record struct MonthDate
 		return true;
 	}
 
-	public static implicit operator string(MonthDate monthDate)
+	public static implicit operator string(MonthAndYear monthAndYear)
 	{
-		return monthDate.ToString();
+		return monthAndYear.ToString();
 	}
 
-	public static implicit operator MonthDate(string monthDate)
+	public static implicit operator MonthAndYear(string monthDate)
 	{
 		return Parse(monthDate);
 	}

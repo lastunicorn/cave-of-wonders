@@ -66,7 +66,7 @@ public class GemRepository : IGemRepository
 		{
 			gems = gems.Where(x =>
 			{
-				MonthDate filterMonth = filter.Month.Value;
+				MonthAndYear filterMonth = filter.Month.Value;
 				return x.Date.Year == filterMonth.Year && x.Date.Month == filterMonth.Month;
 			});
 		}
@@ -101,7 +101,7 @@ public class GemRepository : IGemRepository
 		}
 	}
 
-	public async IAsyncEnumerable<Gem> FindByMonthAsync(Guid potId, MonthDate month, [EnumeratorCancellation] CancellationToken cancellationToken)
+	public async IAsyncEnumerable<Gem> FindByMonthAsync(Guid potId, MonthAndYear month, [EnumeratorCancellation] CancellationToken cancellationToken)
 	{
 		await database.LoadGemsAsync(cancellationToken);
 

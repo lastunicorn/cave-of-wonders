@@ -25,7 +25,7 @@ internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 
 	public async Task<GainResponse> Handle(GainRequest request, CancellationToken cancellationToken)
 	{
-		MonthDate month = DecideMonth(request);
+		MonthAndYear month = DecideMonth(request);
 
 		List<Gem> gains = await unitOfWork.GemRepository
 			.FindAsync(new GemFilter
@@ -96,10 +96,10 @@ internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 		return items;
 	}
 
-	private MonthDate DecideMonth(GainRequest request)
+	private MonthAndYear DecideMonth(GainRequest request)
 	{
 		return request.Month.HasValue
 			? request.Month
-			: new MonthDate(systemClock.Today);
+			: new MonthAndYear(systemClock.Today);
 	}
 }

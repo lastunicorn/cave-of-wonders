@@ -14,7 +14,11 @@ public class PresentGemsRequest : IRequest<PresentGemsResponse>
 
 	public DateOnly? Date { get; set; }
 
-	public MonthDate Month { get; set; }
+	public MonthAndYear Month { get; set; }
+
+	public bool CurrentMonth { get; set; }
+
+	public bool LastMonth { get; set; }
 
 	public bool ExcludeInternal { get; set; }
 }

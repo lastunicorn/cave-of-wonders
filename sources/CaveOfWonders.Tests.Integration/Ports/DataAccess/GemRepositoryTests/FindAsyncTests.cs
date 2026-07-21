@@ -543,7 +543,7 @@ public class FindAsyncTests
 			{
 				GemFilter filter = new()
 				{
-					Month = new MonthDate(2023, 1)
+					Month = new MonthAndYear(2023, 1)
 				};
 				context.Gems = await repository.FindAsync(filter)
 					.ToListAsync();

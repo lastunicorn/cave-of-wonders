@@ -24,6 +24,12 @@ internal class GemCommand : IConsoleCommand<GemCommandViewModel>
 	[NamedParameter("month", IsMandatory = false, Description = "The month for which to display the gems.")]
 	public string Month { get; set; }
 
+	[NamedParameter("current-month", IsMandatory = false, Description = "Display the gems for the current month.")]
+	public bool CurrentMonth { get; set; }
+
+	[NamedParameter("last-month", IsMandatory = false, Description = "Display the gems for the last month.")]
+	public bool LastMonth { get; set; }
+
 	[NamedParameter("exclude-internal", IsMandatory = false, Description = "Exclude internal gems.")]
 	public bool ExcludeInternal { get; set; }
 
@@ -41,6 +47,8 @@ internal class GemCommand : IConsoleCommand<GemCommandViewModel>
 			EndDate = EndDate,
 			Date = Date,
 			Month = Month,
+			CurrentMonth = CurrentMonth,
+			LastMonth = LastMonth,
 			ExcludeInternal = ExcludeInternal
 		};
 

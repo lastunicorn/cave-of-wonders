@@ -5,5 +5,5 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.CalculateGain;
 
 public class GainRequest : IRequest<GainResponse>
 {
-    public MonthDate Month { get; set; }
+    public MonthAndYear Month { get; set; }
 }

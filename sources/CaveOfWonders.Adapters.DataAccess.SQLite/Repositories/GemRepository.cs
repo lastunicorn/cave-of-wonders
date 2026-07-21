@@ -38,7 +38,7 @@ internal class GemRepository : IGemRepository
 			.FirstOrDefaultAsync(g => g.Pot.Id == potId && g.ExternalId == gemExternalId, cancellationToken);
 	}
 
-	public IAsyncEnumerable<Gem> FindByMonthAsync(Guid potId, MonthDate month, CancellationToken cancellationToken)
+	public IAsyncEnumerable<Gem> FindByMonthAsync(Guid potId, MonthAndYear month, CancellationToken cancellationToken)
 	{
 		return dbContext.Gems
 			.Include(x => x.Pot)

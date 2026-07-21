@@ -17,7 +17,7 @@ public class FindByMonthAsyncTests
 		await GenericTest.Create(environment)
 			.Act(async (repository, context) =>
 			{
-				context.Gems = await repository.FindByMonthAsync(Guid.NewGuid(), new MonthDate(2023, 1))
+				context.Gems = await repository.FindByMonthAsync(Guid.NewGuid(), new MonthAndYear(2023, 1))
 					.ToListAsync();
 			})
 			.Assert((backDoor, context) =>
@@ -67,7 +67,7 @@ public class FindByMonthAsyncTests
 			.Act(async (repository, context) =>
 			{
 				Guid potId = context.PotId;
-				context.Gems = await repository.FindByMonthAsync(potId, new MonthDate(2023, 5))
+				context.Gems = await repository.FindByMonthAsync(potId, new MonthAndYear(2023, 5))
 					.ToListAsync();
 			})
 			.Assert((backDoor, context) =>
@@ -148,7 +148,7 @@ public class FindByMonthAsyncTests
 			.Act(async (repository, context) =>
 			{
 				Guid potId = context.PotId;
-				context.Gems = await repository.FindByMonthAsync(potId, new MonthDate(2023, 1))
+				context.Gems = await repository.FindByMonthAsync(potId, new MonthAndYear(2023, 1))
 					.ToListAsync();
 			})
 			.Assert((backDoor, context) =>
@@ -223,7 +223,7 @@ public class FindByMonthAsyncTests
 			.Act(async (repository, context) =>
 			{
 				Guid potId = context.PotId;
-				context.Gems = await repository.FindByMonthAsync(potId, new MonthDate(2023, 1))
+				context.Gems = await repository.FindByMonthAsync(potId, new MonthAndYear(2023, 1))
 					.ToListAsync();
 			})
 			.Assert((backDoor, context) =>
@@ -285,7 +285,7 @@ public class FindByMonthAsyncTests
 			.Act(async (repository, context) =>
 			{
 				Guid potId = context.PotId;
-				context.Gems = await repository.FindByMonthAsync(potId, new MonthDate(2023, 3))
+				context.Gems = await repository.FindByMonthAsync(potId, new MonthAndYear(2023, 3))
 					.ToListAsync();
 			})
 			.Assert((backDoor, context) =>
@@ -357,7 +357,7 @@ public class FindByMonthAsyncTests
 			.Act(async (repository, context) =>
 			{
 				Guid potId1 = context.PotId1;
-				context.Gems = await repository.FindByMonthAsync(potId1, new MonthDate(2023, 1))
+				context.Gems = await repository.FindByMonthAsync(potId1, new MonthAndYear(2023, 1))
 					.ToListAsync();
 			})
 			.Assert((backDoor, context) =>
@@ -405,7 +405,7 @@ public class FindByMonthAsyncTests
 			})
 			.Act(async (repository, context) =>
 			{
-				context.Gems = await repository.FindByMonthAsync(Guid.NewGuid(), new MonthDate(2023, 1))
+				context.Gems = await repository.FindByMonthAsync(Guid.NewGuid(), new MonthAndYear(2023, 1))
 					.ToListAsync();
 			})
 			.Assert((backDoor, context) =>
@@ -454,7 +454,7 @@ public class FindByMonthAsyncTests
 			.Act(async (repository, context) =>
 			{
 				Guid potId = context.PotId;
-				context.Gems = await repository.FindByMonthAsync(potId, new MonthDate(2023, 6))
+				context.Gems = await repository.FindByMonthAsync(potId, new MonthAndYear(2023, 6))
 					.ToListAsync();
 			})
 			.Assert((backDoor, context) =>
@@ -503,7 +503,7 @@ public class FindByMonthAsyncTests
 			.Act(async (repository, context) =>
 			{
 				Guid potId = context.PotId;
-				context.Gems = await repository.FindByMonthAsync(potId, new MonthDate(2023, 1))
+				context.Gems = await repository.FindByMonthAsync(potId, new MonthAndYear(2023, 1))
 					.ToListAsync();
 			})
 			.Assert((backDoor, context) =>
@@ -567,7 +567,7 @@ public class FindByMonthAsyncTests
 			.Act(async (repository, context) =>
 			{
 				Guid potId = context.PotId;
-				context.Gems = await repository.FindByMonthAsync(potId, new MonthDate(2023, 1))
+				context.Gems = await repository.FindByMonthAsync(potId, new MonthAndYear(2023, 1))
 					.ToListAsync();
 			})
 			.Assert((backDoor, context) =>
@@ -621,7 +621,7 @@ public class FindByMonthAsyncTests
 			.Act(async (repository, context) =>
 			{
 				Guid potId = context.PotId;
-				context.Gems = await repository.FindByMonthAsync(potId, new MonthDate(2023, 1))
+				context.Gems = await repository.FindByMonthAsync(potId, new MonthAndYear(2023, 1))
 					.ToListAsync();
 			})
 			.Assert((backDoor, context) =>

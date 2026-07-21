@@ -98,16 +98,29 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
 		if (request.Date.HasValue)
 			filter.Date = request.Date.Value;
 
-		if (request.Month.HasValue)
-			filter.Month = request.Month;
+		MonthAndYear month = DecideMonth(request);
 
-		if (!request.StartDate.HasValue && !request.EndDate.HasValue && !request.Date.HasValue && !request.Month.HasValue)
-			filter.Month = new MonthDate(systemClock.Today);
+		if (month.HasValue)
+			filter.Month = month;
+
+		if (!request.StartDate.HasValue && !request.EndDate.HasValue && !request.Date.HasValue && !month.HasValue)
+			filter.Month = new MonthAndYear(systemClock.Today);
 
 		if (request.ExcludeInternal)
 			filter.ExcludeCategories = [GemCategory.Internal];
 
 		return unitOfWork.GemRepository.FindAsync(filter, cancellationToken);
+	}
+
+	private MonthAndYear DecideMonth(PresentGemsRequest request)
+	{
+		if (request.CurrentMonth)
+			return new MonthAndYear(systemClock.Today);
+
+		if (request.LastMonth)
+			return new MonthAndYear(systemClock.Today.AddMonths(-1));
+
+		return request.Month;
 	}
 
 	private static decimal CalculateAmount(Gem gem)

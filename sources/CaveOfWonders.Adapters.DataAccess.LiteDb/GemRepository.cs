@@ -79,7 +79,7 @@ public class GemRepository : IGemRepository
 		return gems.ToAsyncEnumerable(cancellationToken);
 	}
 
-	public IAsyncEnumerable<Gem> FindByMonthAsync(Guid potId, DustInTheWind.CaveOfWonders.Infrastructure.MonthDate month, CancellationToken cancellationToken = default)
+	public IAsyncEnumerable<Gem> FindByMonthAsync(Guid potId, DustInTheWind.CaveOfWonders.Infrastructure.MonthAndYear month, CancellationToken cancellationToken = default)
 	{
 		IEnumerable<Gem> gems = dbContext.Gems
 			.FindAll()

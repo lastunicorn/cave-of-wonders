@@ -13,7 +13,7 @@ public class GemFilter
 
 	public DateOnly? Date { get; set; }
 
-	public MonthDate? Month { get; set; }
+	public MonthAndYear? Month { get; set; }
 
 	public List<GemCategory> IncludeCategories { get; set; }
 
