@@ -12,7 +12,7 @@ public class PotSnapshotRepository : IPotSnapshotRepository
 		this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 	}
 
-	public Task<IEnumerable<PotSnapshot>> GetSnapshotsAsync(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive, CancellationToken cancellationToken = default)
+	public Task<IEnumerable<PotSnapshot>> GetLatestAsync(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 

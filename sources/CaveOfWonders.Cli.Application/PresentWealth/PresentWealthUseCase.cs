@@ -67,7 +67,7 @@ public class PresentWealthUseCase : IRequestHandler<PresentWealthRequest, Presen
 
 	private async Task<Dictionary<Guid, PotSnapshot>> RetrieveLatestSnapshotsFromStorage(DateOnly date, bool includeInactive, CancellationToken cancellationToken)
 	{
-		IEnumerable<PotSnapshot> potSnapshots = await unitOfWork.PotSnapshotRepository.GetSnapshotsAsync(date, DateMatchingMode.LastAvailable, includeInactive, cancellationToken);
+		IEnumerable<PotSnapshot> potSnapshots = await unitOfWork.PotSnapshotRepository.GetLatestAsync(date, DateMatchingMode.LastAvailable, includeInactive, cancellationToken);
 		return potSnapshots.ToDictionary(x => x.Pot.Id);
 	}
 }

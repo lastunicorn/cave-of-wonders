@@ -6,18 +6,18 @@ using FluentAssertions;
 
 namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotSnapshotRepositoryTests;
 
-public class GetSnapshotsTests
+public class GetLatestTests
 {
 	private readonly DateOnly currentDate = new(2023, 7, 1);
 
 	[Theory]
 	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	public async Task GetLatest_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act(async (repository, context) =>
 			{
-				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false);
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetLatestAsync(currentDate, DateMatchingMode.Exact, false);
 				context.Snapshots = snapshotEnumerable.ToList();
 			})
 			.Assert((backDoor, context) =>
@@ -30,7 +30,7 @@ public class GetSnapshotsTests
 
 	[Theory]
 	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithActivePot_ShouldReturnPotInstance(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	public async Task GetLatest_WithActivePot_ShouldReturnPotInstance(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
@@ -56,7 +56,7 @@ public class GetSnapshotsTests
 			})
 			.Act(async (repository, context) =>
 			{
-				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false);
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetLatestAsync(currentDate, DateMatchingMode.Exact, false);
 				context.PotInstances = snapshotEnumerable.ToList();
 			})
 			.Assert((backDoor, context) =>
@@ -74,7 +74,7 @@ public class GetSnapshotsTests
 
 	[Theory]
 	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithInactivePot_ShouldNotReturnPotWhenIncludeInactiveIsFalse(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	public async Task GetLatest_WithInactivePot_ShouldNotReturnPotWhenIncludeInactiveIsFalse(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
@@ -92,7 +92,7 @@ public class GetSnapshotsTests
 			})
 			.Act(async (repository, context) =>
 			{
-				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false);
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetLatestAsync(currentDate, DateMatchingMode.Exact, false);
 				context.PotInstances = snapshotEnumerable.ToList();
 			})
 			.Assert((backDoor, context) =>
@@ -105,7 +105,7 @@ public class GetSnapshotsTests
 
 	[Theory]
 	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithInactivePot_ShouldReturnPotWhenIncludeInactiveIsTrue(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	public async Task GetLatest_WithInactivePot_ShouldReturnPotWhenIncludeInactiveIsTrue(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
@@ -130,7 +130,7 @@ public class GetSnapshotsTests
 			})
 			.Act(async (repository, context) =>
 			{
-				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, true);
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetLatestAsync(currentDate, DateMatchingMode.Exact, true);
 				context.PotInstances = snapshotEnumerable.ToList();
 			})
 			.Assert((backDoor, context) =>
@@ -147,7 +147,7 @@ public class GetSnapshotsTests
 
 	[Theory]
 	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithPotEndingBeforeCurrentDate_ShouldNotReturnPotWhenIncludeInactiveIsFalse(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	public async Task GetLatest_WithPotEndingBeforeCurrentDate_ShouldNotReturnPotWhenIncludeInactiveIsFalse(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
@@ -166,7 +166,7 @@ public class GetSnapshotsTests
 			})
 			.Act(async (repository, context) =>
 			{
-				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false);
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetLatestAsync(currentDate, DateMatchingMode.Exact, false);
 				context.PotInstances = snapshotEnumerable.ToList();
 			})
 			.Assert((backDoor, context) =>
@@ -179,7 +179,7 @@ public class GetSnapshotsTests
 
 	[Theory]
 	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithExactDateMatchingMode_ShouldReturnOnlyExactDateSnapshot(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	public async Task GetLatest_WithExactDateMatchingMode_ShouldReturnOnlyExactDateSnapshot(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
@@ -220,7 +220,7 @@ public class GetSnapshotsTests
 			})
 			.Act(async (repository, context) =>
 			{
-				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false);
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetLatestAsync(currentDate, DateMatchingMode.Exact, false);
 				context.PotInstances = snapshotEnumerable.ToList();
 			})
 			.Assert((backDoor, context) =>
@@ -236,7 +236,7 @@ public class GetSnapshotsTests
 
 	[Theory]
 	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithExactDateMatchingMode_ShouldNotReturnSnapshotWhenNoExactDateExists(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	public async Task GetLatest_WithExactDateMatchingMode_ShouldNotReturnSnapshotWhenNoExactDateExists(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
@@ -272,7 +272,7 @@ public class GetSnapshotsTests
 			})
 			.Act(async (repository, context) =>
 			{
-				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, false);
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetLatestAsync(currentDate, DateMatchingMode.Exact, false);
 				context.PotInstances = snapshotEnumerable.ToList();
 			})
 			.Assert((backDoor, context) =>
@@ -285,7 +285,7 @@ public class GetSnapshotsTests
 
 	[Theory]
 	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithLastAvailableDateMatchingMode_ShouldReturnLastAvailableSnapshot(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	public async Task GetLatest_WithLastAvailableDateMatchingMode_ShouldReturnLastAvailableSnapshot(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
@@ -321,7 +321,7 @@ public class GetSnapshotsTests
 			})
 			.Act(async (repository, context) =>
 			{
-				List<PotSnapshot> potInstances = (await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.LastAvailable, false)).ToList();
+				List<PotSnapshot> potInstances = (await repository.GetLatestAsync(currentDate, DateMatchingMode.LastAvailable, false)).ToList();
 				context.PotInstances = potInstances;
 			})
 			.Assert((backDoor, context) =>
@@ -337,7 +337,7 @@ public class GetSnapshotsTests
 
 	[Theory]
 	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithLastAvailableDateMatchingMode_ShouldNotReturnSnapshotWhenNoSnapshotBeforeDate(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	public async Task GetLatest_WithLastAvailableDateMatchingMode_ShouldNotReturnSnapshotWhenNoSnapshotBeforeDate(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
@@ -368,7 +368,7 @@ public class GetSnapshotsTests
 			})
 			.Act(async (repository, context) =>
 			{
-				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.LastAvailable, false);
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetLatestAsync(currentDate, DateMatchingMode.LastAvailable, false);
 				context.PotInstances = snapshotEnumerable.ToList();
 			})
 			.Assert((backDoor, context) =>
@@ -381,7 +381,7 @@ public class GetSnapshotsTests
 
 	[Theory]
 	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithMultiplePots_ShouldReturnAllActivePots(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	public async Task GetLatest_WithMultiplePots_ShouldReturnAllActivePots(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
@@ -433,7 +433,7 @@ public class GetSnapshotsTests
 			})
 			.Act(async (repository, context) =>
 			{
-				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.LastAvailable, false);
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetLatestAsync(currentDate, DateMatchingMode.LastAvailable, false);
 				context.PotInstances = snapshotEnumerable.ToList();
 			})
 			.Assert((backDoor, context) =>
@@ -461,7 +461,7 @@ public class GetSnapshotsTests
 
 	[Theory]
 	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithMultiplePotsAndIncludeInactiveTrue_ShouldReturnAllPots(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	public async Task GetLatest_WithMultiplePotsAndIncludeInactiveTrue_ShouldReturnAllPots(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
@@ -520,7 +520,7 @@ public class GetSnapshotsTests
 			})
 			.Act(async (repository, context) =>
 			{
-				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetSnapshotsAsync(currentDate, DateMatchingMode.Exact, true);
+				IEnumerable<PotSnapshot> snapshotEnumerable = await repository.GetLatestAsync(currentDate, DateMatchingMode.Exact, true);
 				context.PotInstances = snapshotEnumerable.ToList();
 			})
 			.Assert((backDoor, context) =>

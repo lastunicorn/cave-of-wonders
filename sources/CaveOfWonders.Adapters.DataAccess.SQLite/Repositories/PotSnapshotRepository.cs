@@ -13,7 +13,7 @@ internal class PotSnapshotRepository : IPotSnapshotRepository
 		this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 	}
 
-	public async Task<IEnumerable<PotSnapshot>> GetSnapshotsAsync(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive, CancellationToken cancellationToken = default)
+	public async Task<IEnumerable<PotSnapshot>> GetLatestAsync(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive, CancellationToken cancellationToken = default)
 	{
 		List<Pot> pots = await dbContext.Pots
 			.Include(x => x.Snapshots)
