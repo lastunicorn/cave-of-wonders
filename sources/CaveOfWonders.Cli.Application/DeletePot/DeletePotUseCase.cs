@@ -80,7 +80,7 @@ internal class DeletePotUseCase : IRequestHandler<DeletePotRequest, DeletePotRes
 		}
 		catch (Exception ex)
 		{
-			throw new StorageInaccessibleException(ex);
+			throw new DataStorageException(ex);
 		}
 	}
 }

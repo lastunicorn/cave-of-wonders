@@ -56,7 +56,7 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
 		}
 		catch (Exception ex)
 		{
-			throw new StorageInaccessibleException(ex);
+			throw new DataStorageException(ex);
 		}
 	}
 

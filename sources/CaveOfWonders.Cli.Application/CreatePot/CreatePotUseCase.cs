@@ -42,7 +42,7 @@ public class CreatePotUseCase : IRequestHandler<CreatePotRequest, CreatePotRespo
 		}
 		catch (Exception ex)
 		{
-			throw new StorageInaccessibleException(ex);
+			throw new DataStorageException(ex);
 		}
 
 		return new CreatePotResponse

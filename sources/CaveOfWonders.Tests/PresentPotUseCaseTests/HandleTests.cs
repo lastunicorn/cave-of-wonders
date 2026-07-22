@@ -102,7 +102,7 @@ public class HandleTests
 		Func<Task> action = async () => await useCase.Handle(request, CancellationToken.None);
 
 		// Assert
-		await action.Should().ThrowAsync<StorageInaccessibleException>();
+		await action.Should().ThrowAsync<DataStorageException>();
 	}
 
 	[Fact]
