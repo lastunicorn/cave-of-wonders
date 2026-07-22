@@ -39,4 +39,12 @@ internal class LiteDbTestBackDoor : LiteDbStorageBackDoorBase, ITestBackDoor
 
 		return Task.CompletedTask;
 	}
+
+	public Task<List<PotSnapshot>> GetSnapshotsByPotIdAsync(Guid potId, CancellationToken cancellationToken = default)
+	{
+		PotDbEntity potDbEntity = DbContext.Pots.FindById(potId);
+		List<PotSnapshot> snapshots = potDbEntity?.ToDomainEntity().Snapshots.ToList() ?? [];
+
+		return Task.FromResult(snapshots);
+	}
 }
