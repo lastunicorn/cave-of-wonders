@@ -63,14 +63,14 @@ internal class PotView : ViewBase<PotCommandViewModel>
 		dataGrid.Rows.Add("End Date", potDetailsViewModel.EndDate?.ToString("d") ?? string.Empty);
 		dataGrid.Rows.Add("Currency", potDetailsViewModel.Currency);
 		dataGrid.Rows.Add("Labels", string.Join(", ", potDetailsViewModel.Labels));
-		dataGrid.Rows.Add("Snapshot Count", potDetailsViewModel.SnapshotCount);
+		dataGrid.Rows.Add("Snapshot Count", potDetailsViewModel.SnapshotCount.ToString("N0"));
 
 		string lastSnapshot = potDetailsViewModel.LastSnapshotDate != null
 			? $"{potDetailsViewModel.LastSnapshotDate:d} ({potDetailsViewModel.Value.ToDisplayString()})"
 			: string.Empty;
 
 		dataGrid.Rows.Add("Latest Snapshot", lastSnapshot);
-		dataGrid.Rows.Add("Gem Count", potDetailsViewModel.GemCount);
+		dataGrid.Rows.Add("Gem Count", potDetailsViewModel.GemCount.ToString("N0"));
 		dataGrid.Rows.Add("Latest Gem", potDetailsViewModel.LatestGemDate?.ToString("d") ?? string.Empty);
 
 		dataGrid.Display();
