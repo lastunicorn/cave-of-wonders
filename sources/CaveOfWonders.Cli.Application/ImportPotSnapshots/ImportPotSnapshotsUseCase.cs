@@ -25,88 +25,90 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots;
 
 internal class ImportPotSnapshotsUseCase : IRequestHandler<ImportPotSnapshotsRequest, ImportPotSnapshotsResponse>
 {
-    private readonly IUnitOfWork unitOfWork;
-    private readonly ISheets sheets;
-    private readonly ILog log;
+	private readonly IUnitOfWork unitOfWork;
+	private readonly ISheets sheets;
+	private readonly ILog log;
 
-    public ImportPotSnapshotsUseCase(IUnitOfWork unitOfWork, ISheets sheets, ILog log)
-    {
-        this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        this.sheets = sheets ?? throw new ArgumentNullException(nameof(sheets));
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
-    }
+	public ImportPotSnapshotsUseCase(IUnitOfWork unitOfWork, ISheets sheets, ILog log)
+	{
+		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+		this.sheets = sheets ?? throw new ArgumentNullException(nameof(sheets));
+		this.log = log ?? throw new ArgumentNullException(nameof(log));
+	}
 
-    public Task<ImportPotSnapshotsResponse> Handle(ImportPotSnapshotsRequest request, CancellationToken cancellationToken)
-    {
-        if (request.SourceFilePath is null)
-            throw new SourceFileNotProvidedException();
+	public Task<ImportPotSnapshotsResponse> Handle(ImportPotSnapshotsRequest request, CancellationToken cancellationToken)
+	{
+		if (request.SourceFilePath is null)
+			throw new SourceFileNotProvidedException();
 
-        if(request.MappingsFilePath is null)
-            throw new SheetMappingsNotProvidedException();
+		if (request.MappingsFilePath is null)
+			throw new SheetMappingsNotProvidedException();
 
-        string sourceFilePath = request.SourceFilePath;
-        string importType = request.Overwrite
-                ? "overwrite"
-                : "append";
+		string sourceFilePath = request.SourceFilePath;
+		string importType = request.Overwrite
+			? "overwrite"
+			: "append";
 
-        return log.ExecuteInfo($"Starting import from file: {sourceFilePath}; Import type: {importType};", async () =>
-        {
-            List<SheetMapping> sheetMappings = GetSheetMappings(request.MappingsFilePath);
-            PotCollection potCollection = await RetrievePotsToPopulate(cancellationToken);
+		return log.ExecuteInfo(
+			$"Starting import from file: {sourceFilePath}; Import type: {importType};",
+			async () =>
+			{
+				List<SheetMapping> sheetMappings = GetSheetMappings(request.MappingsFilePath);
+				PotCollection potCollection = await RetrievePotsToPopulate(cancellationToken);
 
-            if (request.Overwrite)
-                ClearPots(potCollection, sheetMappings);
+				if (request.Overwrite)
+					ClearPots(potCollection, sheetMappings);
 
-            SnapshotImportReport importReport = DoImport(request.SourceFilePath, potCollection, sheetMappings);
+				SnapshotImportReport importReport = DoImport(request.SourceFilePath, potCollection, sheetMappings);
 
-            await unitOfWork.SaveChangesAsync(cancellationToken);
+				await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return new ImportPotSnapshotsResponse
-            {
-                Report = importReport.ToList()
-            };
-        });
-    }
+				return new ImportPotSnapshotsResponse
+				{
+					Report = importReport.ToList()
+				};
+			});
+	}
 
-    private static void ClearPots(PotCollection potCollection, List<SheetMapping> sheetDescriptors)
-    {
-        IEnumerable<Guid> potIds = sheetDescriptors
-            .SelectMany(x => x.ColumnDescriptors.Select(z => z.Key));
+	private static void ClearPots(PotCollection potCollection, List<SheetMapping> sheetDescriptors)
+	{
+		IEnumerable<Guid> potIds = sheetDescriptors
+			.SelectMany(x => x.ColumnDescriptors.Select(z => z.Key));
 
-        potCollection.ClearSnapshots(potIds);
-    }
+		potCollection.ClearSnapshots(potIds);
+	}
 
-    private SnapshotImportReport DoImport(string sourceFilePath, PotCollection potCollection, List<SheetMapping> sheetDescriptors)
-    {
-        SnapshotImport snapshotImport = new()
-        {
-            Pots = potCollection,
-            Log = log
-        };
+	private SnapshotImportReport DoImport(string sourceFilePath, PotCollection potCollection, List<SheetMapping> sheetDescriptors)
+	{
+		SnapshotImport snapshotImport = new()
+		{
+			Pots = potCollection,
+			Log = log
+		};
 
-        using IExcelSpreadsheet excelSpreadsheet = sheets.GetExcelSpreadsheet(sourceFilePath);
-        IEnumerable<SheetValue> sheetsValues = excelSpreadsheet.Read(sheetDescriptors);
+		using IExcelSpreadsheet excelSpreadsheet = sheets.GetExcelSpreadsheet(sourceFilePath);
+		IEnumerable<SheetValue> sheetsValues = excelSpreadsheet.Read(sheetDescriptors);
 
-        snapshotImport.Execute(sheetsValues);
+		snapshotImport.Execute(sheetsValues);
 
-        return snapshotImport.Report;
-    }
+		return snapshotImport.Report;
+	}
 
-    private List<SheetMapping> GetSheetMappings(string sheetMappingsPath)
-    {
-        return sheets.GetMappings(sheetMappingsPath)
-            .ToList();
-    }
+	private List<SheetMapping> GetSheetMappings(string sheetMappingsPath)
+	{
+		return sheets.GetMappings(sheetMappingsPath)
+			.ToList();
+	}
 
-    private async Task<PotCollection> RetrievePotsToPopulate(CancellationToken cancellationToken)
-    {
-        PotCollection potCollection = new();
+	private async Task<PotCollection> RetrievePotsToPopulate(CancellationToken cancellationToken)
+	{
+		PotCollection potCollection = new();
 
-        IEnumerable<Pot> pots = await unitOfWork.PotRepository.GetAllAsync(cancellationToken)
-            .ToListAsync(cancellationToken);
-        
-        potCollection.AddRange(pots);
+		IEnumerable<Pot> pots = await unitOfWork.PotRepository.GetAllAsync(cancellationToken)
+			.ToListAsync(cancellationToken);
 
-        return potCollection;
-    }
+		potCollection.AddRange(pots);
+
+		return potCollection;
+	}
 }

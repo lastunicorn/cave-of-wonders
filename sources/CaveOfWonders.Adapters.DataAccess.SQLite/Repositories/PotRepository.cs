@@ -37,7 +37,7 @@ internal class PotRepository : IPotRepository
 
 		return pots
 			.Where(x => includeInactive || x.IsActive(date))
-			.Select(x => GetSnapshot(x, date, dateMatchingMode))
+			.Select(x => GetLatestSnapshot(x, date, dateMatchingMode))
 			.Where(x => x != null);
 	}
 
@@ -73,7 +73,7 @@ internal class PotRepository : IPotRepository
 		dbContext.Pots.Remove(entity);
 	}
 
-	private static PotSnapshot GetSnapshot(Pot pot, DateOnly date, DateMatchingMode dateMatchingMode)
+	private static PotSnapshot GetLatestSnapshot(Pot pot, DateOnly date, DateMatchingMode dateMatchingMode)
 	{
 		return dateMatchingMode switch
 		{

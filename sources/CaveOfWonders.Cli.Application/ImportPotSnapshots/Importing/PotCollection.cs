@@ -32,12 +32,6 @@ internal class PotCollection
             this.pots.Add(pot.Id, pot);
     }
 
-    public void ClearSnapshots()
-    {
-        foreach (Pot pot in pots.Values)
-            pot.Snapshots.Clear();
-    }
-
     public void ClearSnapshots(IEnumerable<Guid> potIds)
     {
         foreach (Guid potId in potIds)
