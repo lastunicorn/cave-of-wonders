@@ -4,7 +4,7 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.PotEdit;
 
-[NamedCommand("pot-edit", Description = "Update the name of a pot.")]
+[NamedCommand("pot-edit", Description = "Update the name and/or currency of a pot.")]
 internal class PotEditCommand : IConsoleCommand<PotEditViewModel>
 {
 	private readonly IMediator mediator;
@@ -12,8 +12,11 @@ internal class PotEditCommand : IConsoleCommand<PotEditViewModel>
 	[AnonymousParameter(DisplayName = "Pot Identifier", Order = 1, IsMandatory = true, Description = "Name or id of the pot to edit.")]
 	public string PotIdentifier { get; set; }
 
-	[NamedParameter("name", ShortName = 'n', IsMandatory = true, Description = "The new name for the pot.")]
+	[NamedParameter("name", ShortName = 'n', IsMandatory = false, Description = "The new name for the pot.")]
 	public string Name { get; set; }
+
+	[NamedParameter("currency", ShortName = 'c', IsMandatory = false, Description = "The new currency for the pot.")]
+	public string Currency { get; set; }
 
 	public PotEditCommand(IMediator mediator)
 	{
@@ -25,7 +28,8 @@ internal class PotEditCommand : IConsoleCommand<PotEditViewModel>
 		EditPotRequest request = new()
 		{
 			PotId = PotIdentifier,
-			Name = Name
+			Name = Name,
+			Currency = Currency
 		};
 
 		EditPotResponse response = await mediator.Send(request);
@@ -33,8 +37,13 @@ internal class PotEditCommand : IConsoleCommand<PotEditViewModel>
 		return new PotEditViewModel
 		{
 			PotId = response.PotId,
+			PotName = response.PotName,
+			NameUpdated = response.NameUpdated,
 			OldName = response.OldName,
-			NewName = response.NewName
+			NewName = response.NewName,
+			CurrencyUpdated = response.CurrencyUpdated,
+			OldCurrency = response.OldCurrency,
+			NewCurrency = response.NewCurrency
 		};
 	}
 }

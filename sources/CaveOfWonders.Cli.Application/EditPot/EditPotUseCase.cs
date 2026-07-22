@@ -16,29 +16,42 @@ internal class EditPotUseCase : IRequestHandler<EditPotRequest, EditPotResponse>
 
 	public async Task<EditPotResponse> Handle(EditPotRequest request, CancellationToken cancellationToken)
 	{
-		if (string.IsNullOrWhiteSpace(request.Name))
-			throw new PotNameNotSpecifiedException();
-
 		Pot pot = await RetrievePot(request.PotId, cancellationToken);
 
-		string oldName = pot.Name;
-		pot.Name = request.Name;
+		EditPotResponse response = new();
 
-		try
+		if (!string.IsNullOrWhiteSpace(request.Name))
 		{
-			await unitOfWork.SaveChangesAsync(cancellationToken);
-		}
-		catch (Exception ex)
-		{
-			throw new DataStorageException(ex);
+			response.NameUpdated = true;
+			response.OldName = pot.Name;
+			pot.Name = request.Name;
+			response.NewName = pot.Name;
 		}
 
-		return new EditPotResponse
+		if (!string.IsNullOrWhiteSpace(request.Currency))
 		{
-			PotId = pot.Id,
-			OldName = oldName,
-			NewName = pot.Name
-		};
+			response.CurrencyUpdated = true;
+			response.OldCurrency = pot.Currency;
+			pot.Currency = request.Currency;
+			response.NewCurrency = pot.Currency;
+		}
+
+		if (response.NameUpdated || response.CurrencyUpdated)
+		{
+			try
+			{
+				await unitOfWork.SaveChangesAsync(cancellationToken);
+			}
+			catch (Exception ex)
+			{
+				throw new DataStorageException(ex);
+			}
+		}
+
+		response.PotId = pot.Id;
+		response.PotName = pot.Name;
+
+		return response;
 	}
 
 	private async Task<Pot> RetrievePot(PotFlexId potId, CancellationToken cancellationToken)

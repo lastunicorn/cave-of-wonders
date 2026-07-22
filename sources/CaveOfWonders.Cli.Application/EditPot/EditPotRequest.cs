@@ -8,4 +8,6 @@ public class EditPotRequest : IRequest<EditPotResponse>
 	public PotFlexId PotId { get; set; }
 
 	public string Name { get; set; }
+
+	public string Currency { get; set; }
 }
