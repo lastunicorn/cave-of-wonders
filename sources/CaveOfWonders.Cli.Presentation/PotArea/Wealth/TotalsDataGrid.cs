@@ -1,5 +1,5 @@
 ﻿using DustInTheWind.CaveOfWonders.Cli.Application;
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 using DustInTheWind.ConsoleTools.Controls;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 

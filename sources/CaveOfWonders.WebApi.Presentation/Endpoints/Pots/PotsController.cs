@@ -16,7 +16,7 @@
 
 using CaveOfWonders.WebApi.Presentation.Endpoints.Pots.Models;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -54,14 +54,14 @@ public class PotsController : ControllerBase
     [ProducesResponseType(typeof(GetSummaryPotsResponseDto), StatusCodes.Status200OK)]
     public async Task<GetSummaryPotsResponseDto> GetSummaryPots(GetSummaryPotsRequestDto getPotsRequestDto)
     {
-        PresentPotsRequest request = new()
+        PresentWealthRequest request = new()
         {
             Date = getPotsRequestDto.Date,
             Currency = getPotsRequestDto.Currency,
             IncludeInactive = getPotsRequestDto.IncludeInactive
         };
 
-        PresentPotsResponse response = await mediator.Send(request);
+        PresentWealthResponse response = await mediator.Send(request);
 
         return GetSummaryPotsResponseDto.From(response);
     }

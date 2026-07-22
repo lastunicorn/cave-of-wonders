@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 
 namespace CaveOfWonders.WebApi.Presentation.Endpoints.Pots.Models;
 
@@ -48,7 +48,7 @@ public class GetSummaryPotsResponseDto
     /// </summary>
     public List<CurrencyTotalOverviewDto> CurrencyTotalOverviews { get; set; }
 
-    internal static GetSummaryPotsResponseDto From(PresentPotsResponse response)
+    internal static GetSummaryPotsResponseDto From(PresentWealthResponse response)
     {
         return new GetSummaryPotsResponseDto
         {

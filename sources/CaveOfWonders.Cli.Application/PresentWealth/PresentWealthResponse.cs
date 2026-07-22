@@ -1,6 +1,6 @@
-﻿namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
+﻿namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 
-public class PresentPotsResponse
+public class PresentWealthResponse
 {
 	public DateOnly Date { get; set; }
 

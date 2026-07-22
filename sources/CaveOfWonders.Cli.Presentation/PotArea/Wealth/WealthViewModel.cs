@@ -1,5 +1,5 @@
 ﻿using DustInTheWind.CaveOfWonders.Cli.Application;
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
 using System.Globalization;
 
@@ -19,11 +19,11 @@ internal class WealthViewModel
 
     public List<CurrencyTotalOverview> CurrencyTotalOverviews { get; }
 
-    public WealthViewModel(PresentPotsResponse presentPotsResponse)
+    public WealthViewModel(PresentWealthResponse presentWealthResponse)
     {
-        Date = presentPotsResponse.Date;
+        Date = presentWealthResponse.Date;
 
-        Values = presentPotsResponse.PotInstances
+        Values = presentWealthResponse.PotInstances
             .Select(x => new PotSnapshotViewModel
             {
                 Id = x.Id,
@@ -31,7 +31,7 @@ internal class WealthViewModel
                 OriginalValue = x.IsActive
                     ? x.Value
                     : null,
-                IsValueActual = x.Value?.Date == presentPotsResponse.Date,
+                IsValueActual = x.Value?.Date == presentWealthResponse.Date,
                 IsValueAlreadyNormal = x.Value?.Currency == x.NormalizedValue?.Currency,
                 IsNormalizedCurrent = x.NormalizedValue?.Date == Date,
                 Date = x.IsActive
@@ -42,11 +42,11 @@ internal class WealthViewModel
             })
             .ToList();
 
-        ConversionRates = presentPotsResponse.ConversionRates
-            .Select(x => new ExchangeRateViewModel(x, x.Date == presentPotsResponse.Date))
+        ConversionRates = presentWealthResponse.ConversionRates
+            .Select(x => new ExchangeRateViewModel(x, x.Date == presentWealthResponse.Date))
             .ToList();
 
-        Total = presentPotsResponse.Total;
-        CurrencyTotalOverviews = presentPotsResponse.CurrencyTotalOverviews;
+        Total = presentWealthResponse.Total;
+        CurrencyTotalOverviews = presentWealthResponse.CurrencyTotalOverviews;
     }
 }

@@ -4,15 +4,15 @@ using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using MediatR;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
+namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 
-public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPotsResponse>
+public class PresentWealthUseCase : IRequestHandler<PresentWealthRequest, PresentWealthResponse>
 {
 	private readonly ISystemClock systemClock;
 	private readonly IUnitOfWork unitOfWork;
 	private readonly CurrenciesConvertor currenciesConverter;
 
-	public PresentPotsUseCase(ISystemClock systemClock, IUnitOfWork unitOfWork)
+	public PresentWealthUseCase(ISystemClock systemClock, IUnitOfWork unitOfWork)
 	{
 		this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
@@ -20,10 +20,10 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
 		currenciesConverter = new CurrenciesConvertor(unitOfWork);
 	}
 
-	public async Task<PresentPotsResponse> Handle(PresentPotsRequest request, CancellationToken cancellationToken)
+	public async Task<PresentWealthResponse> Handle(PresentWealthRequest request, CancellationToken cancellationToken)
 	{
 		DateOnly currentDate = request.Date ?? systemClock.Today;
-		string defaultCurrency = request.Currency ?? "RON";
+		string defaultCurrency = request.Currency ?? "EUR";
 
 		IEnumerable<PotSnapshot> potSnapshots = await RetrievePotSnapshotsFromStorage(currentDate, request.IncludeInactive, cancellationToken);
 		List<PotInstanceInfo> potInstanceInfos = await ConvertToPotInstanceInfos(potSnapshots, currentDate, defaultCurrency, cancellationToken);
@@ -37,7 +37,7 @@ public class PresentPotsUseCase : IRequestHandler<PresentPotsRequest, PresentPot
 
 		await potsAnalysis.Calculate(cancellationToken);
 
-		return new PresentPotsResponse
+		return new PresentWealthResponse
 		{
 			Date = currentDate,
 			PotInstances = potInstanceInfos,

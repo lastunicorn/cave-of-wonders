@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 
 namespace CaveOfWonders.WebApi.Presentation.Endpoints.Pots.Models;
 

@@ -23,7 +23,7 @@ using DustInTheWind.CaveOfWonders.Adapters.FileAccess;
 using DustInTheWind.CaveOfWonders.Adapters.InsAccess;
 using DustInTheWind.CaveOfWonders.Adapters.LogAccess;
 using DustInTheWind.CaveOfWonders.Adapters.SpreadsheetAccess;
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 using DustInTheWind.CaveOfWonders.Ports.BnrAccess;
 using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
@@ -64,7 +64,7 @@ internal static class Program
 
         // Register MediatR
         builder.Services.AddMediatR(config =>
-            config.RegisterServicesFromAssembly(typeof(PresentPotsRequest).Assembly));
+            config.RegisterServicesFromAssembly(typeof(PresentWealthRequest).Assembly));
 
         // Register application services
         builder.Services.AddSingleton(sp =>

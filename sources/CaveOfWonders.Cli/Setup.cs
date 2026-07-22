@@ -13,7 +13,7 @@ using DustInTheWind.CaveOfWonders.Adapters.PeerBerryAccess;
 using DustInTheWind.CaveOfWonders.Adapters.QuanloopAccess;
 using DustInTheWind.CaveOfWonders.Adapters.SpreadsheetAccess;
 using DustInTheWind.CaveOfWonders.Adapters.UserAccess;
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
+using DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 using DustInTheWind.CaveOfWonders.Cli.Utils;
 using DustInTheWind.CaveOfWonders.Infrastructure.Diagnostics;
 using DustInTheWind.CaveOfWonders.Ports.BcrAccess;
@@ -65,7 +65,7 @@ internal static class DependenciesSetup
 
 		// Register MediatR
 		serviceCollection.AddMediatR(config =>
-			config.RegisterServicesFromAssembly(typeof(PresentPotsRequest).Assembly));
+			config.RegisterServicesFromAssembly(typeof(PresentWealthRequest).Assembly));
 
 		// Configure Database
 		string databaseType = configuration.GetSection("DatabaseType").Value?.ToLowerInvariant();

@@ -1,4 +1,4 @@
-﻿using DustInTheWind.CaveOfWonders.Cli.Application.PresentPots;
+﻿using DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 using DustInTheWind.ConsoleTools.Commando;
 using MediatR;
 using System.Globalization;
@@ -29,14 +29,14 @@ internal class WealthCommand : IConsoleCommand<WealthViewModel>
 
     public async Task<WealthViewModel> Execute()
     {
-        PresentPotsRequest request = new()
+        PresentWealthRequest request = new()
         {
             Date = Date,
             Currency = Currency,
             IncludeInactive = IncludeInactivePots
         };
 
-        PresentPotsResponse response = await mediator.Send(request);
+        PresentWealthResponse response = await mediator.Send(request);
 
         return new WealthViewModel(response)
         {
