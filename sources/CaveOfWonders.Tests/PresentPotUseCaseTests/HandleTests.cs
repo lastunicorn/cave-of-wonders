@@ -26,6 +26,14 @@ public class HandleTests
 			.Setup(x => x.GetCountAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
 			.ReturnsAsync(0);
 
+		Mock<IPotSnapshotRepository> potSnapshotRepository = new();
+		potSnapshotRepository
+			.Setup(x => x.GetCountAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(0);
+		potSnapshotRepository
+			.Setup(x => x.GetLatestByPotIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync((PotSnapshot)null);
+
 		unitOfWork
 			.Setup(x => x.PotRepository)
 			.Returns(potRepository.Object);
@@ -33,6 +41,10 @@ public class HandleTests
 		unitOfWork
 			.Setup(x => x.GemRepository)
 			.Returns(gemRepository.Object);
+
+		unitOfWork
+			.Setup(x => x.PotSnapshotRepository)
+			.Returns(potSnapshotRepository.Object);
 
 		useCase = new PresentPotUseCase(unitOfWork.Object, clock.Object);
 	}

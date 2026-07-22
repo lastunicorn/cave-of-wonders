@@ -40,19 +40,14 @@ internal class PresentPotSnapshotsUseCase : IRequestHandler<PresentPotSnapshotsR
 		{
 			Pot pot = pots[0];
 
-			IEnumerable<PotSnapshot> snapshots = pot.Snapshots;
-
-			if (request.StartDate is not null)
-				snapshots = snapshots.Where(x => x.Date >= request.StartDate.Value);
-
-			if (request.EndDate is not null)
-				snapshots = snapshots.Where(x => x.Date <= request.EndDate.Value);
+			List<PotSnapshot> snapshots = await unitOfWork.PotSnapshotRepository
+				.GetByPotIdAsync(pot.Id, request.StartDate, request.EndDate, cancellationToken)
+				.ToListAsync(cancellationToken);
 
 			return new PresentPotSnapshotsResponse
 			{
 				Pot = new PotSummary(pot, pot.IsActive(today)),
 				Snapshots = snapshots
-					.OrderBy(x => x.Date)
 					.Select(x => new PotSnapshotItem
 					{
 						Date = x.Date,

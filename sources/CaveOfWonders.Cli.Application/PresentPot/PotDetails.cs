@@ -30,7 +30,7 @@ public class PotDetails
 
 	public bool IsActive { get; }
 
-	internal PotDetails(Pot pot, int gemCount, DateOnly? latestGemDate)
+	internal PotDetails(Pot pot, int gemCount, DateOnly? latestGemDate, int snapshotCount, PotSnapshot latestSnapshot)
 	{
 		GemCount = gemCount;
 		LatestGemDate = latestGemDate;
@@ -40,22 +40,18 @@ public class PotDetails
 		StartDate = pot.StartDate;
 		EndDate = pot.EndDate;
 		Currency = pot.Currency;
-		SnapshotCount = pot.Snapshots.Count;
+		SnapshotCount = snapshotCount;
 		Labels = pot.Labels?
 			.Select(x => x.Label)
 			.ToList() ?? [];
 
-		PotSnapshot lastPotSnapshot = pot.Snapshots?.Count > 0
-			? pot.Snapshots[^1]
-			: null;
-
-		if (lastPotSnapshot != null)
+		if (latestSnapshot != null)
 		{
-			LastSnapshotDate = lastPotSnapshot.Date;
+			LastSnapshotDate = latestSnapshot.Date;
 			Value = new DatedAmount
 			{
 				Currency = pot.Currency,
-				Value = lastPotSnapshot.Value
+				Value = latestSnapshot.Value
 			};
 		}
 
