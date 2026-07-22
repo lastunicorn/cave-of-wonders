@@ -8,9 +8,15 @@ internal class LabelAddItemViewModel
 
 	public string PotName { get; }
 
+	public bool WasAdded { get; }
+
+	public bool IsActive { get; }
+
 	internal LabelAddItemViewModel(LabelAddResult item)
 	{
 		PotId = item.PotId;
 		PotName = item.PotName;
+		WasAdded = item.WasAdded;
+		IsActive = item.IsActive;
 	}
 }

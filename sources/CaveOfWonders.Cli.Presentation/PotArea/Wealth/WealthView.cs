@@ -14,7 +14,7 @@ internal class WealthView : IView<WealthViewModel>
             CultureInfo.CurrentUICulture = wealthViewModel.Culture;
         }
 
-        DisplayCaveInstances(wealthViewModel);
+        DisplayPots(wealthViewModel);
 
         if (wealthViewModel.CurrencyTotalOverviews?.Count > 1)
             DisplayTotals(wealthViewModel);
@@ -22,7 +22,7 @@ internal class WealthView : IView<WealthViewModel>
         DisplayConversionRates(wealthViewModel);
     }
 
-    private static void DisplayCaveInstances(WealthViewModel wealthViewModel)
+    private static void DisplayPots(WealthViewModel wealthViewModel)
     {
         PotsDataGrid potsDataGrid = new()
         {

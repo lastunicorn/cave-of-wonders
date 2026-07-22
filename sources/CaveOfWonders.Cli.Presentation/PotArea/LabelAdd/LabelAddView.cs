@@ -1,5 +1,4 @@
 using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
-using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 
@@ -9,9 +8,8 @@ internal class LabelAddView : IView<LabelAddViewModel>
 {
 	public void Display(LabelAddViewModel viewModel)
 	{
-		CustomConsole.WriteLineSuccess($"Label '{viewModel.Label}' was added to the following pots:");
-
 		DataGrid dataGrid = DataGridTemplate.CreateNew();
+		dataGrid.Title = $"Added Label '{viewModel.Label}'";
 
 		dataGrid.Columns.Add(new Column("Id")
 		{
@@ -20,11 +18,22 @@ internal class LabelAddView : IView<LabelAddViewModel>
 		});
 
 		dataGrid.Columns.Add("Pot");
+		dataGrid.Columns.Add("Status");
 
 		foreach (LabelAddItemViewModel item in viewModel.Items)
 		{
 			ShortPotId id = item.PotId;
-			dataGrid.Rows.Add(id, item.PotName);
+			string status = item.WasAdded ? "Added" : "Already present";
+
+			ContentRow row = new(id, item.PotName, status);
+
+			if (!item.IsActive)
+			{
+				row[1].ForegroundColor = ConsoleColor.DarkGray;
+				row[2].ForegroundColor = ConsoleColor.DarkGray;
+			}
+
+			dataGrid.Rows.Add(row);
 		}
 
 		dataGrid.Display();
