@@ -75,15 +75,14 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
 
 		foreach (Pot pot in pots)
 		{
-			int gemCount = await unitOfWork.GemRepository.GetByPotIdAsync(pot.Id, cancellationToken)
-				.CountAsync(cancellationToken);
+			int gemCount = await unitOfWork.GemRepository.GetCountAsync(pot.Id, cancellationToken);
 
-			Gem lastGem = await unitOfWork.GemRepository.GetLatestAsync(pot.Id, cancellationToken);
-			DateOnly? lastGemDate = lastGem != null
-				? DateOnly.FromDateTime(lastGem.Date)
+			Gem latestGem = await unitOfWork.GemRepository.GetLatestAsync(pot.Id, cancellationToken);
+			DateOnly? latestGemDate = latestGem != null
+				? DateOnly.FromDateTime(latestGem.Date)
 				: null;
 
-			potDetailsList.Add(new PotDetails(pot, gemCount, lastGemDate));
+			potDetailsList.Add(new PotDetails(pot, gemCount, latestGemDate));
 		}
 
 		return potDetailsList;

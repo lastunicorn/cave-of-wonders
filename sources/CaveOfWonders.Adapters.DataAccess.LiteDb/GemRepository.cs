@@ -102,6 +102,15 @@ public class GemRepository : IGemRepository
 		return gems.ToAsyncEnumerable(cancellationToken);
 	}
 
+	public Task<int> GetCountAsync(Guid potId, CancellationToken cancellationToken = default)
+	{
+		int count = dbContext.Gems
+			.FindAll()
+			.Count(x => x.PotId == potId);
+
+		return Task.FromResult(count);
+	}
+
 	public void Add(Gem gem)
 	{
 		ArgumentNullException.ThrowIfNull(gem);

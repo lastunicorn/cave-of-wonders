@@ -127,6 +127,14 @@ public class GemRepository : IGemRepository
 		}
 	}
 
+	public async Task<int> GetCountAsync(Guid potId, CancellationToken cancellationToken = default)
+	{
+		await database.LoadGemsAsync(cancellationToken);
+
+		return database.Gems
+			.Count(x => x.Pot?.Id == potId);
+	}
+
 	public void Add(Gem gem)
 	{
 		if (gem == null)

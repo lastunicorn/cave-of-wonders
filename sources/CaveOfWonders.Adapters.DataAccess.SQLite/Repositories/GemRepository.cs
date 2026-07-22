@@ -88,6 +88,13 @@ internal class GemRepository : IGemRepository
 		return query.AsAsyncEnumerable();
 	}
 
+	public async Task<int> GetCountAsync(Guid potId, CancellationToken cancellationToken = default)
+	{
+		return await dbContext.Gems
+			.Where(x => x.Pot.Id == potId)
+			.CountAsync(cancellationToken);
+	}
+
 	public void Add(Gem gem)
 	{
 		ArgumentNullException.ThrowIfNull(gem);

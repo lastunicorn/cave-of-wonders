@@ -22,8 +22,8 @@ public class PotOrderTests
 
 		Mock<IGemRepository> gemRepository = new();
 		gemRepository
-			.Setup(x => x.GetByPotIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-			.Returns(Array.Empty<Gem>().ToAsyncEnumerable());
+			.Setup(x => x.GetCountAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(0);
 
 		unitOfWork
 			.Setup(x => x.PotRepository)

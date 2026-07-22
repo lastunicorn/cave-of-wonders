@@ -4,11 +4,11 @@ namespace DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
 public interface IAverageWageRepository
 {
-    IAsyncEnumerable<AverageWage> GetAllAsync(CancellationToken cancellationToken = default);
+	IAsyncEnumerable<AverageWage> GetAllAsync(CancellationToken cancellationToken = default);
 
-    Task<AverageWage> GetAsync(int year, CancellationToken cancellationToken = default);
+	Task<AverageWage> GetAsync(int year, CancellationToken cancellationToken = default);
 
-    void Add(AverageWage averageWage);
+	void Add(AverageWage averageWage);
 
-    void Delete(AverageWage averageWage);
+	void Delete(AverageWage averageWage);
 }

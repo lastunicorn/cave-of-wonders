@@ -2,6 +2,6 @@
 
 public enum DateMatchingMode
 {
-    Exact,
-    LastAvailable
+	Exact,
+	LastAvailable
 }
