@@ -33,6 +33,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Globalization;
 using LiteDbContext = DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.DbContext;
 using SQLiteUnitOfWork = DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.UnitOfWork;
 using JsonUnitOfWork = DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.UnitOfWork;
@@ -51,6 +52,16 @@ internal static class DependenciesSetup
 			.Build();
 
 		serviceCollection.AddSingleton(configuration);
+
+		// Set default culture
+		string culture = configuration.GetSection("Culture").Value;
+
+		if (!string.IsNullOrEmpty(culture))
+		{
+			CultureInfo cultureInfo = new(culture);
+			CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+			CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+		}
 
 		// Register MediatR
 		serviceCollection.AddMediatR(config =>

@@ -1,8 +1,8 @@
 {
-  "profiles": {
-    "CaveOfWonders.Cli": {
-      "commandName": "Project",
-      "commandLineArgs": "gem --pot mintos"
-    }
-  }
+	"profiles": {
+		"CaveOfWonders.Cli": {
+			"commandName": "Project",
+			"commandLineArgs": "gem --pot mintos"
+		}
+	}
 }
