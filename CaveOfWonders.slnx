@@ -29,7 +29,7 @@
 				Path="sources/CaveOfWonders.Adapters.DataAccess.LiteDb/CaveOfWonders.Adapters.DataAccess.LiteDb.csproj" />
 		<Project
 				Path="sources/CaveOfWonders.Adapters.DataAccess.SQLite/CaveOfWonders.Adapters.DataAccess.SQLite.csproj" />
-		<Project Path="sources/CaveOfWonders.Adapters.DataAccess/CaveOfWonders.Adapters.DataAccess.Json.csproj" />
+		<Project Path="sources/CaveOfWonders.Adapters.DataAccess.Json/CaveOfWonders.Adapters.DataAccess.Json.csproj" />
 		<Project Path="sources/CaveOfWonders.Ports.DataAccess/CaveOfWonders.Ports.DataAccess.csproj" />
 	</Folder>
 	<Folder Name="/Ports/FileAccess/">

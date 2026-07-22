@@ -13,7 +13,7 @@ internal class WealthCommand : IConsoleCommand<WealthViewModel>
     [NamedParameter("date", ShortName = 'd', IsMandatory = false, Description = "The date for which to display the state of the cave. Default value = today")]
     public DateOnly? Date { get; set; }
 
-    [NamedParameter("currency", ShortName = 'c', IsMandatory = false)]
+    [NamedParameter("currency", ShortName = 'c', IsMandatory = false, Description = "The currency for which to display the state of the cave. Default value = EUR")]
     public string Currency { get; set; }
 
     [NamedParameter("all", ShortName = 'a', IsMandatory = false, Description = "Display all pots, including the inactive ones. Default = false.")]

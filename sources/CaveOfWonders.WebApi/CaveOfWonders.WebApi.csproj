@@ -32,7 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess\CaveOfWonders.Adapters.DataAccess.Json.csproj" />
+        <ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess.Json\CaveOfWonders.Adapters.DataAccess.Json.csproj" />
         <ProjectReference Include="..\CaveOfWonders.Adapters.FileAccess\CaveOfWonders.Adapters.FileAccess.csproj" />
         <ProjectReference Include="..\CaveOfWonders.Adapters.ClockAccess\CaveOfWonders.Adapters.ClockAccess.csproj" />
         <ProjectReference Include="..\CaveOfWonders.Cli.Application\CaveOfWonders.Cli.Application.csproj" />
