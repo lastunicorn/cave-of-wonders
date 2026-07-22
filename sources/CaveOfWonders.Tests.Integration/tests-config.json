@@ -4,6 +4,10 @@
     "TestEnvironments": ["Json", "LiteDb", "SQLite"]
   },
   {
+    "Port": "DustInTheWind.CaveOfWonders.Ports.DataAccess.IPotSnapshotRepository",
+    "TestEnvironments": ["Json", "LiteDb", "SQLite"]
+  },
+  {
     "Port": "DustInTheWind.CaveOfWonders.Ports.DataAccess.ICpiRepository",
     "TestEnvironments": ["Json", "SQLite"]
   },

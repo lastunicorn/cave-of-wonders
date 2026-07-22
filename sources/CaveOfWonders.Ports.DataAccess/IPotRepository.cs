@@ -11,8 +11,6 @@ public interface IPotRepository
 
 	IAsyncEnumerable<Pot> GetAsync(PotFlexId potFlexId, CancellationToken cancellationToken = default);
 
-	Task<IEnumerable<PotSnapshot>> GetSnapshotsAsync(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive, CancellationToken cancellationToken = default);
-
 	void Add(Pot pot);
 
 	void Remove(Pot pot);

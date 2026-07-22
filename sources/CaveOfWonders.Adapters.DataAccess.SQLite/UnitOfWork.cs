@@ -8,12 +8,15 @@ public sealed class UnitOfWork : IUnitOfWork, IDisposable
     private readonly CaveOfWondersDbContext dbContext;
 
     private PotRepository potRepository;
+    private PotSnapshotRepository potSnapshotRepository;
     private ExchangeRateRepository exchangeRateRepository;
     private CpiRepository cpiRepository;
     private AverageWageRepository averageWageRepository;
     private GemRepository gemRepository;
 
     public IPotRepository PotRepository => potRepository ??= new PotRepository(dbContext);
+
+    public IPotSnapshotRepository PotSnapshotRepository => potSnapshotRepository ??= new PotSnapshotRepository(dbContext);
 
     public IExchangeRateRepository ExchangeRateRepository => exchangeRateRepository ??= new ExchangeRateRepository(dbContext);
     

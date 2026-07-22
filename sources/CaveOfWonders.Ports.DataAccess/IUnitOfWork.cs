@@ -4,6 +4,8 @@ public interface IUnitOfWork
 {
 	public IPotRepository PotRepository { get; }
 
+	public IPotSnapshotRepository PotSnapshotRepository { get; }
+
 	public IExchangeRateRepository ExchangeRateRepository { get; }
 
 	public ICpiRepository CpiRepository { get; }

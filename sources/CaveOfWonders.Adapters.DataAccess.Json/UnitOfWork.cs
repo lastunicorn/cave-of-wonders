@@ -8,12 +8,15 @@ public class UnitOfWork : IUnitOfWork
     private readonly Database database;
 
     private IPotRepository potRepository;
+    private IPotSnapshotRepository potSnapshotRepository;
     private IExchangeRateRepository exchangeRateRepository;
     private ICpiRepository cpiRepository;
     private IAverageWageRepository averageWageRepository;
     private IGemRepository gemRepository;
 
     public IPotRepository PotRepository => potRepository ??= new PotRepository(database);
+
+    public IPotSnapshotRepository PotSnapshotRepository => potSnapshotRepository ??= new PotSnapshotRepository(database);
 
     public IExchangeRateRepository ExchangeRateRepository => exchangeRateRepository ??= new ExchangeRateRepository(database);
 

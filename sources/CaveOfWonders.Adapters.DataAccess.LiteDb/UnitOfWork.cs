@@ -7,10 +7,13 @@ public sealed class UnitOfWork : IUnitOfWork, IDisposable
 	private readonly DbContext dbContext;
 
 	private IPotRepository potRepository;
+	private IPotSnapshotRepository potSnapshotRepository;
 	private IExchangeRateRepository exchangeRateRepository;
 	private IGemRepository gemRepository;
 
 	public IPotRepository PotRepository => potRepository ??= new PotRepository(dbContext);
+
+	public IPotSnapshotRepository PotSnapshotRepository => potSnapshotRepository ??= new PotSnapshotRepository(dbContext);
 
 	public IExchangeRateRepository ExchangeRateRepository => exchangeRateRepository ??= new ExchangeRateRepository(dbContext);
 

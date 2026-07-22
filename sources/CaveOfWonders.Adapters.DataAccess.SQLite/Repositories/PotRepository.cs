@@ -29,18 +29,6 @@ internal class PotRepository : IPotRepository
 			.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 	}
 
-	public async Task<IEnumerable<PotSnapshot>> GetSnapshotsAsync(DateOnly date, DateMatchingMode dateMatchingMode, bool includeInactive, CancellationToken cancellationToken = default)
-	{
-		List<Pot> pots = await dbContext.Pots
-			.Include(x => x.Snapshots)
-			.ToListAsync(cancellationToken);
-
-		return pots
-			.Where(x => includeInactive || x.IsActive(date))
-			.Select(x => GetLatestSnapshot(x, date, dateMatchingMode))
-			.Where(x => x != null);
-	}
-
 	public IAsyncEnumerable<Pot> GetAsync(PotFlexId potFlexId, CancellationToken cancellationToken = default)
 	{
 		IEnumerable<Pot> pots = dbContext.Pots
@@ -71,18 +59,5 @@ internal class PotRepository : IPotRepository
 		}
 
 		dbContext.Pots.Remove(entity);
-	}
-
-	private static PotSnapshot GetLatestSnapshot(Pot pot, DateOnly date, DateMatchingMode dateMatchingMode)
-	{
-		return dateMatchingMode switch
-		{
-			DateMatchingMode.Exact => pot.Snapshots
-				.FirstOrDefault(x => x.Date == date),
-			DateMatchingMode.LastAvailable => pot.Snapshots
-				.Where(x => x.Date <= date)
-				.MaxBy(x => x.Date),
-			_ => throw new ArgumentOutOfRangeException(nameof(dateMatchingMode))
-		};
 	}
 }

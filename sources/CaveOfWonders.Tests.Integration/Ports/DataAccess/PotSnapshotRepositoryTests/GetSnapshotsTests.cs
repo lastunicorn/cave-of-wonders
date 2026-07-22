@@ -1,18 +1,18 @@
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotRepositoryTests.TestEnvironments;
+using DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotSnapshotRepositoryTests.TestEnvironments;
 using DustInTheWind.CaveOfWonders.Tests.Utils;
 using FluentAssertions;
 
-namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotRepositoryTests;
+namespace DustInTheWind.CaveOfWonders.Tests.Integration.Ports.DataAccess.PotSnapshotRepositoryTests;
 
 public class GetSnapshotsTests
 {
 	private readonly DateOnly currentDate = new(2023, 7, 1);
 
 	[Theory]
-	[TestEnvironments<IPotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task GetSnapshots_WhenDatabaseIsEmpty_ShouldReturnEmptyCollection(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act(async (repository, context) =>
@@ -29,8 +29,8 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithActivePot_ShouldReturnPotInstance(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task GetSnapshots_WithActivePot_ShouldReturnPotInstance(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
@@ -73,8 +73,8 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithInactivePot_ShouldNotReturnPotWhenIncludeInactiveIsFalse(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task GetSnapshots_WithInactivePot_ShouldNotReturnPotWhenIncludeInactiveIsFalse(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
@@ -104,8 +104,8 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithInactivePot_ShouldReturnPotWhenIncludeInactiveIsTrue(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task GetSnapshots_WithInactivePot_ShouldReturnPotWhenIncludeInactiveIsTrue(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
@@ -146,8 +146,8 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithPotEndingBeforeCurrentDate_ShouldNotReturnPotWhenIncludeInactiveIsFalse(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task GetSnapshots_WithPotEndingBeforeCurrentDate_ShouldNotReturnPotWhenIncludeInactiveIsFalse(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
@@ -178,8 +178,8 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithExactDateMatchingMode_ShouldReturnOnlyExactDateSnapshot(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task GetSnapshots_WithExactDateMatchingMode_ShouldReturnOnlyExactDateSnapshot(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
@@ -235,8 +235,8 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithExactDateMatchingMode_ShouldNotReturnSnapshotWhenNoExactDateExists(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task GetSnapshots_WithExactDateMatchingMode_ShouldNotReturnSnapshotWhenNoExactDateExists(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
@@ -284,8 +284,8 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithLastAvailableDateMatchingMode_ShouldReturnLastAvailableSnapshot(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task GetSnapshots_WithLastAvailableDateMatchingMode_ShouldReturnLastAvailableSnapshot(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
@@ -336,8 +336,8 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithLastAvailableDateMatchingMode_ShouldNotReturnSnapshotWhenNoSnapshotBeforeDate(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task GetSnapshots_WithLastAvailableDateMatchingMode_ShouldNotReturnSnapshotWhenNoSnapshotBeforeDate(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
@@ -380,8 +380,8 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithMultiplePots_ShouldReturnAllActivePots(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task GetSnapshots_WithMultiplePots_ShouldReturnAllActivePots(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
@@ -460,8 +460,8 @@ public class GetSnapshotsTests
 	}
 
 	[Theory]
-	[TestEnvironments<IPotRepository, ITestBackDoor>]
-	public async Task GetSnapshots_WithMultiplePotsAndIncludeInactiveTrue_ShouldReturnAllPots(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task GetSnapshots_WithMultiplePotsAndIncludeInactiveTrue_ShouldReturnAllPots(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Arrange(async (backDoor, context) =>
