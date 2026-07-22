@@ -30,7 +30,17 @@ internal class LabelView : IView<LabelViewModel>
 		foreach (PotLabelsItemViewModel item in viewModel.Items)
 		{
 			ShortPotId id = item.PotId;
-			dataGrid.Rows.Add(id, item.PotName, string.Join(", ", item.Labels));
+			string labels = string.Join(", ", item.Labels);
+
+			ContentRow row = new(id, item.PotName, labels);
+
+			if (!item.IsActive)
+			{
+				row[1].ForegroundColor = ConsoleColor.DarkGray;
+				row[2].ForegroundColor = ConsoleColor.DarkGray;
+			}
+
+			dataGrid.Rows.Add(row);
 		}
 
 		dataGrid.Display();

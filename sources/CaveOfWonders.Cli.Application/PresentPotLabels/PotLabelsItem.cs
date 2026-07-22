@@ -7,4 +7,6 @@ public class PotLabelsItem
 	public string PotName { get; init; }
 
 	public List<string> Labels { get; init; } = [];
+
+	public bool IsActive { get; init; }
 }

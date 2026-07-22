@@ -12,6 +12,9 @@ internal class LabelCommand : IConsoleCommand<LabelViewModel>
 	[AnonymousParameter(DisplayName = "Pot Identifier", Order = 1, IsMandatory = false, Description = "Name or id of the pot. Partial id is accepted.")]
 	public string PotIdentifier { get; set; }
 
+	[NamedParameter("all", ShortName = 'a', IsMandatory = false, Description = "Display all pots, including the inactive ones. Default = false.")]
+	public bool IncludeInactivePots { get; set; }
+
 	public LabelCommand(IMediator mediator)
 	{
 		this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -21,7 +24,8 @@ internal class LabelCommand : IConsoleCommand<LabelViewModel>
 	{
 		PresentPotLabelsRequest request = new()
 		{
-			PotFlexId = PotIdentifier
+			PotFlexId = PotIdentifier,
+			IncludeInactivePots = IncludeInactivePots
 		};
 
 		PresentPotLabelsResponse response = await mediator.Send(request);

@@ -1,5 +1,6 @@
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using MediatR;
 
@@ -8,15 +9,19 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPotLabels;
 internal class PresentPotLabelsUseCase : IRequestHandler<PresentPotLabelsRequest, PresentPotLabelsResponse>
 {
 	private readonly IUnitOfWork unitOfWork;
+	private readonly ISystemClock systemClock;
 
-	public PresentPotLabelsUseCase(IUnitOfWork unitOfWork)
+	public PresentPotLabelsUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
 	{
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+		this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
 	}
 
 	public async Task<PresentPotLabelsResponse> Handle(PresentPotLabelsRequest request, CancellationToken cancellationToken)
 	{
-		List<Pot> pots = await RetrievePots(request.PotFlexId, cancellationToken);
+		DateOnly today = systemClock.Today;
+
+		List<Pot> pots = await RetrievePots(request, today, cancellationToken);
 
 		return new PresentPotLabelsResponse
 		{
@@ -27,21 +32,25 @@ internal class PresentPotLabelsUseCase : IRequestHandler<PresentPotLabelsRequest
 					PotName = x.Name,
 					Labels = x.Labels
 						.Select(l => l.Label)
-						.ToList()
+						.ToList(),
+					IsActive = x.IsActive(today)
 				})
 				.ToList()
 		};
 	}
 
-	private async Task<List<Pot>> RetrievePots(PotFlexId potFlexId, CancellationToken cancellationToken)
+	private async Task<List<Pot>> RetrievePots(PresentPotLabelsRequest request, DateOnly today, CancellationToken cancellationToken)
 	{
 		try
 		{
-			bool isIdentifierSpecified = potFlexId?.HasValue == true;
+			bool isIdentifierSpecified = request.PotFlexId?.HasValue == true;
 
 			IAsyncEnumerable<Pot> pots = isIdentifierSpecified
-				? unitOfWork.PotRepository.GetAsync(potFlexId, cancellationToken)
+				? unitOfWork.PotRepository.GetAsync(request.PotFlexId, cancellationToken)
 				: unitOfWork.PotRepository.GetAllAsync(cancellationToken);
+
+			if (!request.IncludeInactivePots)
+				pots = pots.Where(x => x.IsActive(today));
 
 			return await pots
 				.OrderBy(x => x.DisplayOrder)

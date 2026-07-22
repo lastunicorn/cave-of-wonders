@@ -10,10 +10,13 @@ internal class PotLabelsItemViewModel
 
 	public List<string> Labels { get; }
 
+	public bool IsActive { get; }
+
 	internal PotLabelsItemViewModel(PotLabelsItem item)
 	{
 		PotId = item.PotId;
 		PotName = item.PotName;
 		Labels = item.Labels;
+		IsActive = item.IsActive;
 	}
 }
