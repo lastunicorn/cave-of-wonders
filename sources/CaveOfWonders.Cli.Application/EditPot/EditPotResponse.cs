@@ -12,6 +12,12 @@ public class EditPotResponse
 
 	public string NewName { get; set; }
 
+	public bool DescriptionUpdated { get; set; }
+
+	public string OldDescription { get; set; }
+
+	public string NewDescription { get; set; }
+
 	public bool CurrencyUpdated { get; set; }
 
 	public string OldCurrency { get; set; }

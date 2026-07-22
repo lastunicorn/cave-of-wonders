@@ -28,6 +28,14 @@ internal class EditPotUseCase : IRequestHandler<EditPotRequest, EditPotResponse>
 			response.NewName = pot.Name;
 		}
 
+		if (!string.IsNullOrWhiteSpace(request.Description))
+		{
+			response.DescriptionUpdated = true;
+			response.OldDescription = pot.Description;
+			pot.Description = request.Description;
+			response.NewDescription = pot.Description;
+		}
+
 		if (!string.IsNullOrWhiteSpace(request.Currency))
 		{
 			response.CurrencyUpdated = true;
@@ -36,7 +44,7 @@ internal class EditPotUseCase : IRequestHandler<EditPotRequest, EditPotResponse>
 			response.NewCurrency = pot.Currency;
 		}
 
-		if (response.NameUpdated || response.CurrencyUpdated)
+		if (response.NameUpdated || response.DescriptionUpdated || response.CurrencyUpdated)
 		{
 			try
 			{
