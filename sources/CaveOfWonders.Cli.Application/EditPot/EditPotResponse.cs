@@ -23,4 +23,16 @@ public class EditPotResponse
 	public string OldCurrency { get; set; }
 
 	public string NewCurrency { get; set; }
+
+	public bool StartDateUpdated { get; set; }
+
+	public DateOnly OldStartDate { get; set; }
+
+	public DateOnly NewStartDate { get; set; }
+
+	public bool EndDateUpdated { get; set; }
+
+	public DateOnly? OldEndDate { get; set; }
+
+	public DateOnly? NewEndDate { get; set; }
 }

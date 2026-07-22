@@ -44,7 +44,23 @@ internal class EditPotUseCase : IRequestHandler<EditPotRequest, EditPotResponse>
 			response.NewCurrency = pot.Currency;
 		}
 
-		if (response.NameUpdated || response.DescriptionUpdated || response.CurrencyUpdated)
+		if (request.StartDate.HasValue)
+		{
+			response.StartDateUpdated = true;
+			response.OldStartDate = pot.StartDate;
+			pot.StartDate = request.StartDate.Value;
+			response.NewStartDate = pot.StartDate;
+		}
+
+		if (request.EndDate.HasValue)
+		{
+			response.EndDateUpdated = true;
+			response.OldEndDate = pot.EndDate;
+			pot.EndDate = request.EndDate.Value;
+			response.NewEndDate = pot.EndDate;
+		}
+
+		if (response.NameUpdated || response.DescriptionUpdated || response.CurrencyUpdated || response.StartDateUpdated || response.EndDateUpdated)
 		{
 			try
 			{

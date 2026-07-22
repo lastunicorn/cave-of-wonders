@@ -4,7 +4,7 @@ using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.PotEdit;
 
-[NamedCommand("pot-edit", Description = "Update the name, description and/or currency of a pot.")]
+[NamedCommand("pot-edit", Description = "Update the name, description, currency, start date and/or end date of a pot.")]
 internal class PotEditCommand : IConsoleCommand<PotEditViewModel>
 {
 	private readonly IMediator mediator;
@@ -21,6 +21,12 @@ internal class PotEditCommand : IConsoleCommand<PotEditViewModel>
 	[NamedParameter("currency", ShortName = 'c', IsMandatory = false, Description = "The new currency for the pot.")]
 	public string Currency { get; set; }
 
+	[NamedParameter("start-date", ShortName = 's', IsMandatory = false, Description = "The new start date for the pot.")]
+	public DateOnly? StartDate { get; set; }
+
+	[NamedParameter("end-date", ShortName = 'e', IsMandatory = false, Description = "The new end date for the pot.")]
+	public DateOnly? EndDate { get; set; }
+
 	public PotEditCommand(IMediator mediator)
 	{
 		this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -33,7 +39,9 @@ internal class PotEditCommand : IConsoleCommand<PotEditViewModel>
 			PotId = PotIdentifier,
 			Name = Name,
 			Description = Description,
-			Currency = Currency
+			Currency = Currency,
+			StartDate = StartDate,
+			EndDate = EndDate
 		};
 
 		EditPotResponse response = await mediator.Send(request);
@@ -50,7 +58,13 @@ internal class PotEditCommand : IConsoleCommand<PotEditViewModel>
 			NewDescription = response.NewDescription,
 			CurrencyUpdated = response.CurrencyUpdated,
 			OldCurrency = response.OldCurrency,
-			NewCurrency = response.NewCurrency
+			NewCurrency = response.NewCurrency,
+			StartDateUpdated = response.StartDateUpdated,
+			OldStartDate = response.OldStartDate,
+			NewStartDate = response.NewStartDate,
+			EndDateUpdated = response.EndDateUpdated,
+			OldEndDate = response.OldEndDate,
+			NewEndDate = response.NewEndDate
 		};
 	}
 }
