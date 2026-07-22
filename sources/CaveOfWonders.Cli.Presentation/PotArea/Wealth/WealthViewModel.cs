@@ -17,7 +17,7 @@ internal class WealthViewModel
 
     public DatedAmount Total { get; }
 
-    public List<CurrencyTotalOverview> CurrencyTotalOverviews { get; }
+    public List<CurrencyOverview> CurrencyTotalOverviews { get; }
 
     public WealthViewModel(PresentWealthResponse presentWealthResponse)
     {
@@ -47,6 +47,6 @@ internal class WealthViewModel
             .ToList();
 
         Total = presentWealthResponse.Total;
-        CurrencyTotalOverviews = presentWealthResponse.CurrencyTotalOverviews;
+        CurrencyTotalOverviews = presentWealthResponse.CurrencyOverviews;
     }
 }

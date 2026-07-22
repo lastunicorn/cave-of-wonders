@@ -26,7 +26,7 @@ public class PresentWealthUseCase : IRequestHandler<PresentWealthRequest, Presen
 		string defaultCurrency = request.Currency ?? "EUR";
 
 		List<Pot> pots = await RetrievePots(request.IncludeInactive, currentDate, cancellationToken);
-		Dictionary<Guid, PotSnapshot> potSnapshotsByPotId = await RetrievePotSnapshotsFromStorage(currentDate, request.IncludeInactive, cancellationToken);
+		Dictionary<Guid, PotSnapshot> potSnapshotsByPotId = await RetrieveLatestSnapshotsFromStorage(currentDate, request.IncludeInactive, cancellationToken);
 		List<PotInstanceInfo> potInstanceInfos = await ConvertToPotInstanceInfos(pots, potSnapshotsByPotId, currentDate, defaultCurrency, cancellationToken);
 
 		PotsAnalysis potsAnalysis = new(currenciesConverter)
@@ -36,7 +36,7 @@ public class PresentWealthUseCase : IRequestHandler<PresentWealthRequest, Presen
 			TargetCurrency = defaultCurrency
 		};
 
-		await potsAnalysis.Calculate(cancellationToken);
+		await potsAnalysis.ExecuteAsync(cancellationToken);
 
 		return new PresentWealthResponse
 		{
@@ -50,7 +50,7 @@ public class PresentWealthUseCase : IRequestHandler<PresentWealthRequest, Presen
 				Value = potsAnalysis.TotalValue,
 				Currency = defaultCurrency
 			},
-			CurrencyTotalOverviews = potsAnalysis.currencyTotalOverviews
+			CurrencyOverviews = potsAnalysis.CurrencyOverviews
 		};
 	}
 
@@ -66,7 +66,7 @@ public class PresentWealthUseCase : IRequestHandler<PresentWealthRequest, Presen
 			.ToListAsync(cancellationToken);
 	}
 
-	private async Task<Dictionary<Guid, PotSnapshot>> RetrievePotSnapshotsFromStorage(DateOnly date, bool includeInactive, CancellationToken cancellationToken)
+	private async Task<Dictionary<Guid, PotSnapshot>> RetrieveLatestSnapshotsFromStorage(DateOnly date, bool includeInactive, CancellationToken cancellationToken)
 	{
 		IEnumerable<PotSnapshot> potSnapshots = await unitOfWork.PotRepository.GetSnapshotsAsync(date, DateMatchingMode.LastAvailable, includeInactive, cancellationToken);
 		return potSnapshots.ToDictionary(x => x.Pot.Id);

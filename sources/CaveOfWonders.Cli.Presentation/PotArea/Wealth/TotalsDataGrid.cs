@@ -9,7 +9,7 @@ internal class TotalsDataGrid
 {
     public DateOnly Date { get; set; }
 
-    public List<CurrencyTotalOverview> Values { get; set; }
+    public List<CurrencyOverview> Values { get; set; }
 
     public DatedAmount Total { get; set; }
 

@@ -46,7 +46,7 @@ public class GetSummaryPotsResponseDto
 					.ToList()
 				?? [],
 			Total = CurrencyValueDto.From(response.Total),
-			CurrencyTotalOverviews = response.CurrencyTotalOverviews?
+			CurrencyTotalOverviews = response.CurrencyOverviews?
 					.Select(CurrencyTotalOverviewDto.From)
 					.ToList()
 				?? []

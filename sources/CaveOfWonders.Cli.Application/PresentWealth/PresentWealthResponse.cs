@@ -10,5 +10,5 @@ public class PresentWealthResponse
 
 	public DatedAmount Total { get; set; }
 
-	public List<CurrencyTotalOverview> CurrencyTotalOverviews { get; set; } = [];
+	public List<CurrencyOverview> CurrencyOverviews { get; set; } = [];
 }

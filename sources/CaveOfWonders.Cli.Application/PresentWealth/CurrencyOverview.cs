@@ -1,6 +1,6 @@
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 
-public class CurrencyTotalOverview
+public class CurrencyOverview
 {
 	public DatedAmount Value { get; set; }
 

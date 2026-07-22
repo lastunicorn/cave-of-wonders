@@ -22,16 +22,16 @@ public class CurrencyTotalOverviewDto
 	/// </summary>
 	public decimal Percentage { get; set; }
 
-	internal static CurrencyTotalOverviewDto From(CurrencyTotalOverview currencyTotalOverview)
+	internal static CurrencyTotalOverviewDto From(CurrencyOverview currencyOverview)
 	{
-		if (currencyTotalOverview == null)
+		if (currencyOverview == null)
 			return null;
 
 		return new CurrencyTotalOverviewDto
 		{
-			Value = CurrencyValueDto.From(currencyTotalOverview.Value),
-			NormalizedValue = CurrencyValueDto.From(currencyTotalOverview.NormalizedValue),
-			Percentage = currencyTotalOverview.Percentage
+			Value = CurrencyValueDto.From(currencyOverview.Value),
+			NormalizedValue = CurrencyValueDto.From(currencyOverview.NormalizedValue),
+			Percentage = currencyOverview.Percentage
 		};
 	}
 }

@@ -1,4 +1,6 @@
-﻿namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
+﻿using DustInTheWind.CaveOfWonders.DataTypes;
+
+namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 
 internal class PotsAnalysis
 {
@@ -12,59 +14,51 @@ internal class PotsAnalysis
 
 	public decimal TotalValue { get; private set; }
 
-	public List<CurrencyTotalOverview> currencyTotalOverviews;
+	public List<CurrencyOverview> CurrencyOverviews { get; } = [];
 
 	public PotsAnalysis(CurrenciesConvertor currenciesConvertor)
 	{
 		this.currenciesConvertor = currenciesConvertor ?? throw new ArgumentNullException(nameof(currenciesConvertor));
 	}
 
-	public async Task Calculate(CancellationToken cancellationToken = default)
+	public async Task ExecuteAsync(CancellationToken cancellationToken = default)
 	{
-		TotalValue = PotInstanceInfos.Sum(x => x.NormalizedValue?.Value ?? 0);
-		currencyTotalOverviews = await CalculateCurrencyTotalOverviews(cancellationToken);
-	}
-
-	private async Task<List<CurrencyTotalOverview>> CalculateCurrencyTotalOverviews(CancellationToken cancellationToken)
-	{
-		// Group pot instances by currency and calculate the sum for each currency
-		IEnumerable<IGrouping<string, PotInstanceInfo>> currencyGroups = PotInstanceInfos
-			.Where(x => x.Value != null)
-			.GroupBy(x => x.Value.Currency);
-
-		List<CurrencyTotalOverview> overviews = [];
-
-		foreach (IGrouping<string, PotInstanceInfo> group in currencyGroups)
+		foreach (PotInstanceInfo potInstanceInfo in PotInstanceInfos)
 		{
-			string currency = group.Key;
-			decimal value = group.Sum(x => x.Value?.Value ?? 0);
+			TotalValue += potInstanceInfo.NormalizedValue?.Value ?? 0;
 
-			DatedAmount datedAmount = new()
-			{
-				Currency = currency,
-				Value = value,
-				Date = TargetDate
-			};
-
-			DatedAmount normalizedValue = await CalculateNormalizedValue(datedAmount, cancellationToken);
-
-			// Calculate percentage
-			decimal percentage = TotalValue > 0
-				? (normalizedValue.Value / TotalValue) * 100
-				: 0;
-
-			// Create and add the overview
-			CurrencyTotalOverview overview = new()
-			{
-				Value = datedAmount,
-				NormalizedValue = normalizedValue,
-				Percentage = percentage
-			};
-
-			overviews.Add(overview);
+			CurrencyOverview currencyOverview = GetOrCreate(potInstanceInfo.Value.Currency);
+			currencyOverview.Value += potInstanceInfo.Value;
 		}
 
-		return overviews;
+		foreach (CurrencyOverview currencyOverview in CurrencyOverviews)
+		{
+			currencyOverview.NormalizedValue = await CalculateNormalizedValue(currencyOverview.Value, cancellationToken);
+			currencyOverview.Percentage = TotalValue > 0
+				? (currencyOverview.NormalizedValue.Value / TotalValue) * 100
+				: 0;
+		}
+	}
+
+	private CurrencyOverview GetOrCreate(Currency currency)
+	{
+		CurrencyOverview currencyOverview = CurrencyOverviews
+			.FirstOrDefault(x => x.Value.Currency == currency);
+
+		if (currencyOverview != null)
+			return currencyOverview;
+
+		currencyOverview = new CurrencyOverview
+		{
+			Value = new DatedAmount
+			{
+				Currency = currency,
+				Date = TargetDate
+			}
+		};
+
+		CurrencyOverviews.Add(currencyOverview);
+		return currencyOverview;
 	}
 
 	private async Task<DatedAmount> CalculateNormalizedValue(DatedAmount datedAmount, CancellationToken cancellationToken)
