@@ -1,5 +1,4 @@
-﻿using DustInTheWind.CaveOfWonders.DataTypes;
-using DustInTheWind.CaveOfWonders.Domain;
+﻿using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using MediatR;
@@ -10,14 +9,14 @@ public class PresentWealthUseCase : IRequestHandler<PresentWealthRequest, Presen
 {
 	private readonly ISystemClock systemClock;
 	private readonly IUnitOfWork unitOfWork;
-	private readonly CurrenciesConvertor currenciesConverter;
+	private readonly CurrencyConverter currencyConverter;
 
 	public PresentWealthUseCase(ISystemClock systemClock, IUnitOfWork unitOfWork)
 	{
 		this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
-		currenciesConverter = new CurrenciesConvertor(unitOfWork);
+		currencyConverter = new CurrencyConverter(unitOfWork);
 	}
 
 	public async Task<PresentWealthResponse> Handle(PresentWealthRequest request, CancellationToken cancellationToken)
@@ -27,11 +26,11 @@ public class PresentWealthUseCase : IRequestHandler<PresentWealthRequest, Presen
 
 		List<Pot> pots = await RetrievePots(request.IncludeInactive, currentDate, cancellationToken);
 		Dictionary<Guid, PotSnapshot> potSnapshotsByPotId = await RetrieveLatestSnapshotsFromStorage(currentDate, request.IncludeInactive, cancellationToken);
-		List<PotInstanceInfo> potInstanceInfos = await ConvertToPotInstanceInfos(pots, potSnapshotsByPotId, currentDate, defaultCurrency, cancellationToken);
 
-		PotsAnalysis potsAnalysis = new(currenciesConverter)
+		PotsAnalysis potsAnalysis = new(currencyConverter)
 		{
-			PotInstanceInfos = potInstanceInfos,
+			Pots = pots,
+			PotSnapshots = potSnapshotsByPotId,
 			TargetDate = currentDate,
 			TargetCurrency = defaultCurrency
 		};
@@ -41,8 +40,8 @@ public class PresentWealthUseCase : IRequestHandler<PresentWealthRequest, Presen
 		return new PresentWealthResponse
 		{
 			Date = currentDate,
-			PotInstances = potInstanceInfos,
-			ConversionRates = currenciesConverter.UsedExchangeRates
+			PotInstances = potsAnalysis.PotInstanceInfos,
+			ConversionRates = currencyConverter.UsedExchangeRates
 				.Select(x => new ExchangeRateInfo(x))
 				.ToList(),
 			Total = new DatedAmount
@@ -70,54 +69,5 @@ public class PresentWealthUseCase : IRequestHandler<PresentWealthRequest, Presen
 	{
 		IEnumerable<PotSnapshot> potSnapshots = await unitOfWork.PotRepository.GetSnapshotsAsync(date, DateMatchingMode.LastAvailable, includeInactive, cancellationToken);
 		return potSnapshots.ToDictionary(x => x.Pot.Id);
-	}
-
-	private async Task<List<PotInstanceInfo>> ConvertToPotInstanceInfos(List<Pot> pots, Dictionary<Guid, PotSnapshot> potSnapshotsByPotId, DateOnly currentDate, string defaultCurrency, CancellationToken cancellationToken)
-	{
-		List<PotInstanceInfo> potInstanceInfos = [];
-
-		foreach (Pot pot in pots)
-		{
-			potSnapshotsByPotId.TryGetValue(pot.Id, out PotSnapshot potSnapshot);
-			PotInstanceInfo potInstanceInfo = await Convert(pot, potSnapshot, currentDate, defaultCurrency, cancellationToken);
-			potInstanceInfos.Add(potInstanceInfo);
-		}
-
-		return potInstanceInfos;
-	}
-
-	private async Task<PotInstanceInfo> Convert(Pot pot, PotSnapshot potSnapshot, DateOnly currentDate, Currency defaultCurrency, CancellationToken cancellationToken)
-	{
-		PotInstanceInfo potInstanceInfo = new()
-		{
-			Id = pot.Id,
-			Name = pot.Name,
-			IsActive = pot.IsActive(currentDate),
-			Value = ComputeOriginalValue(pot, potSnapshot, currentDate)
-		};
-
-		potInstanceInfo.NormalizedValue = await currenciesConverter.Convert(potInstanceInfo.Value, defaultCurrency, currentDate, cancellationToken);
-
-		return potInstanceInfo;
-	}
-
-	private static DatedAmount ComputeOriginalValue(Pot pot, PotSnapshot potSnapshot, DateOnly currentDate)
-	{
-		if (potSnapshot != null)
-		{
-			return new DatedAmount
-			{
-				Currency = potSnapshot.Pot.Currency,
-				Value = potSnapshot.Value,
-				Date = potSnapshot.Date
-			};
-		}
-
-		return new DatedAmount
-		{
-			Currency = pot.Currency,
-			Value = 0,
-			Date = currentDate
-		};
 	}
 }

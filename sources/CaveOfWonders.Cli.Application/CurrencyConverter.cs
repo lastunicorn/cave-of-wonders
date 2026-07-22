@@ -4,13 +4,13 @@ using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application;
 
-internal class CurrenciesConvertor
+internal class CurrencyConverter
 {
 	private readonly IUnitOfWork unitOfWork;
 
 	public List<ExchangeRate> UsedExchangeRates { get; } = [];
 
-	public CurrenciesConvertor(IUnitOfWork unitOfWork)
+	public CurrencyConverter(IUnitOfWork unitOfWork)
 	{
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 	}

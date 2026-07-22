@@ -13,14 +13,14 @@ internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 
 	private readonly IUnitOfWork unitOfWork;
 	private readonly ISystemClock systemClock;
-	private readonly CurrenciesConvertor currenciesConvertor;
+	private readonly CurrencyConverter currencyConverter;
 
 	public GainUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
 	{
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 		this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
 
-		currenciesConvertor = new CurrenciesConvertor(unitOfWork);
+		currencyConverter = new CurrencyConverter(unitOfWork);
 	}
 
 	public async Task<GainResponse> Handle(GainRequest request, CancellationToken cancellationToken)
@@ -49,7 +49,7 @@ internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 		{
 			Date = conversionDate,
 			Items = items,
-			ConversionRates = currenciesConvertor.UsedExchangeRates
+			ConversionRates = currencyConverter.UsedExchangeRates
 				.Select(x => new ExchangeRateInfo(x))
 				.ToList(),
 			TotalGain = new DatedAmount
@@ -81,7 +81,7 @@ internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 				Date = conversionDate
 			};
 
-			DatedAmount normalizedValue = await currenciesConvertor.Convert(itemValue, NormalizedCurrency, conversionDate, cancellationToken);
+			DatedAmount normalizedValue = await currencyConverter.Convert(itemValue, NormalizedCurrency, conversionDate, cancellationToken);
 
 			items.Add(new GainItem
 			{
