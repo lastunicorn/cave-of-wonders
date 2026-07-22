@@ -9,7 +9,10 @@ internal class GemCommand : IConsoleCommand<GemCommandViewModel>
 {
 	private readonly IMediator mediator;
 
-	[NamedParameter("pot", Description = "The pot id for which to display the gems.")]
+	[AnonymousParameter(Order = 1, IsMandatory = false)]
+	public string PotIdDefault { get; set; }
+
+	[NamedParameter("pot", IsMandatory = false, Description = "The pot id for which to display the gems.")]
 	public string PotId { get; set; }
 
 	[NamedParameter("start-date", IsMandatory = false, Description = "The start date for which to display the gems.")]
@@ -54,7 +57,7 @@ internal class GemCommand : IConsoleCommand<GemCommandViewModel>
 	{
 		PresentGemsRequest request = new()
 		{
-			PotId = PotId,
+			PotId = PotIdDefault ?? PotId,
 			StartDate = StartDate,
 			EndDate = EndDate,
 			Date = Date,

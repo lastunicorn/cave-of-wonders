@@ -112,7 +112,7 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
 		}
 
 		if (!request.StartDate.HasValue && !request.EndDate.HasValue && !request.Date.HasValue && !month.HasValue && !year.HasValue)
-			filter.Month = new MonthAndYear(systemClock.Today);
+			filter.Month = await RetrieveLatestMonthHavingGems(potId, cancellationToken);
 
 		if (request.ExcludeInternal)
 			filter.ExcludeCategories = [GemCategory.Internal];
@@ -129,12 +129,12 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
 			return new MonthAndYear(systemClock.Today.AddMonths(-1));
 
 		if (request.LatestMonth)
-			return await RetrieveLatestMonthWithGems(potId, cancellationToken);
+			return await RetrieveLatestMonthHavingGems(potId, cancellationToken);
 
 		return request.Month;
 	}
 
-	private async Task<MonthAndYear> RetrieveLatestMonthWithGems(Guid potId, CancellationToken cancellationToken)
+	private async Task<MonthAndYear> RetrieveLatestMonthHavingGems(Guid potId, CancellationToken cancellationToken)
 	{
 		Gem latestGem = await unitOfWork.GemRepository.GetLatestAsync(potId, cancellationToken);
 
