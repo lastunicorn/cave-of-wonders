@@ -23,6 +23,10 @@ internal class PotDetailsViewModel
 
 	public DatedAmount Value { get; }
 
+	public int GemCount { get; }
+
+	public DateOnly? LatestGemDate { get; }
+
 	public List<string> Labels { get; }
 
 	public bool IsActive { get; }
@@ -41,6 +45,8 @@ internal class PotDetailsViewModel
 		SnapshotCount = potDetails.SnapshotCount;
 		LastSnapshotDate = potDetails.LastSnapshotDate;
 		Value = potDetails.Value;
+		GemCount = potDetails.GemCount;
+		LatestGemDate = potDetails.LatestGemDate;
 		Labels = potDetails.Labels.ToList();
 		IsActive = potDetails.IsActive;
 	}

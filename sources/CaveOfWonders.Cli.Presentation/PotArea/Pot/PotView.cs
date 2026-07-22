@@ -69,7 +69,9 @@ internal class PotView : ViewBase<PotCommandViewModel>
 			? $"{potDetailsViewModel.LastSnapshotDate:d} ({potDetailsViewModel.Value.ToDisplayString()})"
 			: string.Empty;
 
-		dataGrid.Rows.Add("Last Snapshot", lastSnapshot);
+		dataGrid.Rows.Add("Latest Snapshot", lastSnapshot);
+		dataGrid.Rows.Add("Gem Count", potDetailsViewModel.GemCount);
+		dataGrid.Rows.Add("Latest Gem", potDetailsViewModel.LatestGemDate?.ToString("d") ?? string.Empty);
 
 		dataGrid.Display();
 	}

@@ -22,12 +22,18 @@ public class PotDetails
 
 	public DatedAmount Value { get; }
 
+	public int GemCount { get; }
+
+	public DateOnly? LatestGemDate { get; }
+
 	public List<string> Labels { get; }
 
 	public bool IsActive { get; }
 
-	internal PotDetails(Pot pot)
+	internal PotDetails(Pot pot, int gemCount, DateOnly? latestGemDate)
 	{
+		GemCount = gemCount;
+		LatestGemDate = latestGemDate;
 		Id = pot.Id;
 		Name = pot.Name;
 		Description = pot.Description;

@@ -1,20 +1,4 @@
-﻿// Cave of Wonders
-// Copyright (C) 2023-2025 Dust in the Wind
-// 
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-using DustInTheWind.CaveOfWonders.Cli.Application.ExportInflation;
+﻿using DustInTheWind.CaveOfWonders.Cli.Application.ExportInflation;
 using DustInTheWind.ConsoleTools.Commando;
 using MediatR;
 
@@ -23,22 +7,22 @@ namespace DustInTheWind.CaveOfWonders.Cli.Presentation.CpiArea.InflationExport;
 [NamedCommand("inflation-export", Description = "Exports the inflation information to a file on disk.")]
 internal class InflationExportCommand : IConsoleCommand
 {
-    private readonly IMediator mediator;
+	private readonly IMediator mediator;
 
-    [NamedParameter("output", ShortName = 'o', IsMandatory = false, Description = "Path to the output file.")]
-    public string OutputPath { get; set; }
+	[NamedParameter("output", ShortName = 'o', IsMandatory = false, Description = "Path to the output file.")]
+	public string OutputPath { get; set; }
 
-    public InflationExportCommand(IMediator mediator)
-    {
-        this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-    }
+	public InflationExportCommand(IMediator mediator)
+	{
+		this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+	}
 
-    public async Task Execute()
-    {
-        ExportInflationRequest request = new()
-        {
-            OutputPath = OutputPath
-        };
-        await mediator.Send(request);
-    }
+	public async Task Execute()
+	{
+		ExportInflationRequest request = new()
+		{
+			OutputPath = OutputPath
+		};
+		await mediator.Send(request);
+	}
 }

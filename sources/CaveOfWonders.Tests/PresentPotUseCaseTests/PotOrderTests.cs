@@ -20,9 +20,18 @@ public class PotOrderTests
 
 		potRepository = new Mock<IPotRepository>();
 
+		Mock<IGemRepository> gemRepository = new();
+		gemRepository
+			.Setup(x => x.GetByPotIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+			.Returns(Array.Empty<Gem>().ToAsyncEnumerable());
+
 		unitOfWork
 			.Setup(x => x.PotRepository)
 			.Returns(potRepository.Object);
+
+		unitOfWork
+			.Setup(x => x.GemRepository)
+			.Returns(gemRepository.Object);
 
 		useCase = new PresentPotUseCase(unitOfWork.Object, clock.Object);
 	}

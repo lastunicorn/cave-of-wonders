@@ -1,6 +1,5 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.DeletePot;
 using DustInTheWind.ConsoleTools.Commando;
-using DustInTheWind.ConsoleTools.Controls.InputControls;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.PotDelete;

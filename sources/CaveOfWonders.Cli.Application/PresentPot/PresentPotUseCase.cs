@@ -1,20 +1,4 @@
-﻿// Cave of Wonders
-// Copyright (C) 2023-2025 Dust in the Wind
-// 
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-using DustInTheWind.CaveOfWonders.DataTypes;
+﻿using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
@@ -42,9 +26,7 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
 		bool showDetails = request.ShowDetails is true || (!request.ShowDetails.HasValue && request.PotFlexId?.HasValue == true);
 		if (showDetails)
 		{
-			response.PotDetails = pots
-				.Select(x => new PotDetails(x))
-				.ToList();
+			response.PotDetails = await BuildPotDetails(pots, cancellationToken);
 		}
 		else
 		{
@@ -85,5 +67,25 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
 		return isIdentifierSpecified
 			? unitOfWork.PotRepository.GetAsync(potFlexId, cancellationToken)
 			: unitOfWork.PotRepository.GetAllAsync(cancellationToken);
+	}
+
+	private async Task<List<PotDetails>> BuildPotDetails(IEnumerable<Pot> pots, CancellationToken cancellationToken)
+	{
+		List<PotDetails> potDetailsList = [];
+
+		foreach (Pot pot in pots)
+		{
+			int gemCount = await unitOfWork.GemRepository.GetByPotIdAsync(pot.Id, cancellationToken)
+				.CountAsync(cancellationToken);
+
+			Gem lastGem = await unitOfWork.GemRepository.GetLatestAsync(pot.Id, cancellationToken);
+			DateOnly? lastGemDate = lastGem != null
+				? DateOnly.FromDateTime(lastGem.Date)
+				: null;
+
+			potDetailsList.Add(new PotDetails(pot, gemCount, lastGemDate));
+		}
+
+		return potDetailsList;
 	}
 }
