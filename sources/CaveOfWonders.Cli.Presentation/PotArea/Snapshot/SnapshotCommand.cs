@@ -15,6 +15,12 @@ internal class SnapshotCommand : IConsoleCommand<SnapshotViewModel>
 	[NamedParameter("pot", IsMandatory = false, Description = "Name or id of the pot for which to display the snapshots.")]
 	public string PotId { get; set; }
 
+	[NamedParameter("start-date", IsMandatory = false, Description = "The start date for which to display the snapshots.")]
+	public DateOnly? StartDate { get; set; }
+
+	[NamedParameter("end-date", IsMandatory = false, Description = "The end date for which to display the snapshots.")]
+	public DateOnly? EndDate { get; set; }
+
 	public SnapshotCommand(IMediator mediator)
 	{
 		this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -24,7 +30,9 @@ internal class SnapshotCommand : IConsoleCommand<SnapshotViewModel>
 	{
 		PresentPotSnapshotsRequest request = new()
 		{
-			PotFlexId = PotIdentifier ?? PotId
+			PotFlexId = PotIdentifier ?? PotId,
+			StartDate = StartDate,
+			EndDate = EndDate
 		};
 
 		PresentPotSnapshotsResponse response = await mediator.Send(request);
