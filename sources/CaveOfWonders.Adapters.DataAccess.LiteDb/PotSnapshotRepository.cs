@@ -57,6 +57,24 @@ public class PotSnapshotRepository : IPotSnapshotRepository
 		return Task.FromResult(latestSnapshot);
 	}
 
+	public void Add(PotSnapshot potSnapshot)
+	{
+		ArgumentNullException.ThrowIfNull(potSnapshot);
+
+		PotDbEntity potDbEntity = dbContext.Pots.FindById(potSnapshot.Pot.Id);
+
+		if (potDbEntity == null)
+			throw new ArgumentException($"Pot with id '{potSnapshot.Pot.Id}' was not found.", nameof(potSnapshot));
+
+		potDbEntity.Snapshots.Add(new PotSnapshotDbEntity
+		{
+			Date = potSnapshot.Date,
+			Value = potSnapshot.Value
+		});
+
+		dbContext.Pots.Update(potDbEntity);
+	}
+
 	public void AddRange(IEnumerable<PotSnapshot> potSnapshots)
 	{
 		ArgumentNullException.ThrowIfNull(potSnapshots);

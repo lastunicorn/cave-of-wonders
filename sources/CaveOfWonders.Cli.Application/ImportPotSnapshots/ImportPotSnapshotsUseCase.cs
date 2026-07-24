@@ -1,21 +1,4 @@
-﻿// Cave of Wonders
-// Copyright (C) 2023-2025 Dust in the Wind
-// 
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-using DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots.Importing;
-using DustInTheWind.CaveOfWonders.Domain;
+﻿using DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots.Importing;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.LogAccess;
 using DustInTheWind.CaveOfWonders.Ports.SpreadsheetAccess;
@@ -53,13 +36,13 @@ internal class ImportPotSnapshotsUseCase : IRequestHandler<ImportPotSnapshotsReq
 			$"Starting import from file: {sourceFilePath}; Import type: {importType};",
 			async () =>
 			{
-				List<SheetMapping> sheetMappings = GetSheetMappings(request.MappingsFilePath);
-				PotCollection potCollection = await RetrievePotsToPopulate(cancellationToken);
+				List<SheetMapping> sheetMappings = sheets.GetMappings(request.MappingsFilePath)
+					.ToList();
 
 				if (request.Overwrite)
-					ClearPots(potCollection, sheetMappings);
+					ClearPots(sheetMappings);
 
-				SnapshotImportReport importReport = DoImport(request.SourceFilePath, potCollection, sheetMappings);
+				SnapshotImportReport importReport = await DoImport(request.SourceFilePath, sheetMappings);
 
 				await unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -70,45 +53,23 @@ internal class ImportPotSnapshotsUseCase : IRequestHandler<ImportPotSnapshotsReq
 			});
 	}
 
-	private static void ClearPots(PotCollection potCollection, List<SheetMapping> sheetDescriptors)
+	private void ClearPots(List<SheetMapping> sheetMappings)
 	{
-		IEnumerable<Guid> potIds = sheetDescriptors
+		IEnumerable<Guid> potIds = sheetMappings
 			.SelectMany(x => x.ColumnDescriptors.Select(z => z.Key));
 
-		potCollection.ClearSnapshots(potIds);
+		foreach (Guid potId in potIds)
+			unitOfWork.PotSnapshotRepository.RemoveByPotId(potId);
 	}
 
-	private SnapshotImportReport DoImport(string sourceFilePath, PotCollection potCollection, List<SheetMapping> sheetDescriptors)
+	private async Task<SnapshotImportReport> DoImport(string sourceFilePath, List<SheetMapping> sheetDescriptors)
 	{
-		SnapshotImport snapshotImport = new()
-		{
-			Pots = potCollection,
-			Log = log
-		};
-
 		using IExcelSpreadsheet excelSpreadsheet = sheets.GetExcelSpreadsheet(sourceFilePath);
 		IEnumerable<SheetValue> sheetsValues = excelSpreadsheet.Read(sheetDescriptors);
 
-		snapshotImport.Execute(sheetsValues);
+		SnapshotImport snapshotImport = new(log, unitOfWork);
+		await snapshotImport.Execute(sheetsValues);
 
 		return snapshotImport.Report;
-	}
-
-	private List<SheetMapping> GetSheetMappings(string sheetMappingsPath)
-	{
-		return sheets.GetMappings(sheetMappingsPath)
-			.ToList();
-	}
-
-	private async Task<PotCollection> RetrievePotsToPopulate(CancellationToken cancellationToken)
-	{
-		PotCollection potCollection = new();
-
-		IEnumerable<Pot> pots = await unitOfWork.PotRepository.GetAllAsync(cancellationToken)
-			.ToListAsync(cancellationToken);
-
-		potCollection.AddRange(pots);
-
-		return potCollection;
 	}
 }

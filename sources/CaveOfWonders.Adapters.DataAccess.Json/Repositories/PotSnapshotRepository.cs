@@ -54,19 +54,24 @@ public class PotSnapshotRepository : IPotSnapshotRepository
 		return Task.FromResult(latestSnapshot);
 	}
 
+	public void Add(PotSnapshot potSnapshot)
+	{
+		ArgumentNullException.ThrowIfNull(potSnapshot);
+
+		Pot pot = database.Pots.FirstOrDefault(x => x.Id == potSnapshot.Pot.Id);
+
+		if (pot == null)
+			throw new ArgumentException($"Pot with id '{potSnapshot.Pot.Id}' was not found.", nameof(potSnapshot));
+
+		pot.Snapshots.Add(potSnapshot);
+	}
+
 	public void AddRange(IEnumerable<PotSnapshot> potSnapshots)
 	{
 		ArgumentNullException.ThrowIfNull(potSnapshots);
 
 		foreach (PotSnapshot potSnapshot in potSnapshots)
-		{
-			Pot pot = database.Pots.FirstOrDefault(x => x.Id == potSnapshot.Pot.Id);
-
-			if (pot == null)
-				throw new ArgumentException($"Pot with id '{potSnapshot.Pot.Id}' was not found.", nameof(potSnapshots));
-
-			pot.Snapshots.Add(potSnapshot);
-		}
+			Add(potSnapshot);
 	}
 
 	public void RemoveByPotId(Guid potId)

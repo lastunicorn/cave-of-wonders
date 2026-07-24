@@ -12,6 +12,8 @@ public interface IPotSnapshotRepository
 
 	Task<PotSnapshot> GetLatestByPotIdAsync(Guid potId, CancellationToken cancellationToken = default);
 
+	void Add(PotSnapshot potSnapshot);
+
 	void AddRange(IEnumerable<PotSnapshot> potSnapshots);
 
 	void RemoveByPotId(Guid potId);

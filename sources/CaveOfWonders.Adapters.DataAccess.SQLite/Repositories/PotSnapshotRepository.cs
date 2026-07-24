@@ -66,6 +66,22 @@ internal class PotSnapshotRepository : IPotSnapshotRepository
 			.FirstOrDefaultAsync(cancellationToken);
 	}
 
+	public void Add(PotSnapshot potSnapshot)
+	{
+		ArgumentNullException.ThrowIfNull(potSnapshot);
+
+		Pot trackedPot = dbContext.ChangeTracker.Entries<Pot>()
+			.Select(x => x.Entity)
+			.FirstOrDefault(x => x.Id == potSnapshot.Pot.Id);
+
+		if (trackedPot != null)
+			potSnapshot.Pot = trackedPot;
+		else
+			dbContext.Attach(potSnapshot.Pot);
+
+		dbContext.PotSnapshots.Add(potSnapshot);
+	}
+
 	public void AddRange(IEnumerable<PotSnapshot> potSnapshots)
 	{
 		ArgumentNullException.ThrowIfNull(potSnapshots);
