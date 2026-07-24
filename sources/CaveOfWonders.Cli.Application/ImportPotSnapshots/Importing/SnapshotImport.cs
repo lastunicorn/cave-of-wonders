@@ -64,7 +64,7 @@ internal class SnapshotImport
 			};
 		}
 
-		HashSet<PotSnapshot> knownSnapshots = await unitOfWork.PotSnapshotRepository.GetByPotIdAsync(key, potSnapshot.Date)
+		HashSet<PotSnapshot> knownSnapshots = await unitOfWork.PotSnapshotRepository.GetByPotIdAsync(key, potSnapshot.Date, potSnapshot.Date)
 			.ToHashSetAsync();
 
 		if (knownSnapshots.Contains(potSnapshot))
