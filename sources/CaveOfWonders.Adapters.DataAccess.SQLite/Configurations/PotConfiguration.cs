@@ -10,13 +10,6 @@ internal class PotConfiguration : IEntityTypeConfiguration<Pot>
 	{
 		entity.HasKey(x => x.Id);
 
-		entity
-			.HasMany(x => x.Snapshots)
-			.WithOne(x => x.Pot)
-			.HasForeignKey("PotId")
-			.IsRequired()
-			.OnDelete(DeleteBehavior.Cascade);
-
 		entity.OwnsMany(
 			x => x.Labels,
 			label =>

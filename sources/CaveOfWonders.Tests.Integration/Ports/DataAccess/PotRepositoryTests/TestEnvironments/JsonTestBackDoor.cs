@@ -15,9 +15,24 @@ internal class JsonTestBackDoor : JsonStorageBackDoorBase, ITestBackDoor
 		return Task.CompletedTask;
 	}
 
+	public Task SeedPotSnapshotsAsync(IEnumerable<PotSnapshot> potSnapshots, CancellationToken cancellationToken = default)
+	{
+		Database.PotSnapshots.AddRange(potSnapshots);
+		return Task.CompletedTask;
+	}
+
 	public Task<List<Pot>> GetAllPotsAsync(CancellationToken cancellationToken = default)
 	{
 		List<Pot> pots = Database.Pots.ToList();
 		return Task.FromResult(pots);
+	}
+
+	public Task<List<PotSnapshot>> GetSnapshotsByPotIdAsync(Guid potId, CancellationToken cancellationToken = default)
+	{
+		List<PotSnapshot> snapshots = Database.PotSnapshots
+			.Where(x => x.Pot.Id == potId)
+			.ToList();
+
+		return Task.FromResult(snapshots);
 	}
 }

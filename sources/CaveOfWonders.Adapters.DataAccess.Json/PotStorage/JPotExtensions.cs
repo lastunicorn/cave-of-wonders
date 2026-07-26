@@ -18,20 +18,6 @@ internal static class JPotExtensions
 			Currency = jPot.Currency
 		};
 
-		if (jPot.Snapshots != null)
-		{
-			IEnumerable<PotSnapshot> potSnapshots = jPot.Snapshots
-				.Select(x =>
-				{
-					PotSnapshot potSnapshot = x.ToPotSnapshot();
-					potSnapshot.Pot = pot;
-
-					return potSnapshot;
-				});
-
-			pot.Snapshots.AddRange(potSnapshots);
-		}
-
 		if (jPot.Labels != null)
 			pot.Labels.AddRange(jPot.Labels
 				.Select(x => new PotLabel
@@ -40,5 +26,23 @@ internal static class JPotExtensions
 				}));
 
 		return pot;
+	}
+
+	public static List<PotSnapshot> ToPotSnapshots(this JPot jPot, Pot pot)
+	{
+		if (jPot == null) throw new ArgumentNullException(nameof(jPot));
+
+		if (jPot.Snapshots == null)
+			return [];
+
+		return jPot.Snapshots
+			.Select(x =>
+			{
+				PotSnapshot potSnapshot = x.ToPotSnapshot();
+				potSnapshot.Pot = pot;
+
+				return potSnapshot;
+			})
+			.ToList();
 	}
 }

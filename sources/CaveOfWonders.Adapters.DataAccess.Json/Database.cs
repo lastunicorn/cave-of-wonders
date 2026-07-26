@@ -17,6 +17,8 @@ public class Database
 
 	public List<Pot> Pots { get; } = [];
 
+	public List<PotSnapshot> PotSnapshots { get; } = [];
+
 	public List<Gem> Gems { get; private set; } = [];
 
 	public List<ExchangeRate> ExchangeRates { get; } = [];
@@ -63,11 +65,15 @@ public class Database
 	private async Task LoadPotsAsync(CancellationToken cancellationToken)
 	{
 		Pots.Clear();
+		PotSnapshots.Clear();
 
 		PotPersister potPersister = new(databaseDirectoryPath);
 
-		await foreach (Pot pot in potPersister.LoadAsync(cancellationToken))
+		await foreach ((Pot pot, List<PotSnapshot> snapshots) in potPersister.LoadAsync(cancellationToken))
+		{
 			Pots.Add(pot);
+			PotSnapshots.AddRange(snapshots);
+		}
 	}
 
 	public async Task LoadGemsAsync(CancellationToken cancellationToken)
@@ -144,7 +150,7 @@ public class Database
 	private Task SavePotsAsync(CancellationToken cancellationToken)
 	{
 		PotPersister potPersister = new(databaseDirectoryPath);
-		return potPersister.SaveAsync(Pots, cancellationToken);
+		return potPersister.SaveAsync(Pots, PotSnapshots, cancellationToken);
 	}
 
 	private Task SaveCpiAsync(CancellationToken cancellationToken)

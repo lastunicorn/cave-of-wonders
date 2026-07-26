@@ -78,13 +78,6 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.CompiledModels
                 propertyInfo: typeof(PotSnapshot).GetProperty("Pot", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(PotSnapshot).GetField("<Pot>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
 
-            var snapshots = principalEntityType.AddNavigation("Snapshots",
-                runtimeForeignKey,
-                onDependent: false,
-                typeof(PotSnapshotCollection),
-                propertyInfo: typeof(Pot).GetProperty("Snapshots", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                fieldInfo: typeof(Pot).GetField("<Snapshots>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
-
             return runtimeForeignKey;
         }
 

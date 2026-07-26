@@ -124,50 +124,6 @@ public class AddTests
 
 	[Theory]
 	[TestEnvironments<IPotRepository, ITestBackDoor>]
-	public async Task Add_WithPotContainingSnapshots_ShouldPersistSnapshots(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
-	{
-		await GenericTest.Create(environment)
-			.Act((repository, context) =>
-			{
-				Pot pot = new()
-				{
-					Id = Guid.NewGuid(),
-					Name = "Test Pot with Snapshots",
-					DisplayOrder = 1,
-					StartDate = new DateOnly(2023, 1, 1),
-					Currency = "USD"
-				};
-
-				pot.Snapshots.AddRange([
-					new PotSnapshot
-					{
-						Date = new DateOnly(2023, 1, 15),
-						Value = 100.50m
-					},
-					new PotSnapshot
-					{
-						Date = new DateOnly(2023, 2, 15),
-						Value = 120.75m
-					}
-				]);
-
-				repository.Add(pot);
-			})
-			.Assert(async (backDoor, context) =>
-			{
-				List<Pot> pots = await backDoor.GetAllPotsAsync();
-
-				pots.Should().HaveCount(1);
-				Pot pot = pots.First();
-				pot.Snapshots.Should().HaveCount(2);
-				pot.Snapshots.Should().ContainSingle(x => x.Date == new DateOnly(2023, 1, 15) && x.Value == 100.50m);
-				pot.Snapshots.Should().ContainSingle(x => x.Date == new DateOnly(2023, 2, 15) && x.Value == 120.75m);
-			})
-			.ExecuteAsync();
-	}
-
-	[Theory]
-	[TestEnvironments<IPotRepository, ITestBackDoor>]
 	public async Task Add_WithPotContainingLabels_ShouldPersistLabels(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
@@ -284,7 +240,7 @@ public class AddTests
 
 	[Theory]
 	[TestEnvironments<IPotRepository, ITestBackDoor>]
-	public async Task Add_WithNoSnapshotsOrLabels_ShouldPersistEmptyCollections(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
+	public async Task Add_WithNoLabels_ShouldPersistEmptyCollection(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)
 			.Act((repository, context) =>
@@ -306,8 +262,6 @@ public class AddTests
 
 				pots.Should().HaveCount(1);
 				Pot pot = pots.First();
-				pot.Snapshots.Should().NotBeNull();
-				pot.Snapshots.Should().BeEmpty();
 				pot.Labels.Should().NotBeNull();
 				pot.Labels.Should().BeEmpty();
 			})

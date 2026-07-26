@@ -24,17 +24,32 @@ internal class LiteDbTestBackDoor : LiteDbStorageBackDoorBase, ITestBackDoor
 				StartDate = pot.StartDate,
 				EndDate = pot.EndDate,
 				Currency = pot.Currency,
-				Snapshots = pot.Snapshots
-					.Select(x => new PotSnapshotDbEntity
-					{
-						Date = x.Date,
-						Value = x.Value
-					})
-					.ToList(),
+				Snapshots = [],
 				Labels = pot.Labels?.Select(x => x.Label).ToList() ?? []
 			};
 
 			DbContext.Pots.Insert(potDbEntity);
+		}
+
+		return Task.CompletedTask;
+	}
+
+	public Task SeedPotSnapshotsAsync(IEnumerable<PotSnapshot> potSnapshots, CancellationToken cancellationToken = default)
+	{
+		foreach (IGrouping<Guid, PotSnapshot> group in potSnapshots.GroupBy(x => x.Pot.Id))
+		{
+			PotDbEntity potDbEntity = DbContext.Pots.FindById(group.Key);
+
+			if (potDbEntity == null)
+				continue;
+
+			potDbEntity.Snapshots.AddRange(group.Select(x => new PotSnapshotDbEntity
+			{
+				Date = x.Date,
+				Value = x.Value
+			}));
+
+			DbContext.Pots.Update(potDbEntity);
 		}
 
 		return Task.CompletedTask;
@@ -48,5 +63,13 @@ internal class LiteDbTestBackDoor : LiteDbStorageBackDoorBase, ITestBackDoor
 			.ToList();
 
 		return Task.FromResult(pots);
+	}
+
+	public Task<List<PotSnapshot>> GetSnapshotsByPotIdAsync(Guid potId, CancellationToken cancellationToken = default)
+	{
+		PotDbEntity potDbEntity = DbContext.Pots.FindById(potId);
+		List<PotSnapshot> snapshots = potDbEntity?.ToPotSnapshots(potDbEntity.ToDomainEntity()) ?? [];
+
+		return Task.FromResult(snapshots);
 	}
 }

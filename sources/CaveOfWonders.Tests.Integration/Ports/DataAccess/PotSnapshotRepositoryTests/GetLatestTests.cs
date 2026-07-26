@@ -45,13 +45,15 @@ public class GetLatestTests
 					Currency = "USD"
 				};
 
-				pot.Snapshots.Add(new PotSnapshot
+				PotSnapshot snapshot = new()
 				{
 					Date = currentDate,
-					Value = 100m
-				});
+					Value = 100m,
+					Pot = pot
+				};
 
 				await backDoor.SeedPotsAsync([pot]);
+				await backDoor.SeedPotSnapshotsAsync([snapshot]);
 				context.PotId = pot.Id;
 			})
 			.Act(async (repository, context) =>
@@ -119,13 +121,15 @@ public class GetLatestTests
 					Currency = "USD"
 				};
 
-				pot.Snapshots.Add(new PotSnapshot
+				PotSnapshot snapshot = new()
 				{
 					Date = currentDate,
-					Value = 100m
-				});
+					Value = 100m,
+					Pot = pot
+				};
 
 				await backDoor.SeedPotsAsync([pot]);
+				await backDoor.SeedPotSnapshotsAsync([snapshot]);
 				context.PotId = pot.Id;
 			})
 			.Act(async (repository, context) =>
@@ -193,30 +197,36 @@ public class GetLatestTests
 					Currency = "USD"
 				};
 
-				pot.Snapshots.AddRange([
+				List<PotSnapshot> snapshots =
+				[
 					new PotSnapshot
 					{
 						Date = currentDate.AddDays(-20),
-						Value = 100m
+						Value = 100m,
+						Pot = pot
 					},
 					new PotSnapshot
 					{
 						Date = currentDate.AddDays(-10),
-						Value = 150m
+						Value = 150m,
+						Pot = pot
 					},
 					new PotSnapshot
 					{
 						Date = currentDate,
-						Value = 200m
+						Value = 200m,
+						Pot = pot
 					}, // Exact match
 					new PotSnapshot
 					{
 						Date = currentDate.AddDays(10),
-						Value = 250m
+						Value = 250m,
+						Pot = pot
 					}
-				]);
+				];
 
 				await backDoor.SeedPotsAsync([pot]);
+				await backDoor.SeedPotSnapshotsAsync(snapshots);
 			})
 			.Act(async (repository, context) =>
 			{
@@ -250,25 +260,30 @@ public class GetLatestTests
 					Currency = "USD"
 				};
 
-				pot.Snapshots.AddRange([
+				List<PotSnapshot> snapshots =
+				[
 					new PotSnapshot
 					{
 						Date = currentDate.AddDays(-20),
-						Value = 100m
+						Value = 100m,
+						Pot = pot
 					},
 					new PotSnapshot
 					{
 						Date = currentDate.AddDays(-10),
-						Value = 150m
+						Value = 150m,
+						Pot = pot
 					},
 					new PotSnapshot
 					{
 						Date = currentDate.AddDays(10),
-						Value = 250m
+						Value = 250m,
+						Pot = pot
 					}
-				]);
+				];
 
 				await backDoor.SeedPotsAsync([pot]);
+				await backDoor.SeedPotSnapshotsAsync(snapshots);
 			})
 			.Act(async (repository, context) =>
 			{
@@ -299,25 +314,30 @@ public class GetLatestTests
 					Currency = "USD"
 				};
 
-				pot.Snapshots.AddRange([
+				List<PotSnapshot> snapshots =
+				[
 					new PotSnapshot
 					{
 						Date = currentDate.AddDays(-20),
-						Value = 100m
+						Value = 100m,
+						Pot = pot
 					},
 					new PotSnapshot
 					{
 						Date = currentDate.AddDays(-10),
-						Value = 150m
+						Value = 150m,
+						Pot = pot
 					}, // Should pick this one
 					new PotSnapshot
 					{
 						Date = currentDate.AddDays(10),
-						Value = 250m
+						Value = 250m,
+						Pot = pot
 					}
-				]);
+				];
 
 				await backDoor.SeedPotsAsync([pot]);
+				await backDoor.SeedPotSnapshotsAsync(snapshots);
 			})
 			.Act(async (repository, context) =>
 			{
@@ -351,20 +371,24 @@ public class GetLatestTests
 					Currency = "USD"
 				};
 
-				pot.Snapshots.AddRange([
+				List<PotSnapshot> snapshots =
+				[
 					new PotSnapshot
 					{
 						Date = currentDate.AddDays(10),
-						Value = 100m
+						Value = 100m,
+						Pot = pot
 					},
 					new PotSnapshot
 					{
 						Date = currentDate.AddDays(20),
-						Value = 150m
+						Value = 150m,
+						Pot = pot
 					}
-				]);
+				];
 
 				await backDoor.SeedPotsAsync([pot]);
+				await backDoor.SeedPotSnapshotsAsync(snapshots);
 			})
 			.Act(async (repository, context) =>
 			{
@@ -395,11 +419,12 @@ public class GetLatestTests
 					Currency = "USD"
 				};
 
-				activePot1.Snapshots.Add(new PotSnapshot
+				PotSnapshot activePot1Snapshot = new()
 				{
 					Date = currentDate,
-					Value = 100m
-				});
+					Value = 100m,
+					Pot = activePot1
+				};
 
 				Pot activePot2 = new()
 				{
@@ -411,11 +436,12 @@ public class GetLatestTests
 					Currency = "EUR"
 				};
 
-				activePot2.Snapshots.Add(new PotSnapshot
+				PotSnapshot activePot2Snapshot = new()
 				{
 					Date = currentDate.AddDays(-5),
-					Value = 200m
-				});
+					Value = 200m,
+					Pot = activePot2
+				};
 
 				Pot inactivePot = new()
 				{
@@ -427,6 +453,7 @@ public class GetLatestTests
 				};
 
 				await backDoor.SeedPotsAsync([activePot1, activePot2, inactivePot]);
+				await backDoor.SeedPotSnapshotsAsync([activePot1Snapshot, activePot2Snapshot]);
 
 				context.ActivePot1Id = activePot1.Id;
 				context.ActivePot2Id = activePot2.Id;
@@ -475,11 +502,12 @@ public class GetLatestTests
 					Currency = "USD"
 				};
 
-				activePot.Snapshots.Add(new PotSnapshot
+				PotSnapshot activePotSnapshot = new()
 				{
 					Date = currentDate,
-					Value = 100m
-				});
+					Value = 100m,
+					Pot = activePot
+				};
 
 				Pot inactivePot1 = new()
 				{
@@ -490,11 +518,12 @@ public class GetLatestTests
 					Currency = "EUR"
 				};
 
-				inactivePot1.Snapshots.Add(new PotSnapshot
+				PotSnapshot inactivePot1Snapshot = new()
 				{
 					Date = currentDate,
-					Value = 200m
-				});
+					Value = 200m,
+					Pot = inactivePot1
+				};
 
 				Pot inactivePot2 = new()
 				{
@@ -506,13 +535,15 @@ public class GetLatestTests
 					Currency = "GBP"
 				};
 
-				inactivePot2.Snapshots.Add(new PotSnapshot
+				PotSnapshot inactivePot2Snapshot = new()
 				{
 					Date = currentDate,
-					Value = 300m
-				});
+					Value = 300m,
+					Pot = inactivePot2
+				};
 
 				await backDoor.SeedPotsAsync([activePot, inactivePot1, inactivePot2]);
+				await backDoor.SeedPotSnapshotsAsync([activePotSnapshot, inactivePot1Snapshot, inactivePot2Snapshot]);
 
 				context.ActivePotId = activePot.Id;
 				context.InactivePot1Id = inactivePot1.Id;

@@ -18,21 +18,18 @@ internal class PotRepository : IPotRepository
 	public IAsyncEnumerable<Pot> GetAllAsync(CancellationToken cancellationToken = default)
 	{
 		return dbContext.Pots
-			.Include(x => x.Snapshots)
 			.AsAsyncEnumerable();
 	}
 
 	public async Task<Pot> GetAsync(Guid id, CancellationToken cancellationToken = default)
 	{
 		return await dbContext.Pots
-			.Include(x => x.Snapshots)
 			.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 	}
 
 	public IAsyncEnumerable<Pot> GetAsync(PotFlexId potFlexId, CancellationToken cancellationToken = default)
 	{
 		IEnumerable<Pot> pots = dbContext.Pots
-			.Include(x => x.Snapshots)
 			.AsEnumerable()
 			.Where(x => potFlexId.IsMatch(x.Id) || potFlexId.IsMatch(x.Name));
 

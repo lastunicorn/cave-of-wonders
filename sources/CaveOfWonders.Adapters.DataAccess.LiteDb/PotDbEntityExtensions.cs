@@ -18,14 +18,6 @@ internal static class PotDbEntityExtensions
 			Currency = potDbEntity.Currency
 		};
 
-		IEnumerable<PotSnapshot> potSnapshots = potDbEntity.Snapshots
-			.Select(x => new PotSnapshot
-			{
-				Date = x.Date,
-				Value = x.Value,
-				Pot = pot
-			});
-
 		if (potDbEntity.Labels != null)
 		{
 			pot.Labels.AddRange(potDbEntity.Labels
@@ -35,8 +27,18 @@ internal static class PotDbEntityExtensions
 				}));
 		}
 
-		pot.Snapshots.AddRange(potSnapshots);
-
 		return pot;
+	}
+
+	public static List<PotSnapshot> ToPotSnapshots(this PotDbEntity potDbEntity, Pot pot)
+	{
+		return potDbEntity.Snapshots
+			.Select(x => new PotSnapshot
+			{
+				Date = x.Date,
+				Value = x.Value,
+				Pot = pot
+			})
+			.ToList();
 	}
 }

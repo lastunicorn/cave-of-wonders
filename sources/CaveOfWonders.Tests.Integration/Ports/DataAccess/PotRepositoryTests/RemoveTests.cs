@@ -192,18 +192,21 @@ public class RemoveTests
 					Currency = "USD"
 				};
 
-				pot.Snapshots.AddRange([
+				List<PotSnapshot> snapshots =
+				[
 					new PotSnapshot
 					{
 						Date = new DateOnly(2023, 1, 15),
-						Value = 100.50m
+						Value = 100.50m,
+						Pot = pot
 					},
 					new PotSnapshot
 					{
 						Date = new DateOnly(2023, 2, 15),
-						Value = 120.75m
+						Value = 120.75m,
+						Pot = pot
 					}
-				]);
+				];
 
 				pot.Labels.AddRange([
 					new PotLabel
@@ -217,6 +220,7 @@ public class RemoveTests
 				]);
 
 				await backDoor.SeedPotsAsync([pot]);
+				await backDoor.SeedPotSnapshotsAsync(snapshots);
 
 				context.PotId = potId;
 			})
@@ -231,9 +235,13 @@ public class RemoveTests
 			})
 			.Assert(async (backDoor, context) =>
 			{
-				List<Pot> pots = await backDoor.GetAllPotsAsync();
+				Guid potId = context.PotId;
 
+				List<Pot> pots = await backDoor.GetAllPotsAsync();
 				pots.Should().BeEmpty();
+
+				List<PotSnapshot> snapshots = await backDoor.GetSnapshotsByPotIdAsync(potId);
+				snapshots.Should().BeEmpty();
 			})
 			.ExecuteAsync();
 	}
@@ -256,15 +264,17 @@ public class RemoveTests
 					StartDate = new DateOnly(2023, 1, 1),
 					Currency = "USD"
 				};
-				pot1.Snapshots.Add(new PotSnapshot
-				{
-					Date = new DateOnly(2023, 1, 15),
-					Value = 50m
-				});
 				pot1.Labels.Add(new PotLabel
 				{
 					Label = "Temporary"
 				});
+
+				PotSnapshot pot1Snapshot = new()
+				{
+					Date = new DateOnly(2023, 1, 15),
+					Value = 50m,
+					Pot = pot1
+				};
 
 				Pot pot2 = new()
 				{
@@ -274,11 +284,6 @@ public class RemoveTests
 					StartDate = new DateOnly(2023, 1, 1),
 					Currency = "EUR"
 				};
-				pot2.Snapshots.Add(new PotSnapshot
-				{
-					Date = new DateOnly(2023, 2, 20),
-					Value = 200m
-				});
 				pot2.Labels.AddRange([
 					new PotLabel
 					{
@@ -290,7 +295,15 @@ public class RemoveTests
 					}
 				]);
 
+				PotSnapshot pot2Snapshot = new()
+				{
+					Date = new DateOnly(2023, 2, 20),
+					Value = 200m,
+					Pot = pot2
+				};
+
 				await backDoor.SeedPotsAsync([pot1, pot2]);
+				await backDoor.SeedPotSnapshotsAsync([pot1Snapshot, pot2Snapshot]);
 
 				context.PotId1 = potId1;
 				context.PotId2 = potId2;
@@ -314,10 +327,12 @@ public class RemoveTests
 				Pot remainingPot = pots.Single();
 				remainingPot.Id.Should().Be(potId2);
 				remainingPot.Name.Should().Be("Pot To Keep");
-				remainingPot.Snapshots.Should().ContainSingle(x => x.Date == new DateOnly(2023, 2, 20) && x.Value == 200m);
 				remainingPot.Labels.Should().HaveCount(2);
 				remainingPot.Labels.Should().Contain(x => x.Label == "Savings");
 				remainingPot.Labels.Should().Contain(x => x.Label == "Important");
+
+				List<PotSnapshot> remainingSnapshots = await backDoor.GetSnapshotsByPotIdAsync(potId2);
+				remainingSnapshots.Should().ContainSingle(x => x.Date == new DateOnly(2023, 2, 20) && x.Value == 200m);
 			})
 			.ExecuteAsync();
 	}

@@ -16,14 +16,7 @@ public class Pot
 
 	public string Currency { get; set; }
 
-	public PotSnapshotCollection Snapshots { get; }
-
 	public List<PotLabel> Labels { get; } = [];
-
-	public Pot()
-	{
-		Snapshots = new PotSnapshotCollection(this);
-	}
 
 	public bool IsActive(DateOnly date)
 	{

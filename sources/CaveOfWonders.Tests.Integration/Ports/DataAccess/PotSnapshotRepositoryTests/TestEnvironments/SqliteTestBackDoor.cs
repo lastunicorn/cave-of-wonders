@@ -16,6 +16,11 @@ internal class SqliteTestBackDoor : SqliteStorageBackDoorBase, ITestBackDoor
 		await DbContext.Pots.AddRangeAsync(pots, cancellationToken);
 	}
 
+	public async Task SeedPotSnapshotsAsync(IEnumerable<PotSnapshot> potSnapshots, CancellationToken cancellationToken = default)
+	{
+		await DbContext.PotSnapshots.AddRangeAsync(potSnapshots, cancellationToken);
+	}
+
 	public Task<List<PotSnapshot>> GetSnapshotsByPotIdAsync(Guid potId, CancellationToken cancellationToken = default)
 	{
 		PotSnapshotRepository potSnapshotRepository = new(DbContext);

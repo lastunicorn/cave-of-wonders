@@ -12,7 +12,7 @@ internal class PotPersister
 		this.databaseDirectoryPath = databaseDirectoryPath ?? throw new ArgumentNullException(nameof(databaseDirectoryPath));
 	}
 
-	public async IAsyncEnumerable<Pot> LoadAsync([EnumeratorCancellation] CancellationToken cancellationToken)
+	public async IAsyncEnumerable<(Pot Pot, List<PotSnapshot> Snapshots)> LoadAsync([EnumeratorCancellation] CancellationToken cancellationToken)
 	{
 		PotsDirectory potsDirectory = new(databaseDirectoryPath);
 
@@ -28,15 +28,19 @@ internal class PotPersister
 			Pot pot = jPot.ToPot();
 			pot.Id = potFile.PotId;
 
-			yield return pot;
+			List<PotSnapshot> snapshots = jPot.ToPotSnapshots(pot);
+
+			yield return (pot, snapshots);
 		}
 	}
 
-	public async Task SaveAsync(IEnumerable<Pot> pots, CancellationToken cancellationToken)
+	public async Task SaveAsync(IEnumerable<Pot> pots, IEnumerable<PotSnapshot> snapshots, CancellationToken cancellationToken)
 	{
 		if (pots == null) throw new ArgumentNullException(nameof(pots));
+		if (snapshots == null) throw new ArgumentNullException(nameof(snapshots));
 
 		List<Pot> potList = pots.ToList();
+		ILookup<Guid, PotSnapshot> snapshotsByPotId = snapshots.ToLookup(x => x.Pot.Id);
 
 		PotsDirectory potsDirectory = new(databaseDirectoryPath);
 
@@ -47,7 +51,7 @@ internal class PotPersister
 
 		foreach (Pot pot in potList)
 		{
-			JPot jPot = pot.ToJPot();
+			JPot jPot = pot.ToJPot(snapshotsByPotId[pot.Id]);
 
 			PotFile potFile = potsDirectory.GetPotFile(pot.Id);
 			await potFile.SaveAsync(jPot, cancellationToken);

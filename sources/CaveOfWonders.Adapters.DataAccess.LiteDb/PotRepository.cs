@@ -52,13 +52,7 @@ public class PotRepository : IPotRepository
 			StartDate = pot.StartDate,
 			EndDate = pot.EndDate,
 			Currency = pot.Currency,
-			Snapshots = pot.Snapshots
-				.Select(x => new PotSnapshotDbEntity
-				{
-					Date = x.Date,
-					Value = x.Value
-				})
-				.ToList(),
+			Snapshots = [],
 			Labels = pot.Labels?
 				.Select(x => x.Label)
 				.ToList() ?? []

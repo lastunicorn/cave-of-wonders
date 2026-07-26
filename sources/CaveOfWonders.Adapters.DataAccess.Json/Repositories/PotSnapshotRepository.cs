@@ -17,39 +17,45 @@ public class PotSnapshotRepository : IPotSnapshotRepository
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		IEnumerable<PotSnapshot> potInstances = database.Pots
-			.Where(x => includeInactive || x.IsActive(date))
-			.Select(x => x.GetSnapshot(date, dateMatchingMode))
-			.Where(x => x != null);
+		IEnumerable<PotSnapshot> query = database.PotSnapshots
+			.Where(x => includeInactive || x.Pot.IsActive(date));
 
-		return Task.FromResult(potInstances);
+		IEnumerable<PotSnapshot> result = dateMatchingMode switch
+		{
+			DateMatchingMode.Exact => query.Where(x => x.Date == date),
+			DateMatchingMode.LastAvailable => query
+				.Where(x => x.Date <= date)
+				.GroupBy(x => x.Pot.Id)
+				.Select(x => x.MaxBy(y => y.Date)),
+			_ => throw new ArgumentOutOfRangeException(nameof(dateMatchingMode))
+		};
+
+		return Task.FromResult(result);
 	}
 
 	public IAsyncEnumerable<PotSnapshot> GetByPotIdAsync(Guid potId, DateOnly? startDate = null, DateOnly? endDate = null, CancellationToken cancellationToken = default)
 	{
-		Pot pot = database.Pots.FirstOrDefault(x => x.Id == potId);
-
-		IEnumerable<PotSnapshot> potSnapshots = pot == null
-			? []
-			: pot.Snapshots
-				.Where(x => startDate == null || x.Date >= startDate.Value)
-				.Where(x => endDate == null || x.Date <= endDate.Value)
-				.OrderBy(x => x.Date);
+		IEnumerable<PotSnapshot> potSnapshots = database.PotSnapshots
+			.Where(x => x.Pot.Id == potId)
+			.Where(x => startDate == null || x.Date >= startDate.Value)
+			.Where(x => endDate == null || x.Date <= endDate.Value)
+			.OrderBy(x => x.Date);
 
 		return potSnapshots.ToAsyncEnumerable(cancellationToken);
 	}
 
 	public Task<int> GetCountAsync(Guid potId, CancellationToken cancellationToken = default)
 	{
-		Pot pot = database.Pots.FirstOrDefault(x => x.Id == potId);
+		int count = database.PotSnapshots.Count(x => x.Pot.Id == potId);
 
-		return Task.FromResult(pot?.Snapshots.Count ?? 0);
+		return Task.FromResult(count);
 	}
 
 	public Task<PotSnapshot> GetLatestByPotIdAsync(Guid potId, CancellationToken cancellationToken = default)
 	{
-		Pot pot = database.Pots.FirstOrDefault(x => x.Id == potId);
-		PotSnapshot latestSnapshot = pot?.Snapshots.MaxBy(x => x.Date);
+		PotSnapshot latestSnapshot = database.PotSnapshots
+			.Where(x => x.Pot.Id == potId)
+			.MaxBy(x => x.Date);
 
 		return Task.FromResult(latestSnapshot);
 	}
@@ -63,7 +69,8 @@ public class PotSnapshotRepository : IPotSnapshotRepository
 		if (pot == null)
 			throw new ArgumentException($"Pot with id '{potSnapshot.Pot.Id}' was not found.", nameof(potSnapshot));
 
-		pot.Snapshots.Add(potSnapshot);
+		potSnapshot.Pot = pot;
+		database.PotSnapshots.Add(potSnapshot);
 	}
 
 	public void AddRange(IEnumerable<PotSnapshot> potSnapshots)
@@ -76,7 +83,6 @@ public class PotSnapshotRepository : IPotSnapshotRepository
 
 	public void RemoveByPotId(Guid potId)
 	{
-		Pot pot = database.Pots.FirstOrDefault(x => x.Id == potId);
-		pot?.Snapshots.Clear();
+		database.PotSnapshots.RemoveAll(x => x.Pot.Id == potId);
 	}
 }

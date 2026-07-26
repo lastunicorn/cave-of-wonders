@@ -204,13 +204,15 @@ public class AddRangeTests
 					Currency = "USD"
 				};
 
-				pot.Snapshots.Add(new PotSnapshot
+				PotSnapshot existingSnapshot = new()
 				{
 					Date = referenceDate.AddDays(-10),
-					Value = 100m
-				});
+					Value = 100m,
+					Pot = pot
+				};
 
 				await backDoor.SeedPotsAsync([pot]);
+				await backDoor.SeedPotSnapshotsAsync([existingSnapshot]);
 				context.PotId = pot.Id;
 			})
 			.Act((repository, context) =>

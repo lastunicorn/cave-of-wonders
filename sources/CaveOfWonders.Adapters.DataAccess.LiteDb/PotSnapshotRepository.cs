@@ -20,9 +20,20 @@ public class PotSnapshotRepository : IPotSnapshotRepository
 
 		IEnumerable<PotSnapshot> potInstances = dbContext.Pots
 			.FindAll()
-			.Select(x => x.ToDomainEntity())
-			.Where(x => includeInactive || x.IsActive(date))
-			.Select(x => x.GetSnapshot(date, dateMatchingMode))
+			.Where(x => includeInactive || x.ToDomainEntity().IsActive(date))
+			.Select(x =>
+			{
+				List<PotSnapshot> snapshots = x.ToPotSnapshots(x.ToDomainEntity());
+
+				return dateMatchingMode switch
+				{
+					DateMatchingMode.Exact => snapshots.FirstOrDefault(y => y.Date == date),
+					DateMatchingMode.LastAvailable => snapshots
+						.Where(y => y.Date <= date)
+						.MaxBy(y => y.Date),
+					_ => throw new ArgumentOutOfRangeException(nameof(dateMatchingMode))
+				};
+			})
 			.Where(x => x != null);
 
 		return Task.FromResult(potInstances);
@@ -34,7 +45,7 @@ public class PotSnapshotRepository : IPotSnapshotRepository
 
 		IEnumerable<PotSnapshot> potSnapshots = potDbEntity == null
 			? []
-			: potDbEntity.ToDomainEntity().Snapshots
+			: potDbEntity.ToPotSnapshots(potDbEntity.ToDomainEntity())
 				.Where(x => startDate == null || x.Date >= startDate.Value)
 				.Where(x => endDate == null || x.Date <= endDate.Value)
 				.OrderBy(x => x.Date);
@@ -52,7 +63,9 @@ public class PotSnapshotRepository : IPotSnapshotRepository
 	public Task<PotSnapshot> GetLatestByPotIdAsync(Guid potId, CancellationToken cancellationToken = default)
 	{
 		PotDbEntity potDbEntity = dbContext.Pots.FindById(potId);
-		PotSnapshot latestSnapshot = potDbEntity?.ToDomainEntity().Snapshots.MaxBy(x => x.Date);
+		PotSnapshot latestSnapshot = potDbEntity?
+			.ToPotSnapshots(potDbEntity.ToDomainEntity())
+			.MaxBy(x => x.Date);
 
 		return Task.FromResult(latestSnapshot);
 	}

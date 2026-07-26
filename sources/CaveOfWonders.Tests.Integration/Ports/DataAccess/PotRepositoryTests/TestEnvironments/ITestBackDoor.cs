@@ -11,5 +11,9 @@ public interface ITestBackDoor
 {
 	Task SeedPotsAsync(IEnumerable<Pot> pots, CancellationToken cancellationToken = default);
 
+	Task SeedPotSnapshotsAsync(IEnumerable<PotSnapshot> potSnapshots, CancellationToken cancellationToken = default);
+
 	Task<List<Pot>> GetAllPotsAsync(CancellationToken cancellationToken = default);
+
+	Task<List<PotSnapshot>> GetSnapshotsByPotIdAsync(Guid potId, CancellationToken cancellationToken = default);
 }

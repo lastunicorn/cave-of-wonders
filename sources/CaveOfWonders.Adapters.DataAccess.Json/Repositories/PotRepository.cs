@@ -73,5 +73,6 @@ public class PotRepository : IPotRepository
 			throw new ArgumentNullException(nameof(pot));
 
 		database.Pots.RemoveAll(x => x.Id == pot.Id);
+		database.PotSnapshots.RemoveAll(x => x.Pot.Id == pot.Id);
 	}
 }

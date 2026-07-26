@@ -174,55 +174,6 @@ public class GetAllTests
 
 	[Theory]
 	[TestEnvironments<IPotRepository, ITestBackDoor>]
-	public async Task GetAll_WithPotsContainingSnapshots_ShouldReturnPotsWithSnapshots(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
-	{
-		await GenericTest.Create(environment)
-			.Arrange(async (backDoor, context) =>
-			{
-				Pot potInDb = new()
-				{
-					Id = Guid.NewGuid(),
-					Name = "Test Pot with Snapshots",
-					DisplayOrder = 1,
-					StartDate = new DateOnly(2023, 1, 1),
-					Currency = "USD"
-				};
-
-				potInDb.Snapshots.AddRange([
-					new PotSnapshot
-					{
-						Date = new DateOnly(2023, 1, 15),
-						Value = 100.50m
-					},
-					new PotSnapshot
-					{
-						Date = new DateOnly(2023, 2, 15),
-						Value = 120.75m
-					}
-				]);
-
-				await backDoor.SeedPotsAsync([potInDb]);
-			})
-			.Act(async (repository, context) =>
-			{
-				context.Pots = await repository.GetAllAsync()
-					.ToListAsync();
-			})
-			.Assert((backDoor, context) =>
-			{
-				List<Pot> pots = context.Pots as List<Pot>;
-
-				pots.Should().HaveCount(1);
-				Pot pot = pots.First();
-				pot.Snapshots.Should().HaveCount(2);
-				pot.Snapshots.Should().ContainSingle(x => x.Date == new DateOnly(2023, 1, 15) && x.Value == 100.50m);
-				pot.Snapshots.Should().ContainSingle(x => x.Date == new DateOnly(2023, 2, 15) && x.Value == 120.75m);
-			})
-			.ExecuteAsync();
-	}
-
-	[Theory]
-	[TestEnvironments<IPotRepository, ITestBackDoor>]
 	public async Task GetAll_WithPotsContainingLabels_ShouldReturnPotsWithLabels(ITestEnvironment<IPotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)

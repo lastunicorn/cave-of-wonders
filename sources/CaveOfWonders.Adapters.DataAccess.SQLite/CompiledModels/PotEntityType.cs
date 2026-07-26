@@ -20,7 +20,7 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.CompiledModels
                 typeof(Pot),
                 baseEntityType,
                 propertyCount: 7,
-                navigationCount: 2,
+                navigationCount: 1,
                 keyCount: 1);
 
             var id = runtimeEntityType.AddProperty(

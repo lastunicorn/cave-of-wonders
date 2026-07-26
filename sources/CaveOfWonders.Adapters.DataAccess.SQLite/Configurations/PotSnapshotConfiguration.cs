@@ -12,6 +12,13 @@ internal class PotSnapshotConfiguration : IEntityTypeConfiguration<PotSnapshot>
 		entity.HasKey("Id");
 
 		entity
+			.HasOne(x => x.Pot)
+			.WithMany()
+			.HasForeignKey("PotId")
+			.IsRequired()
+			.OnDelete(DeleteBehavior.Cascade);
+
+		entity
 			.HasIndex("PotId", nameof(PotSnapshot.Date))
 			.IsUnique();
 	}
