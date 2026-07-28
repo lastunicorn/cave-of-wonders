@@ -2,6 +2,7 @@
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.LogAccess;
+using System.Runtime.CompilerServices;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 
@@ -34,16 +35,22 @@ internal class PotsAnalysis
 
 	public async Task ExecuteAsync(CancellationToken cancellationToken = default)
 	{
-		foreach (Pot pot in Pots)
+		await foreach (PotAnalysis potAnalysis in AnalyzePots(cancellationToken))
 		{
-			PotInstanceInfo potInstanceInfo = await CreatePotInstanceInfo(pot, cancellationToken);
-			PotInstanceInfos.Add(potInstanceInfo);
+			PotInstanceInfos.Add(new PotInstanceInfo
+			{
+				Id = potAnalysis.Pot.Id,
+				Name = potAnalysis.Pot.Name,
+				IsActive = potAnalysis.Pot.IsActive(TargetDate),
+				Value = potAnalysis.Value,
+				NormalizedValue = potAnalysis.NormalizedValue
+			});
 
-			TotalValue += potInstanceInfo.NormalizedValue?.Value ?? 0;
+			TotalValue += potAnalysis.NormalizedValue?.Value ?? 0;
 
-			CurrencyOverview currencyOverview = GetOrCreate(potInstanceInfo.Value.Currency);
-			currencyOverview.Value += potInstanceInfo.Value;
-			currencyOverview.NormalizedValue += potInstanceInfo.NormalizedValue;
+			CurrencyOverview currencyOverview = GetOrCreate(potAnalysis.Value.Currency);
+			currencyOverview.Value += potAnalysis.Value;
+			currencyOverview.NormalizedValue += potAnalysis.NormalizedValue;
 		}
 
 		foreach (CurrencyOverview currencyOverview in CurrencyOverviews)
@@ -51,6 +58,24 @@ internal class PotsAnalysis
 			currencyOverview.Percentage = TotalValue > 0
 				? (currencyOverview.NormalizedValue.Value / TotalValue) * 100
 				: 0;
+		}
+	}
+
+	private async IAsyncEnumerable<PotAnalysis> AnalyzePots([EnumeratorCancellation] CancellationToken cancellationToken)
+	{
+		IEnumerable<PotAnalysis> potAnalyses = Pots
+			.Select(x => new PotAnalysis(unitOfWork, log, currencyConverter)
+			{
+				Pot = x,
+				TargetDate = TargetDate,
+				TargetCurrency = TargetCurrency,
+				SnapshotSelectionMode = SnapshotSelectionMode
+			});
+
+		foreach (PotAnalysis potAnalysis in potAnalyses)
+		{
+			await potAnalysis.ExecuteAsync(cancellationToken);
+			yield return potAnalysis;
 		}
 	}
 
@@ -73,27 +98,5 @@ internal class PotsAnalysis
 
 		CurrencyOverviews.Add(currencyOverview);
 		return currencyOverview;
-	}
-
-	private async Task<PotInstanceInfo> CreatePotInstanceInfo(Pot pot, CancellationToken cancellationToken)
-	{
-		PotAnalysis potAnalysis = new(unitOfWork, log, currencyConverter)
-		{
-			Pot = pot,
-			TargetDate = TargetDate,
-			TargetCurrency = TargetCurrency,
-			SnapshotSelectionMode = SnapshotSelectionMode
-		};
-
-		await potAnalysis.ExecuteAsync(cancellationToken);
-
-		return new PotInstanceInfo
-		{
-			Id = pot.Id,
-			Name = pot.Name,
-			IsActive = pot.IsActive(TargetDate),
-			Value = potAnalysis.Value,
-			NormalizedValue = potAnalysis.NormalizedValue
-		};
 	}
 }

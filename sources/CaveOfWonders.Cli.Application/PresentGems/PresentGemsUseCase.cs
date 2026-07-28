@@ -145,6 +145,9 @@ internal class PresentGemsUseCase : IUseCase<PresentGemsRequest, PresentGemsResp
 
 	private async Task<int?> DecideYear(Guid potId, PresentGemsRequest request, CancellationToken cancellationToken)
 	{
+		if (request.Year.HasValue)
+			return request.Year.Value;
+
 		if (request.CurrentYear)
 			return systemClock.Today.Year;
 

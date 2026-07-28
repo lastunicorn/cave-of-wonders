@@ -15,6 +15,8 @@ public class PresentGemsRequest
 
 	public MonthAndYear Month { get; set; }
 
+	public int? Year { get; set; }
+
 	public bool CurrentMonth { get; set; }
 
 	public bool LastMonth { get; set; }
