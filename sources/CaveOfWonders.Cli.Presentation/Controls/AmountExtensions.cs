@@ -1,6 +1,6 @@
 ﻿using DustInTheWind.CaveOfWonders.Cli.Application;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
 
 internal static class AmountExtensions
 {

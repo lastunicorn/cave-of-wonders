@@ -1,6 +1,6 @@
 using DustInTheWind.ConsoleTools.Controls.Tables;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Presentation;
+namespace DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
 
 internal static class DataGridExtensions
 {

@@ -1,5 +1,6 @@
 using DustInTheWind.CaveOfWonders.Cli.Application;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentGems;
+using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.ConsoleTools.Controls;
 using DustInTheWind.ConsoleTools.Controls.Tables;
