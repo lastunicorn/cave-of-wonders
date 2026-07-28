@@ -1,19 +1,23 @@
 ﻿using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Ports.LogAccess;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 
 internal class PotsAnalysis
 {
+	private readonly IUnitOfWork unitOfWork;
+	private readonly ILog log;
 	private readonly CurrencyConverter currencyConverter;
 
 	public List<Pot> Pots { get; set; }
 
-	public Dictionary<Guid, PotSnapshot> PotSnapshots { get; set; }
-
-	public string TargetCurrency { get; set; }
+	public Currency TargetCurrency { get; set; }
 
 	public DateOnly TargetDate { get; set; }
+
+	public SnapshotSelectionMode SnapshotSelectionMode { get; set; } = SnapshotSelectionMode.LastAvailable;
 
 	public decimal TotalValue { get; private set; }
 
@@ -21,8 +25,10 @@ internal class PotsAnalysis
 
 	public List<PotInstanceInfo> PotInstanceInfos { get; } = [];
 
-	public PotsAnalysis(CurrencyConverter currencyConverter)
+	public PotsAnalysis(IUnitOfWork unitOfWork, ILog log, CurrencyConverter currencyConverter)
 	{
+		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+		this.log = log ?? throw new ArgumentNullException(nameof(log));
 		this.currencyConverter = currencyConverter ?? throw new ArgumentNullException(nameof(currencyConverter));
 	}
 
@@ -30,9 +36,7 @@ internal class PotsAnalysis
 	{
 		foreach (Pot pot in Pots)
 		{
-			bool snapshotExists = PotSnapshots.TryGetValue(pot.Id, out PotSnapshot potSnapshot);
-
-			PotInstanceInfo potInstanceInfo = await CreatePotInstanceInfo(pot, potSnapshot, cancellationToken);
+			PotInstanceInfo potInstanceInfo = await CreatePotInstanceInfo(pot, cancellationToken);
 			PotInstanceInfos.Add(potInstanceInfo);
 
 			TotalValue += potInstanceInfo.NormalizedValue?.Value ?? 0;
@@ -71,45 +75,25 @@ internal class PotsAnalysis
 		return currencyOverview;
 	}
 
-	private async Task<PotInstanceInfo> CreatePotInstanceInfo(Pot pot, PotSnapshot potSnapshot, CancellationToken cancellationToken)
+	private async Task<PotInstanceInfo> CreatePotInstanceInfo(Pot pot, CancellationToken cancellationToken)
 	{
-		DatedAmount value = ComputeSnapshotAmount(pot, potSnapshot, TargetDate);
-		DatedAmount normalizedValue = await currencyConverter.Convert(value, TargetCurrency, TargetDate, cancellationToken);
+		PotAnalysis potAnalysis = new(unitOfWork, log, currencyConverter)
+		{
+			Pot = pot,
+			TargetDate = TargetDate,
+			TargetCurrency = TargetCurrency,
+			SnapshotSelectionMode = SnapshotSelectionMode
+		};
+
+		await potAnalysis.ExecuteAsync(cancellationToken);
 
 		return new PotInstanceInfo
 		{
 			Id = pot.Id,
 			Name = pot.Name,
 			IsActive = pot.IsActive(TargetDate),
-			Value = value,
-			NormalizedValue = normalizedValue
+			Value = potAnalysis.Value,
+			NormalizedValue = potAnalysis.NormalizedValue
 		};
-	}
-
-	private static DatedAmount ComputeSnapshotAmount(Pot pot, PotSnapshot potSnapshot, DateOnly currentDate)
-	{
-		if (potSnapshot != null)
-		{
-			return new DatedAmount
-			{
-				Currency = potSnapshot.Pot.Currency,
-				Value = potSnapshot.Value,
-				Date = potSnapshot.Date
-			};
-		}
-
-		return new DatedAmount
-		{
-			Currency = pot.Currency,
-			Value = 0,
-			Date = currentDate
-		};
-	}
-
-	private async Task<DatedAmount> CalculateNormalizedValue(DatedAmount datedAmount, CancellationToken cancellationToken)
-	{
-		return datedAmount.Currency == TargetCurrency
-			? datedAmount
-			: await currencyConverter.Convert(datedAmount, TargetCurrency, TargetDate, cancellationToken);
 	}
 }

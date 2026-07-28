@@ -1,6 +1,7 @@
 ﻿using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Ports.LogAccess;
 using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
@@ -9,12 +10,14 @@ public class PresentWealthUseCase : IUseCase<PresentWealthRequest, PresentWealth
 {
 	private readonly ISystemClock systemClock;
 	private readonly IUnitOfWork unitOfWork;
+	private readonly ILog log;
 	private readonly CurrencyConverter currencyConverter;
 
-	public PresentWealthUseCase(ISystemClock systemClock, IUnitOfWork unitOfWork)
+	public PresentWealthUseCase(ISystemClock systemClock, IUnitOfWork unitOfWork, ILog log)
 	{
 		this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+		this.log = log ?? throw new ArgumentNullException(nameof(log));
 
 		currencyConverter = new CurrencyConverter(unitOfWork);
 	}
@@ -25,12 +28,10 @@ public class PresentWealthUseCase : IUseCase<PresentWealthRequest, PresentWealth
 		string defaultCurrency = request.Currency ?? "EUR";
 
 		List<Pot> pots = await RetrievePots(request.IncludeInactive, currentDate, cancellationToken);
-		Dictionary<Guid, PotSnapshot> potSnapshotsByPotId = await RetrieveLatestSnapshotsFromStorage(currentDate, request.IncludeInactive, cancellationToken);
 
-		PotsAnalysis potsAnalysis = new(currencyConverter)
+		PotsAnalysis potsAnalysis = new(unitOfWork, log, currencyConverter)
 		{
 			Pots = pots,
-			PotSnapshots = potSnapshotsByPotId,
 			TargetDate = currentDate,
 			TargetCurrency = defaultCurrency
 		};
@@ -63,11 +64,5 @@ public class PresentWealthUseCase : IUseCase<PresentWealthRequest, PresentWealth
 		return await pots
 			.OrderBy(x => x.DisplayOrder)
 			.ToListAsync(cancellationToken);
-	}
-
-	private async Task<Dictionary<Guid, PotSnapshot>> RetrieveLatestSnapshotsFromStorage(DateOnly date, bool includeInactive, CancellationToken cancellationToken)
-	{
-		IEnumerable<PotSnapshot> potSnapshots = await unitOfWork.PotSnapshotRepository.GetLatestAsync(date, DateMatchingMode.LastAvailable, includeInactive, cancellationToken);
-		return potSnapshots.ToDictionary(x => x.Pot.Id);
 	}
 }
