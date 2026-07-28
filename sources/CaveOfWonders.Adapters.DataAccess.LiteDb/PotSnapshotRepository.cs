@@ -70,6 +70,28 @@ public class PotSnapshotRepository : IPotSnapshotRepository
 		return Task.FromResult(latestSnapshot);
 	}
 
+	public Task<PotSnapshot> GetLastAsync(Guid potId, DateOnly date, CancellationToken cancellationToken = default)
+	{
+		PotDbEntity potDbEntity = dbContext.Pots.FindById(potId);
+		PotSnapshot lastSnapshot = potDbEntity?
+			.ToPotSnapshots(potDbEntity.ToDomainEntity())
+			.Where(x => x.Date <= date)
+			.MaxBy(x => x.Date);
+
+		return Task.FromResult(lastSnapshot);
+	}
+
+	public Task<PotSnapshot> GetNextAsync(Guid potId, DateOnly date, CancellationToken cancellationToken = default)
+	{
+		PotDbEntity potDbEntity = dbContext.Pots.FindById(potId);
+		PotSnapshot nextSnapshot = potDbEntity?
+			.ToPotSnapshots(potDbEntity.ToDomainEntity())
+			.Where(x => x.Date >= date)
+			.MinBy(x => x.Date);
+
+		return Task.FromResult(nextSnapshot);
+	}
+
 	public void Add(PotSnapshot potSnapshot)
 	{
 		ArgumentNullException.ThrowIfNull(potSnapshot);
