@@ -15,7 +15,7 @@ internal class AboutUseCase : IRequestHandler<AboutRequest, AboutResponse>
 
     public Task<AboutResponse> Handle(AboutRequest request, CancellationToken cancellationToken)
     {
-        Assembly assembly = typeof(AboutUseCase).Assembly;
+        Assembly assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
 
         string applicationName = assembly.GetCustomAttribute<AssemblyProductAttribute>()?.Product;
         string author = assembly.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company;
