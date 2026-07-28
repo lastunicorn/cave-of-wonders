@@ -31,10 +31,10 @@ internal class PotsAnalysis
 		foreach (Pot pot in Pots)
 		{
 			bool snapshotExists = PotSnapshots.TryGetValue(pot.Id, out PotSnapshot potSnapshot);
-			
+
 			PotInstanceInfo potInstanceInfo = await CreatePotInstanceInfo(pot, potSnapshot, cancellationToken);
 			PotInstanceInfos.Add(potInstanceInfo);
-			
+
 			TotalValue += potInstanceInfo.NormalizedValue?.Value ?? 0;
 
 			CurrencyOverview currencyOverview = GetOrCreate(potInstanceInfo.Value.Currency);
