@@ -2,11 +2,11 @@
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.LogAccess;
 using DustInTheWind.CaveOfWonders.Ports.SpreadsheetAccess;
-using MediatR;
+using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots;
 
-internal class ImportPotSnapshotsUseCase : IRequestHandler<ImportPotSnapshotsRequest, ImportPotSnapshotsResponse>
+internal class ImportPotSnapshotsUseCase : IUseCase<ImportPotSnapshotsRequest, ImportPotSnapshotsResponse>
 {
 	private readonly IUnitOfWork unitOfWork;
 	private readonly ISheets sheets;
@@ -19,7 +19,7 @@ internal class ImportPotSnapshotsUseCase : IRequestHandler<ImportPotSnapshotsReq
 		this.log = log ?? throw new ArgumentNullException(nameof(log));
 	}
 
-	public Task<ImportPotSnapshotsResponse> Handle(ImportPotSnapshotsRequest request, CancellationToken cancellationToken)
+	public Task<ImportPotSnapshotsResponse> Execute(ImportPotSnapshotsRequest request, CancellationToken cancellationToken)
 	{
 		if (request.SourceFilePath is null)
 			throw new SourceFileNotProvidedException();

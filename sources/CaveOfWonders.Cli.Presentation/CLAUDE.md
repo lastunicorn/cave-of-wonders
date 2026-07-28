@@ -30,7 +30,7 @@ Command folder names: PascalCase noun phrase describing what the command does â€
 [NamedCommand("my-command", Description = "One-line description shown in help.")]
 internal class MyCommand : IConsoleCommand<MyViewModel>
 {
-    private readonly IMediator mediator;
+    private readonly RequestBus requestBus;
 
     // --- Parameters ---
 
@@ -48,9 +48,9 @@ internal class MyCommand : IConsoleCommand<MyViewModel>
 
     // --- Constructor ---
 
-    public MyCommand(IMediator mediator)
+    public MyCommand(RequestBus requestBus)
     {
-        this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        this.requestBus = requestBus ?? throw new ArgumentNullException(nameof(requestBus));
     }
 
     // --- Execute ---
@@ -63,7 +63,7 @@ internal class MyCommand : IConsoleCommand<MyViewModel>
             Month = Month
         };
 
-        MyResponse response = await mediator.Send(request);
+        MyResponse response = await requestBus.SendAsync<MyRequest, MyResponse>(request);
 
         return new MyViewModel
         {
@@ -75,8 +75,8 @@ internal class MyCommand : IConsoleCommand<MyViewModel>
 
 Rules:
 - Access modifier: `internal`. (Commando discovers commands by reflection; the bootstrapper only needs the `PresentationAssemblyHandle` marker class to locate the assembly.)
-- Only dependency: `IMediator`. Null-check it in the constructor. Never inject anything else.
-- `Execute()` does exactly three things: build the request, call `mediator.Send`, return a mapped view model. No branching, no error handling, no business logic.
+- Only dependency: `RequestBus` (from `DustInTheWind.RequestR`). Null-check it in the constructor. Never inject anything else.
+- `Execute()` does exactly three things: build the request, call `requestBus.SendAsync<TRequest, TResponse>`, return a mapped view model. No branching, no error handling, no business logic.
 
 ## Command name (CLI verb)
 
@@ -263,7 +263,7 @@ public class FxCommand : IConsoleCommand<PresentExchangeRateResponse>
     public async Task<PresentExchangeRateResponse> Execute()
     {
         ...
-        return await mediator.Send(request);
+        return await requestBus.SendAsync<PresentExchangeRateRequest, PresentExchangeRateResponse>(request);
     }
 }
 ```

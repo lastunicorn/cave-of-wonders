@@ -33,6 +33,7 @@ using DustInTheWind.CaveOfWonders.Ports.LogAccess;
 using DustInTheWind.CaveOfWonders.Ports.SpreadsheetAccess;
 using DustInTheWind.ErrorFlow.AspNetCore;
 using DustInTheWind.ErrorFlow.AspNetCore.DependencyInjection;
+using DustInTheWind.RequestR.Extensions.Microsoft.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 
@@ -62,9 +63,9 @@ internal static class Program
             options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
         });
 
-        // Register MediatR
-        builder.Services.AddMediatR(config =>
-            config.RegisterServicesFromAssembly(typeof(PresentWealthRequest).Assembly));
+        // Register RequestR
+        builder.Services.AddUseCaseEngine(options =>
+            options.AddFromAssemblyContaining<PresentWealthRequest>());
 
         // Register application services
         builder.Services.AddSingleton(sp =>

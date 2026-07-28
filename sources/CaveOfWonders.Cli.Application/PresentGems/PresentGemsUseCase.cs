@@ -3,11 +3,11 @@ using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using MediatR;
+using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentGems;
 
-internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentGemsResponse>
+internal class PresentGemsUseCase : IUseCase<PresentGemsRequest, PresentGemsResponse>
 {
 	private readonly IUnitOfWork unitOfWork;
 	private readonly ISystemClock systemClock;
@@ -18,7 +18,7 @@ internal class PresentGemsUseCase : IRequestHandler<PresentGemsRequest, PresentG
 		this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
 	}
 
-	public async Task<PresentGemsResponse> Handle(PresentGemsRequest request, CancellationToken cancellationToken)
+	public async Task<PresentGemsResponse> Execute(PresentGemsRequest request, CancellationToken cancellationToken)
 	{
 		Pot pot = await RetrievePot(request.PotId, cancellationToken);
 		IAsyncEnumerable<Gem> gems = await RetrieveGems(pot.Id, request, cancellationToken);

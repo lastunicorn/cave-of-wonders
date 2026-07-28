@@ -2,11 +2,11 @@ using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.UserAccess;
-using MediatR;
+using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.DeletePot;
 
-internal class DeletePotUseCase : IRequestHandler<DeletePotRequest, DeletePotResponse>
+internal class DeletePotUseCase : IUseCase<DeletePotRequest, DeletePotResponse>
 {
 	private readonly IUnitOfWork unitOfWork;
 	private readonly IUserInterface userInterface;
@@ -17,7 +17,7 @@ internal class DeletePotUseCase : IRequestHandler<DeletePotRequest, DeletePotRes
 		this.userInterface = userInterface ?? throw new ArgumentNullException(nameof(userInterface));
 	}
 
-	public async Task<DeletePotResponse> Handle(DeletePotRequest request, CancellationToken cancellationToken)
+	public async Task<DeletePotResponse> Execute(DeletePotRequest request, CancellationToken cancellationToken)
 	{
 		Pot pot = await RetrievePot(request.PotId, cancellationToken);
 

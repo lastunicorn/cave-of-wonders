@@ -9,12 +9,12 @@ using Moq;
 
 namespace CaveOfWonders.Tests.PresentPotUseCaseTests;
 
-public class HandleTests
+public class ExecuteTests
 {
 	private readonly PresentPotUseCase useCase;
 	private readonly Mock<IPotRepository> potRepository;
 
-	public HandleTests()
+	public ExecuteTests()
 	{
 		Mock<IUnitOfWork> unitOfWork = new();
 		Mock<ISystemClock> clock = new();
@@ -71,7 +71,7 @@ public class HandleTests
 			.Returns(Array.Empty<Pot>().ToAsyncEnumerable());
 
 		// Act
-		Func<Task> action = async () => await useCase.Handle(request, CancellationToken.None);
+		Func<Task> action = async () => await useCase.Execute(request, CancellationToken.None);
 
 		// Assert
 		await action.Should().NotThrowAsync();
@@ -91,7 +91,7 @@ public class HandleTests
 			.Returns(Array.Empty<Pot>().ToAsyncEnumerable());
 
 		// Act
-		_ = await useCase.Handle(request, CancellationToken.None);
+		_ = await useCase.Execute(request, CancellationToken.None);
 
 		// Assert
 		potRepository
@@ -111,7 +111,7 @@ public class HandleTests
 			.Throws(new Exception("Repository is inaccessible."));
 
 		// Act
-		Func<Task> action = async () => await useCase.Handle(request, CancellationToken.None);
+		Func<Task> action = async () => await useCase.Execute(request, CancellationToken.None);
 
 		// Assert
 		await action.Should().ThrowAsync<DataStorageException>();
@@ -131,7 +131,7 @@ public class HandleTests
 			.Returns(Array.Empty<Pot>().ToAsyncEnumerable());
 
 		// Act
-		PresentPotResponse response = await useCase.Handle(request, CancellationToken.None);
+		PresentPotResponse response = await useCase.Execute(request, CancellationToken.None);
 
 		// Assert
 		response.PotDetails.Should().BeEmpty("No pots should be returned when the repository is empty.");
@@ -151,7 +151,7 @@ public class HandleTests
 			.Returns(new List<Pot> { new() }.ToAsyncEnumerable());
 
 		// Act
-		PresentPotResponse response = await useCase.Handle(request, CancellationToken.None);
+		PresentPotResponse response = await useCase.Execute(request, CancellationToken.None);
 
 		// Assert
 		response.PotDetails.Should().HaveCount(1, "One pot should be returned when there is one matching pot in the repository.");
@@ -171,7 +171,7 @@ public class HandleTests
 			.Returns(new List<Pot> { new(), new() }.ToAsyncEnumerable());
 
 		// Act
-		PresentPotResponse response = await useCase.Handle(request, CancellationToken.None);
+		PresentPotResponse response = await useCase.Execute(request, CancellationToken.None);
 
 		// Assert
 		response.PotDetails.Should().HaveCount(2, "Two pots should be returned when there are two matching pots in the repository.");

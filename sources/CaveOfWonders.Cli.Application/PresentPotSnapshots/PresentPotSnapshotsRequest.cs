@@ -1,9 +1,8 @@
 using DustInTheWind.CaveOfWonders.DataTypes;
-using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPotSnapshots;
 
-public class PresentPotSnapshotsRequest : IRequest<PresentPotSnapshotsResponse>
+public class PresentPotSnapshotsRequest
 {
 	public PotFlexId PotFlexId { get; set; }
 

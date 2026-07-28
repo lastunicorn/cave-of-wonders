@@ -1,8 +1,6 @@
-﻿using MediatR;
+﻿namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
-
-public class PresentWealthRequest : IRequest<PresentWealthResponse>
+public class PresentWealthRequest
 {
 	public DateOnly? Date { get; set; }
 

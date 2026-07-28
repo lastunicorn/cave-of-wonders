@@ -1,20 +1,20 @@
 ﻿using DustInTheWind.CaveOfWonders.Cli.Application.ExportInflation;
 using DustInTheWind.ConsoleTools.Commando;
-using MediatR;
+using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.CpiArea.InflationExport;
 
 [NamedCommand("inflation-export", Description = "Exports the inflation information to a file on disk.")]
 internal class InflationExportCommand : IConsoleCommand
 {
-	private readonly IMediator mediator;
+	private readonly RequestBus requestBus;
 
 	[NamedParameter("output", ShortName = 'o', IsMandatory = false, Description = "Path to the output file.")]
 	public string OutputPath { get; set; }
 
-	public InflationExportCommand(IMediator mediator)
+	public InflationExportCommand(RequestBus requestBus)
 	{
-		this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+		this.requestBus = requestBus ?? throw new ArgumentNullException(nameof(requestBus));
 	}
 
 	public async Task Execute()
@@ -23,6 +23,6 @@ internal class InflationExportCommand : IConsoleCommand
 		{
 			OutputPath = OutputPath
 		};
-		await mediator.Send(request);
+		await requestBus.SendAsync<ExportInflationRequest>(request);
 	}
 }

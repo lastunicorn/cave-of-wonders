@@ -1,6 +1,6 @@
 ﻿using DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 using DustInTheWind.ConsoleTools.Commando;
-using MediatR;
+using DustInTheWind.RequestR;
 using System.Globalization;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Wealth;
@@ -8,7 +8,7 @@ namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Wealth;
 [NamedCommand("wealth", Description = "Display an overview of the entire cave (the wealth).")]
 internal class WealthCommand : IConsoleCommand<WealthViewModel>
 {
-    private readonly IMediator mediator;
+    private readonly RequestBus requestBus;
 
     [NamedParameter("date", ShortName = 'd', IsMandatory = false, Description = "The date for which to display the state of the cave. Default value = today")]
     public DateOnly? Date { get; set; }
@@ -22,9 +22,9 @@ internal class WealthCommand : IConsoleCommand<WealthViewModel>
     [NamedParameter("culture", ShortName = 'u', IsMandatory = false, Description = "The culture info used for displaying the data.")]
     public CultureInfo Culture { get; set; }
 
-    public WealthCommand(IMediator mediator)
+    public WealthCommand(RequestBus requestBus)
     {
-        this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        this.requestBus = requestBus ?? throw new ArgumentNullException(nameof(requestBus));
     }
 
     public async Task<WealthViewModel> Execute()
@@ -36,7 +36,7 @@ internal class WealthCommand : IConsoleCommand<WealthViewModel>
             IncludeInactive = IncludeInactivePots
         };
 
-        PresentWealthResponse response = await mediator.Send(request);
+        PresentWealthResponse response = await requestBus.SendAsync<PresentWealthRequest, PresentWealthResponse>(request);
 
         return new WealthViewModel(response)
         {

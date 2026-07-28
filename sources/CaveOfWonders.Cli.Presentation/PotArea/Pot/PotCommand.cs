@@ -1,13 +1,13 @@
 ﻿using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 using DustInTheWind.ConsoleTools.Commando;
-using MediatR;
+using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pot;
 
 [NamedCommand("pot", Description = "Display details about a specific pot.")]
 internal class PotCommand : IConsoleCommand<PotCommandViewModel>
 {
-	private readonly IMediator mediator;
+	private readonly RequestBus requestBus;
 
 	[AnonymousParameter(DisplayName = "Pot Identifier", Order = 1, IsMandatory = false, Description = "Name or id of the pot. Partial id is accepted.")]
 	public string PotIdentifier { get; set; }
@@ -18,9 +18,9 @@ internal class PotCommand : IConsoleCommand<PotCommandViewModel>
 	[NamedParameter("details", ShortName = 'd', IsMandatory = false, Description = "Display details about the pot. Default = false.")]
 	public bool? ShowDetails { get; set; }
 
-	public PotCommand(IMediator mediator)
+	public PotCommand(RequestBus requestBus)
 	{
-		this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+		this.requestBus = requestBus ?? throw new ArgumentNullException(nameof(requestBus));
 	}
 
 	public async Task<PotCommandViewModel> Execute()
@@ -32,7 +32,7 @@ internal class PotCommand : IConsoleCommand<PotCommandViewModel>
 			ShowDetails = ShowDetails
 		};
 
-		PresentPotResponse response = await mediator.Send(request);
+		PresentPotResponse response = await requestBus.SendAsync<PresentPotRequest, PresentPotResponse>(request);
 
 		return new PotCommandViewModel
 		{

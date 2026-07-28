@@ -8,11 +8,11 @@ using DustInTheWind.CaveOfWonders.Ports.FintownAccess;
 using DustInTheWind.CaveOfWonders.Ports.MintosAccess;
 using DustInTheWind.CaveOfWonders.Ports.PeerBerryAccess;
 using DustInTheWind.CaveOfWonders.Ports.QuanloopAccess;
-using MediatR;
+using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;
 
-internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGemsResponse>
+internal class ImportGemsUseCase : IUseCase<ImportGemsRequest, ImportGemsResponse>
 {
 	private readonly IUnitOfWork unitOfWork;
 	private readonly IMintosService mintosService;
@@ -33,7 +33,7 @@ internal class ImportGemsUseCase : IRequestHandler<ImportGemsRequest, ImportGems
 		this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
 	}
 
-	public Task<ImportGemsResponse> Handle(ImportGemsRequest request, CancellationToken cancellationToken)
+	public Task<ImportGemsResponse> Execute(ImportGemsRequest request, CancellationToken cancellationToken)
 	{
 		return Measure
 			.Action(async () =>

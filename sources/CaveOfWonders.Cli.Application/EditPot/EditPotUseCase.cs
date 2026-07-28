@@ -1,11 +1,11 @@
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using MediatR;
+using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.EditPot;
 
-internal class EditPotUseCase : IRequestHandler<EditPotRequest, EditPotResponse>
+internal class EditPotUseCase : IUseCase<EditPotRequest, EditPotResponse>
 {
 	private readonly IUnitOfWork unitOfWork;
 
@@ -14,7 +14,7 @@ internal class EditPotUseCase : IRequestHandler<EditPotRequest, EditPotResponse>
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 	}
 
-	public async Task<EditPotResponse> Handle(EditPotRequest request, CancellationToken cancellationToken)
+	public async Task<EditPotResponse> Execute(EditPotRequest request, CancellationToken cancellationToken)
 	{
 		Pot pot = await RetrievePot(request.PotId, cancellationToken);
 

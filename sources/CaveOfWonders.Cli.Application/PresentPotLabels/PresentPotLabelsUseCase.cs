@@ -1,12 +1,11 @@
-using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using MediatR;
+using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPotLabels;
 
-internal class PresentPotLabelsUseCase : IRequestHandler<PresentPotLabelsRequest, PresentPotLabelsResponse>
+internal class PresentPotLabelsUseCase : IUseCase<PresentPotLabelsRequest, PresentPotLabelsResponse>
 {
 	private readonly IUnitOfWork unitOfWork;
 	private readonly ISystemClock systemClock;
@@ -17,7 +16,7 @@ internal class PresentPotLabelsUseCase : IRequestHandler<PresentPotLabelsRequest
 		this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
 	}
 
-	public async Task<PresentPotLabelsResponse> Handle(PresentPotLabelsRequest request, CancellationToken cancellationToken)
+	public async Task<PresentPotLabelsResponse> Execute(PresentPotLabelsRequest request, CancellationToken cancellationToken)
 	{
 		DateOnly today = systemClock.Today;
 

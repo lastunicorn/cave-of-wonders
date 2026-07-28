@@ -3,11 +3,11 @@ using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using MediatR;
+using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.CalculateGain;
 
-internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
+internal class GainUseCase : IUseCase<GainRequest, GainResponse>
 {
 	private const string NormalizedCurrency = "EUR";
 
@@ -23,7 +23,7 @@ internal class GainUseCase : IRequestHandler<GainRequest, GainResponse>
 		currencyConverter = new CurrencyConverter(unitOfWork);
 	}
 
-	public async Task<GainResponse> Handle(GainRequest request, CancellationToken cancellationToken)
+	public async Task<GainResponse> Execute(GainRequest request, CancellationToken cancellationToken)
 	{
 		MonthAndYear month = DecideMonth(request);
 

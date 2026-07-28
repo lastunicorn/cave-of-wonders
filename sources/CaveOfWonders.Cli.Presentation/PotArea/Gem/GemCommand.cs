@@ -1,13 +1,13 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentGems;
 using DustInTheWind.ConsoleTools.Commando;
-using MediatR;
+using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Gem;
 
 [NamedCommand("gem", Description = "Display a list of gems filtered by pot.")]
 internal class GemCommand : IConsoleCommand<GemCommandViewModel>
 {
-	private readonly IMediator mediator;
+	private readonly RequestBus requestBus;
 
 	[AnonymousParameter(Order = 1, IsMandatory = false)]
 	public string PotIdDefault { get; set; }
@@ -48,9 +48,9 @@ internal class GemCommand : IConsoleCommand<GemCommandViewModel>
 	[NamedParameter("exclude-internal", IsMandatory = false, Description = "Exclude internal gems.")]
 	public bool ExcludeInternal { get; set; }
 
-	public GemCommand(IMediator mediator)
+	public GemCommand(RequestBus requestBus)
 	{
-		this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+		this.requestBus = requestBus ?? throw new ArgumentNullException(nameof(requestBus));
 	}
 
 	public async Task<GemCommandViewModel> Execute()
@@ -71,7 +71,7 @@ internal class GemCommand : IConsoleCommand<GemCommandViewModel>
 			ExcludeInternal = ExcludeInternal
 		};
 
-		PresentGemsResponse response = await mediator.Send(request);
+		PresentGemsResponse response = await requestBus.SendAsync<PresentGemsRequest, PresentGemsResponse>(request);
 
 		return new GemCommandViewModel
 		{

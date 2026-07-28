@@ -178,7 +178,7 @@ public class PotOrderTests
 			.Returns(potsFromRepository.ToAsyncEnumerable());
 
 		// Act
-		PresentPotResponse response = await useCase.Handle(request, CancellationToken.None);
+		PresentPotResponse response = await useCase.Execute(request, CancellationToken.None);
 
 		// Assert
 

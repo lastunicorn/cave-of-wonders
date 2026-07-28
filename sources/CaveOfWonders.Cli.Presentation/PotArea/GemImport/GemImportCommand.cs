@@ -1,13 +1,13 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;
 using DustInTheWind.ConsoleTools.Commando;
-using MediatR;
+using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.GemImport;
 
 [NamedCommand("gem-import", Description = "Import gems.")]
 internal class GemImportCommand : IConsoleCommand<GemImportViewModel>
 {
-	private readonly IMediator mediator;
+	private readonly RequestBus requestBus;
 
 	[NamedParameter("file", IsMandatory = true, Description = "The path to the file from which to import the gems. May contain wildcards (e.g. 'path/statement *.csv') to import from multiple files, including subdirectories.")]
 	public string FilePath { get; set; }
@@ -18,9 +18,9 @@ internal class GemImportCommand : IConsoleCommand<GemImportViewModel>
 	[NamedParameter("pot", IsMandatory = false, Description = "The pot id for which to import the gems.")]
 	public string PotId { get; set; }
 
-	public GemImportCommand(IMediator mediator)
+	public GemImportCommand(RequestBus requestBus)
 	{
-		this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+		this.requestBus = requestBus ?? throw new ArgumentNullException(nameof(requestBus));
 	}
 
 	public async Task<GemImportViewModel> Execute()
@@ -32,7 +32,7 @@ internal class GemImportCommand : IConsoleCommand<GemImportViewModel>
 			PotFlexId = PotId
 		};
 
-		ImportGemsResponse response = await mediator.Send(request);
+		ImportGemsResponse response = await requestBus.SendAsync<ImportGemsRequest, ImportGemsResponse>(request);
 
 		return new GemImportViewModel
 		{

@@ -2,11 +2,11 @@
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using MediatR;
+using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 
-internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPotResponse>
+internal class PresentPotUseCase : IUseCase<PresentPotRequest, PresentPotResponse>
 {
 	private readonly IUnitOfWork unitOfWork;
 	private readonly ISystemClock systemClock;
@@ -17,7 +17,7 @@ internal class PresentPotUseCase : IRequestHandler<PresentPotRequest, PresentPot
 		this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
 	}
 
-	public async Task<PresentPotResponse> Handle(PresentPotRequest request, CancellationToken cancellationToken)
+	public async Task<PresentPotResponse> Execute(PresentPotRequest request, CancellationToken cancellationToken)
 	{
 		IEnumerable<Pot> pots = await RetrievePots(request, cancellationToken);
 

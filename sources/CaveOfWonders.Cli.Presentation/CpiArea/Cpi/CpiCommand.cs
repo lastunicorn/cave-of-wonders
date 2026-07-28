@@ -1,23 +1,23 @@
 ﻿using DustInTheWind.CaveOfWonders.Cli.Application.PresentCpi;
 using DustInTheWind.ConsoleTools.Commando;
-using MediatR;
+using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.CpiArea.Cpi;
 
 [NamedCommand("cpi", Description = "Display the consumer price indexes.")]
 internal class CpiCommand : IConsoleCommand<CpiViewModel>
 {
-	private readonly IMediator mediator;
+	private readonly RequestBus requestBus;
 
-	public CpiCommand(IMediator mediator)
+	public CpiCommand(RequestBus requestBus)
 	{
-		this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+		this.requestBus = requestBus ?? throw new ArgumentNullException(nameof(requestBus));
 	}
 
 	public async Task<CpiViewModel> Execute()
 	{
 		PresentCpiRequest request = new();
-		PresentCpiResponse response = await mediator.Send(request);
+		PresentCpiResponse response = await requestBus.SendAsync<PresentCpiRequest, PresentCpiResponse>(request);
 
 		return new CpiViewModel
 		{

@@ -1,13 +1,13 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPotLabels;
 using DustInTheWind.ConsoleTools.Commando;
-using MediatR;
+using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Label;
 
 [NamedCommand("label", Description = "Display the labels of a specific pot, or of all pots if none is specified.")]
 internal class LabelCommand : IConsoleCommand<LabelViewModel>
 {
-	private readonly IMediator mediator;
+	private readonly RequestBus requestBus;
 
 	[AnonymousParameter(DisplayName = "Pot Identifier", Order = 1, IsMandatory = false, Description = "Name or id of the pot. Partial id is accepted.")]
 	public string PotIdentifier { get; set; }
@@ -15,9 +15,9 @@ internal class LabelCommand : IConsoleCommand<LabelViewModel>
 	[NamedParameter("all", ShortName = 'a', IsMandatory = false, Description = "Display all pots, including the inactive ones. Default = false.")]
 	public bool IncludeInactivePots { get; set; }
 
-	public LabelCommand(IMediator mediator)
+	public LabelCommand(RequestBus requestBus)
 	{
-		this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+		this.requestBus = requestBus ?? throw new ArgumentNullException(nameof(requestBus));
 	}
 
 	public async Task<LabelViewModel> Execute()
@@ -28,7 +28,7 @@ internal class LabelCommand : IConsoleCommand<LabelViewModel>
 			IncludeInactivePots = IncludeInactivePots
 		};
 
-		PresentPotLabelsResponse response = await mediator.Send(request);
+		PresentPotLabelsResponse response = await requestBus.SendAsync<PresentPotLabelsRequest, PresentPotLabelsResponse>(request);
 
 		return new LabelViewModel(response);
 	}

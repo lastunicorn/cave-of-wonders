@@ -1,10 +1,9 @@
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Infrastructure;
-using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentGems;
 
-public class PresentGemsRequest : IRequest<PresentGemsResponse>
+public class PresentGemsRequest
 {
 	public PotFlexId PotId { get; set; }
 

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working inside 
 
 ## What lives here
 
-One use case per folder. A use case is a single MediatR request/handler pair that implements one user-facing action. Each folder is self-contained: the request, response, use case class, any DTOs, and any use-case-specific exceptions all live inside it together.
+One use case per folder. A use case is a single RequestR request/use-case pair that implements one user-facing action. Each folder is self-contained: the request, response, use case class, any DTOs, and any use-case-specific exceptions all live inside it together.
 
 Shared types that are not specific to a single use case (e.g. `CurrencyValue`, `CaveOfWandersException`, `StorageInaccessibleException`) live at the project root, not inside a use case folder.
 
@@ -25,7 +25,7 @@ The class name prefix does not have to repeat the full folder name — use the s
 ## Access modifiers
 
 - **Request, Response, DTO classes** — `public`. They cross the boundary into the presentation layer.
-- **Use case class** — `internal`. MediatR discovers it by reflection; the presentation layer never references it directly.
+- **Use case class** — `internal`. RequestR's `AddFromAssemblyContaining<T>()` discovers it by reflection at startup; the presentation layer never references it directly, only the `RequestBus`.
 - **DTO constructors that accept a domain object** — `internal`. The use case constructs the DTO; the presentation layer only reads its properties.
 - **Helper classes used only within one use case** — `internal`. If a use case becomes complex, extract helpers into the same folder (or an `<FolderName>/Helpers/` subfolder). Do not make them `public`.
 
@@ -55,7 +55,7 @@ public List<GainItem> Items { get; init; } = [];
 ## Use case structure
 
 ```csharp
-internal class ExampleUseCase : IRequestHandler<ExampleRequest, ExampleResponse>
+internal class ExampleUseCase : IUseCase<ExampleRequest, ExampleResponse>
 {
     private readonly IUnitOfWork unitOfWork;
     // Add IClock only when the current date/time is needed as a default.
@@ -65,12 +65,14 @@ internal class ExampleUseCase : IRequestHandler<ExampleRequest, ExampleResponse>
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
 
-    public async Task<ExampleResponse> Handle(ExampleRequest request, CancellationToken cancellationToken)
+    public async Task<ExampleResponse> Execute(ExampleRequest request, CancellationToken cancellationToken)
     {
         // ...
     }
 }
 ```
+
+Use `IUseCase<TRequest>` (no response type parameter) with an `Execute` method returning a plain `Task` when the use case has nothing to return (e.g. `ExportInflationUseCase`).
 
 Rules:
 - `IUnitOfWork` is the only data-access dependency. Never inject individual repositories (`IGemRepository`, `IPotRepository`, etc.) directly.

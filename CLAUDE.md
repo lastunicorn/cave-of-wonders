@@ -36,7 +36,7 @@ The codebase follows a **Ports & Adapters (Hexagonal) architecture** with a stri
 DataTypes                   — pure value types/primitives, no dependencies (Currency, CurrencyPair, GemCategory, PotFlexId)
 Domain                      — entities, depend only on DataTypes (Pot, PotSnapshot, Gem, ExchangeRate, Cpi, AverageWage)
 Infrastructure              — shared utilities (AsyncEnumerableExtensions, EnumerableExtensions, etc.)
-Cli.Application             — use cases (MediatR request/handler pairs), depend on Ports
+Cli.Application             — use cases (RequestR request/use-case pairs), depend on Ports
 Ports.*                     — interfaces for external concerns (data access, BNR, INS, spreadsheets, files, clock, log, Mintos, Fintown)
 Adapters.*                  — concrete implementations of Port interfaces
 Cli / WebApi                — entry points that wire everything together (Autofac for CLI, MS DI for WebApi)
@@ -45,7 +45,7 @@ WebApi.Presentation         — ASP.NET Core controllers and DTOs
 ```
 
 **Key conventions:**
-- Every use case lives in its own folder under `Cli.Application/` with `*Request`, `*Response`, and `*UseCase` files. The use case class is a MediatR `IRequestHandler`.
+- Every use case lives in its own folder under `Cli.Application/` with `*Request`, `*Response`, and `*UseCase` files. The use case class implements RequestR's `IUseCase<TRequest, TResponse>` (or `IUseCase<TRequest>` when there is no response) and is invoked by presentation-layer code through a `RequestBus.SendAsync<TRequest, TResponse>(request, cancellationToken)` call.
 - Port interfaces are pure `I*` contracts in `Ports.*` projects; adapters implement them in `Adapters.*` projects. `Ports.MintosAccess`/`Adapters.MintosAccess`, `Ports.FintownAccess`/`Adapters.FintownAccess`, `Ports.BcrAccess`/`Adapters.BcrAccess`, `Ports.PeerBerryAccess`/`Adapters.PeerBerryAccess`, and `Ports.QuanloopAccess`/`Adapters.QuanloopAccess` each wrap a statement-file source (Mintos P2P-lending, Fintown, BCR bank, PeerBerry, Quanloop) behind an `IXxxService.GetGemsAsync(filePath, ct)` contract; `ImportGemsUseCase` picks the adapter by a `FileType` enum. `Ports.UserAccess`/`Adapters.UserAccess` is a small interactive-confirmation port (e.g. `IUserInterface.ConfirmPotDelete`).
 - There are three data-access adapters. The CLI (`Setup.cs`, `DependenciesSetup.Configure`) picks one at startup via the `DatabaseType` setting in `appsettings.json` (`Json`, `SQLite`, or `LiteDb`) and registers the matching `Database`/`UnitOfWork`; **the CLI's checked-in `appsettings.json` currently sets `DatabaseType: SQLite`, so `Adapters.DataAccess.SQLite` is the CLI's production adapter.** The WebApi (`Program.cs`) does not read `DatabaseType` — it always registers `Database`/`UnitOfWork` from `DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json`, so JSON remains the WebApi's production adapter. `Adapters.DataAccess.LiteDb` is not wired into either entry point and is exercised only by the integration test suite:
   - **`Adapters.DataAccess.Json`** — stores data as JSON files in a directory configured via `ConnectionStrings:Json` in `appsettings.json`. Full support for all repositories, including gems.

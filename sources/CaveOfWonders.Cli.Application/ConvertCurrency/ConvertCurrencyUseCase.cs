@@ -3,11 +3,11 @@ using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using MediatR;
+using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ConvertCurrency;
 
-internal class ConvertCurrencyUseCase : IRequestHandler<ConvertCurrencyRequest, ConvertCurrencyResponse>
+internal class ConvertCurrencyUseCase : IUseCase<ConvertCurrencyRequest, ConvertCurrencyResponse>
 {
 	private readonly IUnitOfWork unitOfWork;
 	private readonly ISystemClock systemClock;
@@ -18,7 +18,7 @@ internal class ConvertCurrencyUseCase : IRequestHandler<ConvertCurrencyRequest, 
 		this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
 	}
 
-	public async Task<ConvertCurrencyResponse> Handle(ConvertCurrencyRequest request, CancellationToken cancellationToken)
+	public async Task<ConvertCurrencyResponse> Execute(ConvertCurrencyRequest request, CancellationToken cancellationToken)
 	{
 		DateOnly dateOfExchangeRate = request.Date ?? systemClock.Today;
 		ExchangeRate exchangeRate = await RetrieveExchangeRate(request.CurrencyPair, dateOfExchangeRate, cancellationToken);

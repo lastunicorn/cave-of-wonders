@@ -1,11 +1,11 @@
 ﻿using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
-using MediatR;
+using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 
-public class PresentWealthUseCase : IRequestHandler<PresentWealthRequest, PresentWealthResponse>
+public class PresentWealthUseCase : IUseCase<PresentWealthRequest, PresentWealthResponse>
 {
 	private readonly ISystemClock systemClock;
 	private readonly IUnitOfWork unitOfWork;
@@ -19,7 +19,7 @@ public class PresentWealthUseCase : IRequestHandler<PresentWealthRequest, Presen
 		currencyConverter = new CurrencyConverter(unitOfWork);
 	}
 
-	public async Task<PresentWealthResponse> Handle(PresentWealthRequest request, CancellationToken cancellationToken)
+	public async Task<PresentWealthResponse> Execute(PresentWealthRequest request, CancellationToken cancellationToken)
 	{
 		DateOnly currentDate = request.Date ?? systemClock.Today;
 		string defaultCurrency = request.Currency ?? "EUR";

@@ -1,13 +1,13 @@
 ﻿using DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots;
 using DustInTheWind.ConsoleTools.Commando;
-using MediatR;
+using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.PotImport;
 
 [NamedCommand("snapshot-import", Description = "Imports pot snapshots from csv exported files of the sheets of my ods file.")]
 internal class PotImportCommand : IConsoleCommand<PotImportViewModel>
 {
-	private readonly IMediator mediator;
+	private readonly RequestBus requestBus;
 
 	[NamedParameter("source-file", ShortName = 'f', Description = "The full path of the xlsx file.")]
 	public string SourceFilePath { get; set; }
@@ -18,9 +18,9 @@ internal class PotImportCommand : IConsoleCommand<PotImportViewModel>
 	[NamedParameter("overwrite", ShortName = 'x', IsMandatory = false, Description = "If specified, the entire pot will be cleared before importing the snapshots.")]
 	public bool Overwrite { get; set; }
 
-	public PotImportCommand(IMediator mediator)
+	public PotImportCommand(RequestBus requestBus)
 	{
-		this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+		this.requestBus = requestBus ?? throw new ArgumentNullException(nameof(requestBus));
 	}
 
 	public async Task<PotImportViewModel> Execute()
@@ -32,7 +32,7 @@ internal class PotImportCommand : IConsoleCommand<PotImportViewModel>
 			Overwrite = Overwrite
 		};
 
-		ImportPotSnapshotsResponse response = await mediator.Send(request);
+		ImportPotSnapshotsResponse response = await requestBus.SendAsync<ImportPotSnapshotsRequest, ImportPotSnapshotsResponse>(request);
 
 		return new PotImportViewModel
 		{

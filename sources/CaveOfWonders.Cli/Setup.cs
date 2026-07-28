@@ -29,6 +29,7 @@ using DustInTheWind.CaveOfWonders.Ports.PeerBerryAccess;
 using DustInTheWind.CaveOfWonders.Ports.QuanloopAccess;
 using DustInTheWind.CaveOfWonders.Ports.SpreadsheetAccess;
 using DustInTheWind.CaveOfWonders.Ports.UserAccess;
+using DustInTheWind.RequestR.Extensions.Microsoft.DependencyInjection;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -63,9 +64,9 @@ internal static class DependenciesSetup
 			CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 		}
 
-		// Register MediatR
-		serviceCollection.AddMediatR(config =>
-			config.RegisterServicesFromAssembly(typeof(PresentWealthRequest).Assembly));
+		// Register RequestR
+		serviceCollection.AddUseCaseEngine(options =>
+			options.AddFromAssemblyContaining<PresentWealthRequest>());
 
 		// Configure Database
 		string databaseType = configuration.GetSection("DatabaseType").Value?.ToLowerInvariant();

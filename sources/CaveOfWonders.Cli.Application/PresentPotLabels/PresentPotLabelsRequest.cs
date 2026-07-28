@@ -1,9 +1,8 @@
 using DustInTheWind.CaveOfWonders.DataTypes;
-using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPotLabels;
 
-public class PresentPotLabelsRequest : IRequest<PresentPotLabelsResponse>
+public class PresentPotLabelsRequest
 {
 	public PotFlexId PotFlexId { get; set; }
 

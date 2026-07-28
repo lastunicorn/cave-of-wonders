@@ -1,13 +1,13 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPotSnapshots;
 using DustInTheWind.ConsoleTools.Commando;
-using MediatR;
+using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Snapshot;
 
 [NamedCommand("snapshot", Description = "Display the list of snapshots for a specific pot.")]
 internal class SnapshotCommand : IConsoleCommand<SnapshotViewModel>
 {
-	private readonly IMediator mediator;
+	private readonly RequestBus requestBus;
 
 	[AnonymousParameter(DisplayName = "Pot Identifier", Order = 1, IsMandatory = false, Description = "Name or id of the pot. Partial id is accepted.")]
 	public string PotIdentifier { get; set; }
@@ -21,9 +21,9 @@ internal class SnapshotCommand : IConsoleCommand<SnapshotViewModel>
 	[NamedParameter("end-date", IsMandatory = false, Description = "The end date for which to display the snapshots.")]
 	public DateOnly? EndDate { get; set; }
 
-	public SnapshotCommand(IMediator mediator)
+	public SnapshotCommand(RequestBus requestBus)
 	{
-		this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+		this.requestBus = requestBus ?? throw new ArgumentNullException(nameof(requestBus));
 	}
 
 	public async Task<SnapshotViewModel> Execute()
@@ -35,7 +35,7 @@ internal class SnapshotCommand : IConsoleCommand<SnapshotViewModel>
 			EndDate = EndDate
 		};
 
-		PresentPotSnapshotsResponse response = await mediator.Send(request);
+		PresentPotSnapshotsResponse response = await requestBus.SendAsync<PresentPotSnapshotsRequest, PresentPotSnapshotsResponse>(request);
 
 		return new SnapshotViewModel
 		{

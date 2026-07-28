@@ -39,7 +39,7 @@ public class ConvertUseCase_NoDateProvidedTests
 
 		try
 		{
-			_ = await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
+			_ = await convertCurrencyUseCase.Execute(convertCurrencyRequest, CancellationToken.None);
 		}
 		catch { }
 
@@ -61,7 +61,7 @@ public class ConvertUseCase_NoDateProvidedTests
 
 		try
 		{
-			_ = await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
+			_ = await convertCurrencyUseCase.Execute(convertCurrencyRequest, CancellationToken.None);
 		}
 		catch { }
 
@@ -88,7 +88,7 @@ public class ConvertUseCase_NoDateProvidedTests
 			CurrencyPair = new CurrencyPair("EURRON")
 		};
 
-		Func<Task> action = async () => await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
+		Func<Task> action = async () => await convertCurrencyUseCase.Execute(convertCurrencyRequest, CancellationToken.None);
 
 		await action.Should().ThrowAsync<ExchangeRateNotFoundException>();
 	}
@@ -115,7 +115,7 @@ public class ConvertUseCase_NoDateProvidedTests
 			CurrencyPair = new CurrencyPair("EURRON")
 		};
 
-		ConvertCurrencyResponse response = await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
+		ConvertCurrencyResponse response = await convertCurrencyUseCase.Execute(convertCurrencyRequest, CancellationToken.None);
 
 		response.InitialValue.Should().Be(102);
 		response.ConvertedValue.Should().Be(204);
@@ -149,7 +149,7 @@ public class ConvertUseCase_NoDateProvidedTests
 			CurrencyPair = new CurrencyPair("EURRON")
 		};
 
-		ConvertCurrencyResponse response = await convertCurrencyUseCase.Handle(convertCurrencyRequest, CancellationToken.None);
+		ConvertCurrencyResponse response = await convertCurrencyUseCase.Execute(convertCurrencyRequest, CancellationToken.None);
 
 		response.InitialValue.Should().Be(102);
 		response.ConvertedValue.Should().Be(204);

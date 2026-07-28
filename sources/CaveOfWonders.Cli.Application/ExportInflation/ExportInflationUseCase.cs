@@ -2,11 +2,11 @@
 using DustInTheWind.CaveOfWonders.Domain.Inflation;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.FileAccess;
-using MediatR;
+using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ExportInflation;
 
-internal class ExportInflationUseCase : IRequestHandler<ExportInflationRequest>
+internal class ExportInflationUseCase : IUseCase<ExportInflationRequest>
 {
     private readonly IUnitOfWork unitOfWork;
     private readonly IFileSystem fileSystem;
@@ -17,7 +17,7 @@ internal class ExportInflationUseCase : IRequestHandler<ExportInflationRequest>
         this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
     }
 
-    public async Task Handle(ExportInflationRequest request, CancellationToken cancellationToken)
+    public async Task Execute(ExportInflationRequest request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(request.OutputPath.Trim()))
             throw new OutputPathNotProvidedException();

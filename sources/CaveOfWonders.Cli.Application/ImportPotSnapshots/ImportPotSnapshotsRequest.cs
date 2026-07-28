@@ -1,8 +1,6 @@
-﻿using MediatR;
+﻿namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots;
 
-namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportPotSnapshots;
-
-public class ImportPotSnapshotsRequest : IRequest<ImportPotSnapshotsResponse>
+public class ImportPotSnapshotsRequest
 {
 	public string SourceFilePath { get; set; }
 
