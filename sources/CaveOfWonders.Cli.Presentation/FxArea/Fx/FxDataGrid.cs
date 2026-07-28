@@ -23,68 +23,68 @@ namespace DustInTheWind.CaveOfWonders.Cli.Presentation.FxArea.Fx;
 
 internal class FxDataGrid : DataGrid
 {
-    private readonly List<CurrencyPair> currencyPairs = [];
+	private readonly List<CurrencyPair> currencyPairs = [];
 
-    public FxDataGrid(PresentExchangeRateResponse response)
-    {
-        Title = "Exchange Rates";
-        TitleRow.BackgroundColor = ConsoleColor.Gray;
-        TitleRow.ForegroundColor = ConsoleColor.Black;
-        BorderTemplate = BorderTemplate.SingleLineBorderTemplate;
+	public FxDataGrid(PresentExchangeRateResponse response)
+	{
+		Title = "Exchange Rates";
+		TitleRow.BackgroundColor = ConsoleColor.Gray;
+		TitleRow.ForegroundColor = ConsoleColor.Black;
+		BorderTemplate = BorderTemplate.SingleLineBorderTemplate;
 
-        Columns.Add("Date");
+		Columns.Add("Date");
 
-        AddRows(response);
-    }
+		AddRows(response);
+	}
 
-    private void AddRows(PresentExchangeRateResponse response)
-    {
-        foreach (DailyExchangeRates dailyExchangeRates in response.DailyExchangeRates)
-        {
-            ContentRow row = CreateRow(dailyExchangeRates);
-            Rows.Add(row);
-        }
-    }
+	private void AddRows(PresentExchangeRateResponse response)
+	{
+		foreach (DailyExchangeRates dailyExchangeRates in response.DailyExchangeRates)
+		{
+			ContentRow row = CreateRow(dailyExchangeRates);
+			Rows.Add(row);
+		}
+	}
 
-    private ContentRow CreateRow(DailyExchangeRates dailyExchangeRates)
-    {
-        ContentRow row = new();
+	private ContentRow CreateRow(DailyExchangeRates dailyExchangeRates)
+	{
+		ContentRow row = new();
 
-        string date = dailyExchangeRates.Date.ToString("d", CultureInfo.CurrentCulture);
-        row.AddCell(date);
+		string date = dailyExchangeRates.Date.ToString("d", CultureInfo.CurrentCulture);
+		row.AddCell(date);
 
-        Dictionary<CurrencyPair, ContentCell> cellsByCurrencyPairs = dailyExchangeRates.ExchangeRates
-            .ToDictionary(
-                x => x.CurrencyPair,
-                x => new ContentCell(x.Value.ToString(CultureInfo.CurrentCulture)));
+		Dictionary<CurrencyPair, ContentCell> cellsByCurrencyPairs = dailyExchangeRates.ExchangeRates
+			.ToDictionary(
+				x => x.CurrencyPair,
+				x => new ContentCell(x.Value.ToString(CultureInfo.CurrentCulture)));
 
-        foreach (CurrencyPair currencyPair in currencyPairs)
-        {
-            bool exists = cellsByCurrencyPairs.TryGetValue(currencyPair, out ContentCell cell);
+		foreach (CurrencyPair currencyPair in currencyPairs)
+		{
+			bool exists = cellsByCurrencyPairs.TryGetValue(currencyPair, out ContentCell cell);
 
-            if (exists)
-            {
-                row.AddCell(cell);
-                cellsByCurrencyPairs.Remove(currencyPair);
-            }
-            else
-            {
-                row.AddCell(string.Empty);
-            }
-        }
+			if (exists)
+			{
+				row.AddCell(cell);
+				cellsByCurrencyPairs.Remove(currencyPair);
+			}
+			else
+			{
+				row.AddCell(string.Empty);
+			}
+		}
 
-        foreach (KeyValuePair<CurrencyPair, ContentCell> pair in cellsByCurrencyPairs)
-        {
-            AddCurrencyColumn(pair.Key);
-            row.AddCell(pair.Value);
-        }
+		foreach (KeyValuePair<CurrencyPair, ContentCell> pair in cellsByCurrencyPairs)
+		{
+			AddCurrencyColumn(pair.Key);
+			row.AddCell(pair.Value);
+		}
 
-        return row;
-    }
+		return row;
+	}
 
-    private void AddCurrencyColumn(CurrencyPair currencyPair)
-    {
-        Columns.Add(currencyPair);
-        currencyPairs.Add(currencyPair);
-    }
+	private void AddCurrencyColumn(CurrencyPair currencyPair)
+	{
+		Columns.Add(currencyPair);
+		currencyPairs.Add(currencyPair);
+	}
 }

@@ -7,25 +7,25 @@ namespace DustInTheWind.CaveOfWonders.Cli.Presentation.AppArea.About;
 [NamedCommand("about", Description = "Displays information about the application.")]
 internal class AboutCommand : IConsoleCommand<AboutViewModel>
 {
-    private readonly RequestBus requestBus;
+	private readonly RequestBus requestBus;
 
-    public AboutCommand(RequestBus requestBus)
-    {
-        this.requestBus = requestBus ?? throw new ArgumentNullException(nameof(requestBus));
-    }
+	public AboutCommand(RequestBus requestBus)
+	{
+		this.requestBus = requestBus ?? throw new ArgumentNullException(nameof(requestBus));
+	}
 
-    public async Task<AboutViewModel> Execute()
-    {
-        AboutRequest request = new();
-        AboutResponse response = await requestBus.SendAsync<AboutRequest, AboutResponse>(request);
+	public async Task<AboutViewModel> Execute()
+	{
+		AboutRequest request = new();
+		AboutResponse response = await requestBus.SendAsync<AboutRequest, AboutResponse>(request);
 
-        return new AboutViewModel
-        {
-            ApplicationName = response.ApplicationName,
-            Version = response.Version,
-            Author = response.Author,
-            Description = response.Description,
-            DatabaseLocation = response.DatabaseLocation
-        };
-    }
+		return new AboutViewModel
+		{
+			ApplicationName = response.ApplicationName,
+			Version = response.Version,
+			Author = response.Author,
+			Description = response.Description,
+			DatabaseLocation = response.DatabaseLocation
+		};
+	}
 }

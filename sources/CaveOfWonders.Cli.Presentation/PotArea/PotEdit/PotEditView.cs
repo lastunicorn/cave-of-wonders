@@ -8,7 +8,7 @@ internal class PotEditView : ViewBase<PotEditViewModel>
 	public override void Display(PotEditViewModel viewModel)
 	{
 		bool anyUpdated = viewModel.NameUpdated || viewModel.DescriptionUpdated || viewModel.CurrencyUpdated ||
-		                  viewModel.StartDateUpdated || viewModel.EndDateUpdated;
+			viewModel.StartDateUpdated || viewModel.EndDateUpdated;
 
 		if (!anyUpdated)
 		{

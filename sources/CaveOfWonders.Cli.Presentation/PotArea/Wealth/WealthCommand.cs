@@ -8,39 +8,39 @@ namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Wealth;
 [NamedCommand("wealth", Description = "Display an overview of the entire cave (the wealth).")]
 internal class WealthCommand : IConsoleCommand<WealthViewModel>
 {
-    private readonly RequestBus requestBus;
+	private readonly RequestBus requestBus;
 
-    [NamedParameter("date", ShortName = 'd', IsMandatory = false, Description = "The date for which to display the state of the cave. Default value = today")]
-    public DateOnly? Date { get; set; }
+	[NamedParameter("date", ShortName = 'd', IsMandatory = false, Description = "The date for which to display the state of the cave. Default value = today")]
+	public DateOnly? Date { get; set; }
 
-    [NamedParameter("currency", ShortName = 'c', IsMandatory = false, Description = "The currency for which to display the state of the cave. Default value = EUR")]
-    public string Currency { get; set; }
+	[NamedParameter("currency", ShortName = 'c', IsMandatory = false, Description = "The currency for which to display the state of the cave. Default value = EUR")]
+	public string Currency { get; set; }
 
-    [NamedParameter("all", ShortName = 'a', IsMandatory = false, Description = "Display all pots, including the inactive ones. Default = false.")]
-    public bool IncludeInactivePots { get; set; }
+	[NamedParameter("all", ShortName = 'a', IsMandatory = false, Description = "Display all pots, including the inactive ones. Default = false.")]
+	public bool IncludeInactivePots { get; set; }
 
-    [NamedParameter("culture", ShortName = 'u', IsMandatory = false, Description = "The culture info used for displaying the data.")]
-    public CultureInfo Culture { get; set; }
+	[NamedParameter("culture", ShortName = 'u', IsMandatory = false, Description = "The culture info used for displaying the data.")]
+	public CultureInfo Culture { get; set; }
 
-    public WealthCommand(RequestBus requestBus)
-    {
-        this.requestBus = requestBus ?? throw new ArgumentNullException(nameof(requestBus));
-    }
+	public WealthCommand(RequestBus requestBus)
+	{
+		this.requestBus = requestBus ?? throw new ArgumentNullException(nameof(requestBus));
+	}
 
-    public async Task<WealthViewModel> Execute()
-    {
-        PresentWealthRequest request = new()
-        {
-            Date = Date,
-            Currency = Currency,
-            IncludeInactive = IncludeInactivePots
-        };
+	public async Task<WealthViewModel> Execute()
+	{
+		PresentWealthRequest request = new()
+		{
+			Date = Date,
+			Currency = Currency,
+			IncludeInactive = IncludeInactivePots
+		};
 
-        PresentWealthResponse response = await requestBus.SendAsync<PresentWealthRequest, PresentWealthResponse>(request);
+		PresentWealthResponse response = await requestBus.SendAsync<PresentWealthRequest, PresentWealthResponse>(request);
 
-        return new WealthViewModel(response)
-        {
-            Culture = Culture,
-        };
-    }
+		return new WealthViewModel(response)
+		{
+			Culture = Culture,
+		};
+	}
 }

@@ -26,7 +26,7 @@ internal class GemImportView : IView<GemImportViewModel>
 			Title = "Import Overview",
 			Footer = new[]
 			{
-				$"Files: {viewModel.FileImportResults?.Count.ToString("N0") ?? "0"}", 
+				$"Files: {viewModel.FileImportResults?.Count.ToString("N0") ?? "0"}",
 				$"Total Gems: {viewModel.TotalGemCount:N0}"
 			}
 		};
