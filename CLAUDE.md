@@ -101,3 +101,7 @@ Giving each phase only `TSut` or only `TBackDoor` (never both) is what compiler-
 ## Namespace root
 
 All namespaces are rooted at `DustInTheWind.CaveOfWonders.*`. The CLI binary assembly name is `cave`. The base exception class for use-case errors is `CaveOfWandersException` in `Cli.Application` (note: intentional "Wanders" spelling, matching the Mintos adapter namespace `DustInTheWind.CaveOfWanders.*` — do not correct either).
+
+## Markdown formatting
+
+In Markdown files (`.md`), do not hard-wrap paragraphs to a fixed column width. Write each paragraph as a single line and let the viewer application wrap it. This applies to prose paragraphs; code blocks, tables, and lists are unaffected.
