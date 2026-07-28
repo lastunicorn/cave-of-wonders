@@ -2,17 +2,17 @@
 
 public interface IUnitOfWork
 {
-	public IPotRepository PotRepository { get; }
+	IPotRepository PotRepository { get; }
 
-	public IPotSnapshotRepository PotSnapshotRepository { get; }
+	IPotSnapshotRepository PotSnapshotRepository { get; }
 
-	public IExchangeRateRepository ExchangeRateRepository { get; }
+	IExchangeRateRepository ExchangeRateRepository { get; }
 
-	public ICpiRepository CpiRepository { get; }
+	ICpiRepository CpiRepository { get; }
 
 	IAverageWageRepository AverageWageRepository { get; }
 
 	IGemRepository GemRepository { get; }
 
-	public Task SaveChangesAsync(CancellationToken cancellationToken = default);
+	Task SaveChangesAsync(CancellationToken cancellationToken = default);
 }

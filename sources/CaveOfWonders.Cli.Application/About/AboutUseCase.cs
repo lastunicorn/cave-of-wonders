@@ -1,10 +1,18 @@
 using System.Reflection;
+using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using MediatR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.About;
 
 internal class AboutUseCase : IRequestHandler<AboutRequest, AboutResponse>
 {
+    private readonly IDatabaseConfiguration databaseConfiguration;
+
+    public AboutUseCase(IDatabaseConfiguration databaseConfiguration)
+    {
+        this.databaseConfiguration = databaseConfiguration ?? throw new ArgumentNullException(nameof(databaseConfiguration));
+    }
+
     public Task<AboutResponse> Handle(AboutRequest request, CancellationToken cancellationToken)
     {
         Assembly assembly = typeof(AboutUseCase).Assembly;
@@ -19,7 +27,8 @@ internal class AboutUseCase : IRequestHandler<AboutRequest, AboutResponse>
             ApplicationName = applicationName,
             Version = version,
             Author = author,
-            Description = description
+            Description = description,
+            DatabaseLocation = databaseConfiguration.ConnectionString
         };
 
         return Task.FromResult(response);

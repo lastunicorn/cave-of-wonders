@@ -24,7 +24,8 @@ internal class AboutCommand : IConsoleCommand<AboutViewModel>
             ApplicationName = response.ApplicationName,
             Version = response.Version,
             Author = response.Author,
-            Description = response.Description
+            Description = response.Description,
+            DatabaseLocation = response.DatabaseLocation
         };
     }
 }

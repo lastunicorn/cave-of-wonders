@@ -9,4 +9,6 @@ public class AboutResponse
     public string Author { get; set; }
 
     public string Description { get; set; }
+
+    public string DatabaseLocation { get; set; }
 }

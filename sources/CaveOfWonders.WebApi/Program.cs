@@ -72,6 +72,11 @@ internal static class Program
             string connectionString = builder.Configuration.GetValue<string>("Database:Path");
             return new Database(connectionString);
         });
+        builder.Services.AddSingleton<IDatabaseConfiguration>(sp =>
+        {
+            string connectionString = builder.Configuration.GetValue<string>("Database:Path");
+            return new DatabaseConfiguration(connectionString);
+        });
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddSingleton<ISystemClock, SystemClock>();
         builder.Services.AddSingleton<IBnrService, BnrService>();

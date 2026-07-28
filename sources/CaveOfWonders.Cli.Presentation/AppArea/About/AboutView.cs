@@ -12,5 +12,6 @@ internal class AboutView : IView<AboutViewModel>
         Console.WriteLine();
         CustomConsole.WriteLine($"Version: {viewModel.Version}");
         CustomConsole.WriteLine($"Author: {viewModel.Author}");
+        CustomConsole.WriteLine($"Database: {viewModel.DatabaseLocation}");
     }
 }

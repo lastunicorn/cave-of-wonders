@@ -145,6 +145,14 @@ internal static class DependenciesSetup
 				.UseModel(CaveOfWondersDbContextModel.Instance);
 		});
 
+		serviceCollection.AddSingleton<IDatabaseConfiguration>(services =>
+		{
+			IConfiguration configuration = services.GetRequiredService<IConfiguration>();
+			string connectionString = new CaveOfWondersConnectionString(configuration.GetConnectionString("SQlite"));
+
+			return new DatabaseConfiguration(connectionString);
+		});
+
 		serviceCollection.AddScoped<IUnitOfWork>(services =>
 		{
 			return Measure
@@ -185,6 +193,14 @@ internal static class DependenciesSetup
 				.Response();
 		});
 
+		serviceCollection.AddSingleton<IDatabaseConfiguration>(services =>
+		{
+			IConfiguration configuration = services.GetRequiredService<IConfiguration>();
+			string connectionString = new CaveOfWondersConnectionString(configuration.GetConnectionString("LiteDb"));
+
+			return new DatabaseConfiguration(connectionString);
+		});
+
 		serviceCollection.AddScoped<IUnitOfWork, LiteDbUnitOfWork>();
 	}
 
@@ -202,6 +218,14 @@ internal static class DependenciesSetup
 				})
 				.DisplayToConsole()
 				.Response();
+		});
+
+		serviceCollection.AddSingleton<IDatabaseConfiguration>(services =>
+		{
+			IConfiguration configuration = services.GetRequiredService<IConfiguration>();
+			string connectionString = new CaveOfWondersConnectionString(configuration.GetConnectionString("Json"));
+
+			return new DatabaseConfiguration(connectionString);
 		});
 
 		serviceCollection.AddScoped<IUnitOfWork, JsonUnitOfWork>();
