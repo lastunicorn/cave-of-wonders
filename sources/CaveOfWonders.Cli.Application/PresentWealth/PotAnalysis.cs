@@ -27,7 +27,7 @@ internal class PotAnalysis
 		//		if (SnapshotSelectionMode == Closest) => find the closest snapshot(last or next); if none exist, return null
 		//		if (SnapshotSelectionMode == LastAvailableAllowNext) => find the last snapshot; if none exist, find the next snapshot; if none exist, return null
 		//		if (SnapshotSelectionMode == NextAvailableAllowLast) => find the next snapshot; if none exist, find the last snapshot; if none exist, return null
-		PotSnapshot snapshot = await SelectSnapshot(cancellationToken);
+		PotSnapshot snapshot = await RetrieveSnapshot(cancellationToken);
 
 		// 2. Get gems
 		//		If base date == null =>
@@ -41,28 +41,28 @@ internal class PotAnalysis
 		//			sign = -
 		//		If base date == today =>
 		//			get no gems
-		IEnumerable<Gem> gems = null;
-		
+		List<Gem> gems = await RetrieveGems(snapshot, cancellationToken);
+
 		// 3. Calculate value
 		//		value = (snapshot?.value ?? 0) + (sign * gem.value)
 		//		gem.value is calculated like this:
 		//			positive value if gem type == deposit, gain, bonus
 		//			negative value if gem type == withdrawal, fee, tax
 		//			for unknown gem type => warning
-		
+
 		decimal value = snapshot?.Value ?? 0;
-		
+
 		foreach (Gem gem in gems)
 		{
 			// ...
 		}
-		
+
 		// 4. Calculate normalized value (using currency exchange rates)
 		//		Decide the chain of currency exchange rates to use.
 		//		TBD
 	}
 
-	private async Task<PotSnapshot> SelectSnapshot(CancellationToken cancellationToken)
+	private async Task<PotSnapshot> RetrieveSnapshot(CancellationToken cancellationToken)
 	{
 		return SnapshotSelectionMode switch
 		{
@@ -102,6 +102,38 @@ internal class PotAnalysis
 		return daysToLast <= daysToNext
 			? lastSnapshot
 			: nextSnapshot;
+	}
+
+	private async Task<List<Gem>> RetrieveGems(PotSnapshot snapshot, CancellationToken cancellationToken)
+	{
+		DateOnly? baseDate = snapshot?.Date;
+
+		GemFilter filter = new()
+		{
+			PotId = Pot.Id
+		};
+
+		if (baseDate == null)
+		{
+			filter.EndDate = TargetDate.AddDays(-1);
+		}
+		else if (baseDate < TargetDate)
+		{
+			filter.StartDate = baseDate;
+			filter.EndDate = TargetDate;
+		}
+		else if (baseDate > TargetDate)
+		{
+			filter.StartDate = TargetDate;
+			filter.EndDate = baseDate;
+		}
+		else
+		{
+			return [];
+		}
+
+		return await unitOfWork.GemRepository.FindAsync(filter, cancellationToken)
+			.ToListAsync(cancellationToken);
 	}
 
 	// config
