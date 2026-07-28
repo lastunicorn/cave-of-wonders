@@ -1,5 +1,5 @@
-using DustInTheWind.CaveOfWonders.Cli.Application;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentGems;
+using DustInTheWind.CaveOfWonders.DataTypes;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Gem;
 

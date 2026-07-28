@@ -1,3 +1,5 @@
+using DustInTheWind.CaveOfWonders.DataTypes;
+
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentGems;
 
 public class PresentGemsResponse

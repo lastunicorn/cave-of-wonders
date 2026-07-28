@@ -1,6 +1,4 @@
-using DustInTheWind.CaveOfWonders.DataTypes;
-
-namespace DustInTheWind.CaveOfWonders.Cli.Application;
+namespace DustInTheWind.CaveOfWonders.DataTypes;
 
 public record class Amount
 {
