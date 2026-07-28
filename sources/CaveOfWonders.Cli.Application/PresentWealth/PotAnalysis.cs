@@ -1,21 +1,33 @@
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.CaveOfWonders.Ports.LogAccess;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 
 internal class PotAnalysis
 {
 	private readonly IUnitOfWork unitOfWork;
+	private readonly ILog log;
+	private readonly CurrencyConverter currencyConverter;
 
 	public Pot Pot { get; set; }
 
 	public DateOnly TargetDate { get; set; }
 
+	public Currency TargetCurrency { get; set; }
+
 	public SnapshotSelectionMode SnapshotSelectionMode { get; set; }
 
-	public PotAnalysis(IUnitOfWork unitOfWork)
+	public DatedAmount Value { get; private set; }
+
+	public DatedAmount NormalizedValue { get; private set; }
+
+	public PotAnalysis(IUnitOfWork unitOfWork, ILog log, CurrencyConverter currencyConverter)
 	{
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+		this.log = log ?? throw new ArgumentNullException(nameof(log));
+		this.currencyConverter = currencyConverter ?? throw new ArgumentNullException(nameof(currencyConverter));
 	}
 
 	public async Task ExecuteAsync(CancellationToken cancellationToken)
@@ -50,16 +62,23 @@ internal class PotAnalysis
 		//			negative value if gem type == withdrawal, fee, tax
 		//			for unknown gem type => warning
 
-		decimal value = snapshot?.Value ?? 0;
-
-		foreach (Gem gem in gems)
+		Value = new DatedAmount
 		{
-			// ...
-		}
+			Date = snapshot?.Date ?? TargetDate,
+			Value = snapshot?.Value ?? 0,
+			Currency = Pot.Currency
+		};
+
+		int sign = CalculateSign(snapshot);
+
+		// [bug] The date of the value remains the initial one. It should be changed to be the date of the closest gem to the target date.
+		Value += gems.Sum(x => sign * CalculateGemAmount(x));
 
 		// 4. Calculate normalized value (using currency exchange rates)
-		//		Decide the chain of currency exchange rates to use.
-		//		TBD
+		//		Configuration value needed to control how currency exchange rate is chosen (closest, next, previous, etc.)
+		NormalizedValue = TargetCurrency != Value.Currency
+			? await currencyConverter.Convert(Value, TargetCurrency, TargetDate, cancellationToken)
+			: Value;
 	}
 
 	private async Task<PotSnapshot> RetrieveSnapshot(CancellationToken cancellationToken)
@@ -136,7 +155,32 @@ internal class PotAnalysis
 			.ToListAsync(cancellationToken);
 	}
 
-	// config
-	// - SnapshotSelectionMode: [LastAvailable, NextAvailable, Closest, LastAvailableAllowNext, NextAvailableAllowLast]
-	// - CurrencySelectionMode: [LastAvailable, NextAvailable, Closest, LastAvailableAllowNext, NextAvailableAllowLast]
+	private int CalculateSign(PotSnapshot snapshot)
+	{
+		DateOnly? baseDate = snapshot?.Date;
+
+		return baseDate > TargetDate
+			? -1
+			: 1;
+	}
+
+	private decimal CalculateGemAmount(Gem gem)
+	{
+		switch (gem.Category)
+		{
+			case GemCategory.Deposit:
+			case GemCategory.Gain:
+			case GemCategory.Bonus:
+				return gem.Amount;
+
+			case GemCategory.Withdrawal:
+			case GemCategory.Fee:
+			case GemCategory.Tax:
+				return -gem.Amount;
+
+			default:
+				log.WriteInfo($"Gem with unknown category '{gem.Category}' was ignored. Pot = '{Pot.Name}' ({Pot.Id:D}); Date = {gem.Date:yyyy-MM-dd}; Amount = {gem.Amount}");
+				return 0;
+		}
+	}
 }
