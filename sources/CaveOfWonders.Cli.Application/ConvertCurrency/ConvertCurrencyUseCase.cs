@@ -46,7 +46,7 @@ internal class ConvertCurrencyUseCase : IUseCase<ConvertCurrencyRequest, Convert
 			ConversionAbility.None => throw new ExchangeRateUnusableException(exchangeRate),
 			ConversionAbility.ConvertDirect => exchangeRate,
 			ConversionAbility.ConvertReverse => exchangeRate.Invert(),
-			_ => throw new ArgumentOutOfRangeException(),
+			_ => throw new ArgumentOutOfRangeException()
 		};
 	}
 }
