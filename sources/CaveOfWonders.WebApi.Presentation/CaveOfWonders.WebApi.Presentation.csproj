@@ -7,9 +7,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<!-- The MVC/controller types come from the ASP.NET Core shared framework, not from a package. -->
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="DustInTheWind.ErrorFlow.AspNetCore" Version="1.2.2" />
 		<PackageReference Include="RequestR" Version="2.2.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
 	</ItemGroup>
 
 	<ItemGroup>
