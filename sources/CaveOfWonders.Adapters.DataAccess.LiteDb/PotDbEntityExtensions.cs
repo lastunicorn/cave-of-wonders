@@ -37,6 +37,7 @@ internal static class PotDbEntityExtensions
 			{
 				Date = x.Date,
 				Value = x.Value,
+				IsAutomatic = x.IsAutomatic,
 				Pot = pot
 			})
 			.ToList();

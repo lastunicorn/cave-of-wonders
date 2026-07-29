@@ -35,4 +35,8 @@
 		<InternalsVisibleTo Include="CaveOfWonders.Tests" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Folder Include="Operations\" />
+	</ItemGroup>
+
 </Project>

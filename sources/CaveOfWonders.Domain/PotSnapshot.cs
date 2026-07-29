@@ -8,6 +8,8 @@ public sealed record class PotSnapshot
 
 	public decimal Value { get; init; }
 
+	public bool IsAutomatic { get; init; }
+
 	public Pot Pot { get; set; }
 
 	public bool Equals(PotSnapshot other)
@@ -25,7 +27,7 @@ public sealed record class PotSnapshot
 	private bool PrintMembers(StringBuilder builder)
 	{
 		string potName = Pot?.Name ?? "<null>";
-		builder.Append($"Date = {Date}, Value = {Value}, Pot = {potName}");
+		builder.Append($"Date = {Date}, Value = {Value}, IsAutomatic = {IsAutomatic}, Pot = {potName}");
 
 		return true;
 	}

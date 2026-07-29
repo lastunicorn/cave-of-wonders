@@ -182,6 +182,100 @@ public class AddTests
 
 	[Theory]
 	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task Add_WithIsAutomaticTrue_ShouldPersistFlagAsTrue(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	{
+		await GenericTest.Create(environment)
+			.Arrange(async (backDoor, context) =>
+			{
+				Pot pot = new()
+				{
+					Id = Guid.NewGuid(),
+					Name = "Test Pot",
+					DisplayOrder = 1,
+					StartDate = referenceDate.AddDays(-30),
+					Currency = "USD"
+				};
+
+				await backDoor.SeedPotsAsync([pot]);
+				context.PotId = pot.Id;
+			})
+			.Act((repository, context) =>
+			{
+				Guid potId = context.PotId;
+
+				PotSnapshot snapshot = new()
+				{
+					Date = referenceDate,
+					Value = 150m,
+					IsAutomatic = true,
+					Pot = new Pot
+					{
+						Id = potId
+					}
+				};
+
+				repository.Add(snapshot);
+			})
+			.Assert(async (backDoor, context) =>
+			{
+				Guid potId = context.PotId;
+				List<PotSnapshot> snapshots = await backDoor.GetSnapshotsByPotIdAsync(potId);
+
+				snapshots.Should().HaveCount(1);
+				snapshots[0].IsAutomatic.Should().BeTrue();
+			})
+			.ExecuteAsync();
+	}
+
+	[Theory]
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task Add_WithIsAutomaticFalse_ShouldPersistFlagAsFalse(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	{
+		await GenericTest.Create(environment)
+			.Arrange(async (backDoor, context) =>
+			{
+				Pot pot = new()
+				{
+					Id = Guid.NewGuid(),
+					Name = "Test Pot",
+					DisplayOrder = 1,
+					StartDate = referenceDate.AddDays(-30),
+					Currency = "USD"
+				};
+
+				await backDoor.SeedPotsAsync([pot]);
+				context.PotId = pot.Id;
+			})
+			.Act((repository, context) =>
+			{
+				Guid potId = context.PotId;
+
+				PotSnapshot snapshot = new()
+				{
+					Date = referenceDate,
+					Value = 150m,
+					IsAutomatic = false,
+					Pot = new Pot
+					{
+						Id = potId
+					}
+				};
+
+				repository.Add(snapshot);
+			})
+			.Assert(async (backDoor, context) =>
+			{
+				Guid potId = context.PotId;
+				List<PotSnapshot> snapshots = await backDoor.GetSnapshotsByPotIdAsync(potId);
+
+				snapshots.Should().HaveCount(1);
+				snapshots[0].IsAutomatic.Should().BeFalse();
+			})
+			.ExecuteAsync();
+	}
+
+	[Theory]
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
 	public async Task Add_WithNullSnapshot_ShouldThrowArgumentNullException(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)

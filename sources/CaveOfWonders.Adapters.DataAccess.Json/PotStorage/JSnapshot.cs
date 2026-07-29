@@ -5,4 +5,6 @@ public class JSnapshot
     public DateOnly Date { get; set; }
 
     public decimal Value { get; set; }
+
+    public bool IsAutomatic { get; set; }
 }

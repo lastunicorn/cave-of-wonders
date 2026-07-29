@@ -20,7 +20,7 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.CompiledModels
                 "DustInTheWind.CaveOfWonders.Domain.PotSnapshot",
                 typeof(PotSnapshot),
                 baseEntityType,
-                propertyCount: 4,
+                propertyCount: 5,
                 navigationCount: 1,
                 foreignKeyCount: 1,
                 unnamedIndexCount: 1,
@@ -39,6 +39,13 @@ namespace DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.CompiledModels
                 propertyInfo: typeof(PotSnapshot).GetProperty("Date", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(PotSnapshot).GetField("<Date>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 sentinel: new DateOnly(1, 1, 1));
+
+            var isAutomatic = runtimeEntityType.AddProperty(
+                "IsAutomatic",
+                typeof(bool),
+                propertyInfo: typeof(PotSnapshot).GetProperty("IsAutomatic", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(PotSnapshot).GetField("<IsAutomatic>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                sentinel: false);
 
             var potId = runtimeEntityType.AddProperty(
                 "PotId",

@@ -245,6 +245,67 @@ public class AddRangeTests
 
 	[Theory]
 	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task AddRange_WithMixedIsAutomaticFlags_ShouldPersistFlagForEachSnapshot(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	{
+		await GenericTest.Create(environment)
+			.Arrange(async (backDoor, context) =>
+			{
+				Pot pot = new()
+				{
+					Id = Guid.NewGuid(),
+					Name = "Test Pot",
+					DisplayOrder = 1,
+					StartDate = referenceDate.AddDays(-30),
+					Currency = "USD"
+				};
+
+				await backDoor.SeedPotsAsync([pot]);
+				context.PotId = pot.Id;
+			})
+			.Act((repository, context) =>
+			{
+				Guid potId = context.PotId;
+
+				PotSnapshot[] snapshots =
+				[
+					new PotSnapshot
+					{
+						Date = referenceDate.AddDays(-10),
+						Value = 100m,
+						IsAutomatic = false,
+						Pot = new Pot
+						{
+							Id = potId
+						}
+					},
+					new PotSnapshot
+					{
+						Date = referenceDate,
+						Value = 150m,
+						IsAutomatic = true,
+						Pot = new Pot
+						{
+							Id = potId
+						}
+					}
+				];
+
+				repository.AddRange(snapshots);
+			})
+			.Assert(async (backDoor, context) =>
+			{
+				Guid potId = context.PotId;
+				List<PotSnapshot> snapshots = await backDoor.GetSnapshotsByPotIdAsync(potId);
+
+				snapshots.Should().HaveCount(2);
+				snapshots.Should().ContainSingle(x => x.Date == referenceDate.AddDays(-10) && !x.IsAutomatic);
+				snapshots.Should().ContainSingle(x => x.Date == referenceDate && x.IsAutomatic);
+			})
+			.ExecuteAsync();
+	}
+
+	[Theory]
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
 	public async Task AddRange_WithNullCollection_ShouldThrowArgumentNullException(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
 	{
 		await GenericTest.Create(environment)

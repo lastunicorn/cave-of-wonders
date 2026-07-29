@@ -12,7 +12,8 @@ internal static class PotSnapshotExtensions
 		return new JSnapshot
 		{
 			Date = potSnapshot.Date,
-			Value = potSnapshot.Value
+			Value = potSnapshot.Value,
+			IsAutomatic = potSnapshot.IsAutomatic
 		};
 	}
 }

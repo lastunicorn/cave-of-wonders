@@ -46,7 +46,8 @@ internal class LiteDbTestBackDoor : LiteDbStorageBackDoorBase, ITestBackDoor
 			potDbEntity.Snapshots.AddRange(group.Select(x => new PotSnapshotDbEntity
 			{
 				Date = x.Date,
-				Value = x.Value
+				Value = x.Value,
+				IsAutomatic = x.IsAutomatic
 			}));
 
 			DbContext.Pots.Update(potDbEntity);

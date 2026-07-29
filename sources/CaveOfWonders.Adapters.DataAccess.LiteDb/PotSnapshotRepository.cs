@@ -104,7 +104,8 @@ public class PotSnapshotRepository : IPotSnapshotRepository
 		potDbEntity.Snapshots.Add(new PotSnapshotDbEntity
 		{
 			Date = potSnapshot.Date,
-			Value = potSnapshot.Value
+			Value = potSnapshot.Value,
+			IsAutomatic = potSnapshot.IsAutomatic
 		});
 
 		dbContext.Pots.Update(potDbEntity);
@@ -124,7 +125,8 @@ public class PotSnapshotRepository : IPotSnapshotRepository
 			potDbEntity.Snapshots.AddRange(group.Select(x => new PotSnapshotDbEntity
 			{
 				Date = x.Date,
-				Value = x.Value
+				Value = x.Value,
+				IsAutomatic = x.IsAutomatic
 			}));
 
 			dbContext.Pots.Update(potDbEntity);
