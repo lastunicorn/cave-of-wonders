@@ -5,6 +5,14 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AssemblyName>DustInTheWind.$(MSBuildProjectName)</AssemblyName>
 		<RootNamespace>DustInTheWind.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+
+		<IsPackable>false</IsPackable>
+		<!--
+			This is a helper library for the test projects, not a test project itself. The xunit package
+			sets IsTestProject=true, which makes "dotnet test" on the solution try to run it as a test
+			assembly and abort the whole run (it has no test runner/host). Override it back to false.
+		-->
+		<IsTestProject>false</IsTestProject>
 	</PropertyGroup>
 
 	<ItemGroup>
