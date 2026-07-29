@@ -82,7 +82,7 @@ Rules:
 
 ## Async and IAsyncEnumerable
 
-Use the standard extension methods from the `System.Linq.AsyncEnumerable` NuGet package (version `10.0.0`, already referenced in this project's csproj). `System.Linq` is auto-imported via `ImplicitUsings`, so no extra `using` directive is needed:
+Use the standard `System.Linq.AsyncEnumerable` extension methods. They are part of the .NET 10 shared framework, so no NuGet package reference is needed (the explicit `System.Linq.AsyncEnumerable` `PackageReference` was removed — NuGet flags it as redundant with `NU1510`). `System.Linq` is auto-imported via `ImplicitUsings`, so no extra `using` directive is needed either:
 
 ```csharp
 // Materialise a full sequence:
