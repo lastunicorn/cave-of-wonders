@@ -32,47 +32,35 @@ internal class PotAnalysis
 
 	public async Task ExecuteAsync(CancellationToken cancellationToken)
 	{
-		// 1. Select the snapshot
-		//		The selected snapshot will provide the base value. Later, gems will ge taken into account. The date of the selected snapshot will be called base date from now on.
-		//		if (SnapshotSelectionMode == LastAvailable) => find the last snapshot; if none exist, return null
-		//		if (SnapshotSelectionMode == NextAvailable) => find the next snapshot; if none exist, return null
-		//		if (SnapshotSelectionMode == Closest) => find the closest snapshot(last or next); if none exist, return null
-		//		if (SnapshotSelectionMode == LastAvailableAllowNext) => find the last snapshot; if none exist, find the next snapshot; if none exist, return null
-		//		if (SnapshotSelectionMode == NextAvailableAllowLast) => find the next snapshot; if none exist, find the last snapshot; if none exist, return null
+		// The value of the pot at a given date is calculated starting from a snapshot (usually the closest snapshot)
+		// and adjusting the value by consideting the gems created from that snapshot until the desired date.
+
 		PotSnapshot snapshot = await RetrieveSnapshot(cancellationToken);
-
-		// 2. Get gems
-		//		If base date == null =>
-		//			get gems earlier than today
-		//			sign = +
-		//		If base date < today =>
-		//			get all gems from base date to today.
-		//			sign = +
-		//		If base date > today =>
-		//			get all gems from today to base date.
-		//			sign = -
-		//		If base date == today =>
-		//			get no gems
-		List<Gem> gems = await RetrieveGems(snapshot, cancellationToken);
-
-		// 3. Calculate value
-		//		value = (snapshot?.value ?? 0) + (sign * gem.value)
-		//		gem.value is calculated like this:
-		//			positive value if gem type == deposit, gain, bonus
-		//			negative value if gem type == withdrawal, fee, tax
-		//			for unknown gem type => warning
-
-		Value = new DatedAmount
-		{
-			Date = snapshot?.Date ?? TargetDate,
-			Value = snapshot?.Value ?? 0,
-			Currency = Pot.Currency
-		};
+		List<Gem> gems = await RetrieveGemsOrderedByDate(snapshot, cancellationToken);
 
 		int sign = CalculateSign(snapshot);
 
-		// [bug] The date of the value remains the initial one. It should be changed to be the date of the closest gem to the target date.
-		Value += gems.Sum(x => sign * CalculateGemAmount(x));
+		DateOnly? baseDate = gems
+			.Select(x => x.Date.ToDateOnly())
+			.Concat(snapshot != null
+				? new[]
+				{
+					snapshot.Date
+				}
+				: Array.Empty<DateOnly>())
+			.OrderBy(x => Math.Abs(x.DayNumber - TargetDate.DayNumber))
+			.FirstOrDefault();
+
+		decimal value = snapshot?.Value ?? 0;
+
+		value += sign * gems.Sum(CalculateGemAmount);
+
+		Value = new DatedAmount
+		{
+			Date = baseDate ?? TargetDate,
+			Value = value,
+			Currency = Pot.Currency
+		};
 
 		// 4. Calculate normalized value (using currency exchange rates)
 		//		Configuration value needed to control how currency exchange rate is chosen (closest, next, previous, etc.)
@@ -123,7 +111,7 @@ internal class PotAnalysis
 			: nextSnapshot;
 	}
 
-	private async Task<List<Gem>> RetrieveGems(PotSnapshot snapshot, CancellationToken cancellationToken)
+	private async Task<List<Gem>> RetrieveGemsOrderedByDate(PotSnapshot snapshot, CancellationToken cancellationToken)
 	{
 		DateOnly? baseDate = snapshot?.Date;
 
@@ -152,6 +140,7 @@ internal class PotAnalysis
 		}
 
 		return await unitOfWork.GemRepository.FindAsync(filter, cancellationToken)
+			.OrderBy(x => x.Date)
 			.ToListAsync(cancellationToken);
 	}
 
@@ -182,5 +171,20 @@ internal class PotAnalysis
 				log.WriteInfo($"Gem with unknown category '{gem.Category}' was ignored. Pot = '{Pot.Name}' ({Pot.Id:D}); Date = {gem.Date:yyyy-MM-dd}; Amount = {gem.Amount}");
 				return 0;
 		}
+	}
+}
+
+internal static class DateTimeExtensions
+{
+	public static DateOnly ToDateOnly(this DateTime dateTime)
+	{
+		return DateOnly.FromDateTime(dateTime);
+	}
+
+	public static DateOnly? ToDateOnly(this DateTime? dateTime)
+	{
+		return dateTime.HasValue
+			? DateOnly.FromDateTime(dateTime.Value)
+			: null;
 	}
 }

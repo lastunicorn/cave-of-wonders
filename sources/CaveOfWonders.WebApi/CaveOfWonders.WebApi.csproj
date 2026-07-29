@@ -8,7 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DustInTheWind.ErrorFlow.AspNetCore" Version="1.1.6" />
+		<PackageReference Include="DustInTheWind.ErrorFlow.AspNetCore" Version="1.2.2" />
 		<PackageReference Include="RequestR.Extensions.Microsoft.DependencyInjection" Version="2.1.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
 	</ItemGroup>

@@ -7,15 +7,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DustInTheWind.ErrorFlow.AspNetCore" Version="1.1.6" />
+		<PackageReference Include="DustInTheWind.ErrorFlow.AspNetCore" Version="1.2.2" />
 		<PackageReference Include="RequestR" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\CaveOfWonders.Cli.Application\CaveOfWonders.Cli.Application.csproj" />
-		<ProjectReference Include="..\CaveOfWonders.DataTypes\CaveOfWonders.DataTypes.csproj" />
-		<ProjectReference Include="..\CaveOfWonders.Infrastructure\CaveOfWonders.Infrastructure.csproj" />
+		<ProjectReference Include="..\CaveOfWonders.Cli.Application\CaveOfWonders.Cli.Application.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.DataTypes\CaveOfWonders.DataTypes.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\CaveOfWonders.Infrastructure\CaveOfWonders.Infrastructure.csproj" PrivateAssets="All" />
 	</ItemGroup>
 
 </Project>
