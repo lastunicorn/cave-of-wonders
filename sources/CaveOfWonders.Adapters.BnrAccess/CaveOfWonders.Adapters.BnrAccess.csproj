@@ -12,7 +12,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DustInTheWind.Bnr.Toolkit" Version="1.2.0" />
+		<PackageReference Include="DustInTheWind.Bnr.Toolkit" Version="1.4.0" />
 	</ItemGroup>
 
 </Project>
