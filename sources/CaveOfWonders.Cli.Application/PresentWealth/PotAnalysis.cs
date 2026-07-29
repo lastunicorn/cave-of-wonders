@@ -1,9 +1,9 @@
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
+using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Infrastructure.Diagnostics;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.LogAccess;
-using System.Diagnostics;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 
@@ -38,17 +38,12 @@ internal class PotAnalysis
 			.Action($"[{Pot?.Name}] Full analysis", async () =>
 			{
 				// The value of the pot at a given date is calculated starting from a snapshot (usually the closest snapshot)
-				// and adjusting the value by consideting the gems created from that snapshot until the desired date.
+				// and adding the gems created from that snapshot until the desired date.
 
 				PotSnapshot snapshot = await RetrieveSnapshot(cancellationToken);
-				List<Gem> gems = await RetrieveGemsOrderedByDate(snapshot, cancellationToken);
-				Value = CalculateValue(snapshot, gems);
-
-				// 4. Calculate normalized value (using currency exchange rates)
-				//		Configuration value needed to control how currency exchange rate is chosen (closest, next, previous, etc.)
-				NormalizedValue = TargetCurrency != Value.Currency
-					? await currencyConverter.Convert(Value, TargetCurrency, TargetDate, cancellationToken)
-					: Value;
+				IAsyncEnumerable<Gem> gems = RetrieveGems(snapshot, cancellationToken);
+				Value = await CalculateValue(snapshot, gems, cancellationToken);
+				NormalizedValue = await CalculateNormalizedValue(cancellationToken);
 			})
 			.DisplayToConsole();
 	}
@@ -95,7 +90,7 @@ internal class PotAnalysis
 			: nextSnapshot;
 	}
 
-	private async Task<List<Gem>> RetrieveGemsOrderedByDate(PotSnapshot snapshot, CancellationToken cancellationToken)
+	private IAsyncEnumerable<Gem> RetrieveGems(PotSnapshot snapshot, CancellationToken cancellationToken)
 	{
 		DateOnly? baseDate = snapshot?.Date;
 
@@ -120,80 +115,48 @@ internal class PotAnalysis
 		}
 		else
 		{
-			return [];
+			return AsyncEnumerable.Empty<Gem>();
 		}
 
-		return await unitOfWork.GemRepository.FindAsync(filter, cancellationToken)
-			.OrderBy(x => x.Date)
-			.ToListAsync(cancellationToken);
+		return unitOfWork.GemRepository.FindAsync(filter, cancellationToken);
 	}
 
-	private DatedAmount CalculateValue(PotSnapshot snapshot, List<Gem> gems)
+	private async Task<DatedAmount> CalculateValue(PotSnapshot snapshot, IAsyncEnumerable<Gem> gems, CancellationToken cancellationToken)
 	{
-		return Measurement<DatedAmount>.Action($"[{Pot?.Name}] Calculate value", () =>
+		return await Measurement
+			.Action($"[{Pot?.Name}] Calculate value", async () =>
 			{
-				int sign = CalculateSign(snapshot);
-
-				DateOnly? baseDate = gems
-					.Select(x => x.Date.ToDateOnly())
-					.Concat(snapshot != null
-						? new[]
-						{
-							snapshot.Date
-						}
-						: Array.Empty<DateOnly>())
-					.OrderBy(x => Math.Abs(x.DayNumber - TargetDate.DayNumber))
-					.FirstOrDefault();
+				int sign = snapshot?.Date > TargetDate
+					? -1
+					: 1;
 
 				decimal value = snapshot?.Value ?? 0;
+				DateOnly? date = snapshot?.Date;
+				int daysToTarget = int.MaxValue;
 
-				value += sign * gems.Sum(CalculateGemAmount);
+				await foreach (Gem gem in gems.WithCancellation(cancellationToken))
+				{
+					value += sign * CalculateGemAmount(gem);
+
+					DateOnly gemDate = gem.Date.ToDateOnly();
+					int gemDaysToTarget = Math.Abs(gemDate.DayNumber - TargetDate.DayNumber);
+
+					if (date == null || gemDaysToTarget < daysToTarget)
+					{
+						date = gemDate;
+						daysToTarget = gemDaysToTarget;
+					}
+				}
 
 				return new DatedAmount
 				{
-					Date = baseDate ?? TargetDate,
+					Date = date ?? TargetDate,
 					Value = value,
 					Currency = Pot.Currency
 				};
 			})
 			.DisplayToConsole()
-			.Result;
-	}
-
-	// private DatedAmount CalculateValue(PotSnapshot snapshot, List<Gem> gems)
-	// {
-	// 	int sign = CalculateSign(snapshot);
-	//
-	// 	DateOnly? baseDate = gems
-	// 		.Select(x => x.Date.ToDateOnly())
-	// 		.Concat(snapshot != null
-	// 			? new[]
-	// 			{
-	// 				snapshot.Date
-	// 			}
-	// 			: Array.Empty<DateOnly>())
-	// 		.OrderBy(x => Math.Abs(x.DayNumber - TargetDate.DayNumber))
-	// 		.FirstOrDefault();
-	//
-	// 	decimal value = snapshot?.Value ?? 0;
-	//
-	// 	value += sign * gems.Sum(CalculateGemAmount);
-	//
-	// 	return new DatedAmount
-	// 	{
-	// 		Date = baseDate ?? TargetDate,
-	// 		Value = value,
-	// 		Currency = Pot.Currency
-	// 	};
-	// }
-
-	private int CalculateSign(PotSnapshot snapshot)
-	{
-		DateOnly? baseDate = snapshot?.Date;
-
-		return baseDate > TargetDate
-			? -1
-			: 1;
+			.Response();
 	}
 
 	private decimal CalculateGemAmount(Gem gem)
@@ -210,24 +173,21 @@ internal class PotAnalysis
 			case GemCategory.Tax:
 				return -gem.Amount;
 
+			case GemCategory.Unknown:
+			case GemCategory.Internal:
 			default:
 				log.WriteInfo($"Gem with unknown category '{gem.Category}' was ignored. Pot = '{Pot.Name}' ({Pot.Id:D}); Date = {gem.Date:yyyy-MM-dd}; Amount = {gem.Amount}");
 				return 0;
 		}
 	}
-}
 
-internal static class DateTimeExtensions
-{
-	public static DateOnly ToDateOnly(this DateTime dateTime)
+	private async Task<DatedAmount> CalculateNormalizedValue(CancellationToken cancellationToken)
 	{
-		return DateOnly.FromDateTime(dateTime);
-	}
+		// Calculate normalized value (using currency exchange rates)
+		//		Configuration value needed to control how currency exchange rate is chosen (closest, next, previous, etc.)
 
-	public static DateOnly? ToDateOnly(this DateTime? dateTime)
-	{
-		return dateTime.HasValue
-			? DateOnly.FromDateTime(dateTime.Value)
-			: null;
+		return TargetCurrency != Value.Currency
+			? await currencyConverter.Convert(Value, TargetCurrency, TargetDate, cancellationToken)
+			: Value;
 	}
 }

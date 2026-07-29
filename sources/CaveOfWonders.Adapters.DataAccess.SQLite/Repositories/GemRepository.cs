@@ -58,8 +58,7 @@ internal class GemRepository : IGemRepository
 	public IAsyncEnumerable<Gem> FindAsync(GemFilter filter, CancellationToken cancellationToken = default)
 	{
 		IQueryable<Gem> query = dbContext.Gems
-			.Include(x => x.Pot)
-			.AsQueryable();
+			.Include(x => x.Pot);
 
 		if (filter.PotId != null)
 			query = query.Where(x => x.Pot.Id == filter.PotId);

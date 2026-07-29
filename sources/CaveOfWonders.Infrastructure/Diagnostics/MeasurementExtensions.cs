@@ -37,6 +37,21 @@ public static class MeasurementExtensions
 		});
 	}
 
+	public static Task<Measurement<TResponse>> DisplayToConsole<TResponse>(this Task<Measurement<TResponse>> task)
+	{
+		return task.ContinueWith(t =>
+		{
+			Measurement<TResponse> measurement = t.Result;
+
+			if (measurement.Title != null)
+				Console.WriteLine($"{measurement.Title}: {FormatDuration(measurement.Time)}.");
+			else
+				Console.WriteLine($"{FormatDuration(measurement.Time)}");
+
+			return measurement;
+		});
+	}
+
 	private static string FormatDuration(TimeSpan time)
 	{
 		if (time.TotalMilliseconds < 1000)

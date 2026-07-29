@@ -35,7 +35,7 @@ internal class ImportGemsUseCase : IUseCase<ImportGemsRequest, ImportGemsRespons
 
 	public Task<ImportGemsResponse> Execute(ImportGemsRequest request, CancellationToken cancellationToken)
 	{
-		return Measurement<ImportGemsResponse>
+		return Measurement
 			.Action(async () =>
 			{
 				Pot pot = await FindPot(request.PotFlexId, cancellationToken);

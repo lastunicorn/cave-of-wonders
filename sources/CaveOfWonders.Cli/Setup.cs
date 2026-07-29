@@ -156,10 +156,10 @@ internal static class DependenciesSetup
 
 		serviceCollection.AddScoped<IUnitOfWork>(services =>
 		{
-			return Measurement<SQLiteUnitOfWork>
+			return Measurement
 				.Action("Creating UnitOfWork", () =>
 				{
-					CaveOfWondersDbContext dbContext = Measurement<CaveOfWondersDbContext>
+					CaveOfWondersDbContext dbContext = Measurement
 						.Action("  Resolving DbContext", () =>
 						{
 							return services.GetRequiredService<CaveOfWondersDbContext>();
@@ -182,7 +182,7 @@ internal static class DependenciesSetup
 	{
 		serviceCollection.AddScoped(services =>
 		{
-			return Measurement<LiteDbContext>
+			return Measurement
 				.Action("Creating UnitOfWork", () =>
 				{
 					IConfiguration configuration = services.GetRequiredService<IConfiguration>();
@@ -209,7 +209,7 @@ internal static class DependenciesSetup
 	{
 		serviceCollection.AddScoped(services =>
 		{
-			return Measurement<Database>
+			return Measurement
 				.Action("Creating UnitOfWork", () =>
 				{
 					IConfiguration configuration = services.GetRequiredService<IConfiguration>();
