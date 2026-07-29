@@ -14,4 +14,14 @@ public class UserInterface : IUserInterface
 
 		return question.ReadAnswer() == YesNoAnswer.Yes;
 	}
+
+	public bool ConfirmSnapshotsDelete(string potName, int snapshotCount)
+	{
+		YesNoQuestion question = new($"Are you sure you want to delete all {snapshotCount} snapshots of pot '{potName}'?")
+		{
+			DefaultAnswer = YesNoAnswer.No
+		};
+
+		return question.ReadAnswer() == YesNoAnswer.Yes;
+	}
 }
