@@ -169,4 +169,116 @@ public class RemoveByPotIdTests
 			})
 			.ExecuteAsync();
 	}
+
+	[Theory]
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task RemoveByPotId_WithStartDate_ShouldRemoveOnlySnapshotsOnOrAfterThatDate(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	{
+		await GenericTest.Create(environment)
+			.Arrange(async (backDoor, context) =>
+			{
+				await SeedThreeSnapshots(backDoor, context);
+			})
+			.Act((repository, context) =>
+			{
+				Guid potId = context.PotId;
+				repository.RemoveByPotId(potId, referenceDate.AddDays(-10));
+			})
+			.Assert(async (backDoor, context) =>
+			{
+				Guid potId = context.PotId;
+				List<PotSnapshot> snapshots = await backDoor.GetSnapshotsByPotIdAsync(potId);
+
+				snapshots.Should().ContainSingle(x => x.Date == referenceDate.AddDays(-20));
+			})
+			.ExecuteAsync();
+	}
+
+	[Theory]
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task RemoveByPotId_WithEndDate_ShouldRemoveOnlySnapshotsOnOrBeforeThatDate(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	{
+		await GenericTest.Create(environment)
+			.Arrange(async (backDoor, context) =>
+			{
+				await SeedThreeSnapshots(backDoor, context);
+			})
+			.Act((repository, context) =>
+			{
+				Guid potId = context.PotId;
+				repository.RemoveByPotId(potId, null, referenceDate.AddDays(-10));
+			})
+			.Assert(async (backDoor, context) =>
+			{
+				Guid potId = context.PotId;
+				List<PotSnapshot> snapshots = await backDoor.GetSnapshotsByPotIdAsync(potId);
+
+				snapshots.Should().ContainSingle(x => x.Date == referenceDate);
+			})
+			.ExecuteAsync();
+	}
+
+	[Theory]
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task RemoveByPotId_WithStartAndEndDate_ShouldRemoveOnlySnapshotsFromThatInterval(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	{
+		await GenericTest.Create(environment)
+			.Arrange(async (backDoor, context) =>
+			{
+				await SeedThreeSnapshots(backDoor, context);
+			})
+			.Act((repository, context) =>
+			{
+				Guid potId = context.PotId;
+				repository.RemoveByPotId(potId, referenceDate.AddDays(-15), referenceDate.AddDays(-5));
+			})
+			.Assert(async (backDoor, context) =>
+			{
+				Guid potId = context.PotId;
+				List<PotSnapshot> snapshots = await backDoor.GetSnapshotsByPotIdAsync(potId);
+
+				snapshots.Should().HaveCount(2);
+				snapshots.Should().Contain(x => x.Date == referenceDate.AddDays(-20));
+				snapshots.Should().Contain(x => x.Date == referenceDate);
+			})
+			.ExecuteAsync();
+	}
+
+	private async Task SeedThreeSnapshots(ITestBackDoor backDoor, dynamic context)
+	{
+		Pot pot = new()
+		{
+			Id = Guid.NewGuid(),
+			Name = "Test Pot",
+			DisplayOrder = 1,
+			StartDate = referenceDate.AddDays(-30),
+			Currency = "USD"
+		};
+
+		List<PotSnapshot> snapshots =
+		[
+			new PotSnapshot
+			{
+				Date = referenceDate.AddDays(-20),
+				Value = 100m,
+				Pot = pot
+			},
+			new PotSnapshot
+			{
+				Date = referenceDate.AddDays(-10),
+				Value = 200m,
+				Pot = pot
+			},
+			new PotSnapshot
+			{
+				Date = referenceDate,
+				Value = 300m,
+				Pot = pot
+			}
+		];
+
+		await backDoor.SeedPotsAsync([pot]);
+		await backDoor.SeedPotSnapshotsAsync(snapshots);
+		context.PotId = pot.Id;
+	}
 }

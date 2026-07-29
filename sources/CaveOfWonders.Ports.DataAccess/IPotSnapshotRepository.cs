@@ -8,7 +8,7 @@ public interface IPotSnapshotRepository
 
 	IAsyncEnumerable<PotSnapshot> GetByPotIdAsync(Guid potId, DateOnly? startDate = null, DateOnly? endDate = null, CancellationToken cancellationToken = default);
 
-	Task<int> GetCountAsync(Guid potId, CancellationToken cancellationToken = default);
+	Task<int> GetCountAsync(Guid potId, DateOnly? startDate = null, DateOnly? endDate = null, CancellationToken cancellationToken = default);
 
 	Task<PotSnapshot> GetLatestByPotIdAsync(Guid potId, CancellationToken cancellationToken = default);
 
@@ -20,5 +20,5 @@ public interface IPotSnapshotRepository
 
 	void AddRange(IEnumerable<PotSnapshot> potSnapshots);
 
-	void RemoveByPotId(Guid potId);
+	void RemoveByPotId(Guid potId, DateOnly? startDate = null, DateOnly? endDate = null);
 }

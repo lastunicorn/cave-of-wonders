@@ -50,11 +50,18 @@ internal class PotSnapshotRepository : IPotSnapshotRepository
 			.AsAsyncEnumerable();
 	}
 
-	public async Task<int> GetCountAsync(Guid potId, CancellationToken cancellationToken = default)
+	public async Task<int> GetCountAsync(Guid potId, DateOnly? startDate = null, DateOnly? endDate = null, CancellationToken cancellationToken = default)
 	{
-		return await dbContext.PotSnapshots
-			.Where(x => x.Pot.Id == potId)
-			.CountAsync(cancellationToken);
+		IQueryable<PotSnapshot> query = dbContext.PotSnapshots
+			.Where(x => x.Pot.Id == potId);
+
+		if (startDate != null)
+			query = query.Where(x => x.Date >= startDate.Value);
+
+		if (endDate != null)
+			query = query.Where(x => x.Date <= endDate.Value);
+
+		return await query.CountAsync(cancellationToken);
 	}
 
 	public async Task<PotSnapshot> GetLatestByPotIdAsync(Guid potId, CancellationToken cancellationToken = default)
@@ -121,11 +128,18 @@ internal class PotSnapshotRepository : IPotSnapshotRepository
 		dbContext.PotSnapshots.AddRange(potSnapshots);
 	}
 
-	public void RemoveByPotId(Guid potId)
+	public void RemoveByPotId(Guid potId, DateOnly? startDate = null, DateOnly? endDate = null)
 	{
-		List<PotSnapshot> entities = dbContext.PotSnapshots
-			.Where(x => x.Pot.Id == potId)
-			.ToList();
+		IQueryable<PotSnapshot> query = dbContext.PotSnapshots
+			.Where(x => x.Pot.Id == potId);
+
+		if (startDate != null)
+			query = query.Where(x => x.Date >= startDate.Value);
+
+		if (endDate != null)
+			query = query.Where(x => x.Date <= endDate.Value);
+
+		List<PotSnapshot> entities = query.ToList();
 
 		dbContext.PotSnapshots.RemoveRange(entities);
 	}

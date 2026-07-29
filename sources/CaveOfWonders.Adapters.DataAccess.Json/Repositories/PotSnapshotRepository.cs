@@ -44,9 +44,12 @@ public class PotSnapshotRepository : IPotSnapshotRepository
 		return potSnapshots.ToAsyncEnumerable(cancellationToken);
 	}
 
-	public Task<int> GetCountAsync(Guid potId, CancellationToken cancellationToken = default)
+	public Task<int> GetCountAsync(Guid potId, DateOnly? startDate = null, DateOnly? endDate = null, CancellationToken cancellationToken = default)
 	{
-		int count = database.PotSnapshots.Count(x => x.Pot.Id == potId);
+		int count = database.PotSnapshots
+			.Where(x => x.Pot.Id == potId)
+			.Where(x => startDate == null || x.Date >= startDate.Value)
+			.Count(x => endDate == null || x.Date <= endDate.Value);
 
 		return Task.FromResult(count);
 	}
@@ -101,8 +104,10 @@ public class PotSnapshotRepository : IPotSnapshotRepository
 			Add(potSnapshot);
 	}
 
-	public void RemoveByPotId(Guid potId)
+	public void RemoveByPotId(Guid potId, DateOnly? startDate = null, DateOnly? endDate = null)
 	{
-		database.PotSnapshots.RemoveAll(x => x.Pot.Id == potId);
+		database.PotSnapshots.RemoveAll(x => x.Pot.Id == potId &&
+			(startDate == null || x.Date >= startDate.Value) &&
+			(endDate == null || x.Date <= endDate.Value));
 	}
 }

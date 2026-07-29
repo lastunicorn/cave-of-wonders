@@ -27,7 +27,7 @@ public class PotOrderTests
 
 		Mock<IPotSnapshotRepository> potSnapshotRepository = new();
 		potSnapshotRepository
-			.Setup(x => x.GetCountAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+			.Setup(x => x.GetCountAsync(It.IsAny<Guid>(), It.IsAny<DateOnly?>(), It.IsAny<DateOnly?>(), It.IsAny<CancellationToken>()))
 			.ReturnsAsync(0);
 		potSnapshotRepository
 			.Setup(x => x.GetLatestByPotIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))

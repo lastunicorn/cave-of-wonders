@@ -21,31 +21,37 @@ internal class DeleteSnapshotsUseCase : IUseCase<DeleteSnapshotsRequest, DeleteS
 	{
 		Pot pot = await RetrievePot(request.PotId, cancellationToken);
 
-		int snapshotCount = await unitOfWork.PotSnapshotRepository.GetCountAsync(pot.Id, cancellationToken);
+		int snapshotCount = await unitOfWork.PotSnapshotRepository.GetCountAsync(pot.Id, request.StartDate, request.EndDate, cancellationToken);
 
 		if (snapshotCount == 0)
 		{
 			return new DeleteSnapshotsResponse
 			{
 				PotName = pot.Name,
+				StartDate = request.StartDate,
+				EndDate = request.EndDate,
 				DeletedCount = 0
 			};
 		}
 
-		if (!request.Confirmed && !userInterface.ConfirmSnapshotsDelete(pot.Name, snapshotCount))
+		if (!request.Confirmed && !userInterface.ConfirmSnapshotsDelete(pot.Name, snapshotCount, request.StartDate, request.EndDate))
 		{
 			return new DeleteSnapshotsResponse
 			{
 				PotName = pot.Name,
+				StartDate = request.StartDate,
+				EndDate = request.EndDate,
 				Cancelled = true
 			};
 		}
 
-		await DeleteSnapshots(pot, cancellationToken);
+		await DeleteSnapshots(pot, request.StartDate, request.EndDate, cancellationToken);
 
 		return new DeleteSnapshotsResponse
 		{
 			PotName = pot.Name,
+			StartDate = request.StartDate,
+			EndDate = request.EndDate,
 			DeletedCount = snapshotCount
 		};
 	}
@@ -71,11 +77,11 @@ internal class DeleteSnapshotsUseCase : IUseCase<DeleteSnapshotsRequest, DeleteS
 		return matchedPot;
 	}
 
-	private async Task DeleteSnapshots(Pot pot, CancellationToken cancellationToken)
+	private async Task DeleteSnapshots(Pot pot, DateOnly? startDate, DateOnly? endDate, CancellationToken cancellationToken)
 	{
 		try
 		{
-			unitOfWork.PotSnapshotRepository.RemoveByPotId(pot.Id);
+			unitOfWork.PotSnapshotRepository.RemoveByPotId(pot.Id, startDate, endDate);
 
 			await unitOfWork.SaveChangesAsync(cancellationToken);
 		}

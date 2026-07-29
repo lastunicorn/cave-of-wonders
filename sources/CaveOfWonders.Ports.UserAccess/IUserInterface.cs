@@ -4,5 +4,5 @@ public interface IUserInterface
 {
 	bool ConfirmPotDelete(string potName);
 
-	bool ConfirmSnapshotsDelete(string potName, int snapshotCount);
+	bool ConfirmSnapshotsDelete(string potName, int snapshotCount, DateOnly? startDate = null, DateOnly? endDate = null);
 }

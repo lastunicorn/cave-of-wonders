@@ -178,4 +178,108 @@ public class GetCountAsyncTests
 			})
 			.ExecuteAsync();
 	}
+
+	[Theory]
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task GetCountAsync_WithStartDate_ShouldOnlyCountSnapshotsOnOrAfterThatDate(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	{
+		await GenericTest.Create(environment)
+			.Arrange(async (backDoor, context) =>
+			{
+				await SeedThreeSnapshots(backDoor, context);
+			})
+			.Act(async (repository, context) =>
+			{
+				Guid potId = context.PotId;
+				context.Count = await repository.GetCountAsync(potId, referenceDate.AddDays(-10));
+			})
+			.Assert((backDoor, context) =>
+			{
+				int count = context.Count;
+				count.Should().Be(2);
+			})
+			.ExecuteAsync();
+	}
+
+	[Theory]
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task GetCountAsync_WithEndDate_ShouldOnlyCountSnapshotsOnOrBeforeThatDate(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	{
+		await GenericTest.Create(environment)
+			.Arrange(async (backDoor, context) =>
+			{
+				await SeedThreeSnapshots(backDoor, context);
+			})
+			.Act(async (repository, context) =>
+			{
+				Guid potId = context.PotId;
+				context.Count = await repository.GetCountAsync(potId, null, referenceDate.AddDays(-10));
+			})
+			.Assert((backDoor, context) =>
+			{
+				int count = context.Count;
+				count.Should().Be(2);
+			})
+			.ExecuteAsync();
+	}
+
+	[Theory]
+	[TestEnvironments<IPotSnapshotRepository, ITestBackDoor>]
+	public async Task GetCountAsync_WithStartAndEndDate_ShouldOnlyCountSnapshotsFromThatInterval(ITestEnvironment<IPotSnapshotRepository, ITestBackDoor> environment)
+	{
+		await GenericTest.Create(environment)
+			.Arrange(async (backDoor, context) =>
+			{
+				await SeedThreeSnapshots(backDoor, context);
+			})
+			.Act(async (repository, context) =>
+			{
+				Guid potId = context.PotId;
+				context.Count = await repository.GetCountAsync(potId, referenceDate.AddDays(-15), referenceDate.AddDays(-5));
+			})
+			.Assert((backDoor, context) =>
+			{
+				int count = context.Count;
+				count.Should().Be(1);
+			})
+			.ExecuteAsync();
+	}
+
+	private async Task SeedThreeSnapshots(ITestBackDoor backDoor, dynamic context)
+	{
+		Pot pot = new()
+		{
+			Id = Guid.NewGuid(),
+			Name = "Pot With Snapshots",
+			DisplayOrder = 1,
+			StartDate = referenceDate.AddDays(-30),
+			Currency = "USD"
+		};
+
+		List<PotSnapshot> snapshots =
+		[
+			new PotSnapshot
+			{
+				Date = referenceDate.AddDays(-20),
+				Value = 100m,
+				Pot = pot
+			},
+			new PotSnapshot
+			{
+				Date = referenceDate.AddDays(-10),
+				Value = 200m,
+				Pot = pot
+			},
+			new PotSnapshot
+			{
+				Date = referenceDate,
+				Value = 300m,
+				Pot = pot
+			}
+		];
+
+		await backDoor.SeedPotsAsync([pot]);
+		await backDoor.SeedPotSnapshotsAsync(snapshots);
+		context.PotId = pot.Id;
+	}
 }

@@ -82,7 +82,7 @@ internal class PresentPotUseCase : IUseCase<PresentPotRequest, PresentPotRespons
 				? DateOnly.FromDateTime(latestGem.Date)
 				: null;
 
-			int snapshotCount = await unitOfWork.PotSnapshotRepository.GetCountAsync(pot.Id, cancellationToken);
+			int snapshotCount = await unitOfWork.PotSnapshotRepository.GetCountAsync(pot.Id, cancellationToken: cancellationToken);
 			PotSnapshot latestSnapshot = await unitOfWork.PotSnapshotRepository.GetLatestByPotIdAsync(pot.Id, cancellationToken);
 
 			potDetailsList.Add(new PotDetails(pot, gemCount, latestGemDate, snapshotCount, latestSnapshot));
