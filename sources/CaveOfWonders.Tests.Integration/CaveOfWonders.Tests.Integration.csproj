@@ -27,7 +27,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\CaveOfWonders.Adapters.ClockAccess\CaveOfWonders.Adapters.ClockAccess.csproj" PrivateAssets="All" />
-		<ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess.LiteDb\CaveOfWonders.Adapters.DataAccess.LiteDb.csproj" PrivateAssets="All" />
 		<ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess.SQLite\CaveOfWonders.Adapters.DataAccess.SQLite.csproj" PrivateAssets="All" />
 		<ProjectReference Include="..\CaveOfWonders.Adapters.DataAccess.Json\CaveOfWonders.Adapters.DataAccess.Json.csproj" PrivateAssets="All" />
 		<ProjectReference Include="..\CaveOfWonders.Adapters.FileAccess\CaveOfWonders.Adapters.FileAccess.csproj" PrivateAssets="All" />

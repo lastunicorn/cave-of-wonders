@@ -20,7 +20,7 @@ internal static class MigrateCommand
 
         Option<DatabaseType> sourceTypeOption = new("--source-type")
         {
-            Description = "Type of the source database (json, sqlite, litedb).",
+            Description = "Type of the source database (json, sqlite).",
             HelpName = "type",
             Required = true,
             CustomParser = ParseDatabaseType
@@ -35,7 +35,7 @@ internal static class MigrateCommand
 
         Option<DatabaseType> destinationTypeOption = new("--destination-type")
         {
-            Description = "Type of the destination database (json, sqlite, litedb).",
+            Description = "Type of the destination database (json, sqlite).",
             HelpName = "type",
             Required = true,
             CustomParser = ParseDatabaseType
@@ -86,7 +86,7 @@ internal static class MigrateCommand
         if (Enum.TryParse(token, ignoreCase: true, out DatabaseType databaseType))
             return databaseType;
 
-        argumentResult.AddError($"Unknown database type '{token}'. Valid values: json, sqlite, litedb.");
+        argumentResult.AddError($"Unknown database type '{token}'. Valid values: json, sqlite.");
         return default;
     }
 }

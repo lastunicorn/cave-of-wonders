@@ -8,7 +8,7 @@ namespace DustInTheWind.CaveOfWonders.DbMigration;
 /// Copies every record from a source <see cref="IUnitOfWork"/> into a destination one.
 /// Pots are migrated (and saved) before gems, since a gem only carries its pot's id and
 /// some adapters enforce that id as a foreign key. Entity kinds not supported by either
-/// side (e.g. gems/CPI/average wage on the LiteDb adapter) are skipped rather than failing.
+/// side are skipped rather than failing.
 /// </summary>
 internal sealed class Migration
 {

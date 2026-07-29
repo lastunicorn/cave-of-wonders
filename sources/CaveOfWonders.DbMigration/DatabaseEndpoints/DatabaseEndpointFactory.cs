@@ -13,7 +13,6 @@ internal sealed class DatabaseEndpointFactory : IDatabaseEndpointFactory
         {
             DatabaseType.Json => new JsonDatabaseEndpoint(databaseConfig.ConnectionString, cleanBeforeUse),
             DatabaseType.Sqlite => new SqliteDatabaseEndpoint(databaseConfig.ConnectionString, cleanBeforeUse),
-            DatabaseType.LiteDb => new LiteDbDatabaseEndpoint(databaseConfig.ConnectionString, cleanBeforeUse),
             _ => throw new InvalidOperationException($"Unknown database type '{databaseConfig.Type}'.")
         };
     }

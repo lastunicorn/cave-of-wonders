@@ -378,12 +378,6 @@ public class GetByExternalIdAsyncTests
 	// real EF navigation, this mutation was silently lost against SQLite (docs/DataAccess-Review.md
 	// §4.2) — GetByExternalIdAsync handed back a detached Gem with a freshly-mapped collection
 	// that nothing tracked.
-	//
-	// Known failing case: LiteDb. Unlike ExchangeRate, gems have no change-tracking mechanism in
-	// the LiteDb adapter (no GemTracker analogous to ExchangeRateTracker), so this mutation is
-	// still silently lost there. That gap predates this test and is out of scope here — LiteDb
-	// was never part of the SQLite remap this test was added to verify. Left red intentionally
-	// rather than papering over it; see docs/SQLite-DomainEntities-Plan.md.
 	[Theory]
 	[TestEnvironments<IGemRepository, ITestBackDoor>]
 	public async Task GetByExternalIdAsync_WithClearedAndReAddedParameters_ShouldPersistReplacementWithoutOrphans(ITestEnvironment<IGemRepository, ITestBackDoor> environment)

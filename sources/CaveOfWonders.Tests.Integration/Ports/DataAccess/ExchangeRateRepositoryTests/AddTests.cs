@@ -73,7 +73,7 @@ public class AddTests
 	// Updating an exchange rate is no longer a repository-level concern: the caller fetches the
 	// existing rate via Get, mutates it directly, then the session is saved (in production, via
 	// IUnitOfWork.SaveChangesAsync; here, implicitly when the SUT session closes after Act). These
-	// two tests guard the adapter-specific plumbing (LiteDb/SQLite trackers, Json's live in-memory
+	// two tests guard the adapter-specific plumbing (SQLite's tracker, Json's live in-memory
 	// list) that makes that in-place mutation actually observable after a save.
 	[Theory]
 	[TestEnvironments<IExchangeRateRepository, ITestBackDoor>]

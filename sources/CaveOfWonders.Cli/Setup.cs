@@ -35,10 +35,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Globalization;
-using LiteDbContext = DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.DbContext;
 using SQLiteUnitOfWork = DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.UnitOfWork;
 using JsonUnitOfWork = DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.UnitOfWork;
-using LiteDbUnitOfWork = DustInTheWind.CaveOfWonders.Adapters.DataAccess.LiteDb.UnitOfWork;
 
 namespace DustInTheWind.CaveOfWonders.Cli;
 
@@ -75,10 +73,6 @@ internal static class DependenciesSetup
 		{
 			case "sqlite":
 				RegisterSqLiteDatabase(serviceCollection);
-				break;
-
-			case "litedb":
-				RegisterLiteDbDatabase(serviceCollection);
 				break;
 
 			case "json":
@@ -176,33 +170,6 @@ internal static class DependenciesSetup
 				.DisplayToConsole()
 				.Response();
 		});
-	}
-
-	private static void RegisterLiteDbDatabase(IServiceCollection serviceCollection)
-	{
-		serviceCollection.AddScoped(services =>
-		{
-			return Measurement
-				.Action("Creating UnitOfWork", () =>
-				{
-					IConfiguration configuration = services.GetRequiredService<IConfiguration>();
-					string connectionString = new CaveOfWondersConnectionString(configuration.GetConnectionString("LiteDb"));
-
-					return new LiteDbContext(connectionString);
-				})
-				.DisplayToConsole()
-				.Response();
-		});
-
-		serviceCollection.AddSingleton<IDatabaseConfiguration>(services =>
-		{
-			IConfiguration configuration = services.GetRequiredService<IConfiguration>();
-			string connectionString = new CaveOfWondersConnectionString(configuration.GetConnectionString("LiteDb"));
-
-			return new DatabaseConfiguration(connectionString);
-		});
-
-		serviceCollection.AddScoped<IUnitOfWork, LiteDbUnitOfWork>();
 	}
 
 	private static void RegisterJsonDatabase(IServiceCollection serviceCollection)
