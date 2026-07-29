@@ -74,6 +74,8 @@ internal class DeletePotUseCase : IUseCase<DeletePotRequest, DeletePotResponse>
 			foreach (Gem gem in gems)
 				unitOfWork.GemRepository.Remove(gem);
 
+			unitOfWork.PotSnapshotRepository.RemoveByPotId(pot.Id);
+
 			unitOfWork.PotRepository.Remove(pot);
 
 			await unitOfWork.SaveChangesAsync(cancellationToken);
