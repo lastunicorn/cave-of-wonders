@@ -1,6 +1,7 @@
-using DustInTheWind.CaveOfWonders.DataTypes;
+using DustInTheWind.CaveOfWonders.Cli.Application.Operations;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.OperationEngine;
 using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.EditPot;
@@ -8,15 +9,22 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.EditPot;
 internal class EditPotUseCase : IUseCase<EditPotRequest, EditPotResponse>
 {
 	private readonly IUnitOfWork unitOfWork;
+	private readonly OperationManager operationManager;
 
-	public EditPotUseCase(IUnitOfWork unitOfWork)
+	public EditPotUseCase(IUnitOfWork unitOfWork, OperationManager operationManager)
 	{
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+		this.operationManager = operationManager ?? throw new ArgumentNullException(nameof(operationManager));
 	}
 
 	public async Task<EditPotResponse> Execute(EditPotRequest request, CancellationToken cancellationToken)
 	{
-		Pot pot = await RetrievePot(request.PotId, cancellationToken);
+		Pot pot = await operationManager.CreateAndExecuteAsync<GetOnePotOperation, Pot>(
+			op =>
+			{
+				op.PotId = request.PotId;
+			},
+			cancellationToken);
 
 		EditPotResponse response = new();
 
@@ -76,26 +84,5 @@ internal class EditPotUseCase : IUseCase<EditPotRequest, EditPotResponse>
 		response.PotName = pot.Name;
 
 		return response;
-	}
-
-	private async Task<Pot> RetrievePot(PotFlexId potId, CancellationToken cancellationToken)
-	{
-		IAsyncEnumerable<Pot> pots = unitOfWork.PotRepository.GetAsync(potId, cancellationToken);
-
-		Pot matchedPot = null;
-
-		await foreach (Pot pot in pots)
-		{
-			if (matchedPot != null)
-				throw new MultiplePotsException(potId);
-
-			if (pot != null)
-				matchedPot = pot;
-		}
-
-		if (matchedPot == null)
-			throw new PotNotFoundException(potId);
-
-		return matchedPot;
 	}
 }

@@ -25,8 +25,7 @@
 		<Project Path="sources/CaveOfWonders.Ports.ClockAccess/CaveOfWonders.Ports.ClockAccess.csproj" />
 	</Folder>
 	<Folder Name="/Ports/DataAccess/">
-		<Project
-				Path="sources/CaveOfWonders.Adapters.DataAccess.SQLite/CaveOfWonders.Adapters.DataAccess.SQLite.csproj" />
+		<Project Path="sources/CaveOfWonders.Adapters.DataAccess.SQLite/CaveOfWonders.Adapters.DataAccess.SQLite.csproj" />
 		<Project Path="sources/CaveOfWonders.Adapters.DataAccess.Json/CaveOfWonders.Adapters.DataAccess.Json.csproj" />
 		<Project Path="sources/CaveOfWonders.Ports.DataAccess/CaveOfWonders.Ports.DataAccess.csproj" />
 	</Folder>
@@ -74,4 +73,5 @@
 	<Project Path="sources/CaveOfWonders.DataTypes/CaveOfWonders.DataTypes.csproj" />
 	<Project Path="sources/CaveOfWonders.Domain/CaveOfWonders.Domain.csproj" />
 	<Project Path="sources/CaveOfWonders.Infrastructure/CaveOfWonders.Infrastructure.csproj" />
+	<Project Path="sources/OperationEngine.Extensions.DependencyInjection/OperationEngine.Extensions.DependencyInjection.csproj" />
 </Solution>

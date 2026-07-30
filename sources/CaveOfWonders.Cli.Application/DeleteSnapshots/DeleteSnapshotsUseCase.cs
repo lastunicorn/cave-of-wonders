@@ -1,7 +1,8 @@
-using DustInTheWind.CaveOfWonders.DataTypes;
+using DustInTheWind.CaveOfWonders.Cli.Application.Operations;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
 using DustInTheWind.CaveOfWonders.Ports.UserAccess;
+using DustInTheWind.OperationEngine;
 using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.DeleteSnapshots;
@@ -10,16 +11,23 @@ internal class DeleteSnapshotsUseCase : IUseCase<DeleteSnapshotsRequest, DeleteS
 {
 	private readonly IUnitOfWork unitOfWork;
 	private readonly IUserInterface userInterface;
+	private readonly OperationManager operationManager;
 
-	public DeleteSnapshotsUseCase(IUnitOfWork unitOfWork, IUserInterface userInterface)
+	public DeleteSnapshotsUseCase(IUnitOfWork unitOfWork, IUserInterface userInterface, OperationManager operationManager)
 	{
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 		this.userInterface = userInterface ?? throw new ArgumentNullException(nameof(userInterface));
+		this.operationManager = operationManager ?? throw new ArgumentNullException(nameof(operationManager));
 	}
 
 	public async Task<DeleteSnapshotsResponse> Execute(DeleteSnapshotsRequest request, CancellationToken cancellationToken)
 	{
-		Pot pot = await RetrievePot(request.PotId, cancellationToken);
+		Pot pot = await operationManager.CreateAndExecuteAsync<GetOnePotOperation, Pot>(
+			op =>
+			{
+				op.PotId = request.PotId;
+			},
+			cancellationToken);
 
 		int snapshotCount = await unitOfWork.PotSnapshotRepository.GetCountAsync(pot.Id, request.StartDate, request.EndDate, cancellationToken);
 
@@ -54,27 +62,6 @@ internal class DeleteSnapshotsUseCase : IUseCase<DeleteSnapshotsRequest, DeleteS
 			EndDate = request.EndDate,
 			DeletedCount = snapshotCount
 		};
-	}
-
-	private async Task<Pot> RetrievePot(PotFlexId potId, CancellationToken cancellationToken)
-	{
-		IAsyncEnumerable<Pot> pots = unitOfWork.PotRepository.GetAsync(potId, cancellationToken);
-
-		Pot matchedPot = null;
-
-		await foreach (Pot pot in pots)
-		{
-			if (matchedPot != null)
-				throw new MultiplePotsException(potId);
-
-			if (pot != null)
-				matchedPot = pot;
-		}
-
-		if (matchedPot == null)
-			throw new PotNotFoundException(potId);
-
-		return matchedPot;
 	}
 
 	private async Task DeleteSnapshots(Pot pot, DateOnly? startDate, DateOnly? endDate, CancellationToken cancellationToken)

@@ -35,6 +35,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Globalization;
+using DustInTheWind.OperationEngine.Extensions.DependencyInjection;
 using SQLiteUnitOfWork = DustInTheWind.CaveOfWonders.Adapters.DataAccess.SQLite.UnitOfWork;
 using JsonUnitOfWork = DustInTheWind.CaveOfWonders.Adapters.DataAccess.Json.UnitOfWork;
 
@@ -65,6 +66,12 @@ internal static class DependenciesSetup
 		// Register RequestR
 		serviceCollection.AddUseCaseEngine(options =>
 			options.AddFromAssemblyContaining<PresentWealthRequest>());
+		
+		// Operation Engine
+		serviceCollection.AddOperationEngine(config =>
+		{
+			config.AddOperationsFromAssemblyContaining<PresentWealthRequest>();
+		});
 
 		// Configure Database
 		string databaseType = configuration.GetSection("DatabaseType").Value?.ToLowerInvariant();

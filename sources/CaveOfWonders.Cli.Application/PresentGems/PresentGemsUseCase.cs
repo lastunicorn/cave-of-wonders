@@ -1,8 +1,10 @@
+using DustInTheWind.CaveOfWonders.Cli.Application.Operations;
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.OperationEngine;
 using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentGems;
@@ -11,16 +13,24 @@ internal class PresentGemsUseCase : IUseCase<PresentGemsRequest, PresentGemsResp
 {
 	private readonly IUnitOfWork unitOfWork;
 	private readonly ISystemClock systemClock;
+	private readonly OperationManager operationManager;
 
-	public PresentGemsUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
+	public PresentGemsUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock, OperationManager operationManager)
 	{
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 		this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+		this.operationManager = operationManager ?? throw new ArgumentNullException(nameof(operationManager));
 	}
 
 	public async Task<PresentGemsResponse> Execute(PresentGemsRequest request, CancellationToken cancellationToken)
 	{
-		Pot pot = await RetrievePot(request.PotId, cancellationToken);
+		Pot pot = await operationManager.CreateAndExecuteAsync<GetOnePotOperation, Pot>(
+			op =>
+			{
+				op.PotId = request.PotId;
+			},
+			cancellationToken);
+		
 		IAsyncEnumerable<Gem> gems = await RetrieveGems(pot.Id, request, cancellationToken);
 
 		SortedList<DateTime, GemDto> gemsByDate = new(new DuplicateKeyComparer<DateTime>());
@@ -59,27 +69,6 @@ internal class PresentGemsUseCase : IUseCase<PresentGemsRequest, PresentGemsResp
 				Value = CalculateAmount(gem)
 			}
 		};
-	}
-
-	private async Task<Pot> RetrievePot(PotFlexId potId, CancellationToken cancellationToken)
-	{
-		IAsyncEnumerable<Pot> pots = unitOfWork.PotRepository.GetAsync(potId, cancellationToken);
-
-		Pot matchedPot = null;
-
-		await foreach (Pot pot in pots)
-		{
-			if (matchedPot != null)
-				throw new MultiplePotsException(potId);
-
-			if (pot != null)
-				matchedPot = pot;
-		}
-
-		if (matchedPot == null)
-			throw new PotNotFoundException(potId);
-
-		return matchedPot;
 	}
 
 	private async Task<IAsyncEnumerable<Gem>> RetrieveGems(Guid potId, PresentGemsRequest request, CancellationToken cancellationToken)

@@ -44,6 +44,7 @@
 		<ProjectReference Include="..\CaveOfWonders.Adapters.InsAccess\CaveOfWonders.Adapters.InsAccess.csproj" PrivateAssets="All" />
 		<ProjectReference Include="..\CaveOfWonders.Adapters.LogAccess\CaveOfWonders.Adapters.LogAccess.csproj" PrivateAssets="All" />
 		<ProjectReference Include="..\CaveOfWonders.Adapters.SpreadsheetAccess\CaveOfWonders.Adapters.SpreadsheetAccess.csproj" PrivateAssets="All" />
+		<ProjectReference Include="..\OperationEngine.Extensions.DependencyInjection\OperationEngine.Extensions.DependencyInjection.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

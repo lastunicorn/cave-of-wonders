@@ -8,6 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="DustInTheWInd.OperationEngine" Version="1.6.0" />
 		<PackageReference Include="RequestR" Version="2.2.0" />
 	</ItemGroup>
 
@@ -32,10 +33,6 @@
 
 	<ItemGroup>
 		<InternalsVisibleTo Include="CaveOfWonders.Tests" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Operations\" />
 	</ItemGroup>
 
 </Project>

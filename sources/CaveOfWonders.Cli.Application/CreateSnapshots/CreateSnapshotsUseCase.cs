@@ -1,7 +1,9 @@
+using DustInTheWind.CaveOfWonders.Cli.Application.Operations;
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Infrastructure;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.OperationEngine;
 using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.CreateSnapshots;
@@ -9,15 +11,22 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.CreateSnapshots;
 internal class CreateSnapshotsUseCase : IUseCase<CreateSnapshotsRequest, CreateSnapshotsResponse>
 {
 	private readonly IUnitOfWork unitOfWork;
+	private readonly OperationManager operationManager;
 
-	public CreateSnapshotsUseCase(IUnitOfWork unitOfWork)
+	public CreateSnapshotsUseCase(IUnitOfWork unitOfWork, OperationManager operationManager)
 	{
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+		this.operationManager = operationManager ?? throw new ArgumentNullException(nameof(operationManager));
 	}
 
 	public async Task<CreateSnapshotsResponse> Execute(CreateSnapshotsRequest request, CancellationToken cancellationToken)
 	{
-		Pot pot = await RetrievePot(request.PotId, cancellationToken);
+		Pot pot = await operationManager.CreateAndExecuteAsync<GetOnePotOperation, Pot>(
+			op =>
+			{
+				op.PotId = request.PotId;
+			},
+			cancellationToken);
 
 		CreateSnapshotsResponse response = new()
 		{
@@ -124,26 +133,5 @@ internal class CreateSnapshotsUseCase : IUseCase<CreateSnapshotsRequest, CreateS
 	{
 		int daysInMonth = DateTime.DaysInMonth(monthStart.Year, monthStart.Month);
 		return new DateOnly(monthStart.Year, monthStart.Month, daysInMonth);
-	}
-
-	private async Task<Pot> RetrievePot(PotFlexId potId, CancellationToken cancellationToken)
-	{
-		IAsyncEnumerable<Pot> pots = unitOfWork.PotRepository.GetAsync(potId, cancellationToken);
-
-		Pot matchedPot = null;
-
-		await foreach (Pot pot in pots)
-		{
-			if (matchedPot != null)
-				throw new MultiplePotsException(potId);
-
-			if (pot != null)
-				matchedPot = pot;
-		}
-
-		if (matchedPot == null)
-			throw new PotNotFoundException(potId);
-
-		return matchedPot;
 	}
 }

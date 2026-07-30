@@ -1,4 +1,4 @@
-using DustInTheWind.CaveOfWonders.DataTypes;
+using DustInTheWind.CaveOfWonders.Cli.Application.Operations;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Infrastructure.Diagnostics;
 using DustInTheWind.CaveOfWonders.Ports.BcrAccess;
@@ -8,6 +8,7 @@ using DustInTheWind.CaveOfWonders.Ports.FintownAccess;
 using DustInTheWind.CaveOfWonders.Ports.MintosAccess;
 using DustInTheWind.CaveOfWonders.Ports.PeerBerryAccess;
 using DustInTheWind.CaveOfWonders.Ports.QuanloopAccess;
+using DustInTheWind.OperationEngine;
 using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;
@@ -21,8 +22,9 @@ internal class ImportGemsUseCase : IUseCase<ImportGemsRequest, ImportGemsRespons
 	private readonly IPeerBerryService peerBerryService;
 	private readonly IQuanloopService quanloopService;
 	private readonly IFileSystem fileSystem;
+	private readonly OperationManager operationManager;
 
-	public ImportGemsUseCase(IUnitOfWork unitOfWork, IMintosService mintosService, IFintownService fintownService, IBcrService bcrService, IPeerBerryService peerBerryService, IQuanloopService quanloopService, IFileSystem fileSystem)
+	public ImportGemsUseCase(IUnitOfWork unitOfWork, IMintosService mintosService, IFintownService fintownService, IBcrService bcrService, IPeerBerryService peerBerryService, IQuanloopService quanloopService, IFileSystem fileSystem, OperationManager operationManager)
 	{
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 		this.mintosService = mintosService ?? throw new ArgumentNullException(nameof(mintosService));
@@ -31,6 +33,7 @@ internal class ImportGemsUseCase : IUseCase<ImportGemsRequest, ImportGemsRespons
 		this.peerBerryService = peerBerryService ?? throw new ArgumentNullException(nameof(peerBerryService));
 		this.quanloopService = quanloopService ?? throw new ArgumentNullException(nameof(quanloopService));
 		this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+		this.operationManager = operationManager ?? throw new ArgumentNullException(nameof(operationManager));
 	}
 
 	public Task<ImportGemsResponse> Execute(ImportGemsRequest request, CancellationToken cancellationToken)
@@ -38,7 +41,13 @@ internal class ImportGemsUseCase : IUseCase<ImportGemsRequest, ImportGemsRespons
 		return Measurement
 			.Action(async () =>
 			{
-				Pot pot = await FindPot(request.PotFlexId, cancellationToken);
+				Pot pot = await operationManager.CreateAndExecuteAsync<GetOnePotOperation, Pot>(
+					op =>
+					{
+						op.PotId = request.PotFlexId;
+					},
+					cancellationToken);
+
 				List<string> filePaths = fileSystem.EnumerateFiles(request.FilePath).ToList();
 
 				if (filePaths.Count == 0)
@@ -73,27 +82,6 @@ internal class ImportGemsUseCase : IUseCase<ImportGemsRequest, ImportGemsRespons
 				response.Duration = measurement.Time;
 			})
 			.Response();
-	}
-
-	private async Task<Pot> FindPot(PotFlexId potFlexId, CancellationToken cancellationToken)
-	{
-		IAsyncEnumerable<Pot> pots = unitOfWork.PotRepository.GetAsync(potFlexId, cancellationToken)
-			.Where(x => x != null);
-
-		Pot foundPot = null;
-
-		await foreach (Pot pot in pots)
-		{
-			if (foundPot != null)
-				throw new MultiplePotsException(potFlexId);
-
-			foundPot = pot;
-		}
-
-		if (foundPot == null)
-			throw new PotNotFoundException(potFlexId);
-
-		return foundPot;
 	}
 
 	private IAsyncEnumerable<Gem> GetGemsFromSource(string filePath, FileType fileType, CancellationToken cancellationToken)
