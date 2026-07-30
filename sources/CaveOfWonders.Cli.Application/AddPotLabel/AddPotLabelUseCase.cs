@@ -1,7 +1,9 @@
+using DustInTheWind.CaveOfWonders.Cli.Application.Operations;
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.OperationEngine;
 using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.AddPotLabel;
@@ -10,37 +12,22 @@ internal class AddPotLabelUseCase : IUseCase<AddPotLabelRequest, AddPotLabelResp
 {
 	private readonly IUnitOfWork unitOfWork;
 	private readonly ISystemClock systemClock;
+	private readonly OperationManager operationManager;
 
-	public AddPotLabelUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
+	public AddPotLabelUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock, OperationManager operationManager)
 	{
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 		this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+		this.operationManager = operationManager ?? throw new ArgumentNullException(nameof(operationManager));
 	}
 
 	public async Task<AddPotLabelResponse> Execute(AddPotLabelRequest request, CancellationToken cancellationToken)
 	{
-		DateOnly today = systemClock.Today;
-
 		string label = request.Label.Trim().ToLowerInvariant();
 
-		List<Pot> pots = await RetrievePots(request.PotId, cancellationToken);
+		IAsyncEnumerable<Pot> pots = RetrievePots(request.PotId, cancellationToken);
 
-		Dictionary<Guid, bool> wasAddedByPotId = new();
-
-		foreach (Pot pot in pots)
-		{
-			bool alreadyHasLabel = pot.Labels.Any(x => x.Label == label);
-
-			if (!alreadyHasLabel)
-			{
-				pot.Labels.Add(new PotLabel
-				{
-					Label = label
-				});
-			}
-
-			wasAddedByPotId[pot.Id] = !alreadyHasLabel;
-		}
+		List<LabelAddResult> labelAddResults = await AddLabelToPots(pots, label);
 
 		try
 		{
@@ -54,34 +41,48 @@ internal class AddPotLabelUseCase : IUseCase<AddPotLabelRequest, AddPotLabelResp
 		return new AddPotLabelResponse
 		{
 			Label = label,
-			Items = pots
-				.Select(x => new LabelAddResult
-				{
-					PotId = x.Id,
-					PotName = x.Name,
-					WasAdded = wasAddedByPotId[x.Id],
-					IsActive = x.IsActive(today)
-				})
-				.ToList()
+			Items = labelAddResults
 		};
 	}
 
-	private async Task<List<Pot>> RetrievePots(PotFlexId potId, CancellationToken cancellationToken)
+	private async Task<List<LabelAddResult>> AddLabelToPots(IAsyncEnumerable<Pot> pots, string label)
 	{
-		List<Pot> pots;
+		DateOnly today = systemClock.Today;
 
-		try
+		List<LabelAddResult> labelAddResults = [];
+
+		await foreach (Pot pot in pots)
 		{
-			pots = await unitOfWork.PotRepository.GetAsync(potId, cancellationToken).ToListAsync(cancellationToken);
-		}
-		catch (Exception ex)
-		{
-			throw new DataStorageException(ex);
+			bool alreadyHasLabel = pot.Labels.Any(x => x.Label == label);
+
+			if (!alreadyHasLabel)
+			{
+				pot.Labels.Add(new PotLabel
+				{
+					Label = label
+				});
+			}
+
+			labelAddResults.Add(new LabelAddResult
+			{
+				PotId = pot.Id,
+				PotName = pot.Name,
+				WasAdded = !alreadyHasLabel,
+				IsActive = pot.IsActive(today)
+			});
 		}
 
-		if (pots.Count == 0)
-			throw new PotNotFoundException(potId);
+		return labelAddResults;
+	}
 
-		return pots;
+	private IAsyncEnumerable<Pot> RetrievePots(PotFlexId potId, CancellationToken cancellationToken)
+	{
+		return operationManager.ExecuteStream<GetPotsOperation, Pot>(
+			op =>
+			{
+				op.PotId = potId;
+				op.IncludeInactive = true;
+			},
+			cancellationToken);
 	}
 }
