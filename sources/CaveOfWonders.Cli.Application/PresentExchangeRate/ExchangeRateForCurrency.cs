@@ -4,7 +4,7 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 
 public class ExchangeRateForCurrency
 {
-    public CurrencyPair CurrencyPair { get; set; }
+	public CurrencyPair CurrencyPair { get; set; }
 
-    public decimal Value { get; set; }
+	public decimal Value { get; set; }
 }

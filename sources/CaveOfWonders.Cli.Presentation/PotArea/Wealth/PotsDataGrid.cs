@@ -1,5 +1,5 @@
-﻿using DustInTheWind.CaveOfWonders.Cli.Application;
-using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
+﻿using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.ConsoleTools.Controls;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 

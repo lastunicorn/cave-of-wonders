@@ -1,5 +1,6 @@
 ﻿using DustInTheWind.CaveOfWonders.Cli.Application;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
+using DustInTheWind.CaveOfWonders.DataTypes;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Pot;
 

@@ -1,4 +1,5 @@
 using DustInTheWind.CaveOfWonders.Cli.Application;
+using DustInTheWind.CaveOfWonders.DataTypes;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
 

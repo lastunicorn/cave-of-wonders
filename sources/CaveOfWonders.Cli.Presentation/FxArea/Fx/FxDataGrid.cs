@@ -1,20 +1,4 @@
-﻿// Cave of Wonders
-// Copyright (C) 2023-2025 Dust in the Wind
-// 
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-using System.Globalization;
+﻿using System.Globalization;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentExchangeRate;
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.ConsoleTools.Controls.Tables;
@@ -25,7 +9,7 @@ internal class FxDataGrid : DataGrid
 {
 	private readonly List<CurrencyPair> currencyPairs = [];
 
-	public FxDataGrid(PresentExchangeRateResponse response)
+	public FxDataGrid(FxViewModel viewModel)
 	{
 		Title = "Exchange Rates";
 		TitleRow.BackgroundColor = ConsoleColor.Gray;
@@ -34,16 +18,15 @@ internal class FxDataGrid : DataGrid
 
 		Columns.Add("Date");
 
-		AddRows(response);
+		AddRows(viewModel);
 	}
 
-	private void AddRows(PresentExchangeRateResponse response)
+	private void AddRows(FxViewModel viewModel)
 	{
-		foreach (DailyExchangeRates dailyExchangeRates in response.DailyExchangeRates)
-		{
-			ContentRow row = CreateRow(dailyExchangeRates);
-			Rows.Add(row);
-		}
+		IEnumerable<ContentRow> rows = viewModel.DailyExchangeRates
+			.Select(CreateRow);
+
+		Rows.AddRange(rows);
 	}
 
 	private ContentRow CreateRow(DailyExchangeRates dailyExchangeRates)

@@ -1,4 +1,6 @@
-﻿namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
+﻿using DustInTheWind.CaveOfWonders.DataTypes;
+
+namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 
 public class PotInstanceInfo
 {

@@ -1,5 +1,5 @@
-﻿using DustInTheWind.CaveOfWonders.Cli.Application;
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
+﻿using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
+using DustInTheWind.CaveOfWonders.DataTypes;
 
 namespace CaveOfWonders.WebApi.Presentation.Endpoints.Pots.Models;
 

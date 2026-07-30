@@ -1,6 +1,6 @@
-﻿using DustInTheWind.CaveOfWonders.Cli.Application;
-using DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
+﻿using DustInTheWind.CaveOfWonders.Cli.Application.PresentWealth;
 using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
+using DustInTheWind.CaveOfWonders.DataTypes;
 using System.Globalization;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Wealth;

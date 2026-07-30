@@ -5,11 +5,11 @@ using DustInTheWind.RequestR;
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.FxArea.Fx;
 
 [NamedCommand("fx", Description = "Displays the exchange rate for the specified date.")]
-public class FxCommand : IConsoleCommand<PresentExchangeRateResponse>
+internal class FxCommand : IConsoleCommand<FxViewModel>
 {
 	private readonly RequestBus requestBus;
 
-	[AnonymousParameter(Order = 1, DisplayName = "Currency", IsMandatory = false, Description = "The currency pair to be displayed. Ex: EUR/RON")]
+	[NamedParameter("currency", ShortName = 'c', IsMandatory = false, Description = "The currency pair to be displayed. Ex: EUR/RON")]
 	public string CurrencyPair { get; set; }
 
 	[NamedParameter("today", ShortName = 't', IsMandatory = false, Description = "If this flag is set, the exchange rate for today is displayed.")]
@@ -35,7 +35,7 @@ public class FxCommand : IConsoleCommand<PresentExchangeRateResponse>
 		this.requestBus = requestBus ?? throw new ArgumentNullException(nameof(requestBus));
 	}
 
-	public async Task<PresentExchangeRateResponse> Execute()
+	public async Task<FxViewModel> Execute()
 	{
 		PresentExchangeRateRequest request = new()
 		{
@@ -48,6 +48,11 @@ public class FxCommand : IConsoleCommand<PresentExchangeRateResponse>
 			Month = Month
 		};
 
-		return await requestBus.SendAsync<PresentExchangeRateRequest, PresentExchangeRateResponse>(request);
+		PresentExchangeRateResponse response = await requestBus.SendAsync<PresentExchangeRateRequest, PresentExchangeRateResponse>(request);
+		return new FxViewModel
+		{
+			DailyExchangeRates = response.DailyExchangeRates,
+			Comments = response.Comments
+		};
 	}
 }

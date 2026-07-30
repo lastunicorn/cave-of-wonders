@@ -1,3 +1,5 @@
+using DustInTheWind.CaveOfWonders.DataTypes;
+
 namespace DustInTheWind.CaveOfWonders.Cli.Application.CalculateGain;
 
 public class GainResponse

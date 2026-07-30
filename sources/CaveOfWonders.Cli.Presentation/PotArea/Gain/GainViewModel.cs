@@ -1,6 +1,7 @@
 using DustInTheWind.CaveOfWonders.Cli.Application;
 using DustInTheWind.CaveOfWonders.Cli.Application.CalculateGain;
 using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
+using DustInTheWind.CaveOfWonders.DataTypes;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Gain;
 

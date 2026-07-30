@@ -4,22 +4,22 @@ using DustInTheWind.ConsoleTools.Commando;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.FxArea.Fx;
 
-internal class FxView : IView<PresentExchangeRateResponse>
+internal class FxView : IView<FxViewModel>
 {
-	public void Display(PresentExchangeRateResponse response)
+	public void Display(FxViewModel viewModel)
 	{
-		if (response.DailyExchangeRates.Count == 0 || response.DailyExchangeRates.All(x => x.ExchangeRates.Count == 0))
-			CustomConsole.WriteLineWarning($"There are no exchange rates.");
+		if (viewModel.DailyExchangeRates.Count == 0 || viewModel.DailyExchangeRates.All(x => x.ExchangeRates.Count == 0))
+			CustomConsole.WriteLineWarning("There are no exchange rates.");
 		else
-			DisplayExchangeRates(response);
+			DisplayExchangeRates(viewModel);
 
-		if (response.Comments != null)
-			CustomConsole.WriteLineWarning(response.Comments);
+		if (viewModel.Comments != null)
+			CustomConsole.WriteLineWarning(viewModel.Comments);
 	}
 
-	private static void DisplayExchangeRates(PresentExchangeRateResponse response)
+	private static void DisplayExchangeRates(FxViewModel viewModel)
 	{
-		FxDataGrid dataGrid = new(response);
+		FxDataGrid dataGrid = new(viewModel);
 		dataGrid.Display();
 	}
 }
