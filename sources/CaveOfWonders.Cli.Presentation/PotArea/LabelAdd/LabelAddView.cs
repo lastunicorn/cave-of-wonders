@@ -1,4 +1,5 @@
 using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
+using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 
@@ -8,6 +9,12 @@ internal class LabelAddView : IView<LabelAddViewModel>
 {
 	public void Display(LabelAddViewModel viewModel)
 	{
+		if (viewModel.Items.Count == 0)
+		{
+			CustomConsole.WriteLineWarning("No pot matched.");
+			return;
+		}
+
 		DataGrid dataGrid = DataGridTemplate.CreateNew();
 		dataGrid.Title = $"Added Label '{viewModel.Label}'";
 
