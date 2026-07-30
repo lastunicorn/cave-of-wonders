@@ -10,13 +10,6 @@ internal class DefaultOperationFactory : IOperationFactory
 	}
 
 	public TOperation Create<TOperation>()
-		where TOperation : IOperation
-	{
-		return (TOperation)serviceProvider.GetService(typeof(TOperation));
-	}
-
-	public TOperation Create<TOperation, TResult>()
-		where TOperation : IOperation<TResult>
 	{
 		return (TOperation)serviceProvider.GetService(typeof(TOperation));
 	}

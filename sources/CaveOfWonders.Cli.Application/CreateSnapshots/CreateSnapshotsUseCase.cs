@@ -21,7 +21,7 @@ internal class CreateSnapshotsUseCase : IUseCase<CreateSnapshotsRequest, CreateS
 
 	public async Task<CreateSnapshotsResponse> Execute(CreateSnapshotsRequest request, CancellationToken cancellationToken)
 	{
-		Pot pot = await operationManager.CreateAndExecuteAsync<GetOnePotOperation, Pot>(
+		Pot pot = await operationManager.ExecuteAsync<GetOnePotOperation, Pot>(
 			op =>
 			{
 				op.PotId = request.PotId;

@@ -16,7 +16,7 @@ public class OperationEngineConfiguration
 		IEnumerable<Type> operationTypes = assemblies
 			.Where(x => x != null)
 			.SelectMany(x => x.GetTypes())
-			.Where(x => x.ImplementsAnyInterface(typeof(IOperation), typeof(IOperation<>)));
+			.Where(x => x.ImplementsAnyInterface(typeof(IOperation), typeof(IOperation<>), typeof(IStreamOperation<>)));
 
 		OperationTypes.AddRange(operationTypes);
 
@@ -26,7 +26,7 @@ public class OperationEngineConfiguration
 	public OperationEngineConfiguration AddOperationsFromAssemblyContaining<T>()
 	{
 		IEnumerable<Type> operationTypes = typeof(T).Assembly.GetTypes()
-			.Where(x => x.ImplementsAnyInterface(typeof(IOperation), typeof(IOperation<>)));
+			.Where(x => x.ImplementsAnyInterface(typeof(IOperation), typeof(IOperation<>), typeof(IStreamOperation<>)));
 
 		OperationTypes.AddRange(operationTypes);
 

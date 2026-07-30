@@ -24,7 +24,7 @@ internal class PresentGemsUseCase : IUseCase<PresentGemsRequest, PresentGemsResp
 
 	public async Task<PresentGemsResponse> Execute(PresentGemsRequest request, CancellationToken cancellationToken)
 	{
-		Pot pot = await operationManager.CreateAndExecuteAsync<GetOnePotOperation, Pot>(
+		Pot pot = await operationManager.ExecuteAsync<GetOnePotOperation, Pot>(
 			op =>
 			{
 				op.PotId = request.PotId;

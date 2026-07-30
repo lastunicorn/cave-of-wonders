@@ -41,7 +41,7 @@ internal class ImportGemsUseCase : IUseCase<ImportGemsRequest, ImportGemsRespons
 		return Measurement
 			.Action(async () =>
 			{
-				Pot pot = await operationManager.CreateAndExecuteAsync<GetOnePotOperation, Pot>(
+				Pot pot = await operationManager.ExecuteAsync<GetOnePotOperation, Pot>(
 					op =>
 					{
 						op.PotId = request.PotFlexId;

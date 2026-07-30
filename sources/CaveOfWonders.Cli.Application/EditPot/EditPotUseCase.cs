@@ -19,7 +19,7 @@ internal class EditPotUseCase : IUseCase<EditPotRequest, EditPotResponse>
 
 	public async Task<EditPotResponse> Execute(EditPotRequest request, CancellationToken cancellationToken)
 	{
-		Pot pot = await operationManager.CreateAndExecuteAsync<GetOnePotOperation, Pot>(
+		Pot pot = await operationManager.ExecuteAsync<GetOnePotOperation, Pot>(
 			op =>
 			{
 				op.PotId = request.PotId;
