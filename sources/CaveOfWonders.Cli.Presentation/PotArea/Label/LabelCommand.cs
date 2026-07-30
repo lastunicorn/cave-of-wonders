@@ -9,7 +9,7 @@ internal class LabelCommand : IConsoleCommand<LabelViewModel>
 {
 	private readonly RequestBus requestBus;
 
-	[AnonymousParameter(DisplayName = "Pot Identifier", Order = 1, IsMandatory = false, Description = "Name or id of the pot. Partial id is accepted.")]
+	[NamedParameter("pot", ShortName = 'p', IsMandatory = false, Description = "Name or id of the pot. Partial id is accepted.")]
 	public string PotIdentifier { get; set; }
 
 	[NamedParameter("all", ShortName = 'a', IsMandatory = false, Description = "Display all pots, including the inactive ones. Default = false.")]
