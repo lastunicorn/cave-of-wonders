@@ -1,19 +1,20 @@
+using DustInTheWind.CaveOfWonders.Cli.Application.Operations;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
-using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.OperationEngine;
 using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPotLabels;
 
 internal class PresentPotLabelsUseCase : IUseCase<PresentPotLabelsRequest, PresentPotLabelsResponse>
 {
-	private readonly IUnitOfWork unitOfWork;
 	private readonly ISystemClock systemClock;
+	private readonly OperationManager operationManager;
 
-	public PresentPotLabelsUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
+	public PresentPotLabelsUseCase(ISystemClock systemClock, OperationManager operationManager)
 	{
-		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 		this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+		this.operationManager = operationManager ?? throw new ArgumentNullException(nameof(operationManager));
 	}
 
 	public async Task<PresentPotLabelsResponse> Execute(PresentPotLabelsRequest request, CancellationToken cancellationToken)
@@ -42,18 +43,16 @@ internal class PresentPotLabelsUseCase : IUseCase<PresentPotLabelsRequest, Prese
 	{
 		try
 		{
-			bool isIdentifierSpecified = request.PotFlexId?.HasValue == true;
+			IAsyncEnumerable<Pot> pots = await operationManager.CreateAndExecuteAsync<GetPotsOperation, IAsyncEnumerable<Pot>>(
+				op =>
+				{
+					op.PotId = request.PotFlexId;
+					op.IncludeInactive = request.IncludeInactivePots;
+					op.Today = today;
+				},
+				cancellationToken);
 
-			IAsyncEnumerable<Pot> pots = isIdentifierSpecified
-				? unitOfWork.PotRepository.GetAsync(request.PotFlexId, cancellationToken)
-				: unitOfWork.PotRepository.GetAllAsync(cancellationToken);
-
-			if (!request.IncludeInactivePots)
-				pots = pots.Where(x => x.IsActive(today));
-
-			return await pots
-				.OrderBy(x => x.DisplayOrder)
-				.ToListAsync(cancellationToken);
+			return await pots.ToListAsync(cancellationToken);
 		}
 		catch (Exception ex)
 		{

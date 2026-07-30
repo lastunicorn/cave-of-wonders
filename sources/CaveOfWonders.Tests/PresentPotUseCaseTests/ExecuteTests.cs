@@ -1,9 +1,11 @@
 ﻿using DustInTheWind.CaveOfWonders.Cli.Application;
+using DustInTheWind.CaveOfWonders.Cli.Application.Operations;
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.CaveOfWonders.Domain;
 using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.OperationEngine;
 using FluentAssertions;
 using Moq;
 
@@ -46,7 +48,12 @@ public class ExecuteTests
 			.Setup(x => x.PotSnapshotRepository)
 			.Returns(potSnapshotRepository.Object);
 
-		useCase = new PresentPotUseCase(unitOfWork.Object, clock.Object);
+		TestOperationFactory operationFactory = new();
+		operationFactory.Register(() => new GetPotsOperation(unitOfWork.Object, clock.Object));
+
+		OperationManager operationManager = new(operationFactory);
+
+		useCase = new PresentPotUseCase(unitOfWork.Object, operationManager);
 	}
 
 	[Theory]

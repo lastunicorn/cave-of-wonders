@@ -1,7 +1,7 @@
-﻿using DustInTheWind.CaveOfWonders.DataTypes;
+﻿using DustInTheWind.CaveOfWonders.Cli.Application.Operations;
 using DustInTheWind.CaveOfWonders.Domain;
-using DustInTheWind.CaveOfWonders.Ports.ClockAccess;
 using DustInTheWind.CaveOfWonders.Ports.DataAccess;
+using DustInTheWind.OperationEngine;
 using DustInTheWind.RequestR;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
@@ -9,12 +9,12 @@ namespace DustInTheWind.CaveOfWonders.Cli.Application.PresentPot;
 internal class PresentPotUseCase : IUseCase<PresentPotRequest, PresentPotResponse>
 {
 	private readonly IUnitOfWork unitOfWork;
-	private readonly ISystemClock systemClock;
+	private readonly OperationManager operationManager;
 
-	public PresentPotUseCase(IUnitOfWork unitOfWork, ISystemClock systemClock)
+	public PresentPotUseCase(IUnitOfWork unitOfWork, OperationManager operationManager)
 	{
 		this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-		this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+		this.operationManager = operationManager ?? throw new ArgumentNullException(nameof(operationManager));
 	}
 
 	public async Task<PresentPotResponse> Execute(PresentPotRequest request, CancellationToken cancellationToken)
@@ -42,15 +42,13 @@ internal class PresentPotUseCase : IUseCase<PresentPotRequest, PresentPotRespons
 	{
 		try
 		{
-			IAsyncEnumerable<Pot> pots = RetrievePots(request.PotFlexId, cancellationToken);
-
-			if (!request.IncludeInactivePots)
-			{
-				DateOnly today = systemClock.Today;
-				pots = pots.Where(x => x.IsActive(today));
-			}
-
-			pots = pots.OrderBy(x => x.DisplayOrder);
+			IAsyncEnumerable<Pot> pots = await operationManager.CreateAndExecuteAsync<GetPotsOperation, IAsyncEnumerable<Pot>>(
+				op =>
+				{
+					op.PotId = request.PotFlexId;
+					op.IncludeInactive = request.IncludeInactivePots;
+				},
+				cancellationToken);
 
 			return await pots.ToListAsync(cancellationToken);
 		}
@@ -58,15 +56,6 @@ internal class PresentPotUseCase : IUseCase<PresentPotRequest, PresentPotRespons
 		{
 			throw new DataStorageException(ex);
 		}
-	}
-
-	private IAsyncEnumerable<Pot> RetrievePots(PotFlexId potFlexId, CancellationToken cancellationToken)
-	{
-		bool isIdentifierSpecified = potFlexId?.HasValue == true;
-
-		return isIdentifierSpecified
-			? unitOfWork.PotRepository.GetAsync(potFlexId, cancellationToken)
-			: unitOfWork.PotRepository.GetAllAsync(cancellationToken);
 	}
 
 	private async Task<List<PotDetails>> BuildPotDetails(IEnumerable<Pot> pots, CancellationToken cancellationToken)
