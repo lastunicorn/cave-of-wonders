@@ -11,11 +11,6 @@ internal class GetOnePotOperation : IOperation<Pot>
 
 	public PotFlexId PotId { get; set; }
 
-	/// <summary>
-	/// Gets or sets a value specifying if a <see cref="PotNotFoundException"/> is thrown when no pot matches
-	/// the <see cref="PotId"/>. When set to <c>false</c>, <c>null</c> is returned instead.
-	/// Default value is <c>true</c>.
-	/// </summary>
 	public bool ThrowIfNotFound { get; set; } = true;
 
 	public GetOnePotOperation(IUnitOfWork unitOfWork)

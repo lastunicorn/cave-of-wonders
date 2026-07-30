@@ -1,20 +1,33 @@
 using DustInTheWind.CaveOfWonders.Cli.Presentation.Controls;
 using DustInTheWind.ConsoleTools;
 using DustInTheWind.ConsoleTools.Commando;
+using DustInTheWind.ConsoleTools.Controls;
 using DustInTheWind.ConsoleTools.Controls.Tables;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Presentation.PotArea.Label;
 
-internal class LabelView : IView<LabelViewModel>
+internal class LabelView : ViewBase<LabelViewModel>
 {
-	public void Display(LabelViewModel viewModel)
+	public override void Display(LabelViewModel viewModel)
 	{
-		if (viewModel.Items.Count == 0)
+		if (viewModel.Pots != null)
 		{
-			CustomConsole.WriteLineWarning("There is no pot with the specified name or id.");
-			return;
+			if (viewModel.Pots.Count == 0)
+				CustomConsole.WriteLineWarning("There is no pot with the specified name or id.");
+			else
+				DisplayPots(viewModel);
 		}
+		else if (viewModel.Labels != null)
+		{
+			if (viewModel.Labels.Count == 0)
+				CustomConsole.WriteLineWarning("There is no label.");
+			else
+				DisplayLabels(viewModel);
+		}
+	}
 
+	private static void DisplayPots(LabelViewModel viewModel)
+	{
 		DataGrid dataGrid = DataGridTemplate.CreateNew();
 		dataGrid.Title = "Pot Labels";
 
@@ -27,7 +40,7 @@ internal class LabelView : IView<LabelViewModel>
 		dataGrid.Columns.Add("Pot");
 		dataGrid.Columns.Add("Labels");
 
-		foreach (PotLabelsItemViewModel item in viewModel.Items)
+		foreach (PotLabelsViewModel item in viewModel.Pots)
 		{
 			ShortPotId id = item.PotId;
 			string labels = string.Join(", ", item.Labels);
@@ -41,6 +54,25 @@ internal class LabelView : IView<LabelViewModel>
 			}
 
 			dataGrid.Rows.Add(row);
+		}
+
+		dataGrid.Display();
+	}
+
+	private static void DisplayLabels(LabelViewModel viewModel)
+	{
+		DataGrid dataGrid = DataGridTemplate.CreateNew();
+		dataGrid.Title = "Labels";
+		dataGrid.DisplayBorderBetweenRows = true;
+
+		dataGrid.Columns.Add("Label");
+		dataGrid.Columns.Add("Pots");
+
+		foreach (LabelPotsViewModel item in viewModel.Labels)
+		{
+			dataGrid.Rows.Add(
+				new ContentCell(item.Label),
+				new ContentCell(item.PotNames));
 		}
 
 		dataGrid.Display();

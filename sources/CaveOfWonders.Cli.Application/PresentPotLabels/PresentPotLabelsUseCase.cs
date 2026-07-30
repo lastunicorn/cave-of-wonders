@@ -20,23 +20,22 @@ internal class PresentPotLabelsUseCase : IUseCase<PresentPotLabelsRequest, Prese
 	public async Task<PresentPotLabelsResponse> Execute(PresentPotLabelsRequest request, CancellationToken cancellationToken)
 	{
 		DateOnly today = systemClock.Today;
-
 		List<Pot> pots = await RetrievePots(request, today, cancellationToken);
 
-		return new PresentPotLabelsResponse
+		if (request.PotFlexId?.HasValue == true)
 		{
-			Items = pots
-				.Select(x => new PotLabelsItem
-				{
-					PotId = x.Id,
-					PotName = x.Name,
-					Labels = x.Labels
-						.Select(l => l.Label)
-						.ToList(),
-					IsActive = x.IsActive(today)
-				})
-				.ToList()
-		};
+			return new PresentPotLabelsResponse
+			{
+				PotLabels = ResultPotLabels(pots, today)
+			};
+		}
+		else
+		{
+			return new PresentPotLabelsResponse
+			{
+				LabelPots = ResultLabelPots(pots, today)
+			};
+		}
 	}
 
 	private async Task<List<Pot>> RetrievePots(PresentPotLabelsRequest request, DateOnly today, CancellationToken cancellationToken)
@@ -58,5 +57,55 @@ internal class PresentPotLabelsUseCase : IUseCase<PresentPotLabelsRequest, Prese
 		{
 			throw new DataStorageException(ex);
 		}
+	}
+
+	private static List<LabelPotsDto> ResultLabelPots(List<Pot> pots, DateOnly today)
+	{
+		Dictionary<string, List<Pot>> labelPots = new();
+
+		foreach (Pot pot in pots)
+		{
+			foreach (PotLabel potLabel in pot.Labels)
+			{
+				bool exists = labelPots.TryGetValue(potLabel.Label, out List<Pot> potsForLabel);
+
+				if (!exists)
+				{
+					potsForLabel = [];
+					labelPots[potLabel.Label] = potsForLabel;
+				}
+
+				potsForLabel.Add(pot);
+			}
+		}
+
+		return labelPots
+			.Select(kvp => new LabelPotsDto
+			{
+				Label = kvp.Key,
+				Pots = kvp.Value.Select(x => new PotDto
+					{
+						PotId = x.Id,
+						PotName = x.Name,
+						IsActive = x.IsActive(today)
+					})
+					.ToList()
+			})
+			.ToList();
+	}
+
+	private static List<PotLabelsDto> ResultPotLabels(List<Pot> pots, DateOnly today)
+	{
+		return pots
+			.Select(x => new PotLabelsDto
+			{
+				PotId = x.Id,
+				PotName = x.Name,
+				Labels = x.Labels
+					.Select(l => l.Label)
+					.ToList(),
+				IsActive = x.IsActive(today)
+			})
+			.ToList();
 	}
 }
