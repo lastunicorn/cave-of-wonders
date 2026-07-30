@@ -61,7 +61,7 @@ public class PresentWealthUseCase : IUseCase<PresentWealthRequest, PresentWealth
 
 	private async Task<List<Pot>> RetrievePots(bool includeInactive, DateOnly date, CancellationToken cancellationToken)
 	{
-		IAsyncEnumerable<Pot> pots = await operationManager.CreateAndExecuteAsync<GetPotsOperation, IAsyncEnumerable<Pot>>(
+		IAsyncEnumerable<Pot> pots = operationManager.ExecuteStream<GetPotsOperation, Pot>(
 			op =>
 			{
 				op.IncludeInactive = includeInactive;

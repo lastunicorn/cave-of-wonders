@@ -43,7 +43,7 @@ internal class PresentPotLabelsUseCase : IUseCase<PresentPotLabelsRequest, Prese
 	{
 		try
 		{
-			IAsyncEnumerable<Pot> pots = await operationManager.CreateAndExecuteAsync<GetPotsOperation, IAsyncEnumerable<Pot>>(
+			IAsyncEnumerable<Pot> pots = operationManager.ExecuteStream<GetPotsOperation, Pot>(
 				op =>
 				{
 					op.PotId = request.PotFlexId;

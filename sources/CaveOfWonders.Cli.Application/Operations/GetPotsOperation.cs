@@ -6,7 +6,7 @@ using DustInTheWind.OperationEngine;
 
 namespace DustInTheWind.CaveOfWonders.Cli.Application.Operations;
 
-internal class GetPotsOperation : IOperation<IAsyncEnumerable<Pot>>
+internal class GetPotsOperation : IStreamOperation<Pot>
 {
 	private readonly IUnitOfWork unitOfWork;
 	private readonly ISystemClock systemClock;
@@ -23,11 +23,7 @@ internal class GetPotsOperation : IOperation<IAsyncEnumerable<Pot>>
 		this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
 	}
 
-	/// <summary>
-	/// Builds the enumeration of pots. The pots are actually retrieved from the storage later, when the
-	/// returned enumeration is iterated.
-	/// </summary>
-	public Task<IAsyncEnumerable<Pot>> ExecuteAsync(CancellationToken cancellationToken = default)
+	public IAsyncEnumerable<Pot> ExecuteAsync(CancellationToken cancellationToken = default)
 	{
 		bool isIdentifierSpecified = PotId?.HasValue == true;
 
@@ -41,8 +37,6 @@ internal class GetPotsOperation : IOperation<IAsyncEnumerable<Pot>>
 			pots = pots.Where(x => x.IsActive(today));
 		}
 
-		pots = pots.OrderBy(x => x.DisplayOrder);
-
-		return Task.FromResult(pots);
+		return pots.OrderBy(x => x.DisplayOrder);
 	}
 }
