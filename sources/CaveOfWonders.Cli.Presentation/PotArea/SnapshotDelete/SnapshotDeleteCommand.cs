@@ -1,4 +1,5 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.DeleteSnapshots;
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.RequestR;
 
@@ -10,7 +11,7 @@ internal class SnapshotDeleteCommand : IConsoleCommand<SnapshotDeleteViewModel>
 	private readonly RequestBus requestBus;
 
 	[AnonymousParameter(DisplayName = "Pot Identifier", Order = 1, IsMandatory = true, Description = "Name or id of the pot whose snapshots to delete. Partial id is accepted.")]
-	public string PotIdentifier { get; set; }
+	public PotFlexId PotIdentifier { get; set; }
 
 	[NamedParameter("start-date", IsMandatory = false, Description = "Delete only the snapshots starting with this date. If not specified, there is no lower limit.")]
 	public DateOnly? StartDate { get; set; }

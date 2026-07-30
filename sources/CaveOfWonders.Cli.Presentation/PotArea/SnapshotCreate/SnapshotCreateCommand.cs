@@ -1,4 +1,5 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.CreateSnapshots;
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.RequestR;
 
@@ -10,7 +11,7 @@ internal class SnapshotCreateCommand : IConsoleCommand<SnapshotCreateViewModel>
 	private readonly RequestBus requestBus;
 
 	[AnonymousParameter(DisplayName = "Pot Identifier", Order = 1, IsMandatory = true, Description = "Name or id of the pot. Partial id is accepted.")]
-	public string PotIdentifier { get; set; }
+	public PotFlexId PotIdentifier { get; set; }
 
 	public SnapshotCreateCommand(RequestBus requestBus)
 	{

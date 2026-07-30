@@ -1,4 +1,5 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.AddPotLabel;
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.RequestR;
 
@@ -13,7 +14,7 @@ internal class LabelAddCommand : IConsoleCommand<LabelAddViewModel>
 	public string Label { get; set; }
 
 	[NamedParameter("pot", ShortName = 'p', IsMandatory = true, Description = "Name or id of the pot. Partial id is accepted.")]
-	public string PotIdentifier { get; set; }
+	public PotFlexId PotIdentifier { get; set; }
 
 	public LabelAddCommand(RequestBus requestBus)
 	{

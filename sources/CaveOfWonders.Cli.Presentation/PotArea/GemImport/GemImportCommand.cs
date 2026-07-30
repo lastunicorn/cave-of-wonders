@@ -1,4 +1,5 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.ImportGems;
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.RequestR;
 
@@ -16,7 +17,7 @@ internal class GemImportCommand : IConsoleCommand<GemImportViewModel>
 	public FileType FileType { get; set; }
 
 	[NamedParameter("pot", IsMandatory = false, Description = "The pot id for which to import the gems.")]
-	public string PotId { get; set; }
+	public PotFlexId PotIdentifier { get; set; }
 
 	public GemImportCommand(RequestBus requestBus)
 	{
@@ -29,7 +30,7 @@ internal class GemImportCommand : IConsoleCommand<GemImportViewModel>
 		{
 			FilePath = FilePath,
 			FileType = FileType,
-			PotFlexId = PotId
+			PotFlexId = PotIdentifier
 		};
 
 		ImportGemsResponse response = await requestBus.SendAsync<ImportGemsRequest, ImportGemsResponse>(request);

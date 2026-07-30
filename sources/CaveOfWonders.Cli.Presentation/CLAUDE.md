@@ -36,7 +36,7 @@ internal class MyCommand : IConsoleCommand<MyViewModel>
 
     [AnonymousParameter(DisplayName = "Pot Identifier", Order = 1, IsMandatory = false,
         Description = "Name or id of the pot. Partial id is accepted.")]
-    public string PotIdentifier { get; set; }
+    public PotFlexId PotIdentifier { get; set; }
 
     [NamedParameter("month", ShortName = 'm', IsMandatory = false,
         Description = "The month. Default = current month.")]
@@ -105,7 +105,7 @@ public DateOnly? Date { get; set; }
 ```csharp
 [AnonymousParameter(DisplayName = "Pot Identifier", Order = 1, IsMandatory = false,
     Description = "Name or id of the pot. Partial id is accepted.")]
-public string PotIdentifier { get; set; }
+public PotFlexId PotIdentifier { get; set; }
 ```
 
 - `Order` starts at `1`
@@ -125,6 +125,11 @@ Commando parses the following types directly:
 | `DateOnly`, `DateOnly?` | date string |
 | `CultureInfo` | culture identifier |
 | custom `enum` | parsed by name (case-insensitive) |
+| `PotFlexId` | pot name or (partial) id |
+
+Every parameter that identifies a pot is declared as `PotFlexId`, not `string`.
+
+Commando resolves a parameter's value with `TypeDescriptor.GetConverter(propertyType).ConvertFromString(value)`. `TypeDescriptor` ignores implicit conversion operators, so a custom type needs a `TypeConverter` registered via `[TypeConverter(typeof(...))]` to be usable as a parameter — `PotFlexId` has `PotFlexIdTypeConverter` (in `DataTypes`) for exactly this reason. Without it, parsing fails at runtime with `InvalidParameterValueException`.
 
 When a parameter accepts a fixed set of string values, define a local `internal enum` in the same command folder. Map it to the application layer's enum inside `Execute()`:
 

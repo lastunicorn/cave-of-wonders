@@ -1,4 +1,5 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.EditPot;
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.RequestR;
 
@@ -10,7 +11,7 @@ internal class PotEditCommand : IConsoleCommand<PotEditViewModel>
 	private readonly RequestBus requestBus;
 
 	[AnonymousParameter(DisplayName = "Pot Identifier", Order = 1, IsMandatory = true, Description = "Name or id of the pot to edit.")]
-	public string PotIdentifier { get; set; }
+	public PotFlexId PotIdentifier { get; set; }
 
 	[NamedParameter("name", ShortName = 'n', IsMandatory = false, Description = "The new name for the pot.")]
 	public string Name { get; set; }

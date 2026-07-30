@@ -1,4 +1,5 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentGems;
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.RequestR;
 
@@ -10,10 +11,10 @@ internal class GemCommand : IConsoleCommand<GemCommandViewModel>
 	private readonly RequestBus requestBus;
 
 	[AnonymousParameter(Order = 1, IsMandatory = false)]
-	public string PotIdDefault { get; set; }
+	public PotFlexId PotIdDefault { get; set; }
 
 	[NamedParameter("pot", IsMandatory = false, Description = "The pot id for which to display the gems.")]
-	public string PotId { get; set; }
+	public PotFlexId PotId { get; set; }
 
 	[NamedParameter("start-date", IsMandatory = false, Description = "The start date for which to display the gems.")]
 	public DateOnly? StartDate { get; set; }

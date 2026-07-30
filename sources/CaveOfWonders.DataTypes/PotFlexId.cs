@@ -1,5 +1,8 @@
+using System.ComponentModel;
+
 namespace DustInTheWind.CaveOfWonders.DataTypes;
 
+[TypeConverter(typeof(PotFlexIdTypeConverter))]
 public record class PotFlexId
 {
 	private readonly string partialValue;

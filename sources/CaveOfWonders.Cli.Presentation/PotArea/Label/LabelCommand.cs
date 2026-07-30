@@ -1,4 +1,5 @@
 using DustInTheWind.CaveOfWonders.Cli.Application.PresentPotLabels;
+using DustInTheWind.CaveOfWonders.DataTypes;
 using DustInTheWind.ConsoleTools.Commando;
 using DustInTheWind.RequestR;
 
@@ -10,7 +11,7 @@ internal class LabelCommand : IConsoleCommand<LabelViewModel>
 	private readonly RequestBus requestBus;
 
 	[NamedParameter("pot", ShortName = 'p', IsMandatory = false, Description = "Name or id of the pot. Partial id is accepted.")]
-	public string PotIdentifier { get; set; }
+	public PotFlexId PotIdentifier { get; set; }
 
 	[NamedParameter("all", ShortName = 'a', IsMandatory = false, Description = "Display all pots, including the inactive ones. Default = false.")]
 	public bool IncludeInactivePots { get; set; }
