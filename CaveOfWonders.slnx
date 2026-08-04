@@ -62,6 +62,7 @@
 		<Project Path="sources/CaveOfWonders.Ports.SpreadsheetAccess\CaveOfWonders.Ports.SpreadsheetAccess.csproj" />
 	</Folder>
 	<Folder Name="/Ports/UserAccess/">
+		<Project Path="sources/CaveOfWonders.Adapters.NonInteractiveUserAccess/CaveOfWonders.Adapters.NonInteractiveUserAccess.csproj" />
 		<Project Path="sources/CaveOfWonders.Adapters.UserAccess/CaveOfWonders.Adapters.UserAccess.csproj" />
 		<Project Path="sources/CaveOfWonders.Ports.UserAccess/CaveOfWonders.Ports.UserAccess.csproj" />
 	</Folder>
