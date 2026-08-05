@@ -5,13 +5,6 @@ namespace DustInTheWind.CaveOfWonders.Adapters.InsAccess;
 
 public class FileCpiImportExport : ICpiImportExport
 {
-	private readonly string filePath;
-
-	public FileCpiImportExport(string filePath)
-	{
-		this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
-	}
-
 	public Guid Id => new Guid("bb7590ef-6126-4529-8012-b6a8a4c6f903");
 
 	public string Name => "CPI File Import/Export";
@@ -22,6 +15,8 @@ public class FileCpiImportExport : ICpiImportExport
 
 	public async IAsyncEnumerable<CpiRecordDto> ImportAsync(IDictionary<string, object> parameters = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
 	{
+		string filePath = RetrieveFilePath(parameters);
+
 		IEnumerable<string> lines = await File.ReadLinesAsync(filePath, cancellationToken)
 			.ToListAsync(cancellationToken);
 
@@ -34,5 +29,16 @@ public class FileCpiImportExport : ICpiImportExport
 	public Task ExportAsync(IDictionary<string, object> parameters = null, CancellationToken cancellationToken = default)
 	{
 		throw new NotSupportedException("Exporting CPI records to a file is not supported.");
+	}
+
+	private static string RetrieveFilePath(IDictionary<string, object> parameters)
+	{
+		if (parameters == null || !parameters.TryGetValue("FilePath", out object value))
+			throw new MissingCpiFilePathException();
+
+		if (value is not string filePath || string.IsNullOrWhiteSpace(filePath))
+			throw new MissingCpiFilePathException();
+
+		return filePath;
 	}
 }
